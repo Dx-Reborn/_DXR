@@ -373,6 +373,8 @@ function RenderBinoculars(Canvas C)
     c.Style=ERenderStyle.STY_Modulated;
     c.DrawTileJustified(bg, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
     c.Style=ERenderStyle.STY_Normal;
+
+    c.SetDrawColor(0,255,25,255);// Green crosshair
     c.DrawTileJustified(cr, 1, 1024, 512); 
 
     // Заполнители

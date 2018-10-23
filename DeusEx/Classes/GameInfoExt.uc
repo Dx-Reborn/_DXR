@@ -82,6 +82,8 @@ final function int GetInt(coerce String flagName)
 
   if (class'GameFlags'.static.GetFlag(flagName, Flag))
   return flag.Value;
+
+  else return -1;
 }
 
 final function bool SetBool(coerce String flagName, bool newValue, optional bool bAdd, optional int expiration)
@@ -107,7 +109,15 @@ final function bool GetBool(coerce String flagName)
   local GameFlags.Flag Flag;
   local bool bResult;
 
-  bResult = class'GameFlags'.static.GetFlag(flagName, Flag);
+  if (class'GameFlags'.static.GetFlag(flagName, Flag))
+  {
+     if (flag.value == 0)
+         bResult = false;
+     else if (flag.value == 1)
+         bResult = true;
+  }
+
+//  bResult = class'GameFlags'.static.GetFlag(flagName, Flag);
 //  log("Checking value of flag: "$flagName$"="$bResult, 'FlagSystem');
 
   return bResult;
