@@ -1,0 +1,5 @@
+<DC=255,255,255>
+<P><JC><B>UNATCO HANDBOOK: Dedication</B>
+<P>
+<P>Nihil aliud scit necessitas quam vincere.
+<P><JR>-- Syrus

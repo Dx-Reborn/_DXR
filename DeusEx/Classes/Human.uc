@@ -1,0 +1,51 @@
+//=============================================================================
+// Human.
+// Все функции перенесены в DeusExPlayer, этот класс пустой и оставлен для 
+// совместимости.
+//=============================================================================
+class Human extends DeusExPlayer
+	abstract;
+
+exec function spd() // то есть SavePlayerData()
+{
+  DeusExGameInfo(Level.game).SavePlayerData();
+}
+
+exec function rpd() // RestorePlayerData
+{
+  DeusExGameInfo(Level.game).RestorePlayerData("..\\Saves");
+}
+
+// ----------------------------------------------------------------------
+// Dumps the inventory grid to the log file.  Useful for debugging only.
+// ----------------------------------------------------------------------
+exec function DumpInventoryGrid()
+{
+	local int slotsCol;
+	local int slotsRow;
+	local String gridRow;
+
+	log("DumpInventoryGrid()");
+	log("_____________________________________________________________");
+	
+	log("        1 2 3 4 5");
+	log("-----------------");
+
+
+	for(slotsRow=0; slotsRow < maxInvRows; slotsRow++)
+	{
+		gridRow = "Row #" $ slotsRow $ ": ";
+
+		for (slotsCol=0; slotsCol < maxInvCols; slotsCol++)
+		{
+			if ( invSlots[(slotsRow * maxInvCols) + slotsCol] == 1)
+				gridRow = gridRow $ "X ";
+			else
+				gridRow = gridRow $ "  ";
+		}
+		
+		log(gridRow);
+	}
+	log("_____________________________________________________________");
+}
+

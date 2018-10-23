@@ -1,0 +1,9 @@
+<DC=255,255,255>
+<P><JC><B>PROJECT DIBBUK</B>
+<P><JC>Overview
+<P>
+<P><JC><I>Domination/5F Clearance ONLY</I>
+<P>
+<P>... the noted failure of previous attempts to create a low profile rotary aircraft involved the acquisition and retrofitting of available military hardware that had neither the range, 
+<P>ceiling, nor electromagnetic transparency to avoid numerous eyewitness accounts or unauthorized military interactions.  In addition to exacerbating public misconceptions about governmental
+<P>operations, such encounters also jeopardized several key missions.  PROJECT DIBBUK was initiated to address this issue through the creation of a "stealth" aircraft that could be used as a platform for a number of mission objectives...

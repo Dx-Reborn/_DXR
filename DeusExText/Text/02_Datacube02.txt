@@ -1,0 +1,10 @@
+<DC=255,255,255>
+<P>From: Data Administration
+<P>To: J. Steward, MJ12 Chemical Insertion
+<P>
+<P>As requested, access codes have been changed.  Your new access code is:
+<P>
+<P>Login: jsteward
+<P>Password: JS1357
+<P>
+<P>Be sure to change the password after you log on!

@@ -1,0 +1,2 @@
+class InvokeConWindow extends DxWindowTemplate;
+

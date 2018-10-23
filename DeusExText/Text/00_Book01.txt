@@ -1,0 +1,9 @@
+<DC=255,255,255>
+<P><JC><B>UNATCO TRAINING MANUAL</B>
+<P>
+<P><JC>Section 3C: Multitools
+<P>
+<P>A "multitool" is not really a tool at all -- not in the usual sense of the word -- but a disposable electronic device that utilizes electromagnetic resonance detection and frequency modulation to dynamically alter the flow of current through almost any non-hardened circuitry.  Skilled agents can use the multitool to manipulate code locks, cameras, autogun turrets, alarms, or other security elements.
+<P>
+<P>Note that multitools CANNOT be used for computer information extraction (see Section 5A: Hacking).
+<P> 

@@ -1,0 +1,352 @@
+<P>
+<P><B>THE DEVELOPMENT TEAM
+<P>
+<B>Producer and Project Director
+<P>Warren Spector
+<P>
+<B>Lead Programmer and Assistant Director
+<P>Chris Norden
+<P>
+<B>Programmers
+<P>Scott Martin
+<P>Albert Yarusso
+<P>
+<B>Lead Designer
+<P>Harvey Smith
+<P>
+<B>Designers
+<P>Marshall Andrews
+<P>Ricardo Bare
+<P>Monte Martinez
+<P>Steve Powers
+<P>Robert White
+<P>
+<B>Dialogue
+<P>Sheldon Pacotti
+<P>
+<B>Additional Dialogue
+<P>Austin Grossman
+<P>
+<B>In-Game Text and Intro/Endgame Cinematics
+<P>Chris Todd
+<P>
+<B>Lead Artist
+<P>Jay Lee
+<P>
+<B>Artists
+<P>Clay Hoffman
+<P>Russell Hughes
+<P>Rob Kovach
+<P>Nghia Lam
+<P>Terry Manderfeld
+<P>Hugh Suh
+<P>
+<B>Audio
+<P>Stan Neuvo
+<P>Will Nevins
+<P>Darren Walsh
+<P>
+<B>Music
+<P>Alexander Brandon
+<P>Dan Gardopee
+<P>Michiel Van Den Bos
+<P>
+<B>New York, Hong Kong and Paris Club Songs
+<P>Reeves Gabrels
+<P>
+<B>QA Leads
+<P>James Flores (Ion Storm Austin)
+<P>Jay Franke (Ion Storm Dallas)
+<P>Mike Orenich (Eidos Interactive US)
+<P>Tom Murton (Eidos Interactive Europe)
+<P>
+<B>QA Ion Storm
+<P>Marshall Andrews, Dane Caruthers, Andy Dombroski, Peter Hushvahtov,
+<P>Nathan Regener, Wendy Regener, Bonnie Steele, Chris Waltrip
+<P>
+<B>QA Eidos Interactive
+<P>Eruch Adams, Daryl Bibby, Lawrence Day, Carlo Delallana, Steve Didd,
+<P>James Featherstone, Daniel Franklin, Erik Kennedy, Ron Lauron,
+<P>Chris Lovenguth, Clayton Palma, Corey Fong, Colby McCracken,
+<P>Ryan Natale, Ralph Ortiz, Bill Schmidt, Kenneth Schmidt,
+<P>Beau Teora, Kjell Vistad, Jason Walker
+<P>
+<P>
+<B>THE CAST
+<P>
+<B>Jay Franke
+<P>J.C. Denton, Paul Denton, Sailor
+<P>
+<B>Brent Anderson
+<P>UNATCO Troops, Bodyguard, Brawl Cop, Bum, Defoe, Drinking Man, Gatekeeper, Harley Filben,  Market HK Military, Mechanic, Man in Black, MJ12 Lab Physics, Mole Person, Power Guy, Scientist Male, Sven, Cathedral Chef
+<P>
+<B>Ralph Barbagallo
+<P>Doctor
+<P>
+<B>Chad Barron
+<P>Guard, Mechanic Special, Man in Black Chatting, Man in Black Special
+<P>
+<B>Leslie Bell
+<P>MJ12 Lab Assistant, Nurse
+<P>
+<B>Alexander Brandon
+<P>Jimmy, Tech Sergeant Kaplan
+<P>
+<B>Eddie Chan
+<P>Market Luminous Path, Market Beat Cop, Market Bum, Market Waiter, Office Red Arrow Head, Street Cop, Street Doorman, Tea House Customer
+<P>
+<B>Ann Chi
+<P>Bar Woman Ling, Canal Whore, Date, Mamasan, Market Florist, Market Vase Shop Owner, Tea House Woman
+<P>
+<B>Kimberli Daniels
+<P>Charlotte, Clinic Sick Woman, Computer Voice, Female, Female Hostage, Hotel Maid, Nurse, Savage's Assistant
+<P>
+<B>Jen Emert
+<P>Hooker, Sally, Dance Girl
+<P>
+<B>Joey Franke
+<P>Club Door Girl, Club Mercedes, Junkie, Nurse, Market Shopper Flowers, Receptionist, Stacy Webber, Versalife Secretary
+<P>
+<B>Richard Gaubert
+<P>Alex Jacobson, Doctor Moreau, Savage Assistant, Scientist, Scientist Consulting, Street Bum
+<P>
+<B>Geoff Gault
+<P>Billy, Josh, Kid, Mole Kid
+<P>
+<B>John Gault
+<P>Black Helicopter, Jock, Joseph Manderley, Lucius De Beers, Tracer Tong
+<P>
+<B>Bertrand Glandier
+<P>Antoine, Bums, Cafe Chef, Guy, Silhouette Hostage, Jean, Jocques, Joshua, Metro Cop, Renault
+<P>
+<B>Jeff Groteboer
+<P>Gunther Hermann, MJ12 Lab Doctor
+<P>
+<B>Tom Hall
+<P>AI Prototype, Bar Man Vince, Clinic Bum, Howard Strong, Walton Simons
+<P>
+<B>Sean Hennigan
+<P>Terrorists, Bar Sailor, Clinic Bums, Jaime Reyes, Juan Lebedev, Kevin Bradley, MJ12 Lab Nanotech Scientist, Morgan Everett, Sam Carter, Veteran
+<P>
+<B>Casey Hess
+<P>Terrorists B, Card Player, Coke Troop, Front Guard, Prisoner
+<P>
+<B>Jake Hughes
+<P>Street Bum Old, Tim Baker, Worker
+<P>
+<B>Chung Jen
+<P>Club Luminous Path, Mall Guard, Market Bum, Market Butcher, Market Luminous Path, Market Monk
+<P>
+<B>Debra Jolly
+<P>Bar Woman, Bum, Business Woman, Child, Clinic Female Bum, Club Tessa, Curly's Friend, Dr. Corwell, Gang Member Female, Hostage Female, Janey, Jon, Karenna, Market News Woman, MJ12 Lab Assistant Bio-Weapons, MJ12 Lab Woman in Black, Nurse, Park Bum Female, Pierre, Sandra Renton, Silhouette Female, Woman
+<P>
+<B>Henrick Jonsson
+<P>Storage Computer Tech
+<P>
+<B>John Kavanagh
+<P>Bar Suit, Club Bartender, Data Entry Break, Data Entry Wander, Doctor
+<P>
+<B>Honor Kirk
+<P>Dance Carole, Dance Lisa, Junkie, Junkie Female
+<P>
+<B>James Lin
+<P>Brawl Red Arrow, Canal Cop, Canal Thug, Club Triad, Market Luminous Path, Street Bum
+<P>
+<B>Mei Kim Liu
+<P>May Sung, Table Dancer
+<P>
+<B>Ellen Locy
+<P>Bar Woman, Camille, Carla Brown, Carmela, Cassandra, Clinic Secretary, Drinking Woman, Hela, Kristi, Michelle, Nicolette DuClare, O, Park Bum Female, Scientist Female Consulting, Secretary, Sick Woman, Sub Hostage Female, Tiffany Savage, Woman in Black
+<P>
+<B>Chung Ma
+<P>Bar Thug, Brawl Luminous Path, Canal Bartender, Canal Merchant, Canal Thug, Caterer
+<P>
+<B>Peter Marquardt
+<P>Company Man, Male Hostage, Man, Ray, Tony Mares, Helios, Icarus
+<P>
+<B>Marcus Mauldin
+<P>Drug Dealer, Guard, Rook, Pimp, Terrorist Commander, Thug Male
+<P>
+<B>Carolyn McCormack
+<P>Agathe, Aimee, Anna Navarre, Annette, Clinic Female Bum, Dr. Brittany Prinzler, Janice Reed, Maggie Chow, MJ12 Lab Assistant, MJ12 Lab Bio-Weapons Scientist, MJ12 Lab Computer Scientist, MJ12 Lab Genetic Scientist, MJ12 Lab Psionics Scientist, Mole Female, Park Bum, Scientist Female, Shannon, Stephanie Maxwell, Thug Woman, Jordan Shea
+<P>
+<B>Andrew Megowan
+<P>MJ12Troops B, Alley Bum, Alley Thug, Bar Man Lawrence, Club Bouncer, Locker Worker, Luminous Path Street Guard, NY Police Boat, Shady Guy, Sick Bum, Street Bum
+<P>
+<B>Gary Moody
+<P>UNATCO B Troops, Alley Bum, Amos, Answering Machine, Arthur, Battery Park Riot Cop, Bystander Bum, Cafe Worker, Door Guard, Hangar Man in Black, Labrat Bum, Mechanic, Miguel, Park Bum,  Prisoner, Supervisor, Gas Station Man in Black
+<P>
+<B>Will Nevins
+<P>Vandenberg Mechanic, Munitions Trooper, Street Bum, Gas Station Guard, Trooper, Versalife Cop, Window Bum
+<P>
+<B>Ann Ni
+<P>Bathroom Girl, Canal Pilot, Date, Market Goth, Market Kid
+<P>
+<B>Khahry Payton
+<P>Hotel Bartender, JoJo Fine, Rooks Gang, Smuggler
+<P>
+<B>Chris Perna
+<P>Clinic Older Bum, Guard
+<P>
+<B>Lee Perry
+<P>Disgruntled Guy, Doctor, Dr. Bernard, Scared Soldier
+<P>
+<B>Spencer Procopp
+<P>MJ12Troops, Cleanup Troop, Curly, Harold, Jackson, Male Cop, Vandenberg Mechanic, MJ12 Lab Man in Black, MJ12 Lab Supervisor, MJ12 Lab Troop Blue, MJ12 Tough Guy, Park Bum, Riot Cop, Sick Bum, Sick Man, Street Bum, Sub Guards, Sub Hostage Male, Tech Bum
+<P>
+<B>Aydin Sahinalp
+<P>Nasir
+<P>
+<B>Eric Smith
+<P>MJ12 Lab Troop Window
+<P>
+<B>Rick Spiegel
+<P>Base Guard, Cafe Worker, Canal Drunk, Clinic Male Bum, Don, Gordon Quick, Lenny, Louis, Market Monk, Max Chen, Ship HK Military Ops
+<P>
+<B>Cliff Stephens
+<P>Bob Page, Cop, Ford Schick
+<P>
+<B>Randy Tallman
+<P>Card Player, Charlie Fann, Dr. Pinkerton, Mechanic, MJ12 Commando, MJ12 Lab Troop Barracks, Mole, Rene, Stanton Dowd
+<P>
+<B>Ron Tatar
+<P>Corporal Collins, Electrician, Ex-Mole Person, Gilbert Renton, Joe Greene, Mechanic
+<P>
+<B>Binh Tieu
+<P>Office Red Arrow,  Ship HK Military Ops B, Red Arrow, Red Arrow Street Guard, Right Hand Man, Tea House Red Arrow, Triad Luminous Path, Triad Red Arrow
+<P>
+<B>Maxence Tilliette
+<P>Chad, Club Security, Hostel Cop, Kiergard Tarot, Leone, Metro Station Cop, Metro Technician, MJ12 Lab Biotech Scientist, Night Manager, Raymond, Silhouette Member, Toby Atanwe
+<P>
+<B>Gregg Wilson
+<P>Scott
+<P>
+<P>
+<B>ION STORM SUPPORT
+<P>
+<B>Eidos Honcho
+<P>John Kavanagh
+<P>  
+<B>Associate Producer
+<P>Peter Marquardt
+<P>
+<B>Hardware/Net/Tech/Video Support
+<P>Einar Dietz, Chad Warren
+<P>
+<B>Ion Storm Public Relations and Marketing
+<P>Chad Barron, Mike Breslin
+<P>
+<B>IMGS, INC.
+<P>
+<B>Documentation Writer
+<P>Chris McCubbin
+<P>  
+<B>Documentation Designer
+<P>Jennifer Spohrer
+<P>
+<P>
+<B>EIDOS INTERACTIVE US
+<P>
+<B>Executive Producer
+<P>James Poole
+<P>
+<B>Associate Producer
+<P>Michael McHale
+<P>
+<B>VP of Marketing
+<P>Paul Baldwin
+<P>
+<B>Senior Product Marketing Manager
+<P>Gary Keith
+<P>
+<B>Public Relations Specialist
+<P>Brian Kemp
+<P>
+<B>Public Relations Coordinator
+<P>Bryan Davies
+<P>
+<B>Sales, Marketing and Public Relations
+<P>Michelle Bravo, Dave Cox, Antonia Phillips,
+<P>Randy Stukes, Brandon Suyeoka
+<P>
+<B>Production
+<P>Robert Barrett, Jo Kathryn Reavis, Hilke Schelke
+<P>
+<B>VP Product Development
+<P>Nick Earl
+<P>
+<B>QA Manager
+<P>Brian King
+<P>
+<B>Customer Support Manager
+<P>Micheal R. Kelly
+<P>
+<B>Packaging Design
+<P>Industry Media
+<P>
+<P>
+<B>EIDOS INTERACTIVE EUROPE
+<P>
+<B>Executive Producer
+<P>Grant Dean
+<P>
+<B>Shadow Producers
+<P>Iain McNeil, Flavia T. Grant
+<P>
+<B>External Development Manager
+<P>David Rose
+<P>
+<B>Public Relations Managers
+<P>Priscille Demoly (France), Sascha Green-Kaiser (Germany)
+<P>Eva Whitlow (UK)
+<P>
+<B>Product Managers
+<P>Michael Newey (UK), Olivier Saloman (France),
+<P>Lars Wittkuhn (Germany)
+<P>
+<B>Localization Coordinator
+<P>Alex Bush
+<P>
+<B>QA Manager
+<P>Chris Rowley
+<P>
+<P>
+<B>SPECIAL THANKS
+<P>
+<B>Unreal Technology Development
+<P>Tim Sweeney and the rest of the Unreal team
+<P>
+<B>Additional Programming and Design Input
+<P>Doug Church
+<P>
+<B>Additional Artwork
+<P>Chuck Crist, James Daly, Ben Herrera,
+<P>Mike Miller, Paul Richardz, Jeff Wand
+<P>
+<B>Additional Testing
+<P>Chris Carollo, Rob Fermier, Marc LeBlanc, Art Min,
+<P>Gabe Newell, Tim Stellmach, Bernie Yee
+<P>
+<B>Additional Support
+<P>Michelle Bagur, Dave Beyer, Dave Cash, Kraig Count,
+<P>Christian Divine, Jennifer Emert, Mark Fletcher,
+<P>Leesa Grills, William Haskins, Stan Herndon,
+<P>Rob Legg, Ian Livingstone, Katrina Medema,
+<P>Bill Nadalini, Jason Nall, Michael O'Reilly,
+<P>Steve Pittsenbargar, Dan Rubenfield,
+<P>Cpl. Mike Shears, Philip Spector, Leona Spector,
+<P>Kevin Weston, Pam Wolford
+<P>
+<B>For giving us a home when we needed one
+<P>Tom Hall, John Romero
+<P>
+<P>
+<P>
+<P>A special note of appreciation to the wives, significant others, families and friends who supported and endured us while we created Deus Ex.
+<P>
+<P>
+<P>
+<P>To hear more music by Reeves Gabrels go to www.reevesgabrels.com
+<P>
+<P>
+ 

@@ -1,0 +1,7 @@
+<DC=255,255,255>
+<P><JC>ACOUSTIC SOUND SENSOR, DESIGN AND SPECIFICATIONS
+<P>
+<P>The acoustic gunfire sensor has been deployed by a number of organizations throughout the world in those urban areas where it might otherwise be difficult to implement and maintain a pervasive security presence.  Utilizing fairly
+rudimentary DSP algorithms, the sensor will trigger if any sound matching the profile of a gunshot occurs within the sensor's detection radius; field tests in Hong Kong have shown them to be 88% accurate, with an overall 12% decrease
+in crime within six months.  Cheap and easy to install, acoustic gunfire sensors can be fitted to buildings, lamp posts, or any other free standing structure...
+<P>      

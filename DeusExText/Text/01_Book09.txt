@@ -1,0 +1,17 @@
+<DC=255,255,255>
+<P><JC><B>UNATCO MedDirectorate</B>
+<P><JC><B>Nano-Augmentation Guidelines</B>
+<P>
+<P>... nano-augmentations, once "installed," irrevocably alter the physiological system they affect and in many cases cause all subsequent augmentations to be rejected; however, the exact number of augmentations each system can support varies.  The various interdependencies between these systems can be seen in the following table the details possible nano-augmentation combinations.
+<P>
+<P>Arms: <I>Combat Strength</I> or <I>Microfibral Muscle</I>
+<P>Legs: <I>Speed Enhancement</I> or <I>Run Silent</I>
+<P>Subdermal (1): <I>EMP Shield</I> or <I>Ballistic Protection</I>
+<P>Subdermal (2): <I>Cloak</I> or <I>Radar Transparency</I>
+<P>Torso (1): <I>Aqualung</I> or <I>Environmental Resistance</I>
+<P>Torso (2): <I>Regeneration</I> or <I>Energy Resistance</I>
+<P>Torso (3): <I>Synthetic Heart</I> or <I>Power Recirculator</I>
+<P>Cranium: <I>Agressive Defense System</I> or <I>Spy Drone</I>
+<P>Optics: <I>Targeting</I> or <I>Vision Enhancement</I>
+<P>
+<P>Specific nano-augmentations should be selected based on the mission profile of the particular agent...
