@@ -38,6 +38,8 @@ var Font ConversationNameFonts[2];
 
 var HudOverlay_FPSpeech conWinFirst;	 // Обычные диалоги
 
+var transient ConChoice currentChoice;
+
 
 // ----------------------------------------------------------------------
 // StartConversation()
@@ -295,7 +297,11 @@ function PlayChoice(ConChoice choice)
 
 	if (choice.choiceLabel != "")
 	{
-    ProcessAction(EA_JumpToLabel, choice.choiceLabel);
+	  CurrentChoice = choice;
+	  log("CurrentChoice="$currentChoice);
+
+    ProcessAction(EA_PlayChoiceAndNext, choice.choiceLabel);
+//    ProcessAction(EA_JumpToLabel, choice.choiceLabel);
 //		PlaySpeech(GetSound(Choice.SoundPath), player);
 //		GoToState('WaitForSpeech');
 	}
@@ -386,6 +392,9 @@ function ProcessAction(EEventAction nextAction, string nextLabel)
 			break;
 
 		case EA_PlayChoiceAndNext:
+			lastEvent = currentEvent;
+			log("EA_PlayChoiceAndNext: lastEvent="$lastEvent);
+		  GoToState('WaitForChoiceSpeech');
 		  break;
 
 		case EA_End:
@@ -904,10 +913,70 @@ Begin:
 		
 		// First Stop any sound that was playing
 		PlaySpeech(GetSound(ConEventSpeech(currentEvent).SoundPath), ConEventSpeech(currentEvent).Speaker);
+    SetTimer(playingSoundid.duration, false);
+	}
+	Goto('Idle');
+}
+
+// ----------------------------------------------------------------------
+//
+// 
+// ----------------------------------------------------------------------
+state WaitForChoiceSpeech
+{
+	// We get here when the timer we set when playing the sound
+	// has finished.  We want to play the next event.
+	function Timer()
+	{
+		GotoState('WaitForChoiceSpeech', 'SpeechFinished');
+		log("state WaitForChoiceSpeech: Timer is over!");
+	}
+
+SpeechFinished:
+	// Restrict input
+	if (conWinThird != None)
+		conWinThird.RestrictInput(True);
+
+	StopSpeakingAnimation();
+
+	// Sleep for a second before continuing
+	Sleep(0.5);
+
+	// Fire the next event
+	//PlayNextEvent();
+  ProcessAction(EA_JumpToLabel, CurrentChoice.choiceLabel);
+	Stop;
+
+Idle:
+	// Allow input
+	if (conWinThird != None)
+		conWinThird.RestrictInput(False);
+
+	Sleep(0.5);
+	Goto('Idle');
+
+Begin:
+	// If this is a first person conversation and A) we don't have speech
+	// or B) we're in "Subtitles Only" mode, then set a timer based on 
+	// the length of speech.
+
+	if (CheckConversationsAudio(currentChoice) == "")
+	{
+		lastSpeechTextLength = len(CurrentChoice.ChoiceText);
+		SetTimer(FMax(lastSpeechTextLength * perCharDelay, minimumTextPause), false);
+	}
+	else
+	{
+		// Play the sound, set the timer and go to sleep until the sound
+		// has finished playing.
+		
+		// First Stop any sound that was playing
+		PlaySpeech(GetSound(currentChoice.SoundPath), player);
     SetTimer(playingSoundid.duration, False);
 	}
 	Goto('Idle');
 }
+
 
 // ----------------------------------------------------------------------
 // state WaitForText
@@ -943,7 +1012,7 @@ Idle:
 	Goto('Idle');
 
 Begin:
-	SetTimer( FMax(lastSpeechTextLength * perCharDelay, minimumTextPause), False);
+	SetTimer(FMax(lastSpeechTextLength * perCharDelay, minimumTextPause), False);
 	Goto('Idle');
 }
 

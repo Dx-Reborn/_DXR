@@ -1143,6 +1143,7 @@ function EEventAction SetupEventAddCredits(ConEventAddCredits event, out String 
 
 	// Make sure we haven't gone into the negative
 	player.credits = Max(player.credits, 0);
+	// ToDo: notify player
 
 	nextLabel = "";
 	return EA_NextEvent;

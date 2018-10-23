@@ -421,7 +421,6 @@ function AssignEventsToActor(Actor LinkedActors[10], Actor invokeActor, Actor Li
 
   for (i=0; i<con.EventList.length; i++)
   {
-		//if (con.eventList[i].BindActor(invokeActor,LinkActor,con))
 		if (AssignConEvent(invokeActor,LinkActor,con, con.eventList[i]))
 			AddAssignedActor(LinkedActors, LinkActor);
   }
@@ -453,7 +452,6 @@ function AssignActorEvents(Actor LinkActor, ConDialogue con)
   for (i=0; i<con.EventList.length; i++)
   {
     AssignConEvent(LinkActor, LinkActor, con, con.EventList[i]);
-		//con.EventList[i].BindActor(LinkActor, LinkActor, con);
   }
 }
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
