@@ -302,8 +302,6 @@ function PlayChoice(ConChoice choice)
 
     ProcessAction(EA_PlayChoiceAndNext, choice.choiceLabel);
 //    ProcessAction(EA_JumpToLabel, choice.choiceLabel);
-//		PlaySpeech(GetSound(Choice.SoundPath), player);
-//		GoToState('WaitForSpeech');
 	}
 	else
 		ProcessAction(EA_NextEvent, "");
@@ -537,11 +535,11 @@ state PlayEvent
 				break;
 
 			case ET_SetFlag:
-				nextAction = SetupEventSetFlag( ConEventSetFlag(currentEvent), nextLabel );
+				nextAction = SetupEventSetFlag(ConEventSetFlag(currentEvent), nextLabel);
 				break;
 
 			case ET_CheckFlag:
-				nextAction = SetupEventCheckFlag( ConEventCheckFlag(currentEvent), nextLabel );
+				nextAction = SetupEventCheckFlag(ConEventCheckFlag(currentEvent), nextLabel);
 				break;
 
 			case ET_CheckObject:

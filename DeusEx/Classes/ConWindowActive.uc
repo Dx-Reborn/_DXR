@@ -12,6 +12,7 @@ var() ConChoiceWindow conChoices[10];	// Maximum of ten buttons
 var ConPlay conplay;
 var DeusExPlayer player;
 var bool bRestrictInput;
+var bool bPostChoice;
 //var float fadetime;
 var float fadealpha;
 
@@ -278,10 +279,10 @@ function AddSystemMenu()
 	b_ExitButton = GUIButton(t_WindowTitle.AddComponent( "XInterface.GUIButton" ));
 	b_ExitButton.Style = Controller.GetStyle("CloseButton",tFontScale);
 	b_ExitButton.OnClick = XButtonClicked;
-	b_ExitButton.bNeverFocus=true;
+	b_ExitButton.bNeverFocus = true;
 	b_ExitButton.FocusInstead = t_WindowTitle;
-	b_ExitButton.RenderWeight=1;
-	b_ExitButton.bScaleToParent=false;
+	b_ExitButton.RenderWeight = 1;
+	b_ExitButton.bScaleToParent = false;
 	b_ExitButton.OnPreDraw = SystemMenuPreDraw;
 
 	// Do not want OnClick() called from MousePressed()
@@ -294,6 +295,8 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
 	local Interactions.EInputKey iKey;
 
+//	if (bPostChoice == true)
+//	    return false;
 	iKey = EInputKey(Key);
 	if (Key == 0x1B && state == 1) // 1--нажато
 	{
@@ -320,7 +323,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
 	// Abort if we're restricting input
 	if (bRestrictInput)
-		return True;
+		return true;
 
 	// Restrict input again until we've finished processing this choice
 	bRestrictInput = True;

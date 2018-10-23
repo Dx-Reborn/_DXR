@@ -451,8 +451,8 @@ function EEventAction SetupEventSetFlag(ConEventSetFlag event, out String nextLa
 
     for (y=0; y<event.FlagRefList.length; y++)
     {
-      player.GetflagBase().SetBool(event.FlagRefList[y].Name, event.FlagRefList[y].value);
-      player.GetflagBase().SetExpiration(event.FlagRefList[y].Name, FLAG_Bool, event.FlagRefList[y].expiration); 
+      player.GetflagBase().SetBool(event.FlagRefList[y].Name, event.FlagRefList[y].value,, event.FlagRefList[y].expiration);
+//      player.GetflagBase().SetExpiration(event.FlagRefList[y].Name, FLAG_Bool, event.FlagRefList[y].expiration); 
     }
 
 	// Just follow the chain of flag references and set the flags to

@@ -21,7 +21,7 @@ var bool bInitialized;
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
 	Super.Initcomponent(MyController, MyOwner);
-	CreateMyControls();
+	CreateAControls();
 
     lb_ModList.List.Clear();
     LoadUserMods();
@@ -40,7 +40,7 @@ function LoadUserMods()
 	  	lb_ModList.List.Add(ModTitles[i],,ModDirs[i]);
 }
 
-function CreateMyControls()
+function CreateAControls()
 {
   lb_ModList = new(none) class'GUIListBox'; // Список
 //  lb_ModList.OnClick=InternalOnClick;

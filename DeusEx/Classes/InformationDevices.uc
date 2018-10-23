@@ -10,7 +10,6 @@ class InformationDevices extends DeusExDecoration
 
 var() name					textTag;
 var() string				TextPackage;
-//var() class <DataVaultImage> imageClass;
 var() class <DataVaultImageInv> imageClass;
 
 var Bool bSetText;
@@ -30,9 +29,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     local DeusExPlayer p;
     local DeusExPlayerController pc;
     local ExtString es;
-    local name checkNote;//
-//    local DeusExGlobals gl;
-//    local int x;
+    local name checkNote;
 
     p = DeusExPlayer(Frobber);
     aReader = p;
@@ -102,14 +99,19 @@ function GivePlayerImage()
 function tick(float deltatime)
 {
     local DeusExPlayerController pc;
+    local DeusExPlayer player;
 
     pc = DeusExPlayerController(level.GetLocalPlayerController());
+    player = DeusExPlayer(pc.pawn);
 
-    if ((DeusExPlayer(pc.pawn).frobtarget != self) && (pc != none) && (info != none))
+    if ((pc != none) || (player != none)) // Если игрок погиб, не спамить в лог.
+    {
+      if ((player.frobtarget != self) && (pc != none) && (info != none))
     	{
-				DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDrawInfo=false;
+				DeusExHud(pc.myHUD).bDrawInfo = false;
 				info.Destroy();
     	}
+    }
   super.tick(deltatime);
 }
 

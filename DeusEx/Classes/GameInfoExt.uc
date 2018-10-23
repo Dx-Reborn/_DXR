@@ -107,7 +107,7 @@ final function bool GetBool(coerce String flagName)
   local GameFlags.Flag Flag;
   local bool bResult;
 
-  bResult = class'GameFlags'.static.GetFlag(caps(flagName), Flag);
+  bResult = class'GameFlags'.static.GetFlag(flagName, Flag);
 //  log("Checking value of flag: "$flagName$"="$bResult, 'FlagSystem');
 
   return bResult;
@@ -117,7 +117,7 @@ final function bool CheckFlag(coerce String flagName, optional EFlagType flagTyp
 {
   local GameFlags.Flag Flag;
 
-  return class'GameFlags'.static.GetFlag(caps(flagName), Flag);
+  return class'GameFlags'.static.GetFlag(flagName, Flag);
 
 /*  if (class'GameFlags'.static.GetFlag(flagname, Flag))
   {
@@ -131,9 +131,9 @@ final function bool DeleteFlag(coerce String flagName, optional EFlagType flagTy
 {
   local GameFlags.Flag Flag;
 
-  if (class'GameFlags'.static.GetFlag(caps(flagName), Flag))
+  if (class'GameFlags'.static.GetFlag(flagName, Flag))
   {
-    class'GameFlags'.static.DeleteFlag(caps(flagName));
+    class'GameFlags'.static.DeleteFlag(flagName);
     return true;
   }
  else return false;
@@ -143,7 +143,7 @@ final function SetExpiration(coerce String flagName, EFlagType flagType, int exp
 {
   local GameFlags.Flag Flag;
 
-  if (class'GameFlags'.static.GetFlag(caps(flagname), Flag))
+  if (class'GameFlags'.static.GetFlag(flagname, Flag))
   {
    	Flag.ExpireLevel = expiration;
     class'GameFlags'.static.SetFlag(Flag);
@@ -154,7 +154,7 @@ final function int GetExpiration(coerce String flagName, EFlagType flagType)
 {
   local GameFlags.Flag Flag;
 
-  if (class'GameFlags'.static.GetFlag(caps(flagname), Flag))
+  if (class'GameFlags'.static.GetFlag(flagname, Flag))
   {
    	return Flag.ExpireLevel;
   }

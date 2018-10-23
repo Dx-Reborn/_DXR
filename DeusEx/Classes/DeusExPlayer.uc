@@ -5150,8 +5150,8 @@ function bool StartConversationByName(string conName,	Actor conOwner,	optional b
 // invoking actor and the conversation passed in.
 function bool CheckConversationInvokeRadius(Actor invokeActor, ConDialogue con)
 {
-	local Int  invokeRadius;
-	local Int  dist;
+	local int  invokeRadius;
+	local int  dist;
 
 	dist = VSize(Location - invokeActor.Location);
 

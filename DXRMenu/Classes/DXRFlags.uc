@@ -121,6 +121,7 @@ function fillList()
   local gameflags.flag Flag;
 
   flagList.List.Clear();
+  flagsArray.length = 0;
 
   FlagsArray = class'GameFlags'.static.GetAllFlagIds(true);
 
@@ -136,19 +137,21 @@ function fillList()
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-  if (Sender==bSetTrue)
+  if (Sender == bSetTrue) // Выставить значение флага в True
+  {
+     DeusExGameInfo(PlayerOwner().level.game).SetBool(flagList.list.Get(true), true,,);
+     fillList();
+  }
+  if (Sender == bSetFalse) //...false
+  {
+     DeusExGameInfo(PlayerOwner().level.game).SetBool(flagList.list.Get(false), true,,);
+     fillList();
+  }
+  if (Sender == bExtra)
   {
 
   }
-  if (Sender==bSetFalse)
-  {
-
-  }
-  if (Sender==bExtra)
-  {
-
-  }
-  if (Sender==bClose)
+  if (Sender == bClose)
   {
      Controller.CloseMenu();
   }
@@ -168,7 +171,7 @@ defaultproperties
 		MinPageWidth=534
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DeusExControls.Controls.BlackBox' //Background.DX_WinBack_BW'//Material'DeusExControls.Background.DX_WinBack_BW'
+		Image=Texture'DeusExControls.Controls.DeusExButtonWatched' //Background.DX_WinBack_BW'//Material'DeusExControls.Background.DX_WinBack_BW'
 		ImageRenderStyle=MSTY_Normal
 		ImageStyle=ISTY_Scaled //PartialScaled
 		ImageColor=(R=255,G=255,B=255,A=255)
