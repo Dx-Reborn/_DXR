@@ -130,18 +130,22 @@ var DeusExPlayerController PC;
 var float SpeechVolume;
 
 // Used to keep track of Actors involved in this conversation
-var() Actor ConActors[10];
+var() editconst Actor ConActors[10];
 
 // Used to keep track of Actors that were bound to this conversation,
 // in the event an actor is destroyed before the conversation is over,
 // we abort the conversation to prevent references to destroyed objects
-var() Actor ConActorsBound[10];
+var() editconst Actor ConActorsBound[10];
 
-var() int conActorCount;
+var() editconst int conActorCount;
+
+var DelayedMessage dMsg;
 
 function SetStartActor(Actor newStartActor)
 {
 	startActor = newStartActor;
+  dMsg = Spawn(class'DelayedMessage'); // DXR: Spawn our delayedMessages actor
+  dMsg.SetPlayer(DeusExPlayer(Level.GetLocalPlayerController().pawn)); // Сама себе напоминаю!!!
 }
 
 // Sets the conversation to be played.
@@ -1548,6 +1552,13 @@ final function ConCamera CreateConCamera()
 	return rezultat; 
 }
 
+event Destroyed()
+{
+   if (dMsg != none)
+      dMsg.Activate(); // DXR: Start displaying delayed messages
+
+   Super.Destroyed();
+}
 
 
 // ----------------------------------------------------------------------

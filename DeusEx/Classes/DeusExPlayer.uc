@@ -482,8 +482,13 @@ function AddNote(optional array<String> strNote, optional Bool bUserNote, option
 	// Optionally show the note in the log
 	if (bShowInLog)
 	{
+   if (ConPlay.dMsg != none) // DXR: Show these messages later.
+       ConPlay.dMsg.AddMessage(NoteAdded, sound'DeusExSounds.UserInterface.LogNoteAdded');
+   else
+   {
 		ClientMessage(NoteAdded);
 		PlaySound(Sound'LogNoteAdded');
+	 }
 	}
 }
 
@@ -1371,8 +1376,13 @@ function SkillPointsAdd(int numPoints)
 		SkillPointsAvail += numPoints;
 		SkillPointsTotal += numPoints;
 
+		if (ConPlay.dMsg != none) // DXR: Show these messages later.
+        ConPlay.dMsg.AddMessage(Sprintf(SkillPointsAward, numPoints), sound'DeusExSounds.UserInterface.LogSkillPoints');
+		else
+		{
 		ClientMessage(Sprintf(SkillPointsAward, numPoints));
 		PlaySound(sound'DeusExSounds.UserInterface.LogSkillPoints');
+		}
 	}
 }
 

@@ -238,8 +238,13 @@ function name AddGoal(Name goalName, bool bPrimaryGoal, optional string goalText
    Goals[x].bPrimaryGoal = bPrimaryGoal;		// True if Primary Goal
    Goals[x].text = goalText;
 
+   if (player.ConPlay.dMsg != none) // DXR: Show these messages later.
+       player.ConPlay.dMsg.AddMessage(player.GoalAdded, sound'DeusExSounds.UserInterface.LogGoalAdded');
+   else
+   {
    player.ClientMessage(player.GoalAdded);
    player.PlaySound(Sound'LogGoalAdded');
+   }
 
    return goalName;
   }

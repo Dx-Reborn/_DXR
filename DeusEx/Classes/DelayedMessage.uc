@@ -1,26 +1,50 @@
-/* -------------------------------------------------
-  Отложенные сообщение (используется после диалога)
-------------------------------------------------- */
+/*
+  Отложенные сообщения (используется после диалога).
+  В DeusEx для этой цели использовался таймер, этот
+  вариант выглядит проще.
+
+  Как использовать:
+    События и связанные звуки накапливаются в буфере. Ничего не происходит.
+    После вызова функции Activate(), каждую секунду выводится новое сообщение
+    и связанный с ним звук.
+  Когда сообщения закончились, этот актор самоуничтожается.
+*/
 
 class DelayedMessage extends Actor
                              notplaceable
                              transient;
 
-const lifeTime = 1.0;
+const lifeTime = 1.0; // Time for each message (in seconds).
 var int counter;
 
 struct sDelayedMsg
 {
-  var string Message;
-  var sound MsgSound;
+  var() string Message;
+  var() sound MsgSound;
 };
 
-var array<sDelayedMsg> messages;
+var() editconst array<sDelayedMsg> messages;
 var DeusExPlayer player;
+
+function AddMessage(coerce string Text, optional sound snd)
+{
+  local int x;
+
+  x = messages.Length;
+  messages.Length = x + 1;
+  messages[x].Message = Text;
+  messages[x].MsgSound = snd;
+
+  log("added message:"@text$" with sound: "$snd);
+}
 
 function SetPlayer(DeusExPlayer p)
 {
    player = p;
+}
+
+function Activate()
+{
    GoToState('DelayedMessages');
 }
 
@@ -30,14 +54,21 @@ state DelayedMessages
   function IncreaseCounter()
   {
     counter++;
+    if (counter >= messages.length) // No messages left?
+       Destroy(); // ... then destroy yourself.
   }
 
   function Timer()
   {
     player.clientMessage(messages[counter].Message);
-    player.playSound(messages[counter].MsgSound);
-    GoToState('DelayedMessages','Restart');
+
+    if (messages[counter].MsgSound != none)
+        player.playSound(messages[counter].MsgSound);
+
+    IncreaseCounter();
+    GoToState('DelayedMessages','Restart'); // Restart timer and fire next message.
   }
+
 Begin:
 SetTimer(lifeTime, false);
 
@@ -47,6 +78,6 @@ SetTimer(lifeTime, false);
 
 defaultproperties
 {
-   messages(0)=(Message="Test message",MsgSound=sound'LogNoteAdded')
-   messages(1)=(Message="Test message Two",MsgSound=sound'LogGoalAdded')
+//   messages(0)=(Message="Test message",MsgSound=sound'LogNoteAdded')
+//   messages(1)=(Message="Test message Two",MsgSound=sound'LogGoalAdded')
 }

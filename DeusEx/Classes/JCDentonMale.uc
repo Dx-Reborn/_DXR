@@ -177,6 +177,7 @@ exec function testDM()
 
    dm = spawn(class'DelayedMessage', none);
    dm.SetPlayer(self);
+   dm.Activate();
 }
 
 
