@@ -917,11 +917,18 @@ Begin:
 }
 
 // ----------------------------------------------------------------------
-//
 // 
 // ----------------------------------------------------------------------
+
 state WaitForChoiceSpeech
 {
+  // Добавлено дляы корректного пропуска диалогов.
+  function playNextEvent()
+  {
+    StopSpeech();
+    ProcessAction(EA_JumpToLabel, CurrentChoice.choiceLabel);
+  }
+
 	// We get here when the timer we set when playing the sound
 	// has finished.  We want to play the next event.
 	function Timer()
