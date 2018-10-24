@@ -922,7 +922,7 @@ Begin:
 
 state WaitForChoiceSpeech
 {
-  // Добавлено дляы корректного пропуска диалогов.
+  // Добавлено для корректного пропуска диалогов.
   function playNextEvent()
   {
     StopSpeech();

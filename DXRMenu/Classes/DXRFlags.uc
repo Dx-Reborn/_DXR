@@ -119,6 +119,7 @@ function fillList()
 {
   local int x;
   local gameflags.flag Flag;
+  local string valueStr;
 
   flagList.List.Clear();
   flagsArray.length = 0;
@@ -129,7 +130,14 @@ function fillList()
   {
    for(x=0; x<FlagsArray.Length; x++)
    {
-     flagList.List.Add(FlagsArray[x] $" = "$ class'GameFlags'.static.GetFlag(FlagsArray[x], Flag) $"("$ flag.value $ ")");
+     class'GameFlags'.static.GetFlag(FlagsArray[x], Flag);
+
+        if (Flag.value == 0)
+            valueStr = "яFALSE";
+   else if (Flag.value == 1)
+            valueStr = "я@TRUE";
+
+     flagList.List.Add(FlagsArray[x]$"| = "$valueStr$", expires at "$flag.ExpireLevel);
    }
   }
 }
@@ -137,15 +145,45 @@ function fillList()
 
 function bool InternalOnClick(GUIComponent Sender)
 {
+  local string str, flagStr, uStr, valueStr;
+  local gameFlags.Flag Flag;
+
   if (Sender == bSetTrue) // Выставить значение флага в True
   {
-     DeusExGameInfo(PlayerOwner().level.game).SetBool(flagList.list.Get(true), true,,);
-     fillList();
+     str = flagList.list.Get(true);
+     Divide(str, "|", flagStr, uStr);
+
+     class'GameFlags'.static.GetFlag(flagStr, Flag);
+     Flag.Value = 1;
+
+     class'GameFlags'.static.SetFlag(Flag);
+
+        if (Flag.value == 0)
+            valueStr = "яFALSE";
+   else if (Flag.value == 1)
+            valueStr = "я@TRUE";
+
+     flaglist.list.Replace(flaglist.list.Index, flagStr$"| = "$valueStr$", expires at "$flag.ExpireLevel);
+     //fillList();
   }
   if (Sender == bSetFalse) //...false
   {
-     DeusExGameInfo(PlayerOwner().level.game).SetBool(flagList.list.Get(false), true,,);
-     fillList();
+     str = flagList.list.Get(true);
+     Divide(str, "|", flagStr, uStr);
+
+     class'GameFlags'.static.GetFlag(flagStr, Flag);
+
+     Flag.Value = 0;
+
+     class'GameFlags'.static.SetFlag(Flag);
+
+        if (Flag.value == 0)
+            valueStr = "яFALSE";
+   else if (Flag.value == 1)
+            valueStr = "я@TRUE";
+
+     flaglist.list.Replace(flaglist.list.Index, flagStr$"| = "$valueStr$", expires at "$flag.ExpireLevel);
+//     fillList();
   }
   if (Sender == bExtra)
   {

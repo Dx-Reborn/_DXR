@@ -169,7 +169,14 @@ exec function FindLabel(/*string label, */ConDialogue con)
       if (con.EventList[k].Label != "")
           log(con.EventList[k]$" has label ="$con.EventList[k].Label, 'ConEvent');
    }
+}
 
+exec function testDM()
+{
+   local DelayedMessage dm;
+
+   dm = spawn(class'DelayedMessage', none);
+   dm.SetPlayer(self);
 }
 
 

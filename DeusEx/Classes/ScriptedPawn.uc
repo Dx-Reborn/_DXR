@@ -2034,8 +2034,6 @@ function PlayIdleSound()
 		dxPlayer.StartAIBarkConversation(self, BM_Idle);
 }
 
-
-
 // ----------------------------------------------------------------------
 // PlayScanningSound()
 // ----------------------------------------------------------------------
@@ -2048,86 +2046,137 @@ function PlayScanningSound()
 		dxPlayer.StartAIBarkConversation(self, BM_Scanning);
 }
 
-function PlayIdle()
-{
-	ClientMessage("PlayIdle()");
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
-	else
-	{
-		if (HasTwoHandedWeapon())
-			PlayAnimPivot('Idle12H', , 0.3);
-		else
-			PlayAnimPivot('Idle1', , 0.3);
-	}
-}
 
 
 // ----------------------------------------------------------------------
 // PlayPreAttackSearchingSound()
 // ----------------------------------------------------------------------
+function PlayPreAttackSearchingSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_PreAttackSearching);
+}
 
 // ----------------------------------------------------------------------
 // PlayPreAttackSightingSound()
 // ----------------------------------------------------------------------
+function PlayPreAttackSightingSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_PreAttackSighting);
+}
 
 // ----------------------------------------------------------------------
 // PlayPostAttackSearchingSound()
 // ----------------------------------------------------------------------
+function PlayPostAttackSearchingSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_PostAttackSearching);
+}
 
 // ----------------------------------------------------------------------
 // PlayTargetAcquiredSound()
 // ----------------------------------------------------------------------
+function PlayTargetAcquiredSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (Controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_TargetAcquired);
+}
 
 // ----------------------------------------------------------------------
 // PlayTargetLostSound()
 // ----------------------------------------------------------------------
+function PlayTargetLostSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_TargetLost);
+}
 
 // ----------------------------------------------------------------------
 // PlaySearchGiveUpSound()
 // ----------------------------------------------------------------------
+function PlaySearchGiveUpSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_SearchGiveUp);
+}
 
 // ----------------------------------------------------------------------
 // PlayNewTargetSound()
 // ----------------------------------------------------------------------
-
-
+function PlayNewTargetSound();
 
 // ----------------------------------------------------------------------
 // PlayGoingForAlarmSound()
 // ----------------------------------------------------------------------
+function PlayGoingForAlarmSound()
+{
+	local DeusExPlayer dxPlayer;
 
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_GoingForAlarm);
+}
 
 
 // ----------------------------------------------------------------------
 // PlayOutOfAmmoSound()
 // ----------------------------------------------------------------------
+function PlayOutOfAmmoSound()
+{
+	local DeusExPlayer dxPlayer;
 
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if (dxPlayer != None)
+		dxPlayer.StartAIBarkConversation(self, BM_OutOfAmmo);
+}
 
 
 // ----------------------------------------------------------------------
 // PlayCriticalDamageSound()
 // ----------------------------------------------------------------------
+function PlayCriticalDamageSound()
+{
+	local DeusExPlayer dxPlayer;
 
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_CriticalDamage);
+}
 
 
 // ----------------------------------------------------------------------
 // PlayAreaSecureSound()
 // ----------------------------------------------------------------------
+function PlayAreaSecureSound()
+{
+	local DeusExPlayer dxPlayer;
 
+	// Should we do a player check here?
 
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_AreaSecure);
+}
 
 // ----------------------------------------------------------------------
 // PlayFutzSound()
@@ -2155,38 +2204,89 @@ function PlayFutzSound()
 // ----------------------------------------------------------------------
 // PlayOnFireSound()
 // ----------------------------------------------------------------------
+function PlayOnFireSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if (dxPlayer != None)
+		dxPlayer.StartAIBarkConversation(self, BM_OnFire);
+}
 
 // ----------------------------------------------------------------------
 // PlayTearGasSound()
 // ----------------------------------------------------------------------
+function PlayTearGasSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if (dxPlayer != None)
+		dxPlayer.StartAIBarkConversation(self, BM_TearGas);
+}
 
 // ----------------------------------------------------------------------
 // PlayCarcassSound()
 // ----------------------------------------------------------------------
+function PlayCarcassSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (SeekPawn == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_Gore);
+}
 
 // ----------------------------------------------------------------------
 // PlaySurpriseSound()
 // ----------------------------------------------------------------------
+function PlaySurpriseSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_Surprise);
+}
 
 // ----------------------------------------------------------------------
 // PlayAllianceHostileSound()
 // ----------------------------------------------------------------------
+function PlayAllianceHostileSound()
+{
+	local DeusExPlayer dxPlayer;
 
-
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_AllianceHostile);
+}
 
 // ----------------------------------------------------------------------
 // PlayAllianceFriendlySound()
 // ----------------------------------------------------------------------
+function PlayAllianceFriendlySound()
+{
+	local DeusExPlayer dxPlayer;
+
+	dxPlayer = DeusExPlayer(GetPlayerPawn());
+	if ((dxPlayer != None) && (controller.Enemy == dxPlayer))
+		dxPlayer.StartAIBarkConversation(self, BM_AllianceFriendly);
+}
 
 
+function PlayIdle()
+{
+//	ClientMessage("PlayIdle()");
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
+	else
+	{
+		if (HasTwoHandedWeapon())
+			PlayAnimPivot('Idle12H', , 0.3);
+		else
+			PlayAnimPivot('Idle1', , 0.3);
+	}
+}
 
 // ----------------------------------------------------------------------
 // PlayTakeHitSound()

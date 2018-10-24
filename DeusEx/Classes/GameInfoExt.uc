@@ -104,7 +104,7 @@ final function bool SetBool(coerce String flagName, bool newValue, optional bool
   return true;
 }
 
-final function bool GetBool(coerce String flagName)
+/*final function bool GetBool(coerce String flagName)
 {
   local GameFlags.Flag Flag;
   local bool bResult;
@@ -121,6 +121,14 @@ final function bool GetBool(coerce String flagName)
 //  log("Checking value of flag: "$flagName$"="$bResult, 'FlagSystem');
 
   return bResult;
+}*/
+
+final function bool GetBool(coerce String flagName) {
+	local GameFlags.Flag Flag;
+	local bool bResult;
+
+	bResult = class'GameFlags'.static.GetFlag(flagName, Flag) && flag.value == 1;
+	return bResult;
 }
 
 final function bool CheckFlag(coerce String flagName, optional EFlagType flagType)
