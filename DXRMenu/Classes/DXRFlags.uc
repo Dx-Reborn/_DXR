@@ -16,8 +16,8 @@ function CreateMyControls()
   flagList.StyleName = "STY_DXR_Listbox";
   flagList.list.TextAlign=TXTA_Left;
 //  flagList.OnChange=ModListChange;
-  flagList.WinHeight = 256;
-  flagList.WinWidth = 512;
+  flagList.WinHeight = 290;
+  flagList.WinWidth = 520;
   flagList.WinLeft = 16;
   flagList.WinTop = 32;
 	AppendComponent(flagList, true);
@@ -29,9 +29,9 @@ function CreateMyControls()
 	eFlagName.bMaskText = false;
 	eFlagName.MaxWidth = 128;
 	eFlagName.WinHeight = 18;
-  eFlagName.WinWidth = 305;
-  eFlagName.WinLeft = 226;
-  eFlagName.WinTop = 363;
+  eFlagName.WinWidth = 212;
+  eFlagName.WinLeft = 327;
+  eFlagName.WinTop = 370;
 	AppendComponent(eFlagName, true);
 
 	/* -- Кнопки ------------------------------------------------------- */
@@ -41,8 +41,8 @@ function CreateMyControls()
   bSetTrue.FontScale = FNS_Small;
   bSetTrue.WinHeight = 21;
   bSetTrue.WinWidth = 150;
-  bSetTrue.WinLeft = 68;
-  bSetTrue.WinTop = 292;
+  bSetTrue.WinLeft = 12;
+  bSetTrue.WinTop = 395;
   bSetTrue.caption="Set True";
 	AppendComponent(bSetTrue, true);
 
@@ -52,8 +52,8 @@ function CreateMyControls()
   bSetFalse.FontScale = FNS_Small;
   bSetFalse.WinHeight = 21;
   bSetFalse.WinWidth = 150;
-  bSetFalse.WinLeft = 224;
-  bSetFalse.WinTop = 292;
+  bSetFalse.WinLeft = 12;
+  bSetFalse.WinTop = 370;
   bSetFalse.caption="Set False";
 	AppendComponent(bSetFalse, true);
 
@@ -63,8 +63,8 @@ function CreateMyControls()
   bExtra.FontScale = FNS_Small;
   bExtra.WinHeight = 21;
   bExtra.WinWidth = 150;
-  bExtra.WinLeft = 380;
-  bExtra.WinTop = 292;
+  bExtra.WinLeft = 170;
+  bExtra.WinTop = 370;
   bExtra.caption="Add flag";
 	AppendComponent(bExtra, true);
 	/* ---------------------------------------------------------------------- */
@@ -74,8 +74,8 @@ function CreateMyControls()
   bClose.FontScale = FNS_Small;
   bClose.WinHeight = 21;
   bClose.WinWidth = 150;
-  bClose.WinLeft = 68;
-  bClose.WinTop = 328;
+  bClose.WinLeft = 396;
+  bClose.WinTop = 421;
   bClose.caption="Close";
 	AppendComponent(bClose, true);
 
@@ -85,8 +85,8 @@ function CreateMyControls()
   bSave.FontScale = FNS_Small;
   bSave.WinHeight = 21;
   bSave.WinWidth = 150;
-  bSave.WinLeft = 224;
-  bSave.WinTop = 328;
+  bSave.WinLeft = 166;
+  bSave.WinTop = 421;
   bSave.caption="SaveToPlayer";
 	AppendComponent(bSave, true);
 
@@ -96,8 +96,8 @@ function CreateMyControls()
   bLoad.FontScale = FNS_Small;
   bLoad.WinHeight = 21;
   bLoad.WinWidth = 150;
-  bLoad.WinLeft = 380;
-  bLoad.WinTop = 328;
+  bLoad.WinLeft = 6;
+  bLoad.WinTop = 421;
   bLoad.caption="LoadFromPlayer";
 	AppendComponent(bLoad, true);
 	/* ---------------------------------------------------------------------- */
@@ -107,8 +107,8 @@ function CreateMyControls()
   bDelete.FontScale = FNS_Small;
   bDelete.WinHeight = 21;
   bDelete.WinWidth = 150;
-  bDelete.WinLeft = 68;
-  bDelete.WinTop = 364;
+  bDelete.WinLeft = 170;
+  bDelete.WinTop = 395;
   bDelete.caption="Delete";
 	AppendComponent(bDelete, true);
 
@@ -201,26 +201,42 @@ defaultproperties
     WinTitle="List of game flags"
 
 		DefaultHeight=400
-		DefaultWidth=534
-
+		DefaultWidth=548
 		MaxPageHeight=400
-		MaxPageWidth=534
+		MaxPageWidth=548
 		MinPageHeight=400
-		MinPageWidth=534
+		MinPageWidth=548
+
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=441
+
+		RightEdgeCorrectorX=545
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=413
+
+		TopEdgeCorrectorX=240
+		TopEdgeCorrectorY=16
+    TopEdgeLength=303
+
+    TopRightCornerX=542
+    TopRightCornerY=16
+
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DeusExControls.Controls.DeusExButtonWatched' //Background.DX_WinBack_BW'//Material'DeusExControls.Background.DX_WinBack_BW'
+		Image=Texture'ConWindowBackground'
 		ImageRenderStyle=MSTY_Normal
 		ImageStyle=ISTY_Scaled //PartialScaled
 		ImageColor=(R=255,G=255,B=255,A=255)
 		DropShadow=None
-		WinWidth=528
+		WinWidth=540
 		WinHeight=400 //229
 		WinLeft=8
 		WinTop=20
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+								OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
 
