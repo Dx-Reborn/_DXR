@@ -661,24 +661,32 @@ function HitWall(vector HitLocation, Actor hitActor)
 	}
 }
 
-
-// ----------------------------------------------------------------------
-// SetOrders()
-// ----------------------------------------------------------------------
-
-
-
 // ----------------------------------------------------------------------
 // SetHomeBase()
 // ----------------------------------------------------------------------
+function SetHomeBase(vector baseLocation, optional rotator baseRotator, optional float baseExtent)
+{
+//	local vector vectRot;
 
+	if (baseExtent == 0)
+		baseExtent = 800;
 
+	HomeTag    = '';
+	HomeActor  = None;
+	HomeLoc    = baseLocation;
+	HomeRot    = vector(baseRotator)*100;
+	HomeExtent = baseExtent;
+	bUseHome   = true;
+}
 
 // ----------------------------------------------------------------------
 // ClearHomeBase()
 // ----------------------------------------------------------------------
-
-
+function ClearHomeBase()
+{
+	HomeTag  = '';
+	bUseHome = false;
+}
 
 // ----------------------------------------------------------------------
 // IsSeatValid()
