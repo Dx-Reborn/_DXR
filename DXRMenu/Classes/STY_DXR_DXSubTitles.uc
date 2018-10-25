@@ -7,11 +7,11 @@ class STY_DXR_DXSubTitles extends DXRStyles;// STY2SquareButton;
 defaultproperties
 {
     KeyName="STY_DXR_DXSubTitles"
-    Images(0)=material'DeusExControls.Controls.blackbox'
-    Images(1)=Material'DeusExControls.Controls.blackbox'
-    Images(2)=Material'DeusExControls.Controls.blackbox'
-    Images(3)=Material'DeusExControls.Controls.blackbox'
-    Images(4)=Material'DeusExControls.Controls.blackbox'
+//    Images(0)=material'DeusExControls.Controls.blackbox'
+//    Images(1)=Material'DeusExControls.Controls.blackbox'
+//    Images(2)=Material'DeusExControls.Controls.blackbox'
+//    Images(3)=Material'DeusExControls.Controls.blackbox'
+//    Images(4)=Material'DeusExControls.Controls.blackbox'
 
     ImgStyle(0)=ISTY_PartialScaled
     ImgStyle(1)=ISTY_PartialScaled

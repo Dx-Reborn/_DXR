@@ -5,6 +5,14 @@
 
 class ConWindowActive extends floatingwindow;
 
+enum EMoveModes
+{
+	MM_Enter,
+	MM_Exit,
+	MM_None
+};
+var EMoveModes moveMode;
+
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;										// Number of choice buttons
@@ -12,13 +20,13 @@ var() ConChoiceWindow conChoices[10];	// Maximum of ten buttons
 var ConPlay conplay;
 var DeusExPlayer player;
 var bool bRestrictInput;
-var bool bPostChoice;
-//var float fadetime;
+var bool bTickEnabled;
 var float fadealpha;
 
 var string speech;
 var bool bForcePlay;
 var float conStartTime;
+var float movePeriod;
 var string ChoiceBeginningChar;
 
 var() automated GUILabel SpeakerName;
@@ -54,7 +62,7 @@ function AppendText(string text)
 	winSpeech.AddText(text);
 }
 
-function ShowChoice(string Text)
+function ShowChoiceAsSpeech(string Text)
 {
    SpeakerName.Caption = DeusExPlayer(PlayerOwner().pawn).GetTruePlayerName();
    winSpeech.SetContent(Text);
@@ -175,9 +183,11 @@ event Opened(GUIComponent Sender)                   // Called when the Menu Owne
 	conStartTime = DeusExPlayer(playerOwner().pawn).level.TimeSeconds;
 	DeusExHud((PlayerOwner()).myHUD).cubemapmode = true;
 
-//  PlayerOwner().Level.bPlayersOnly=true; Нужно что-то придумать...
-//	i_FrameBG.ImageColor.A = FadeAlpha;
-//	i_FrameBG2.ImageColor.A = FadeAlpha;
+  i_FrameBG.ImageColor.A = 0;
+  i_FrameBG2.ImageColor.A = 0;
+
+  moveMode     = MM_Enter;
+	bTickEnabled = true;
 }
 
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
@@ -185,6 +195,9 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 // По непонятной причине, восстановление ГДИ напрямую вызывает вылет. 
 // Поэтому я добавила задержку в 1/2 секунды.
 	DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
+
+  moveMode     = MM_None;
+  bTickEnabled = false;
 }
 
 event Free() // Должно устранить вылет на нажатию ESC.
@@ -257,6 +270,43 @@ function alignChoices()
 			conChoices[amount].wintop = aY +=16;
 		}
 	}
+
+}
+
+//----------------------------------------------
+function Tick(float deltaTime)
+{
+  local int a;
+
+  a += deltaTime;
+
+	switch( moveMode )
+	{
+    case MM_Enter:
+     if (a <= 0.1)
+         fadeAlpha += 1;
+
+     if (i_FrameBG.ImageColor.A < 255)
+     {
+       i_FrameBG.ImageColor.A = FadeAlpha;
+       i_FrameBG2.ImageColor.A = FadeAlpha;
+	   }
+		break;
+
+		case MM_Exit:
+     if (a <= 0.1)
+         fadeAlpha -= 1;
+
+     if (i_FrameBG.ImageColor.A > 254)
+     {
+       i_FrameBG.ImageColor.A = FadeAlpha;
+       i_FrameBG2.ImageColor.A = FadeAlpha;
+	   }
+		break;
+
+		default:
+			bTickEnabled = False;
+	}
 }
 
 
@@ -269,12 +319,14 @@ function FloatingRendered(Canvas C)
 		C.SetDrawColor(255,255,255,255);
 		C.DrawTileStretched( Controller.WhiteBorder, ActualWidth(), ActualHeight() );
 	}
+  if (bTickEnabled)
+      Tick(controller.renderDelta); // Как таковой функции Tick нет, но можно использовать RenderDelta.
 }
 
 function AddSystemMenu()
 {
 //отключить лишнее
-	local eFontScale tFontScale;
+/*	local eFontScale tFontScale;
 
 	b_ExitButton = GUIButton(t_WindowTitle.AddComponent( "XInterface.GUIButton" ));
 	b_ExitButton.Style = Controller.GetStyle("CloseButton",tFontScale);
@@ -284,7 +336,7 @@ function AddSystemMenu()
 	b_ExitButton.RenderWeight = 1;
 	b_ExitButton.bScaleToParent = false;
 	b_ExitButton.OnPreDraw = SystemMenuPreDraw;
-
+                                    */
 	// Do not want OnClick() called from MousePressed()
 	b_ExitButton.bRepeatClick = False;
 }
@@ -295,8 +347,6 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
 	local Interactions.EInputKey iKey;
 
-//	if (bPostChoice == true)
-//	    return false;
 	iKey = EInputKey(Key);
 	if (Key == 0x1B && state == 1) // 1--нажато
 	{
@@ -333,9 +383,8 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 		if (sender == conChoices[buttonIndex])
 		{
-//    PlayerOwner().ClientMessage("ConChoices index ="$conChoices[buttonIndex]);
 			conPlay.PlayChoice(ConChoice(conChoices[buttonIndex].GetUserObject()));
-			ShowChoice(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText); // отобразить вариант ответа как текст.
+			ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText); // отобразить вариант ответа как текст.
 
 			// Clear the screen
 			RemoveChoices();
@@ -396,6 +445,7 @@ defaultproperties
     WinHeight=1.000000
 
     ChoiceBeginningChar=" ~ "
+    movePeriod=0.60
 
 		Begin Object class=GUIScrollTextBox Name=MySubTitles
 			RenderWeight=0.8

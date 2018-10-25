@@ -31,7 +31,9 @@ var localized string SkillAtMaximum;
 */
 function restoreSkillLevel()
 {
-  currentLevel = DeusExGameInfo(Level.Game).GetInt("SKL_"$InternalSkillName);
+  if (DeusExGameInfo(Level.Game).CheckFlag("SKL_"$InternalSkillName))
+      currentLevel = DeusExGameInfo(Level.Game).GetInt("SKL_"$InternalSkillName);
+
   log(self@"restoring skill level to"@currentLevel@"...");
 }
 

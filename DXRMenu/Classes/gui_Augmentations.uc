@@ -745,6 +745,6 @@ defaultproperties
     AugLocationArms="Arms"
     AugLocationLegs="Legs"
     AugLocationTorso="Torso"
-    AugLocationSubdermal="Subdermal"
+    AugLocationSubdermal="Skin"//"Subdermal"
     bMedBotMode=false
 }

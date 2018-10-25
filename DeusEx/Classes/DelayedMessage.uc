@@ -5,7 +5,7 @@
 
   Как использовать:
     События и связанные звуки накапливаются в буфере. Ничего не происходит.
-    После вызова функции Activate(), каждую секунду выводится новое сообщение
+    После вызова функции Activate(), каждые lifeTime выводится новое сообщение
     и связанный с ним звук.
   Когда сообщения закончились, этот актор самоуничтожается.
 */
@@ -14,7 +14,7 @@ class DelayedMessage extends Actor
                              notplaceable
                              transient;
 
-const lifeTime = 1.0; // Time for each message (in seconds).
+const lifeTime = 0.7; // Time for each message (in seconds).
 var int counter;
 
 struct sDelayedMsg
@@ -35,7 +35,7 @@ function AddMessage(coerce string Text, optional sound snd)
   messages[x].Message = Text;
   messages[x].MsgSound = snd;
 
-  log("added message:"@text$" with sound: "$snd);
+//  log("added message:"@text$" with sound: "$snd);
 }
 
 function SetPlayer(DeusExPlayer p)
