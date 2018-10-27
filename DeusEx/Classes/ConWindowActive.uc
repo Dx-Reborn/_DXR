@@ -25,9 +25,10 @@ var float fadealpha;
 
 var string speech;
 var bool bForcePlay;
+var bool bSafeToClose; // 
 var float conStartTime;
 var float movePeriod;
-var string ChoiceBeginningChar;
+var localized string ChoiceBeginningChar;
 
 var() automated GUILabel SpeakerName;
 var() automated floatingimage i_FrameBG2;
@@ -84,7 +85,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	i_FrameBG.WinTop=0.8;
 	i_FrameBG.bStandardized=true;
 	i_FrameBG.StandardHeight=0.2;
-	i_FrameBG.ImageColor.A=255; //200;
+	i_FrameBG.ImageColor.A=255;
 
 	if (i_FrameBG2 == none)
 	i_FrameBG2 = new(none) class'floatingimage';
@@ -97,7 +98,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	i_FrameBG2.StandardHeight = 0.2;
 	i_FrameBG2.bBoundToParent = true;
 	i_FrameBG2.DropShadow = none;
-	i_FrameBG2.ImageColor.A=255; //200;
+	i_FrameBG2.ImageColor.A=255;
 	AppendComponent(i_FrameBG2, true);
 }
 
@@ -120,7 +121,7 @@ function RemoveChoices()
 	local int buttonIndex;
 
 	// Clear our array as well
-	for ( buttonIndex=0; buttonIndex<numChoices; buttonIndex++ )
+	for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++)
 	{
 		conChoices[buttonIndex].bNeverFocus = true;
 		conChoices[buttonIndex].FocusInstead = t_WindowTitle;
@@ -180,6 +181,8 @@ function DisplaySkillChoice(ConChoice choice)
 
 event Opened(GUIComponent Sender)                   // Called when the Menu Owner is opened
 {
+  Super.Opened(Sender);
+
 	conStartTime = DeusExPlayer(playerOwner().pawn).level.TimeSeconds;
 	DeusExHud((PlayerOwner()).myHUD).cubemapmode = true;
 
@@ -192,6 +195,8 @@ event Opened(GUIComponent Sender)                   // Called when the Menu Owne
 
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
 {
+  Super.Closed(Sender, bCancelled);
+
 // По непонятной причине, восстановление ГДИ напрямую вызывает вылет. 
 // Поэтому я добавила задержку в 1/2 секунды.
 	DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
@@ -202,7 +207,9 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 
 event Free() // Должно устранить вылет на нажатию ESC.
 {
-	DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
+  Super.Free();
+
+  DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
 }
 
 
@@ -326,7 +333,7 @@ function FloatingRendered(Canvas C)
 function AddSystemMenu()
 {
 //отключить лишнее
-/*	local eFontScale tFontScale;
+	local eFontScale tFontScale;
 
 	b_ExitButton = GUIButton(t_WindowTitle.AddComponent( "XInterface.GUIButton" ));
 	b_ExitButton.Style = Controller.GetStyle("CloseButton",tFontScale);
@@ -336,7 +343,7 @@ function AddSystemMenu()
 	b_ExitButton.RenderWeight = 1;
 	b_ExitButton.bScaleToParent = false;
 	b_ExitButton.OnPreDraw = SystemMenuPreDraw;
-                                    */
+                                    
 	// Do not want OnClick() called from MousePressed()
 	b_ExitButton.bRepeatClick = False;
 }
@@ -348,11 +355,13 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 	local Interactions.EInputKey iKey;
 
 	iKey = EInputKey(Key);
-	if (Key == 0x1B && state == 1) // 1--нажато
-	{
-	  AbortCinematicConvo();
-		return true;
-	}
+
+	if (bForcePlay)
+    if (Key == 0x1B && state == 1) // 1--нажато
+    {
+	    AbortCinematicConvo();
+		  return true;
+    }
 	// Пробел || колесико мыши
 	if ((key == 0x20) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown))
 	{
@@ -360,7 +369,30 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 		conPlay.PlayNextEvent();
 		return true;
 	}
+ return false;
 }
+
+singular function bool OnCanClose(optional bool bCancelled)
+{
+	if (bForcePlay)
+	    AbortCinematicConvo();
+
+     if (NumChoices == 0)// < 1)
+     {
+      if (ConPlay != none)
+      {
+       conPlay.PlayNextEvent();
+       return false;
+      }
+      else return true;
+     }
+
+//   if (ConPlay == none)
+//       return true;
+
+//    return false; // false = ignore ESC key
+}
+
 
 function ShowReceivedItem(Inventory invItem, int count)
 {
@@ -444,8 +476,7 @@ defaultproperties
     WinTop=0.000000
     WinHeight=1.000000
 
-    ChoiceBeginningChar=" ~ "
-    movePeriod=0.60
+    ChoiceBeginningChar="  "    movePeriod=0.60
 
 		Begin Object class=GUIScrollTextBox Name=MySubTitles
 			RenderWeight=0.8

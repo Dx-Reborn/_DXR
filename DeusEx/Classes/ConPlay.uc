@@ -202,13 +202,12 @@ function ConWinFinished()
 
 		// Show the hud display if this was a third-person convo
 		if (!bForcePlay)
-			rootWindow.cubemapmode = false; //Show();
+			rootWindow.SafeRestore();//cubemapmode = false; //Show();
 	}
-
 	PostTerminateConversation();
  
 	// Now nuke ourself.
-	GoToState(''); //
+//	GoToState(''); //
 	Destroy();
 }
 

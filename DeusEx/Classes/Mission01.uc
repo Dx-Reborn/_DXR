@@ -104,9 +104,7 @@ function Timer()
 		}
 
 		// check for player not killing leader
-		if (!flags.GetBool('PlayerAttackedStatueTerrorist') &&
-			flags.GetBool('MeetTerrorist_Played') &&
-			!flags.GetBool('MS_DL2_Played'))
+		if (!flags.GetBool('PlayerAttackedStatueTerrorist') && flags.GetBool('MeetTerrorist_Played') && !flags.GetBool('MS_DL2_Played'))
 		{
 			Player.StartDataLinkTransmission("DL_LeaderNotKilled");
 			flags.SetBool('MS_DL2_Played', True,, 2);

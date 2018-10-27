@@ -284,8 +284,15 @@ event TravelPostAccept()
 
 event PreClientTravel()
 {
+  local actor act;
+
 	super.PreClientTravel();
-	Human(pawn).PreClientTravel();
+
+	     foreach AllActors(class'Actor', act)
+	     {
+	        act.PreTravel();
+	     }
+//	Human(pawn).PreClientTravel();
 } 
 
 //================================================================================================================

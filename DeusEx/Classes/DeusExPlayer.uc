@@ -1392,7 +1392,7 @@ function SkillPointsAdd(int numPoints)
 // PreClientTravel происходит только в контроллере, поэтому вызов
 // этой функции происходит из DeusExPlayerController.
 // ----------------------------------------------------------------------
-function PreClientTravel()
+function preTravel() //PreClientTravel()
 {
   SaveTravelDecoration();
 

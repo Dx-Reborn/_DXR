@@ -69,6 +69,13 @@ function PostBeginPlay()
     }
 }
 
+event DetailChange()
+{
+   Super.DetailChange();
+
+       log("**************** DetailChange called!");
+}
+
 //--- !Скопировано из Reborn
 
 event PostLogin(PlayerController NewPlayer)
