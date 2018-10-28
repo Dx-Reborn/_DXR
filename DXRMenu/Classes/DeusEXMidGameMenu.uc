@@ -136,9 +136,9 @@ function bool InternalOnClick(GUIComponent Sender)
 {
 	if(Sender==bQuit) // QUIT
 	{
-		return Controller.OpenMenu("DXRMenu.DXRBrightness"); //Controller.OpenMenu("DXRMenu.DXRQuitMessage");//(Controller.GetQuitPage());
+		return Controller.OpenMenu("DXRMenu.DXRQuitMessage");
 	}
-	if(Sender==bExitCurrent) // LEAVE/DISCONNECT
+	if(Sender==bExitCurrent) // Exit to Main Menu
 	{
 	  log(Sender);
 	  Controller.OpenMenu("DXRMenu.DXRExitCurrentGameQuestion");

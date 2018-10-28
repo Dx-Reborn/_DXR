@@ -91,3 +91,6 @@ class ImportTextures extends Object;
 
 #exec Texture Import File=Textures\DXR_MedBotHealthBorder_6.bmp Name=DXR_MedBotHealthBorder_6 Mips=Off Masked=true
 
+
+#exec Texture Import File=Textures\DXR_ScreenResolution.bmp Name=DXR_ScreenResolution Mips=Off Masked=true
+
