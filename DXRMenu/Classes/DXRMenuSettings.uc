@@ -100,10 +100,10 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 		Controller.OpenMenu("DXRMenu.DXRMenuControl");
 	}
-/*	else if(Sender==bLoadGame)
+	else if(Sender==btnPerformance)
 	{
-		Controller.OpenMenu("DXRMenu.DXRLoadWindow");
-	}*/
+		Controller.OpenMenu("DXRMenu.DXRScreenResolution");
+	}
 	return true;
 }
 

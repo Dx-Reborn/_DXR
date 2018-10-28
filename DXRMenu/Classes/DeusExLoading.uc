@@ -10,7 +10,7 @@ struct sMapLocalized
 	var localized string sMapCaption;
 };
 
-var() array <sMapLocalized> sML;
+var() array<sMapLocalized> sML;
 
 simulated event Init()
 {

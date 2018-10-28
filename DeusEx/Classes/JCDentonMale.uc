@@ -180,6 +180,14 @@ exec function testDM()
    dm.Activate();
 }
 
+exec function testwm()
+{
+  local string s;
+
+  s = consoleCommand("get ini:Engine.Engine.ViewportManager WindowedViewportX");
+  ClientMessage(s);
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

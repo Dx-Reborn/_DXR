@@ -27,7 +27,7 @@ simulated event PostRender(canvas C)
 
 	super.postrender(C);
 	TrackActors(C);
-	RenderDebugInfo(C);//
+//	RenderDebugInfo(C);//
   if ((bUseBinocularView) == true)
   {
     RenderBinoculars(C);
