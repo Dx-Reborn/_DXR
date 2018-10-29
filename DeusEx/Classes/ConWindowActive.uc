@@ -372,10 +372,13 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
  return false;
 }
 
-singular function bool OnCanClose(optional bool bCancelled)
+function bool OnCanClose(optional bool bCancelled)
 {
 	if (bForcePlay)
+	    {
 	    AbortCinematicConvo();
+	    return true;
+	    }
 
      if (NumChoices == 0)// < 1)
      {
@@ -387,8 +390,8 @@ singular function bool OnCanClose(optional bool bCancelled)
       else return true;
      }
 
-//   if (ConPlay == none)
-//       return true;
+   if (ConPlay == none)
+       return true;
 
 //    return false; // false = ignore ESC key
 }

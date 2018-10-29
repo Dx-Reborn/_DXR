@@ -51,15 +51,18 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	local String resText;
+	local String resText, resX, resY;
 
 	// Only attempt to change resolutions if the resolution has 
 	// actually changed.
 	resText = enumText[GetValue()];
+  Divide(resText, "x", resX, resY);
 
 	if (resText != playerOwner().ConsoleCommand("GetCurrentRes"))
 	{
 		playerOwner().ConsoleCommand("SetRes " $ resText$"w"); // f = FullScrenn, w = window size
+    PlayerOwner().ConsoleCommand("set ini:Engine.Engine.ViewportManager WindowedViewportX "$resX);
+    PlayerOwner().ConsoleCommand("set ini:Engine.Engine.ViewportManager WindowedViewportY "$resY);
 	}
 }
 
