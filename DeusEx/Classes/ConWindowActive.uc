@@ -45,6 +45,7 @@ function DisplayName(string text)
 
 function SetForcePlay(bool bNewForcePlay)
 {
+	    SpeakerName.caption = "bForcePlay";
 	bForcePlay = bNewForcePlay;
 }
 
@@ -356,12 +357,14 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 
 	iKey = EInputKey(Key);
 
-	if (bForcePlay)
-    if (Key == 0x1B && state == 1) // 1--нажато
+/*	if (bForcePlay)
+	{
+    if (Key == 0x20 && state == 1) // 1--нажато
     {
 	    AbortCinematicConvo();
 		  return true;
     }
+  }*/
 	// Пробел || колесико мыши
 	if ((key == 0x20) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown))
 	{
@@ -372,9 +375,9 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
  return false;
 }
 
-function bool OnCanClose(optional bool bCancelled)
+singular function bool OnCanClose(optional bool bCancelled)
 {
-	if (bForcePlay)
+	if (bForcePlay && bCancelled)
 	    {
 	    AbortCinematicConvo();
 	    return true;
@@ -390,8 +393,8 @@ function bool OnCanClose(optional bool bCancelled)
       else return true;
      }
 
-   if (ConPlay == none)
-       return true;
+   else if (ConPlay == none)
+       return bCancelled; //true;
 
 //    return false; // false = ignore ESC key
 }
@@ -500,7 +503,7 @@ defaultproperties
     winSpeech=MySubtitles
 
     Begin Object Class=GUILabel Name=MySpeaker
-        Caption=" "
+        Caption=""
         TextAlign=TXTA_Left
         TextColor=(B=255,G=255,R=255)
         FontScale=FNS_Small
