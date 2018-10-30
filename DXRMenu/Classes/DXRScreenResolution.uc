@@ -200,6 +200,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      Controller.OpenMenu("DXRMenu.DXRBrightness");
    }
+   else if (Sender==btnPhysics)
+   {
+     Controller.OpenMenu("DXRMenu.DXRPhysics");
+   }
 
   return true;
 }
