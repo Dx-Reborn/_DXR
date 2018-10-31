@@ -5,12 +5,13 @@ class DXRGraphics extends DxWindowTemplate;
 
 var localized string strOk, strDefault, strCancel;
 
-var DXRChoiceInfo iNoDynamicLights, iProjectors, iUseCompressedLightmaps, iSuperHighDetailActors, iHighDetailActors;
+var DXRChoiceInfo iNoDynamicLights, iProjectors, iUsePrecaching, iSuperHighDetailActors, iHighDetailActors;
 var DXRChoiceInfo iWeatherEffects, iDetailTextures, iDecoLayers, iDecals, iCoronas;
 
 var MenuChoice_NoDynamicLights mNoDynamicLights;
 var MenuChoice_Projectors mProjectors;
-var MenuChoice_UseCompressedLightmaps mUseCompressedLightmaps;
+//var MenuChoice_UseCompressedLightmaps mUseCompressedLightmaps;
+var MenuChoice_UsePrecaching mUsePrecaching;
 var MenuChoice_SuperHighDetailActors mSuperHighDetailActors;
 var MenuChoice_HighDetailActors mHighDetailActors;
 var MenuChoice_WeatherEffects mWeatherEffects;
@@ -38,11 +39,11 @@ function CreateMyControls()
   iProjectors.WinWidth = 99;
   AppendComponent(iProjectors, true);
 
-  iUseCompressedLightmaps  = new class'DXRChoiceInfo';
-  iUseCompressedLightmaps.WinLeft = 285;
-  iUseCompressedLightmaps.WinTop = 118;
-  iUseCompressedLightmaps.WinWidth = 99;
-  AppendComponent(iUseCompressedLightmaps, true);
+  iUsePrecaching  = new class'DXRChoiceInfo';
+  iUsePrecaching.WinLeft = 285;
+  iUsePrecaching.WinTop = 118;
+  iUsePrecaching.WinWidth = 99;
+  AppendComponent(iUsePrecaching, true);
 
   iSuperHighDetailActors = new class'DXRChoiceInfo';
   iSuperHighDetailActors.WinLeft = 285;
@@ -108,14 +109,14 @@ function CreateMyControls()
   mProjectors.UpdateInfoButton();
 
 
-  mUseCompressedLightmaps = new class'MenuChoice_UseCompressedLightmaps';
-  mUseCompressedLightmaps.WinLeft = 15;
-  mUseCompressedLightmaps.WinTop = 118;
-  mUseCompressedLightmaps.WinWidth = 244;
-  AppendComponent(mUseCompressedLightmaps, true);
-  mUseCompressedLightmaps.info = iUseCompressedLightmaps;
-  mUseCompressedLightmaps.LoadSetting();
-  mUseCompressedLightmaps.UpdateInfoButton();
+  mUsePrecaching = new class'MenuChoice_UsePrecaching';
+  mUsePrecaching.WinLeft = 15;
+  mUsePrecaching.WinTop = 118;
+  mUsePrecaching.WinWidth = 244;
+  AppendComponent(mUsePrecaching, true);
+  mUsePrecaching.info = iUsePrecaching;
+  mUsePrecaching.LoadSetting();
+  mUsePrecaching.UpdateInfoButton();
 
 
   mSuperHighDetailActors = new class'MenuChoice_SuperHighDetailActors';

@@ -1,10 +1,8 @@
 //=============================================================================
-// MenuChoice_UseCompressedLightmaps
+// MenuChoice_UsePrecaching
 //=============================================================================
 
-/* !!! Переключение этой опции приводит к вылету !!! */
-
-class MenuChoice_UseCompressedLightmaps extends MenuChoice_OnOff;
+class MenuChoice_UsePrecaching extends MenuChoice_OnOff;
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -28,8 +26,8 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
-    Hint="ToDo: Explain what is this?"
-    actionText="Use compressed light maps"
-//    configSetting="ini:Engine.Engine.RenderDevice UseCompressedLightmaps"
+    defaultValue=1
+    Hint="Precache textures for faster loading"
+    actionText="Use precaching"
+    configSetting="ini:Engine.Engine.RenderDevice UsePrecaching"
 }
