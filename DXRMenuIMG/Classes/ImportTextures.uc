@@ -98,3 +98,5 @@ class ImportTextures extends Object;
 #exec Texture Import File=Textures\DXR_Physics.bmp Name=DXR_Physics Mips=Off Masked=true
 
 
+#exec Texture Import File=Textures\DXR_DisplayBackground.bmp Name=DXR_DisplayBackground Mips=Off Masked=true
+

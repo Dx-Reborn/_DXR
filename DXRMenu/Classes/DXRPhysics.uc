@@ -11,7 +11,7 @@ var localized string strOk, strDefault, strCancel;
 
 function CreateMyControls()
 {
-  SetSize(130, 548);
+  SetSize(150, 548);
 
   pdInfo = new class'DXRChoiceInfo';
   pdInfo.WinLeft = 285;
@@ -127,7 +127,7 @@ defaultproperties
     strOk="OK"
     strDefault="Reset to Defaults"
     strCancel="Cancel"
-    WinTitle="Physics"
+    WinTitle="Physics "
 
 		leftEdgeCorrectorX=4
 		leftEdgeCorrectorY=0

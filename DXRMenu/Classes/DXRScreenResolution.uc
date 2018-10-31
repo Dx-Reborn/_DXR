@@ -204,6 +204,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      Controller.OpenMenu("DXRMenu.DXRPhysics");
    }
+   else if (Sender==btnGraphics)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGraphics");
+   }
 
   return true;
 }

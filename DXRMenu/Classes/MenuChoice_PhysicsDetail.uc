@@ -61,7 +61,7 @@ function SaveSetting()
 defaultproperties
 {
   Hint="Changes the physics simulation level of detail. May affect ragdolls, KARMA objects on levels, etc."
-  actionText="Physics detail. Yeah, this menu looks almost empty ))"
+  actionText="Physics detail"
 
 	EnumText(0)="Low"
 	EnumText(1)="Medium"
