@@ -12,7 +12,7 @@ var GUIButton btnOk, btnCancel, btnDefault;
 
 var DXRChoiceInfo iTextureDetailInterface, iTextureDetailLightmap, iTextureDetailPlayerSkin;
 var DXRChoiceInfo iTextureDetailRenderMap, iTextureDetailTerrain, iTextureDetailWeaponSkin;
-var DXRChoiceInfo iTextureDetailWorld, iDrawDistanceLOD;
+var DXRChoiceInfo iTextureDetailWorld, iDrawDistanceLOD, iUseCubemaps;
 
 var MenuChoice_TextureDetailInterface  mTextureDetailInterface;
 var MenuChoice_TextureDetailLightmap   mTextureDetailLightmap;
@@ -22,6 +22,7 @@ var MenuChoice_TextureDetailTerrain    mTextureDetailTerrain;
 var MenuChoice_TextureDetailWeaponSkin mTextureDetailWeaponSkin;
 var MenuChoice_TextureDetailWorld      mTextureDetailWorld;
 var MenuChoice_DrawDistanceLOD         mDrawDistanceLOD;
+var MenuChoice_UseCubemaps             mUseCubemaps;
 
 function CreateMyControls()
 {
@@ -76,12 +77,12 @@ function CreateMyControls()
   iDrawDistanceLOD.WinWidth = 99;
   AppendComponent(iDrawDistanceLOD, true);
 
-/*  iDecals = new class'DXRChoiceInfo';
-  iDecals.WinLeft = 285;
-  iDecals.WinTop = 334;
-  iDecals.WinWidth = 99;
-  AppendComponent(iDecals, true);
-*/
+  iUseCubemaps = new class'DXRChoiceInfo';
+  iUseCubemaps.WinLeft = 285;
+  iUseCubemaps.WinTop = 334;
+  iUseCubemaps.WinWidth = 99;
+  AppendComponent(iUseCubemaps, true);
+
 
   mTextureDetailInterface = new class'MenuChoice_TextureDetailInterface';
   mTextureDetailInterface.WinLeft = 15;
@@ -162,17 +163,17 @@ function CreateMyControls()
   mDrawDistanceLOD.LoadSetting();
   mDrawDistanceLOD.UpdateInfoButton();
 
-      /*
-  mDecals = new class'MenuChoice_Decals';
-  mDecals.WinLeft = 15;
-  mDecals.WinTop = 334;
-  mDecals.WinWidth = 244;
-  AppendComponent(mDecals, true);
-  mDecals.info = iDecals;
-  mDecals.LoadSetting();
-  mDecals.UpdateInfoButton();
 
+  mUseCubemaps = new class'MenuChoice_UseCubemaps';
+  mUseCubemaps.WinLeft = 15;
+  mUseCubemaps.WinTop = 334;
+  mUseCubemaps.WinWidth = 244;
+  AppendComponent(mUseCubemaps, true);
+  mUseCubemaps.info = iUseCubemaps;
+  mUseCubemaps.LoadSetting();
+  mUseCubemaps.UpdateInfoButton();
 
+/*
   mCoronas = new class'MenuChoice_Coronas';
   mCoronas.WinLeft = 15;
   mCoronas.WinTop = 370;
@@ -181,9 +182,7 @@ function CreateMyControls()
   mCoronas.info = iCoronas;
   mCoronas.LoadSetting();
   mCoronas.UpdateInfoButton();
-                                      */
-
-
+                                    */
 
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;

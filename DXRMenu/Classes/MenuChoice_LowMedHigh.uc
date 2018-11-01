@@ -40,6 +40,12 @@ function SaveSetting()
 	playerOwner().ConsoleCommand("set " $ configSetting $ " " $ englishEnumText[GetValue()]);
 }
 
+function ResetToDefault()
+{   
+   playerOwner().ConsoleCommand("set " $ configSetting $ " " $ "Normal"); // Normal is default
+   LoadSetting();
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

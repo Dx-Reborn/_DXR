@@ -19,7 +19,7 @@ var MenuChoice_DecoLayers mDecoLayers;
 var MenuChoice_Decals mDecals;
 var MenuChoice_Coronas mCoronas;
 
-var GUIButton btnOk, btnCancel, btnDefault, btnMore;
+var GUIButton btnOk, btnCancel, btnDefault;
 
 function CreateMyControls()
 {
@@ -219,17 +219,6 @@ function CreateMyControls()
   btnCancel.WinLeft = 199;
   btnCancel.WinTop = 428;
 	AppendComponent(btnCancel, true);
-
-  btnMore = new class'GUIButton';
-  btnMore.OnClick=InternalOnClick;
-  btnMore.fontScale = FNS_Small;
-  btnMore.StyleName="STY_DXR_MediumButton";
-  btnMore.Caption = strMore;
-  btnMore.WinHeight = 21;
-  btnMore.WinWidth = 185;
-  btnMore.WinLeft = 200;
-  btnMore.WinTop = 400;
-	AppendComponent(btnMore, true);
 }
 
 function resetToDefaults()
@@ -283,10 +272,6 @@ function bool InternalOnClick(GUIComponent Sender)
    else if (Sender==btnDefault)
    {
      resetToDefaults();
-   }
-   else if (Sender==btnMore)
-   {
-     Controller.OpenMenu("DXRMenu.DXRGraphicsA");
    }
   return true;
 }

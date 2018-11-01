@@ -1,5 +1,7 @@
 //=============================================================================
-// MenuChoice_Use3DSound
+// MenuChoice_DrawDistanceLOD
+// ¬ некоторых модах на STALKER графические опции подсвечены разными цветами,
+// в зависимости от вли€ни€ на производительность. «десь использована эта иде€.
 //=============================================================================
 
 class MenuChoice_DrawDistanceLOD extends DXREnumButton;
@@ -45,22 +47,22 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=5
+    defaultValue=1.0
 
-    Hint="Less value will increase distance fog, thus incresing performance. 1.0 by default, so in this case distance fog will match with level defaults."
+    Hint="Value less than 1.0 will increase distance fog, thus increasing performance. 1.0 by default, so in this case distance fog will match with level defaults."
     actionText="Relative fog distance"
     configSetting="ini:Engine.Engine.ViewportManager DrawDistanceLOD"
 
-		EnumText(0)="0.1"
-		EnumText(1)="0.2"
-		EnumText(2)="0.3"
-		EnumText(3)="0.4"
-		EnumText(4)="0.5"
-		EnumText(5)="0.6"
-		EnumText(6)="0.7"
-		EnumText(7)="0.8"
-		EnumText(8)="0.9"
-		EnumText(9)="1.0"
+		EnumText(0)="_€_0.1" // ѕодсветка зеленым
+		EnumText(1)="_€_0.2"
+		EnumText(2)="_€_0.3"
+		EnumText(3)="_€_0.4"
+		EnumText(4)="€€_0.5" // ∆елтый
+		EnumText(5)="€€_0.6"
+		EnumText(6)="€€_0.7"
+		EnumText(7)="€€_0.8"
+		EnumText(8)="€0.9"
+		EnumText(9)="€1.0" //  расный
 
 		englishEnumText(0)="0.1"
 		englishEnumText(1)="0.2"

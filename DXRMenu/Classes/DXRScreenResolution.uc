@@ -15,12 +15,11 @@ var MenuChoice_Resolution mMenuChoice_Resolution;
 var MenuChoice_ResolutionW mMenuChoice_ResolutionW;
 var MenuChoice_StartupFullScreen mMenuChoice_StartupFullScreen;
 var DXRChoiceInfo cResolution, cResolutionW, cFullScreen;
-var localized string strOK, strCancel, strDefault;
+var localized string strOK, strCancel, strDefault, strGraphicsA, strGraphicsB;
 var localized string strGamma, strGraphics, strPhysics;
-var localized string hGamma, hGraphics, hPhysics;
+var localized string hGamma, hGraphics, hPhysics, hGraphicsA, hGraphicsB;
 var GUIButton btnDefault, btnOK, btnCancel;
-
-var GuiButton btnGamma, btnGraphics, btnPhysics; //
+var GuiButton btnGamma, btnGraphics, btnGraphicsA, btnGraphicsB, btnPhysics;
 
 function CreateMyControls()
 {
@@ -115,21 +114,9 @@ function CreateMyControls()
   btnGamma.Hint = hGamma;
   btnGamma.WinHeight = 21;
   btnGamma.WinWidth = 166;
-  btnGamma.WinLeft = 20;
+  btnGamma.WinLeft = 15;
   btnGamma.WinTop = 177;
 	AppendComponent(btnGamma, true);
-
-  btnGraphics = new class'GUIButton';
-  btnGraphics.OnClick=InternalOnClick;
-  btnGraphics.fontScale = FNS_Small;
-  btnGraphics.StyleName="STY_DXR_MediumButton";
-  btnGraphics.Caption = strGraphics;
-  btnGraphics.Hint = hGraphics;
-  btnGraphics.WinHeight = 21;
-  btnGraphics.WinWidth = 166;
-  btnGraphics.WinLeft = 191;
-  btnGraphics.WinTop = 177;
-	AppendComponent(btnGraphics, true);
 
   btnPhysics = new class'GUIButton';
   btnPhysics.OnClick=InternalOnClick;
@@ -139,9 +126,46 @@ function CreateMyControls()
   btnPhysics.Hint = hPhysics;
   btnPhysics.WinHeight = 21;
   btnPhysics.WinWidth = 166;
-  btnPhysics.WinLeft = 361;
+  btnPhysics.WinLeft = 184;
   btnPhysics.WinTop = 177;
 	AppendComponent(btnPhysics, true);
+
+
+  btnGraphics = new class'GUIButton';
+  btnGraphics.OnClick=InternalOnClick;
+  btnGraphics.fontScale = FNS_Small;
+  btnGraphics.StyleName="STY_DXR_MediumButton";
+  btnGraphics.Caption = strGraphics;
+  btnGraphics.Hint = hGraphics;
+  btnGraphics.WinHeight = 21;
+  btnGraphics.WinWidth = 166;
+  btnGraphics.WinLeft = 360;
+  btnGraphics.WinTop = 152;
+	AppendComponent(btnGraphics, true);
+
+	btnGraphicsA = new class'GUIButton';
+  btnGraphicsA.OnClick=InternalOnClick;
+  btnGraphicsA.fontScale = FNS_Small;
+  btnGraphicsA.StyleName="STY_DXR_MediumButton";
+  btnGraphicsA.Caption = strGraphicsA;
+  btnGraphicsA.Hint = hGraphicsA;
+  btnGraphicsA.WinHeight = 21;
+  btnGraphicsA.WinWidth = 166;
+  btnGraphicsA.WinLeft = 360;
+  btnGraphicsA.WinTop = 177;
+	AppendComponent(btnGraphicsA, true);
+
+	btnGraphicsB = new class'GUIButton';
+  btnGraphicsB.OnClick=InternalOnClick;
+  btnGraphicsB.fontScale = FNS_Small;
+  btnGraphicsB.StyleName="STY_DXR_MediumButton";
+  btnGraphicsB.Caption = strGraphicsB;
+  btnGraphicsB.Hint = hGraphicsB;
+  btnGraphicsB.WinHeight = 21;
+  btnGraphicsB.WinWidth = 166;
+  btnGraphicsB.WinLeft = 360;
+  btnGraphicsB.WinTop = 201;
+	AppendComponent(btnGraphicsB, true);
 }
 
 function resetToDefaults()
@@ -208,6 +232,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      Controller.OpenMenu("DXRMenu.DXRGraphics");
    }
+   else if (Sender==btnGraphicsA)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGraphicsA");
+   }
 
   return true;
 }
@@ -223,11 +251,15 @@ defaultproperties
   strDefault="Reset to defaults"
 
   strGamma="Gamma, Brightness..."
-  strGraphics="Graphics/Performance"
+  strGraphics="Performance [page 1]"
+  strGraphicsA="Performance [page 2]"
+  strGraphicsB="Performance [page 3]"
   strPhysics="Setup Physics"
 
   hGamma="Set Gamma, Brightness and Contrast. Keep in mind that these settings only working in FullScreen mode."
   hGraphics="Set texture details, quality, and so on. Many of these settings will affect performance."
+  hGraphicsA="Set texture details, quality, and so on. Many of these settings will affect performance."
+  hGraphicsB="Set texture details, quality, and so on. Many of these settings will affect performance."
   hPhysics="Set KARMA physics engine parameters, also affects performance"
 
 		leftEdgeCorrectorX=4
