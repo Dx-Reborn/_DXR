@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Enables objects (usually decorations) with 'bHighDetail' flag."
     actionText="Allow Detailed objects"
     configSetting="ini:Engine.Engine.RenderDevice HighDetailActors"

@@ -2,7 +2,7 @@
 // MenuChoice_Use3DSound
 //=============================================================================
 
-class MenuChoice_Projectors extends MenuChoice_OnOff;
+class MenuChoice_UseTrilinear extends MenuChoice_OnOff;
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -27,7 +27,7 @@ function SaveSetting()
 defaultproperties
 {
     defaultValue=1
-    Hint="Materials, projected to the surface, like decals, shadows, etc."
-    actionText="Projectors"
-    configSetting="ini:Engine.Engine.ViewportManager Projectors"
+    Hint="Enables Trilinear filter for slightly better texture quality. Disabling can slightly increase performance."
+    actionText="Trilinear Filter"
+    configSetting="ini:Engine.Engine.RenderDevice DetailTextures"
 }

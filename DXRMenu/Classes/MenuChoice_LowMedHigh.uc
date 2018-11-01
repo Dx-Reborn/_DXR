@@ -1,5 +1,6 @@
 //=============================================================================
 // MenuChoice_LowMedHigh
+// Base class for texture details options.
 //=============================================================================
 
 class MenuChoice_LowMedHigh extends DXREnumButton;
@@ -7,26 +8,60 @@ class MenuChoice_LowMedHigh extends DXREnumButton;
 var String englishEnumText[9];
 
 // ----------------------------------------------------------------------
+// LoadSetting()
+// ----------------------------------------------------------------------
+
+function LoadSetting()
+{
+	local String detailString;
+	local int enumIndex;
+	local int detailChoice;
+
+	detailString = playerOwner().ConsoleCommand("get " $ configSetting);
+	detailChoice = 0;
+
+	for (enumIndex=0; enumIndex<arrayCount(enumText); enumIndex++)
+	{
+		if (englishEnumText[enumIndex] ~= detailString)
+		{
+			detailChoice = enumIndex;
+			break;
+		}	
+	}
+	SetValue(detailChoice);
+}
+
+// ----------------------------------------------------------------------
+// SaveSetting()
+// ----------------------------------------------------------------------
+
+function SaveSetting()
+{
+	playerOwner().ConsoleCommand("set " $ configSetting $ " " $ englishEnumText[GetValue()]);
+}
+
+
+// ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties
 {
-	englishEnumText(0)="Lowest"
-	englishEnumText(1)="Very Low"
-	englishEnumText(2)="Lower"
-	englishEnumText(3)="Low"
-	englishEnumText(4)="Normal"
-	englishEnumText(5)="High"
-	englishEnumText(6)="Higher"
-	englishEnumText(7)="Very High"
-	englishEnumText(8)="Highest"
+		EnumText(0)="UltraLow"
+		EnumText(1)="VeryLow"
+		EnumText(2)="Low"
+		EnumText(3)="Lower"
+		EnumText(4)="Normal"
+		EnumText(5)="Higher"
+		EnumText(6)="High"
+		EnumText(7)="VeryHigh"
+		EnumText(8)="UltraHigh"
 
-	EnumText(0)="Lowest"
-	EnumText(1)="Very Low"
-	EnumText(2)="Lower"
-	EnumText(3)="Low"
-	EnumText(4)="Normal"
-	EnumText(5)="High"
-	EnumText(6)="Higher"
-	EnumText(7)="Very High"
-	EnumText(8)="Highest"
+		englishEnumText(0)="UltraLow"
+		englishEnumText(1)="VeryLow"
+		englishEnumText(2)="Low"
+		englishEnumText(3)="Lower"
+		englishEnumText(4)="Normal"
+		englishEnumText(5)="Higher"
+		englishEnumText(6)="High"
+		englishEnumText(7)="VeryHigh"
+		englishEnumText(8)="UltraHigh"
 }

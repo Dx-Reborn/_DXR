@@ -100,3 +100,6 @@ class ImportTextures extends Object;
 
 #exec Texture Import File=Textures\DXR_DisplayBackground.bmp Name=DXR_DisplayBackground Mips=Off Masked=true
 
+
+#exec Texture Import File=Textures\DXR_MenuBackgroundA.bmp Name=DXR_MenuBackgroundA Mips=Off Masked=true
+

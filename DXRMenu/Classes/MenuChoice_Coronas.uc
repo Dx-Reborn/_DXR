@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Enables halo effect around some sources of light."
     actionText="Coronas"
     configSetting="ini:Engine.Engine.ViewportManager Coronas"

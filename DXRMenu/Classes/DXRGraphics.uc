@@ -3,14 +3,13 @@
 */
 class DXRGraphics extends DxWindowTemplate;
 
-var localized string strOk, strDefault, strCancel;
+var localized string strOk, strDefault, strCancel, strMore;
 
 var DXRChoiceInfo iNoDynamicLights, iProjectors, iUsePrecaching, iSuperHighDetailActors, iHighDetailActors;
 var DXRChoiceInfo iWeatherEffects, iDetailTextures, iDecoLayers, iDecals, iCoronas;
 
 var MenuChoice_NoDynamicLights mNoDynamicLights;
 var MenuChoice_Projectors mProjectors;
-//var MenuChoice_UseCompressedLightmaps mUseCompressedLightmaps;
 var MenuChoice_UsePrecaching mUsePrecaching;
 var MenuChoice_SuperHighDetailActors mSuperHighDetailActors;
 var MenuChoice_HighDetailActors mHighDetailActors;
@@ -20,7 +19,7 @@ var MenuChoice_DecoLayers mDecoLayers;
 var MenuChoice_Decals mDecals;
 var MenuChoice_Coronas mCoronas;
 
-var GUIButton btnOk, btnCancel, btnDefault;
+var GUIButton btnOk, btnCancel, btnDefault, btnMore;
 
 function CreateMyControls()
 {
@@ -220,6 +219,17 @@ function CreateMyControls()
   btnCancel.WinLeft = 199;
   btnCancel.WinTop = 428;
 	AppendComponent(btnCancel, true);
+
+  btnMore = new class'GUIButton';
+  btnMore.OnClick=InternalOnClick;
+  btnMore.fontScale = FNS_Small;
+  btnMore.StyleName="STY_DXR_MediumButton";
+  btnMore.Caption = strMore;
+  btnMore.WinHeight = 21;
+  btnMore.WinWidth = 185;
+  btnMore.WinLeft = 200;
+  btnMore.WinTop = 400;
+	AppendComponent(btnMore, true);
 }
 
 function resetToDefaults()
@@ -274,6 +284,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      resetToDefaults();
    }
+   else if (Sender==btnMore)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGraphicsA");
+   }
   return true;
 }
 
@@ -284,7 +298,9 @@ defaultproperties
     strOk="OK"
     strDefault="Reset to Defaults"
     strCancel="Cancel"
+    strMore="Extra settings..."
     WinTitle="Performance/Graphics settings [page 1]"
+
 
 		leftEdgeCorrectorX=4
 		leftEdgeCorrectorY=0

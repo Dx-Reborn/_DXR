@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Decals are things like explosion marks, bullet holes, blood trails, etc."
     actionText="Enable decals"
     configSetting="ini:Engine.Engine.ViewportManager Decals"

@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Whed this option is off, decorative terrain layers (like grass) will be removed."
     actionText="Decorative terrain layers"
     configSetting="ini:Engine.Engine.ViewportManager DecoLayers"

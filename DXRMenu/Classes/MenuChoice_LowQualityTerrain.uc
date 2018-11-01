@@ -2,7 +2,7 @@
 // MenuChoice_Use3DSound
 //=============================================================================
 
-class MenuChoice_Projectors extends MenuChoice_OnOff;
+class MenuChoice_LowQualityTerrain extends MenuChoice_OnOff;
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -27,7 +27,7 @@ function SaveSetting()
 defaultproperties
 {
     defaultValue=1
-    Hint="Materials, projected to the surface, like decals, shadows, etc."
-    actionText="Projectors"
-    configSetting="ini:Engine.Engine.ViewportManager Projectors"
+    Hint="Enables Triple Buffering. Set to Off only if you have less than 128 MBytes of video memory"
+    actionText="Use Triple Buffering"
+    configSetting="ini:Engine.Engine.RenderDevice DetailTextures"
 }

@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Enables weather effects if any."
     actionText="Weather Effects"
     configSetting="ini:Engine.Engine.ViewportManager WeatherEffects"

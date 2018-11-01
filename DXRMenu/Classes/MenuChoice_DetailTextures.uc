@@ -26,7 +26,7 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
+    defaultValue=1
     Hint="Enables additional detail layer for some textures."
     actionText="Detailed textures"
     configSetting="ini:Engine.Engine.RenderDevice DetailTextures"
