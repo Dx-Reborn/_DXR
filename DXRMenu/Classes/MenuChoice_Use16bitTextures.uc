@@ -2,7 +2,7 @@
 // MenuChoice_Use3DSound
 //=============================================================================
 
-class MenuChoice_LowQualityTerrain extends MenuChoice_OnOff;
+class MenuChoice_Use16bitTextures extends MenuChoice_OnOff;
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -26,8 +26,8 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    defaultValue=0
-    Hint="Use low quality of terrain"
-    actionText="Low Quality of Terrain"
-    configSetting="ini:Engine.Engine.RenderDevice LowQualityTerrain"
+    defaultValue=1
+    Hint="Makes textures look very very bad, without increasing performance."
+    actionText="Use 16-bit Textures"
+    configSetting="ini:Engine.Engine.RenderDevice Use16bitTextures"
 }

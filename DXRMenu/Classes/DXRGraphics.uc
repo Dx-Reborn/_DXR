@@ -80,11 +80,11 @@ function CreateMyControls()
   iDecals.WinWidth = 99;
   AppendComponent(iDecals, true);
 
-  iCoronas = new class'DXRChoiceInfo';
+/*  iCoronas = new class'DXRChoiceInfo';
   iCoronas.WinLeft = 285;
   iCoronas.WinTop = 370;
   iCoronas.WinWidth = 99;
-  AppendComponent(iCoronas, true);
+  AppendComponent(iCoronas, true);*/
 
   /*-----------------------------------------------------*/
 
@@ -178,14 +178,14 @@ function CreateMyControls()
   mDecals.UpdateInfoButton();
 
 
-  mCoronas = new class'MenuChoice_Coronas';
+/*  mCoronas = new class'MenuChoice_Coronas';
   mCoronas.WinLeft = 15;
   mCoronas.WinTop = 370;
   mCoronas.WinWidth = 244;
   AppendComponent(mCoronas, true);
   mCoronas.info = iCoronas;
   mCoronas.LoadSetting();
-  mCoronas.UpdateInfoButton();
+  mCoronas.UpdateInfoButton();*/
 
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;

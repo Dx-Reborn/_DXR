@@ -27,7 +27,7 @@ function SaveSetting()
 defaultproperties
 {
     defaultValue=1
-    Hint="Enables Triple Buffering. Set to Off only if you have less than 128 MBytes of video memory"
-    actionText="Use Triple Buffering"
-    configSetting="ini:Engine.Engine.RenderDevice DetailTextures"
+    Hint="Enables Use of Vertical Synchronization"
+    actionText="Use Vertical Synchronization"
+    configSetting="ini:Engine.Engine.RenderDevice UseVSync"
 }

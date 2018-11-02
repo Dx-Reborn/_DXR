@@ -29,5 +29,5 @@ defaultproperties
     defaultValue=1
     Hint="Enables Trilinear filter for slightly better texture quality. Disabling can slightly increase performance."
     actionText="Trilinear Filter"
-    configSetting="ini:Engine.Engine.RenderDevice DetailTextures"
+    configSetting="ini:Engine.Engine.RenderDevice UseTrilinear"
 }

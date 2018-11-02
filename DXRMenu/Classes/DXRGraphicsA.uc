@@ -251,7 +251,7 @@ function CancelSettings()
 {
   local int i;
 
-  PlayerOwner().ConsoleCommand("FLUSH"); // Cleanup engine caches, so you will see changes immediately
+//  PlayerOwner().ConsoleCommand("FLUSH"); // Cleanup engine caches, so you will see changes immediately
 
   for (i=0;i<Controls.Length;i++)
   {
