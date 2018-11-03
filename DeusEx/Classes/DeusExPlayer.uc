@@ -305,6 +305,52 @@ function RemoveChargedDisplay(ChargedPickupInv item)
 }
 
 
+// ----------------------------------------------------------------------
+// SetLogTimeout()
+// ----------------------------------------------------------------------
+
+function SetLogTimeout(float newLogTimeout)
+{
+	logTimeout = newLogTimeout;
+
+	// Update the HUD Log Display
+/*	if (DeusExRootWindow(rootWindow).hud != None)
+		DeusExRootWindow(rootWindow).hud.msgLog.SetLogTimeout(newLogTimeout);*/
+}
+
+// ----------------------------------------------------------------------
+// GetLogTimeout()
+// ----------------------------------------------------------------------
+
+function float GetLogTimeout()
+{
+	return logTimeout;
+}
+
+// ----------------------------------------------------------------------
+// SetMaxLogLines()
+// ----------------------------------------------------------------------
+
+function SetMaxLogLines(byte newLogLines)
+{
+	maxLogLines = newLogLines;
+
+	// Update the HUD Log Display
+/*	if (DeusExRootWindow(rootWindow).hud != None)
+		DeusExRootWindow(rootWindow).hud.msgLog.SetMaxLogLines(newLogLines);*/
+}
+
+// ----------------------------------------------------------------------
+// GetMaxLogLines()
+// ----------------------------------------------------------------------
+
+function byte GetMaxLogLines()
+{
+	return maxLogLines;
+}
+
+
+
 
 
 

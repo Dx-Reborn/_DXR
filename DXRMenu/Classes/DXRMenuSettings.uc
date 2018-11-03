@@ -104,6 +104,10 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 		Controller.OpenMenu("DXRMenu.DXRScreenResolution");
 	}
+	else if (Sender==btnGameOptions)
+	{
+	  Controller.OpenMenu("DXRMenu.DXRGameOptions");
+	}
 	return true;
 }
 

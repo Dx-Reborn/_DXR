@@ -1794,7 +1794,7 @@ function RenderFrobTarget(Canvas C)
 				}
 				}
 			 else
-	   	 If (FrobName.IsA('DeusExDecoration'))
+	   	 If (FrobName.IsA('DeusExDecoration') && (DeusExPlayer(PlayerOwner.pawn) != none) && (DeusExPlayer(PlayerOwner.pawn).bObjectNames))
 	   	 {
 			 Frobstr=DeusExDecoration(frobName).itemName;
 			 C.TextSize(FrobStr, tH,tW);
@@ -1806,7 +1806,7 @@ function RenderFrobTarget(Canvas C)
 			 C.DrawText(DeusExDecoration(frobName).itemName);
 			 }
 			 else
-			 If (FrobName.IsA('ScriptedPawn'))
+			 If (FrobName.IsA('ScriptedPawn') && (DeusExPlayer(PlayerOwner.pawn) != none) && (DeusExPlayer(PlayerOwner.pawn).bObjectNames))
     	 {
 			 Frobstr=ScriptedPawn(frobName).FamiliarName;
 			 C.TextSize(FrobStr, tH,tW);
@@ -1842,7 +1842,7 @@ function RenderFrobTarget(Canvas C)
 	   	 C.DrawText(DeusExAmmo(frobName).itemName);
 			 }
 			else
-    	 If (FrobName.IsA('DeusExCarcass'))
+    	 If (FrobName.IsA('DeusExCarcass') && (DeusExPlayer(PlayerOwner.pawn) != none) && (DeusExPlayer(PlayerOwner.pawn).bObjectNames))
     	 {
 			 Frobstr=DeusExCarcass(frobName).itemName;
 			 C.TextSize(FrobStr, tH,tW);
@@ -1953,6 +1953,8 @@ function RenderFrobTarget(Canvas C)
 	  		}
 			else
 			{
+			if ((DeusExPlayer(PlayerOwner.pawn) != none) && (DeusExPlayer(PlayerOwner.pawn).bObjectNames))
+			{
 			 FrobStr=FrobName.GetHumanReadableName();
 			 C.TextSize(FrobStr, tH,tW);
 		   C.SetDrawColor(250,250,250,200);
@@ -1961,6 +1963,7 @@ function RenderFrobTarget(Canvas C)
 			 C.SetDrawColor(255,255,255,255);
 		   C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 		   C.DrawText(FrobStr);
+		  }
   	  }
    }
 }

@@ -45,5 +45,5 @@ defaultProperties
 	SMOpenSound=sound'DeusExSounds.UserInterface.Menu_Activate'
 	SMAcceptSound=sound'DeusExSounds.UserInterface.Menu_OK'
 	SMDenySound=sound'DeusExSounds.UserInterface.Menu_Cancel'
-//	ConsoleSoundVol=0.1
+	ConsoleSoundVol=0.2
 }
