@@ -1443,9 +1443,12 @@ function RenderCrosshair(Canvas C)
    X=C.ClipX * 0.5 + CrosshairCorrectionX;
    Y=C.ClipY * 0.5 + CrosshairCorrectionY;
 
-   C.SetPos(X,Y);
-	 C.SetDrawColor(255,255,255); // TODO: Добавить IFF
-   C.DrawIcon(T, 1);
+  if (DeusExPlayer(PlayerOwner.pawn).bCrosshairVisible)
+  {
+     C.SetPos(X,Y);
+     C.SetDrawColor(255,255,255); // TODO: Добавить IFF
+     C.DrawIcon(T, 1);
+  }
 
 	if (DeusExWeaponInv(DeusExPlayer(playerowner.pawn).weapon) != none)
 	{
