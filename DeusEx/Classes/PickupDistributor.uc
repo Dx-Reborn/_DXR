@@ -30,7 +30,8 @@ function SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have s
 {
 	local int i;
 	local ScriptedPawn P;
-	local NanoKey key;
+//	local NanoKey key;
+ 	local NanoKeyInv key;
 
 	Super.SetInitialState();
 
@@ -40,7 +41,7 @@ function SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have s
 		{
 			foreach AllActors(class'ScriptedPawn', P, NanoKeyData[i].ScriptedPawnTag)
 			{
-				key = spawn(class'NanoKey', P);
+				key = spawn(class'NanoKeyInv', P); //spawn(class'NanoKey', P);
 				if (key != None)
 				{
 					key.KeyID = NanoKeyData[i].KeyID;

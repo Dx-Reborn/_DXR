@@ -456,7 +456,8 @@ function putOnBelt(Inventory item)
 {
   local int x;
 
-  if (ItemNotForBelt(item))
+  //if (ItemNotForBelt(item))
+  if ((item != none) && (!item.bDisplayableInv))
   return;
 
    for(x=0; x<10; x++) //10
@@ -464,13 +465,14 @@ function putOnBelt(Inventory item)
      if (item.class == belt[x].class) // Сравниваем именно класс, а не указатель на предмет.
      {                                
 //       log("belt="$belt[x] @ "item= "$item);
-       return;
+       break; //return;
      }
      else if(belt[x] == none)
      {
+        break;//
         belt[x] = item;
         item.SetbeltPos(x);
-        return;
+//        return;
      }
    }
 }
@@ -4541,7 +4543,7 @@ function ResetPlayerToDefaults()
 	{
 		KeyRing.RemoveAllKeys();
 		NanoKeys.length = 0; // убрать все ключи из карманов
-		KeyRing = None;
+		KeyRing.destroy();// = None;
 	}
 
 	while(Inventory != None)

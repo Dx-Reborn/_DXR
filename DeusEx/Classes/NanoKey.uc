@@ -52,7 +52,7 @@ function GiveTo(pawn Other, optional Pickup Pickup)
 	}
 	else
 	{
-		log("Nanokey: something else");//Super.GiveTo(Other);
+		/*log("Nanokey: something else");*/Super.GiveTo(Other);
 	}
 }
 
@@ -76,7 +76,7 @@ function bool HandlePickupQuery(Inventory Item)
 			
 		return True;
 	}
-//	return Super.HandlePickupQuery(Item);
+	return Super.HandlePickupQuery(Item);
 }
 
 
