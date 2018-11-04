@@ -152,6 +152,8 @@ var() travel Inventory		inHand;				// The current object in hand
 var() travel Inventory		inHandPending;		// The pending item waiting to be put in hand
 var() travel bool				bInHandTransition;	// The inHand is being swapped out
 
+var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
+
 // toggle walk
 var bool bToggleWalk;
 
@@ -234,6 +236,8 @@ var bool bInConversation;
 var string strStartMap;
 
 var transient DeusExGlobals gl;
+var transient PlayerInterfacePanel winInv;
+
 var DeusExPlayerController dxpc;
 
 /* В оригинале используется при начале новой игры. Предполагаю
@@ -264,6 +268,10 @@ function RestoreTravelData()
 
 function DeleteInventory(inventory item)
 {
+	// Vanilla Matters: Make sure VM_lastInHand is deleted properly.
+  if (item == VM_lastInHand)
+      VM_lastInHand = None;
+
 	// If the item was inHand, clear the inHand
 	if (inHand == item)
 	{
@@ -273,20 +281,17 @@ function DeleteInventory(inventory item)
 
 	// Make sure the item is removed from the inventory grid
 	RemoveItemFromSlot(item);
-/*	root = DeusExRootWindow(rootWindow);
 
-	if (root != None)
+	if (winInv != None)
 	{
 		// If the inventory screen is active, we need to send notification
 		// that the item is being removed
-		winInv = PersonaScreenInventory(root.GetTopWindow());
-		if (winInv != None)
 			winInv.InventoryDeleted(item);
 
 		// Remove the item from the object belt
-		if (root != None)
-			root.DeleteInventory(item);
-	}*/
+//		if (root != None)
+//			root.DeleteInventory(item);
+	}
 
 	Super.DeleteInventory(item);
   ValidateBelt();
@@ -469,10 +474,10 @@ function putOnBelt(Inventory item)
      }
      else if(belt[x] == none)
      {
-        break;//
+//        break;//
         belt[x] = item;
         item.SetbeltPos(x);
-//        return;
+        return;
      }
    }
 }
@@ -1105,6 +1110,8 @@ exec function ParseLeftClick()
 					DoFrob(Self, inHand);
 		}
 	}
+ else if (VM_lastInHand != None)
+          PutInHand(VM_lastInHand);
 }
 
 
@@ -3397,6 +3404,10 @@ exec function PutInHand(optional Inventory inv)
 			return;
 	}
 
+	// Vanilla Matters: If putting None in hand then saves the previous inHand item.
+	else if ( inHand != None )
+		VM_lastInHand = inHand;
+
 	if (CarriedDecoration != None)
 		DropDecoration();
 
@@ -3887,6 +3898,11 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 		SetInvSlots(item, 1);
 //    PlaceItemInSlot(item, itemPosX, itemPosY);
 	}
+
+	if (bDropped)
+		if (item == VM_lastInHand)
+        VM_lastInHand = None;
+
 	ValidateBelt(); //
 	return bDropped;
 }

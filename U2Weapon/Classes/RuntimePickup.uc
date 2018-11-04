@@ -199,8 +199,9 @@ function inventory SpawnCopy(pawn Other)
 {
 	local inventory Copy;
 
-	Copy = Super.SpawnCopy(Other);
+	Copy = self; //Super.SpawnCopy(Other);
 	Copy.Charge = Charge;
+	Copy.GiveTo(Other);//
 	return Copy;
 }
 

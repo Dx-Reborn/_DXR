@@ -5,13 +5,13 @@ var DeusExGlobals gl;
 var DeusExPlayer player;
 
 function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim);
+function InventoryDeleted(inventory item);
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
 	Super.InitComponent(MyController, MyOwner);
 	player = DeusExPlayer(playerOwner().pawn);
 	gl = class'DeusExGlobals'.static.GetGlobals();
-
 }
 
 /* Call after creating all controls. If any controls created by request, call this function again )) */

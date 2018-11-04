@@ -51,6 +51,9 @@ var(BrightPart) float rFrameXb, rframeYb, rfSizeXb, rfSizeYb;
 function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
+
+ 	player.winInv = self;
+
   if (bShow) // как в GMDX )))
      PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.75);
 
@@ -467,6 +470,75 @@ function bool CalculateItemPosition(Inventory item,float pointX,float pointY,out
 	}
 	return bResult;
 }
+
+
+// ----------------------------------------------------------------------
+// InventoryDeleted()
+//
+// Called when some external force needs to remove an inventory 
+// item from the player. For instance, when an item is "used" and it's
+// a single-use item, it destroys itself, which will ultimately 
+// result in this ItemDeleted() call.
+// ----------------------------------------------------------------------
+
+function InventoryDeleted(Inventory item)
+{
+	if (item != None)
+	{
+		// Remove the item from the screen
+		RemoveItem(item);
+	}
+}
+
+// ----------------------------------------------------------------------
+// RemoveItem()
+//
+// Removes this item from the screen.  If this is the selected item, 
+// does some additional processing.
+// ----------------------------------------------------------------------
+function RemoveItem(Inventory item)
+{
+//	local Window itemWindow;
+  local int i;
+
+	if (item == None)
+		return;
+
+	// Remove it from the object belt
+//	invBelt.RemoveObject(item);
+
+	if ((selectedItem != None) && (item == selectedItem.GetClientObject()))
+	{
+		RemoveSelectedItem();
+	}
+	else
+	{
+		// Loop through the PersonaInventoryItemButtons looking for a match
+    for (i=0;i<Controls.Length;i++)
+    {
+       if (controls[i].IsA('PersonaInventoryItemButton'))
+		    if (PersonaInventoryItemButton(Controls[i]).GetClientObject() == item)
+		    {
+	        PersonaInventoryItemButton(Controls[i]).free();
+          break;
+		    }
+    }
+
+/*		itemWindow = winItems.GetTopChild();
+		while( itemWindow != None )
+		{
+			if (itemWindow.GetClientObject() == item)
+			{
+				DeferDestroy(itemWindow);
+//				itemWindow.Destroy();
+				break;
+			}
+			
+			itemWindow = itemWindow.GetLowerSibling();
+		}*/
+	}
+}
+
 
 // ----------------------------------------------------------------------
 // CreateInventoryButtons()

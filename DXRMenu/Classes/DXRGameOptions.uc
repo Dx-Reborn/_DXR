@@ -221,6 +221,7 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
+ 	DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function SaveSettings()
@@ -244,6 +245,7 @@ function CancelSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).CancelSetting();
   }
+ 	DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function bool InternalOnClick(GUIComponent Sender)
