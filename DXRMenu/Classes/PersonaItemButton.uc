@@ -188,6 +188,14 @@ function SelectButton(bool bNewSelected)
 	bDrawBorder            = player.GetHUDBordersVisible();
 }*/
 
+event free()
+{
+   bAcceptsInput = false;
+   bBoundToParent = false;
+   OnRendered = none;
+   super.free();
+}
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties

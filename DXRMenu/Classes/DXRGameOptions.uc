@@ -3,8 +3,8 @@
 */
 class DXRGameOptions extends DxWindowTemplate;
 
-var localized string strOk, strDefault, strCancel;
-var GUIButton btnOk, btnCancel, btnDefault;
+var localized string strOk, strDefault, strCancel, strExtraOptions;
+var GUIButton btnOk, btnCancel, btnDefault, btnExtra;
 
 var DXRChoiceInfo iObjectNames, iWeaponAutoReload, iGoreLevel, iSubtitles, iCrosshairs;
 var DXRChoiceInfo iHUDAugDisplay, iUIBackground, iHeadBob, iLogTimeoutValue;
@@ -207,6 +207,18 @@ function CreateMyControls()
   btnCancel.WinLeft = 345;
   btnCancel.WinTop = 428;
 	AppendComponent(btnCancel, true);
+
+
+  btnExtra = new class'GUIButton';
+  btnExtra.OnClick=InternalOnClick;
+  btnExtra.fontScale = FNS_Small;
+  btnExtra.StyleName="STY_DXR_MediumButton";
+  btnExtra.Caption = strExtraOptions;
+  btnExtra.WinHeight = 21;
+  btnExtra.WinWidth = 180;
+  btnExtra.WinLeft = 15;
+  btnExtra.WinTop = 378;
+	AppendComponent(btnExtra, true);
 }
 
 function resetToDefaults()
@@ -264,6 +276,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      resetToDefaults();
    }
+   else if (Sender==btnExtra)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGameOptionsA");
+   }
   return true;
 }
 
@@ -274,6 +290,7 @@ defaultproperties
     strOk="OK"
     strDefault="Reset to Defaults"
     strCancel="Cancel"
+    strExtraOptions="More options..."
     WinTitle="Game Options"
 
 		leftEdgeCorrectorX=4

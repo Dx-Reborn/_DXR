@@ -520,6 +520,7 @@ function RemoveItem(Inventory item)
 		    if (PersonaInventoryItemButton(Controls[i]).GetClientObject() == item)
 		    {
 	        PersonaInventoryItemButton(Controls[i]).free();
+//	        class'ObjectManager'.static.Destroy(PersonaInventoryItemButton(Controls[i]));
           break;
 		    }
     }
@@ -894,6 +895,7 @@ function RemoveSelectedItem()
 	{
 		// Destroy the button
 		selectedItem.free(); //Destroy();
+//		class'ObjectManager'.static.Destroy(selectedItem);
 		selectedItem = None;
 
 		// Remove it from the object belt

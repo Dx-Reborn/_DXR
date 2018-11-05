@@ -49,6 +49,9 @@ var globalconfig bool bShowAmmoDescriptions;
 var globalconfig bool bConfirmSaveDeletes;
 var globalconfig bool bConfirmNoteDeletes;
 var globalconfig bool bAskedToTrain;
+// DXR: New options (from Vanilla Matters, but can be turned on/off)
+var globalconfig bool bLeftClickForLastItem;
+var globalconfig int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
 
 var() travel int itemFovCorrection;
 
@@ -1110,7 +1113,7 @@ exec function ParseLeftClick()
 					DoFrob(Self, inHand);
 		}
 	}
- else if (VM_lastInHand != None)
+ else if ((VM_lastInHand != None) && (bLeftClickForLastItem))
           PutInHand(VM_lastInHand);
 }
 

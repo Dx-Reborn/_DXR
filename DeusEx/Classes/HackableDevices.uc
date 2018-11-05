@@ -167,7 +167,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 				if (hackStrength > 0.0)
 				{
 					// alert NPCs that I'm messing with stuff
-//					AIStartEvent('MegaFutz', EAITYPE_Visual);
+					class'EventManager'.static.AIStartEvent(self,'MegaFutz', EAITYPE_Visual);
 
 					hackValue = Player.SkillSystem.GetSkillLevelValue(class'SkillTech');
 					hackPlayer = Player;

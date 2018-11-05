@@ -2438,7 +2438,8 @@ function RenderAmmoDisplay(Canvas c)
             c.SetDrawColor(0,255,0,255);// R G B A
             C.DrawTextJustified(toolsleft,1,66,C.SizeY-50,85,C.SizeY-41);
           }
-      else if (item.IsA('DeusExWeaponInv'))
+          else
+          if (item.IsA('DeusExWeaponInv'))
           {
           	if (DeusExPlayer(playerowner.pawn) != None)
                 weapon = DeusExWeaponInv(DeusExPlayer(playerowner.pawn).InHand);
@@ -2506,7 +2507,10 @@ function RenderAmmoDisplay(Canvas c)
               else
               {
                 C.SetPos(66,C.SizeY-38);
-                C.DrawTextJustified(clipsRemaining,1,66,C.SizeY-38,85,C.SizeY-29);
+                if (DeusExPlayer(PlayerOwner.pawn).RemainingAmmoMode == 0)
+                   C.DrawTextJustified(clipsRemaining,1,66,C.SizeY-38,85,C.SizeY-29);
+               else
+                   C.DrawTextJustified(weapon.AmmoType.AmmoAmount - weapon.AmmoLeftInClip(),1,66,C.SizeY-38,85,C.SizeY-29);
               }
             }
             else
