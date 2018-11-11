@@ -1,13 +1,13 @@
 /* Объединенные текстуры */
 class ImportTextures extends Object;
 
-#exec texture import file=textures\DXR_Scroll.bmp name=DXR_Scroll masked=true UCLAMPMODE=CLAMP //VCLAMPMODE=CLAMP
+#exec texture import file=textures\DXR_Scroll.bmp name=DXR_Scroll  Mips=Off masked=true UCLAMPMODE=CLAMP //VCLAMPMODE=CLAMP
 #exec Texture Import File=Textures\DXR_Inventory.tga Name=DXR_Inventory Mips=Off ALPHA=true
 // Растягивать до 800x600 не вижу смысла, это всего лишь список последних 128 ClientMessage.
 #exec Texture Import File=Textures\DXR_LogsBackground.bmp Name=DXR_LogsBackground Mips=Off Masked=true
 #exec Texture Import File=Textures\DXR_NavBar.bmp Name=DXR_NavBar Mips=Off
 #exec Texture Import File=Textures\DXR_NavBar_Fill.bmp Name=DXR_NavBar_Fill Mips=Off
-#exec Texture Import File=Textures\DXR_PersonaButton.bmp Name=DXR_PersonaButton // Mips=Off
+#exec Texture Import File=Textures\DXR_PersonaButton.bmp Name=DXR_PersonaButton Mips=Off UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 #exec Texture Import File=Textures\DXR_MenuInfoButton.bmp Name=DXR_MenuInfoButton Mips=Off Masked=true
 #exec Texture Import File=Textures\DXR_ConversationsBackground.bmp Name=DXR_ConversationsBackground Mips=Off Masked=true
 
@@ -41,8 +41,8 @@ class ImportTextures extends Object;
 
 
 /* Улучшенные текстуры кнопок )))) */
-#exec Texture Import File=Textures\DXR_MediumButton_Pressed.bmp Name=DXR_MediumButton_Pressed Mips=Off Masked=true
-#exec Texture Import File=Textures\DXR_MediumButton_Normal.bmp Name=DXR_MediumButton_Normal Mips=Off Masked=true
+#exec Texture Import File=Textures\DXR_MediumButton_Pressed.bmp Name=DXR_MediumButton_Pressed Mips=Off Masked=true UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+#exec Texture Import File=Textures\DXR_MediumButton_Normal.bmp Name=DXR_MediumButton_Normal Mips=Off Masked=true UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 
 #exec Texture Import File=Textures\DXR_ComputerSecurityBG.bmp Name=DXR_ComputerSecurityBG Mips=Off Masked=true
 
@@ -105,4 +105,13 @@ class ImportTextures extends Object;
 
 
 #exec Texture Import File=Textures\DXR_MenuGameOptionsBackground.bmp Name=DXR_MenuGameOptionsBackground Mips=Off Masked=true
+
+#exec Texture Import File=Textures\DXR_CustomizeKeys.bmp Name=DXR_CustomizeKeys Mips=Off Masked=true
+
+
+#exec Texture Import File=Textures\DXR_MenuRightBorder.bmp Name=DXR_MenuRightBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+#exec Texture Import File=Textures\DXR_MenuLeftBorder.bmp Name=DXR_MenuLeftBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+
+#exec Texture Import File=Textures\DXR_MessageBox.tga Name=DXR_MessageBox Mips=Off Masked=true
 
