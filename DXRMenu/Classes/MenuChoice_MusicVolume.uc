@@ -7,9 +7,7 @@ class MenuChoice_MusicVolume extends MenuChoice_Volume;
 function SliderOnChange(GUIComponent Sender)
 {
    super.SliderOnChange(Sender);
-	// Restart music.
-/*	if(PlayerOwner().Level.Song != "" && PlayerOwner().Level.Song != "None")
-     PlayerOwner().ClientSetMusic(PlayerOwner().Level.Song, MTRAN_Instant);*/
+   PlayerControllerExt(PlayerOwner()).SetInstantMusicVolume(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -18,8 +16,8 @@ function SliderOnChange(GUIComponent Sender)
 
 function LoadSetting()
 {
-	Super.LoadSetting();
-//	Player.SetInstantSoundVolume(GetValue());
+	 Super.LoadSetting();
+   PlayerControllerExt(PlayerOwner()).SetInstantMusicVolume(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,8 +26,8 @@ function LoadSetting()
 
 function CancelSetting()
 {
-	Super.CancelSetting();
-	LoadSetting();
+   Super.CancelSetting();
+   LoadSetting();
 }
 
 // ----------------------------------------------------------------------

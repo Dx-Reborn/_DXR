@@ -5,11 +5,11 @@ class STY_DXR_ListSelection extends DXRStyles;// STY_ListSelection;
 defaultproperties
 {
     KeyName="STY_DXR_ListSelection"
-    Images(0)=None
-    Images(1)=None
-    Images(2)=None
-    Images(3)=None
-    Images(4)=None
+    Images(0)=texture'CheckboxOff'
+    Images(1)=texture'CheckboxOff'
+    Images(2)=texture'CheckboxOff'
+    Images(3)=texture'CheckboxOff'
+    Images(4)=texture'CheckboxOff'
 
     FontNames(0)="UT2ServerListFont"
     FontNames(1)="UT2ServerListFont"  

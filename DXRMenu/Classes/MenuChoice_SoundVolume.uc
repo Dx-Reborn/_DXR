@@ -7,7 +7,12 @@ class MenuChoice_SoundVolume extends MenuChoice_Volume;
 function SliderOnChange(GUIComponent Sender)
 {
    super.SliderOnChange(Sender);
-   PlayerOwner().pawn.PlaySound(sound'Menu_SoundTest', SLOT_None, btnSlider.value, True);
+
+   if (!bSavingChanges)
+   {
+     class'SoundManager'.static.StopSound(PlayerOwner().pawn, sound'Menu_SoundTest');
+     PlayerOwner().pawn.PlaySound(sound'Menu_SoundTest', SLOT_None, btnSlider.value, True);
+   }
 }
 
 // ----------------------------------------------------------------------

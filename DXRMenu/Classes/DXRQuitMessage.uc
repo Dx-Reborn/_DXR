@@ -8,13 +8,7 @@ var() localized string stMessage;
 var GuiButton bOk, bCancel;
 var GuiLabel lMessage;
 
-function InitComponent(GUIController MyController, GUIComponent MyOwner)
-{
-	Super.InitComponent(MyController, MyOwner);
-  CreateControls();
-}
-
-function CreateControls()
+function CreateMyControls()
 { // Ok
   bOk = new(none) class'GUIButton';
   bOk.OnClick=InternalOnClick;
@@ -69,53 +63,12 @@ function bool InternalOnClick(GUIComponent Sender)
 	return false;
 }
 
-/*event Opened(GUIComponent Sender)                   // Called when the Menu Owner is opened
-{
-  if (ParentPage != none)
-  ParentPage.bVisible=false;
-}
-
-event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
-{
-  if (ParentPage != none)
-  ParentPage.bVisible=true;
-}*/
-
-
-
-
-function AddSystemMenu();
-function bool AlignFrame(Canvas C)
-{
-  if (bVisible)
-  winleft = (controller.resX/2) - (MaxPageWidth/2);
-  else
-  winleft = -2000;
-
-	return bInit;
-}
-
-/*function PaintOnHeader(Canvas C)
-{
-  local texture icon;//, bubble;
-
-  icon = texture'DeusExSmallIcon';
-  C.SetPos(t_WindowTitle.ActualLeft() + 8, t_WindowTitle.ActualTop() + 3);
-  C.SetDrawColor(255,255,255);
-  C.DrawIcon(icon, 1);
-}*/
-
 defaultproperties
 {
-    openSound=sound'DeusExSounds.UserInterface.Menu_Activate'
-
     stMessage="Are you sure you want to exit Deus Ex: Reborn ?"
     WinTitle="Please confirm"
     stOk="Ok"
     stCancel="Cancel"
-
-    bResizeWidthAllowed=false
-    bResizeHeightAllowed=false
 
 		DefaultHeight=200
 		DefaultWidth=405
@@ -142,7 +95,7 @@ defaultproperties
 
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MessageBox'//Material'DeusExControls.Background.DX_WinBack_BW'
+		Image=Texture'DXRMenuImg.DXR_MessageBox'
 		ImageRenderStyle=MSTY_Translucent //Normal
 		ImageStyle=ISTY_Tiled //PartialScaled
 		ImageColor=(R=255,G=255,B=255,A=255)
@@ -157,25 +110,4 @@ defaultproperties
 		OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
-  /* Заголовок */
-	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.98
-		WinHeight=128
-		WinLeft=-2
-		WinTop=-3
-		RenderWeight=0.1
-		FontScale=FNS_Small
-		bUseTextHeight=false
-		bAcceptsInput=True
-		bNeverFocus=true //False
-		bBoundToParent=true
-		bScaleToParent=true
-		OnMousePressed=FloatingMousePressed
-		OnMouseRelease=FloatingMouseRelease
-    OnRendered=PaintOnHeader
-		ScalingType=SCALE_ALL
-    StyleName="STY_DXR_DXWinHeader";
-    Justification=TXTA_Left
-	End Object
-	t_WindowTitle=TitleBar
 }

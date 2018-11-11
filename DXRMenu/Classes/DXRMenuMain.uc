@@ -2,7 +2,7 @@
   Главное меню, как в оригинале (или почти)
 
 --------------------------------------------*/
-class DXRMenuMain extends DxWindowTemplate;//floatingwindow;
+class DXRMenuMain extends DxWindowTemplate;
 
 #exec OBJ LOAD FILE=DeusExUI.u
 const ver="Deus Ex: Reborn v0.54 alpha.";
@@ -146,6 +146,10 @@ function bool InternalOnClick(GUIComponent Sender)
 	if (Sender==bIntro)
 	{
 	  Controller.OpenMenu("DXRMenu.DXRAskIntroMessage");
+	}
+	if (Sender==bCreators)
+	{
+	  Controller.OpenMenu("DXRMenu.DXRCredits");
 	}
 	return true;
 }

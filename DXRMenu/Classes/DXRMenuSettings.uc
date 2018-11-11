@@ -108,6 +108,10 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 	  Controller.OpenMenu("DXRMenu.DXRGameOptions");
 	}
+	else if (Sender==btnKeysMouse)
+	{
+	  Controller.OpenMenu("DXRMenu.DXRCustomizeKeys");
+	}
 	return true;
 }
 

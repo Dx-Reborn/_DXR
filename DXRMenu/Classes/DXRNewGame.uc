@@ -13,6 +13,9 @@ var int     saveSkillPointsTotal;
 var float   combatDifficulty;
 var Skill   localSkills[32];
 
+var GUIStyles SelStyle;
+var() float levelPos, pointsPos;
+
 var localized string strUpgrade, strDowngrade, strNameLabel, strCodeNameLabel;
 var localized string strAppearanceLabel, strSkillsLabel, strSkillPointsLabel, strSkillLevelLabel, strPointsNeededLabel;
 var localized string strCancel, strReset, strStart;
@@ -29,7 +32,9 @@ var GUIImage imgSkill;
 
 function CreateMyControls()
 {
-  imgSkill  = new(none) class'GUIImage';
+  SelStyle = Controller.GetStyle("STY_DXR_ListSelection",FontScale); // Get style to draw listbox selection
+
+  imgSkill = new(none) class'GUIImage';
 	imgSkill.WinHeight = 32;
   imgSkill.WinWidth = 32;
   imgSkill.WinLeft = 176;
@@ -65,6 +70,7 @@ function CreateMyControls()
   lstSkills.OnChange = lstSkillsChange;
   AppendComponent(lstSkills, true);
   lstSkills.list.TextAlign = TXTA_Right;
+  lstSkills.list.OnDrawItem = CustomDrawing;
 
   /* Внешность и кнопки выбора*/
   bLeftArrow = new(none) class'GUIButton';
@@ -102,8 +108,8 @@ function CreateMyControls()
   bStart.OnClick = InternalOnClick;
   bStart.WinHeight = 21;
   bStart.WinWidth = 129;
-  bStart.WinLeft = 476;
-  bStart.WinTop = 412;
+  bStart.WinLeft = 478;
+  bStart.WinTop = 410;
 	AppendComponent(bStart, true);
 
   bCancel = new(none) class'GUIButton'; // Назад
@@ -113,8 +119,8 @@ function CreateMyControls()
   bCancel.OnClick = InternalOnClick;
   bCancel.WinHeight = 21;
   bCancel.WinWidth = 109;
-  bCancel.WinLeft = 364;
-  bCancel.WinTop = 412;
+  bCancel.WinLeft = 366;
+  bCancel.WinTop = 410;
 	AppendComponent(bCancel, true);
 
   bReset = new(none) class'GUIButton'; // Сбросить в начальные значения
@@ -126,7 +132,7 @@ function CreateMyControls()
   bReset.WinHeight = 21;
   bReset.WinWidth = 201;
   bReset.WinLeft = 8;
-  bReset.WinTop = 412;
+  bReset.WinTop = 410;
 	AppendComponent(bReset, true);
 
   /* Upgrade/Downgrade */
@@ -283,6 +289,27 @@ function CreateMyControls()
 	AppendComponent(eSkillsAvail, true);
 
 	ResetToDefaults();
+}
+
+// Override listbox drawing
+function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, bool bSelected, bool bPending)
+{
+  local array<String> ta;
+
+  if(bSelected) // Draw selection border
+          SelStyle.Draw(u,MSAT_Pressed, X, Y-2, W, H+2);
+
+  // Разделить строку, зная разделитель...
+  split(lstSkills.list.GetItemAtIndex(Item), chr(9), ta);
+
+  // Имя навыка...
+  lstSkills.Style.DrawText(u,MenuState, lstSkills.ActualLeft() + 2, Y, lstSkills.ActualWidth(), H, TXTA_Left, ta[0], lstSkills.FontScale);
+
+  // Уровень...
+  lstSkills.Style.DrawText(u,MenuState, lstSkills.ActualLeft() + levelPos, Y, lstSkills.ActualWidth(), H, TXTA_Left, ta[1], lstSkills.FontScale);
+
+  // Единиц нужно...
+  lstSkills.Style.DrawText(u,MenuState, lstSkills.ActualLeft() + pointsPos, Y, lstSkills.ActualWidth(), H, TXTA_Center, ta[2], lstSkills.FontScale);
 }
 
 
@@ -616,8 +643,26 @@ defaultproperties
 		MinPageHeight=415
 		MinPageWidth=610
 
-    WinTitle="Start New Game"
+    levelPos=280
+    pointsPos=170 // for TXTA_Center //365 for TXTA_Left
 
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=429
+
+		RightEdgeCorrectorX=607
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=402
+
+		TopEdgeCorrectorX=504
+		TopEdgeCorrectorY=16
+    TopEdgeLength=100
+
+    TopRightCornerX=604
+    TopRightCornerY=16
+
+
+    WinTitle="Start New Game"
     strStart="Start Game"
     strReset="Reset to defaults"
     strCancel="Back"
@@ -631,7 +676,8 @@ defaultproperties
     strSkillsLabel="Skills"
     strSkillPointsLabel="Skill Points"
     strSkillLevelLabel="Skill Level"
-    strPointsNeededLabel="Points Needed"
+    strPointsNeededLabel="Required"
+//    strPointsNeededLabel="Points Needed"
 
     texPortraits(0)=Texture'DeusExUI.UserInterface.MenuNewGameJCDenton_1'
     texPortraits(1)=Texture'DeusExUI.UserInterface.MenuNewGameJCDenton_2'
@@ -652,6 +698,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+    OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
 }

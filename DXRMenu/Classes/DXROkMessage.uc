@@ -61,9 +61,9 @@ defaultproperties
 		MinPageWidth=405
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MessageBox'//Material'DeusExControls.Background.DX_WinBack_BW'
-		ImageRenderStyle=MSTY_Translucent //Normal
-		ImageStyle=ISTY_Tiled //PartialScaled
+		Image=Texture'DXRMenuImg.DXR_MessageBox'
+		ImageRenderStyle=MSTY_Translucent
+		ImageStyle=ISTY_Tiled
 		ImageColor=(R=255,G=255,B=255,A=255)
 		DropShadow=None
 		WinWidth=400

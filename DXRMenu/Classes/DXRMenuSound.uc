@@ -43,6 +43,8 @@ var MenuChoice_SoundCompatMode mSoundCompatMode;
 var MenuChoice_UseEAX mUseEAX;
 var MenuChoice_SoundUsePreCache mSoundUsePreCache;
 
+var transient bool bRestartSoundSys; // changed to true when required by some options.
+
 
 function CreateMyControls()
 {
@@ -284,7 +286,7 @@ function CreateMyControls()
   btnDefault.Caption = strDefault;
   btnDefault.WinHeight = 21;
   btnDefault.WinWidth = 180;
-  btnDefault.WinLeft = 7;
+  btnDefault.WinLeft = 9;
   btnDefault.WinTop = 530;
 	AppendComponent(btnDefault, true);
 
@@ -295,7 +297,7 @@ function CreateMyControls()
   btnOK.Caption = strOK;
   btnOK.WinHeight = 21;
   btnOK.WinWidth = 100;
-  btnOK.WinLeft = 445;
+  btnOK.WinLeft = 443;
   btnOK.WinTop = 530;
 	AppendComponent(btnOK, true);
 
@@ -306,32 +308,9 @@ function CreateMyControls()
   btnCancel.Caption = strCancel;
   btnCancel.WinHeight = 21;
   btnCancel.WinWidth = 100;
-  btnCancel.WinLeft = 343;
+  btnCancel.WinLeft = 341;
   btnCancel.WinTop = 530;
 	AppendComponent(btnCancel, true);
-
-  //fillvalues();
-}
-
-function fillvalues()
-{
-/*		fMusicVolume = float(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"));
-		fSoundVolume = float(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice SoundVolume"));
-		fAmbientSoundVolume = float(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice AmbientVolume"));
-		fVoiceVolume = float(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice VoiceVolume"));
-		fDopplerFactor = float(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice DopplerFactor"));
-		iNumChannels = int(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice Channels"));
-
-    bCompatMode = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice CompatibilityMode"));
-    bUse3DSound = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice Use3DSound"));
-    bUseEAX = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice UseEAX" ));
-		bReverseStereo = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice ReverseStereo"));
-		bDefaultDriver = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice UseDefaultDriver")); //Use system installed OpenAL driver
-    bLowSoundQ = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice LowQualitySound" ));
-    bUsePreCache = bool(PlayerOwner().ConsoleCommand("get ini:Engine.Engine.AudioDevice UsePreCache" ));
-
-    log(fMusicVolume@fSoundVolume@fAmbientSoundVolume@fVoiceVolume@fDopplerFactor@iNumChannels@bCompatMode@bUse3DSound@bUseEAX@bReverseStereo@bDefaultDriver@bLowSoundQ@bUsePreCache);
-*/
 }
 
 function resetToDefaults()
@@ -355,7 +334,17 @@ function SaveSettings()
   for (i=0;i<Controls.Length;i++)
   {
      if (controls[i].IsA('DXREnumButton'))
+     {
+        DXREnumButton(controls[i]).bSavingChanges = true;
         DXREnumButton(controls[i]).SaveSetting();
+     }
+  }
+  if (bRestartSoundSys)
+  {
+      PlayerOwner().ConsoleCommand("SOUND_REBOOT");
+
+      if (PlayerOwner().Level.Song != "" && PlayerOwner().Level.Song != "None") // Restart music if required
+          PlayerOwner().ClientSetMusic(PlayerOwner().Level.Song, MTRAN_Instant);
   }
 }
 
@@ -366,7 +355,9 @@ function CancelSettings()
   for (i=0;i<Controls.Length;i++)
   {
      if (controls[i].IsA('DXREnumButton'))
+     {
         DXREnumButton(controls[i]).CancelSetting();
+     }
   }
 }
 
@@ -407,11 +398,11 @@ defaultproperties
 
 		leftEdgeCorrectorX=4
 		leftEdgeCorrectorY=0
-		leftEdgeHeight=549
+		leftEdgeHeight=551
 
 		RightEdgeCorrectorX=545
 		RightEdgeCorrectorY=20
-		RightEdgeHeight=522
+		RightEdgeHeight=524
 
 		TopEdgeCorrectorX=442
 		TopEdgeCorrectorY=16

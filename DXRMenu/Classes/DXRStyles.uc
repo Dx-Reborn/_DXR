@@ -2,7 +2,6 @@
 class DXRStyles extends GUIStyles;
 
 var DeusExGlobals gl;
-const ScrollBarWidth = 16;
 
 event Initialize()
 {
@@ -13,18 +12,6 @@ event Initialize()
 }
 
 function ApplyTheme(int index); // Do something in subclasses.
-
-function CorrectScrollBars()
-{
-  // Very slow, I need something better... Maybe edit XInterface.u and change scrollBar width in defprops.
-/*  local GUIVertScrollBar vsb;
-
-   foreach AllObjects(class'GUIVertScrollBar', vsb)
-     vsb.WinWidth = ScrollBarWidth;*/
-}
-
-
-
 
 defaultproperties
 {

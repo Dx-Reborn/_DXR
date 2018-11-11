@@ -10,7 +10,8 @@ struct sMapLocalized
 	var localized string sMapCaption;
 };
 
-var() array<sMapLocalized> sML;
+//var() array<sMapLocalized> sML;
+var() sMapLocalized sML[100]; // Для локализации это подходит лучше.
 
 simulated event Init()
 {
@@ -26,7 +27,8 @@ function string getMapDesc()
 
   TheMap = StripMap(MapName);
 
-  for(z=0; z<sML.length; z++)
+//  for(z=0; z<sML.length; z++)
+  for(z=0; z<ArrayCount(sML); z++)
   {
     if (sML[z].sMapName ~= TheMap)
     return sML[z].sMapCaption;
@@ -127,13 +129,13 @@ defaultproperties
    sML(74)=(sMapName="15_Area51_Page",sMapCaption="Area 51") // нет идей ((((((
    sML(75)=(sMapName="15_Area51_Final",sMapCaption="Area 51")
 
-   sML(76)=(sMapName="99_Endgame4",sMapCaption="short")
-   sML(77)=(sMapName="99_Endgame1",sMapCaption="short")
-   sML(78)=(sMapName="99_Endgame2",sMapCaption="short")
-   sML(79)=(sMapName="99_Endgame3",sMapCaption="short")
+   sML(76)=(sMapName="99_Endgame4",sMapCaption="")
+   sML(77)=(sMapName="99_Endgame1",sMapCaption="")
+   sML(78)=(sMapName="99_Endgame2",sMapCaption="")
+   sML(79)=(sMapName="99_Endgame3",sMapCaption="")
 /* Всё что-ли ? :)*/
 
-   Backgrounds(0)=DXRLoading.loading.SH_DarkModulated
+   Backgrounds(0)=DXRLoading.loading.TP_Dust_Up //DXRLoading.loading.SH_DarkModulated
 
 /*     Backgrounds(0)=DXRLoading.Loading.1
      Backgrounds(1)=DXRLoading.Loading.2

@@ -3,11 +3,11 @@
 class gui_Images extends PlayerInterfacePanel;
 
 var GUIImage imagesBG, ImgViewer;
-var GUILabel Limages, LNoImages, lShowImages, lNewImage;
+var GUILabel Limages, LNoImages, lShowImages, lNewImage, lImageName;
 var GuiButton bClear, bAdd;
 var GUIListBox imageList;
 var CheckBox_Personal cShowNotes;
-
+var GUIStyles SelStyle;
 var GUIEditBox n;
 
 var bool bWaitingForClick;
@@ -20,6 +20,10 @@ var(rightPart) float rFrameX, rframeY, rfSizeX, rfSizeY;
 var(BleftPart) float lFrameXb, lframeYb, lfSizeXb, lfSizeYb;
 var(BmidPart) float mFrameXb, mframeYb, mfSizeXb, mfSizeYb;
 var(BrightPart) float rFrameXb, rframeYb, rfSizeXb, rfSizeYb;
+
+var(Symbol) float oX, oY;
+
+var localized string strNewImage, strShowNotes, strImages, strNoImages, strHowToUse, strAddNote;
 
 
 function ShowPanel(bool bShow)
@@ -37,10 +41,27 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
 function CreateMyControls()
 {
+  SelStyle = Controller.GetStyle("STY_DXR_ListSelection",FontScale); // Get style to draw listbox selection
+
+  lImageName = new(none) class'GUILabel';
+  lImageName.bBoundToParent = true;
+  lImageName.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+  lImageName.TextFont="UT2HeaderFont";
+  lImageName.bMultiLine = false;
+  lImageName.TextAlign = TXTA_Left;
+  lImageName.VertAlign = TXTA_Center;
+  lImageName.FontScale = FNS_Small;
+ 	lImageName.WinHeight = 20;
+  lImageName.WinWidth = 500;
+  lImageName.WinLeft = 264;
+  lImageName.WinTop = 32;
+	AppendComponent(lImageName, true);
+//	lImageName.caption="image name here";
+
   lNewImage = new(none) class'GUILabel';
   lNewImage.bBoundToParent = true;
   lNewImage.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lNewImage.caption = "! - New Image";
+  lNewImage.caption = strNewImage;
   lNewImage.TextFont="UT2HeaderFont";
   lNewImage.bMultiLine = false;
   lNewImage.TextAlign = TXTA_Left;
@@ -65,7 +86,7 @@ function CreateMyControls()
   lShowImages = new(none) class'GUILabel';
   lShowImages.bBoundToParent = true;
   lShowImages.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lShowImages.caption = "Show Notes";
+  lShowImages.caption = strShowNotes;
   lShowImages.TextFont="UT2HeaderFont";
   lShowImages.bMultiLine = false;
   lShowImages.TextAlign = TXTA_Left;
@@ -106,7 +127,7 @@ function CreateMyControls()
   Limages = new(none) class'GUILabel';
   Limages.bBoundToParent = true;
   Limages.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
-  Limages.caption = "Images";
+  Limages.caption = strImages;
   Limages.TextFont="UT2HeaderFont";
   Limages.bMultiLine = false;
   Limages.TextAlign = TXTA_Left;
@@ -121,7 +142,7 @@ function CreateMyControls()
   LNoImages = new(none) class'GUILabel';
   LNoImages.bBoundToParent = true;
   LNoImages.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  LNoImages.caption = "No Images.";
+  LNoImages.caption = strNoImages;
   LNoImages.TextFont="UT2HeaderFont";
   LNoImages.bMultiLine = false;
   LNoImages.TextAlign = TXTA_Center;
@@ -136,7 +157,7 @@ function CreateMyControls()
   /*---Кнопки-------------------------------------------------*/
   bClear = new(none) class'GUIButton';
   bClear.FontScale = FNS_Small;
-  bClear.Caption = "How to use notes?";
+  bClear.Caption = strHowToUse;
   bClear.Hint = "Brief instruction on how to use notes system";
   bClear.StyleName="STY_DXR_ButtonNavbar";
   bClear.bBoundToParent = true;
@@ -149,7 +170,7 @@ function CreateMyControls()
 
   bAdd = new(none) class'GUIButton';
   bAdd.FontScale = FNS_Small;
-  bAdd.Caption = "Add image note";
+  bAdd.Caption = strAddNote;
   bAdd.Hint = "Add note to image. Store any text you like.";
   bAdd.StyleName="STY_DXR_ButtonNavbar";
   bAdd.bBoundToParent = true;
@@ -172,10 +193,35 @@ function CreateMyControls()
   imageList.WinTop = 55;
 	AppendComponent(imageList, true);
   imageList.OnChange = imageListChange;
-  imageList.list.TextAlign = TXTA_Left;
+  imageList.list.OnDrawItem = CustomDrawing;
 
 	ApplyTheme();
 	fillData();
+}
+
+// Override listbox drawing
+function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, bool bSelected, bool bPending)
+{
+  local string myStr;
+  local float XL;
+
+  myStr = imageList.list.GetItemAtIndex(Item);
+  XL = len(myStr);
+
+  if (bSelected) // Draw selection border
+      SelStyle.Draw(u,MSAT_Pressed, X, Y-2, W, H+2);
+
+  if (DataVaultImageInv(imageList.List.GetObjectAtIndex(Item)).bPlayerViewedImage == false)
+  {
+    u.font = font'FontHUDWingDings';
+    u.Style = EMenuRenderStyle.MSTY_Normal;
+    u.SetPos(imageList.ActualLeft() + 200, Y+1);
+    u.DrawText("C");
+  }
+   if (XL > 20) // if image description longer than 20 characters...
+       imageList.Style.DrawText(u,MenuState, imageList.ActualLeft() + 2, Y, imageList.ActualWidth(), H, TXTA_Left, Left(myStr, 21)$"...", imageList.FontScale);
+   else  // or as usually
+       imageList.Style.DrawText(u,MenuState, imageList.ActualLeft() + 2, Y, imageList.ActualWidth(), H, TXTA_Left, myStr, imageList.FontScale);
 }
 
 function fillData()
@@ -203,6 +249,7 @@ function imageListChange(GUIComponent Sender)
   // А почему Hint напрямую не хочешь?
   imagelist.ToolTip.SetTip(imageList.List.SelectedText());
   ImgViewer.image = DataVaultImageInv(imageList.List.GetObject()).imageTexture;
+  lImageName.Caption = DataVaultImageInv(imageList.List.GetObject()).imageDescription;
 }
 
 function bool InternalOnClick (GUIComponent Sender)
@@ -211,7 +258,6 @@ function bool InternalOnClick (GUIComponent Sender)
   local DataVaultImageInv img;
 
   img = DataVaultImageInv(imageList.List.GetObject());
-//  log(img);
 
   if (img != none)
   {
@@ -222,10 +268,11 @@ function bool InternalOnClick (GUIComponent Sender)
     }
     if (Sender==bClear)
     {
-
+      // Instructions for notes
     }
     if (Sender==ImgViewer)
     {
+      DataVaultImageInv(imageList.List.GetObject()).bPlayerViewedImage = true;
       currentLeft = Controller.mouseX - ImgViewer.ClientBounds[0];
       currentTop = Controller.mouseY - ImgViewer.ClientBounds[1] + 48;
       AddNoteObject(currentLeft, currentTop, "Enter text here");
@@ -299,7 +346,6 @@ function PaintFrames(canvas u)
 
   x = ActualLeft(); y = ActualTop();
 
-//  u.SetDrawColor(0,255,0,128);
   u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceFrames(gl.MenuThemeIndex);
   u.Style = EMenuRenderStyle.MSTY_Translucent;
 
@@ -320,6 +366,11 @@ function PaintFrames(canvas u)
 
   u.SetPos(x + rFrameXb, y + rframeYb);
   u.drawtileStretched(texture'ImagesBorder_6', rfSizeXb, rfSizeYb);
+
+/*------------------------------------------------------------------*/
+  u.SetPos(X + oX, Y + oY);
+  u.Font = font'FontHUDWingDings';
+  u.DrawText("C");
 }
 
 
@@ -327,6 +378,16 @@ function PaintFrames(canvas u)
 
 defaultproperties
 {
+   strNewImage=" - New Image"
+   strShowNotes="Show Notes"
+   strImages="Images"
+   strNoImages="No Images"
+   strHowToUse="Now to use notes?"
+   strAddNote="Add a note"
+
+   oX = 534
+   oY = 577
+
 // Top frames (six textures used) //
  lFrameX=5
  lframeY=30

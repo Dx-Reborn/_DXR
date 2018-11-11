@@ -5,7 +5,7 @@
 //  <Enter a description here>
 // ====================================================================
 
-class STY_DXR_Listbox extends DXRStyles;// GUI2Styles;
+class STY_DXR_Listbox extends DXRStyles;
 
 defaultproperties
 {
@@ -27,8 +27,6 @@ defaultproperties
     BorderOffsets(1)=0
     BorderOffsets(2)=0
     BorderOffsets(3)=0
-
-//    UT2HeaderFont
 
     FontNames(0)="UT2ServerListFont"
     FontNames(1)="UT2ServerListFont"

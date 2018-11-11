@@ -125,21 +125,67 @@ return true;
 
 function InternalOnOpen()
 {
-  DeusExHUD(PlayerOwner().myHUD).cubemapmode = true;
+ if (DeusExPlayer(PlayerOwner().pawn).UIBackground == 0) // 0 = Render 3D
+ {
+     DeusExHUD(PlayerOwner().myHUD).cubemapmode = true;
+ }
+ else if (DeusExPlayer(PlayerOwner().pawn).UIBackground == 1) // 1 = Snapshot
+ {
+     DeusExHUD(PlayerOwner().myHUD).midMenuMode = true;
+ }
+ else if (DeusExPlayer(PlayerOwner().pawn).UIBackground == 2) // 2 = Black
+ {
+     DeusExHUD(PlayerOwner().myHUD).menuMode = true;
+ }
+ /*----------------------------------------------------*/
+ if (DeusExPlayer(PlayerOwner().pawn).InterfaceMode == 0)
+ {
+     PlayerOwner().SetPause(true);
+ }
+ else if (DeusExPlayer(PlayerOwner().pawn).InterfaceMode == 1)
+ {
+     PlayerOwner().Level.game.SetGameSpeed(0.1);
+     DeusExPlayer(PlayerOwner().pawn).Blur(5);
+ }
+ else if (DeusExPlayer(PlayerOwner().pawn).InterfaceMode == 2)
+ {
+     PlayerOwner().SetPause(false); // Just in case...
+ }
 }
 
 function InternalOnClose(bool bCancelled)
 {
-  DeusExHUD(PlayerOwner().myHUD).cubemapmode = false;
+  RestoreHUD();
+  RestoreGameMode();
 }
 
 event Free()            // This control is no longer needed
 {
-  DeusExHUD(PlayerOwner().myHUD).cubemapmode = false;
+  RestoreHUD();
+  RestoreGameMode();
   super.free();
 }
 
+function RestoreHUD()
+{
+  DeusExHUD(PlayerOwner().myHUD).cubemapmode = false;
+  DeusExHUD(PlayerOwner().myHUD).menuMode = false;
+  DeusExHUD(PlayerOwner().myHUD).midMenuMode = false;
+}
 
+function RestoreGameMode()
+{
+  PlayerOwner().Level.game.SetGameSpeed(1.0);
+  DeusExPlayer(PlayerOwner().pawn).unblur();
+  PlayerOwner().SetPause(false);
+}
+
+//var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
+
+//var globalconfig int  UIBackground;					// 0 = Render 3D, 1 = Snapshot, 2 = Black
+//cubemapmode // Render 3D
+//menuMode // Черный
+//midMenuMode // Растянутый фон
 
 
 

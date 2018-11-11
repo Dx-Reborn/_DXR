@@ -6,8 +6,9 @@ class DXRGameOptionsA extends DxWindowTemplate;
 
 var MenuChoice_LeftClickForLastItem mLeftClickForLastItem;
 var MenuChoice_RemainingAmmo mRemainingAmmo;
-//var MenuChoice_StartupFullScreen mMenuChoice_StartupFullScreen;
-var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, cFullScreen;
+var MenuChoice_ExtraDebugInfo mExtraDebugInfo;
+var MenuChoice_PlayerInterfaceMode mPlayerInterfaceMode;
+var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, iExtraDebugInfo, iPlayerInterfaceMode;
 var localized string strOK, strCancel, strDefault;
 var localized string strGamma, strGraphics, strPhysics;
 var GUIButton btnDefault, btnOK, btnCancel;
@@ -28,13 +29,19 @@ function CreateMyControls()
   iRemainingAmmo.WinTop = 82;
   iRemainingAmmo.WinWidth = 78;
   AppendComponent(iRemainingAmmo, true);
-/*
-  cFullScreen = new class'DXRChoiceInfo';
-  cFullScreen.WinLeft = 285;
-  cFullScreen.WinTop = 118;
-  cFullScreen.WinWidth = 78;
-  AppendComponent(cFullScreen, true);
-*/
+
+  iExtraDebugInfo = new class'DXRChoiceInfo';
+  iExtraDebugInfo.WinLeft = 285;
+  iExtraDebugInfo.WinTop = 118;
+  iExtraDebugInfo.WinWidth = 78;
+  AppendComponent(iExtraDebugInfo, true);
+
+  iPlayerInterfaceMode = new class'DXRChoiceInfo';
+  iPlayerInterfaceMode.WinLeft = 285;
+  iPlayerInterfaceMode.WinTop = 154;
+  iPlayerInterfaceMode.WinWidth = 78;
+  AppendComponent(iPlayerInterfaceMode, true);
+
   mLeftClickForLastItem = new class'MenuChoice_LeftClickForLastItem';
   mLeftClickForLastItem.WinLeft = 15;
   mLeftClickForLastItem.WinTop = 46;
@@ -52,16 +59,24 @@ function CreateMyControls()
   mRemainingAmmo.info = iRemainingAmmo;
   mRemainingAmmo.LoadSetting();
   mRemainingAmmo.UpdateInfoButton();
-/*
-  mMenuChoice_StartupFullScreen = new class'MenuChoice_StartupFullScreen';
-  mMenuChoice_StartupFullScreen.WinLeft = 15;
-  mMenuChoice_StartupFullScreen.WinTop = 118;
-  mMenuChoice_StartupFullScreen.WinWidth = 244;
-  AppendComponent(mMenuChoice_StartupFullScreen, true);
-  mMenuChoice_StartupFullScreen.info = cFullScreen;
-  mMenuChoice_StartupFullScreen.LoadSetting();
-  mMenuChoice_StartupFullScreen.UpdateInfoButton();
-*/
+
+  mExtraDebugInfo = new class'MenuChoice_ExtraDebugInfo';
+  mExtraDebugInfo.WinLeft = 15;
+  mExtraDebugInfo.WinTop = 118;
+  mExtraDebugInfo.WinWidth = 244;
+  AppendComponent(mExtraDebugInfo, true);
+  mExtraDebugInfo.info = iExtraDebugInfo;
+  mExtraDebugInfo.LoadSetting();
+  mExtraDebugInfo.UpdateInfoButton();
+
+  mPlayerInterfaceMode = new class'MenuChoice_PlayerInterfaceMode';
+  mPlayerInterfaceMode.WinLeft = 15;
+  mPlayerInterfaceMode.WinTop = 154;
+  mPlayerInterfaceMode.WinWidth = 244;
+  AppendComponent(mPlayerInterfaceMode, true);
+  mPlayerInterfaceMode.info = iPlayerInterfaceMode;
+  mPlayerInterfaceMode.LoadSetting();
+  mPlayerInterfaceMode.UpdateInfoButton();
 
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;

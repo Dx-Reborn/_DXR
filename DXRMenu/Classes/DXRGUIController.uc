@@ -46,7 +46,14 @@ defaultproperties
     Begin Object Class=DxFonts.fntUT2K4Medium Name=GUIMediumMenuFont
     End Object
     FontStack(10)=GUIMediumMenuFont
-	FONT_NUM=11
+
+    Begin Object Class=DxFonts.fntSpecial Name=GUISpecialFont
+    End Object
+    FontStack(11)=GUISpecialFont
+
+
+    FONT_NUM=12
+//	FONT_NUM=11
 
     MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
     ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
@@ -68,7 +75,7 @@ defaultproperties
     
 //    MouseCursorOffset(0)=(X=0.5,Y=0.5,Z=0) // Смещение курсора
 
-		DblClickWindow=0.05 // How long do you have for a double click
+		DblClickWindow=0.5 // How long do you have for a double click//0.05
 		                    // было 0.5. Пришлось уменьшить, иначе диалоги проматывались слишком быстро.
     bFixedMouseSize=true // Избавляет от проблемы с изменяющим размеры курсором :)
 
