@@ -10,11 +10,20 @@ var() private string Speaker;
 var() private string fpsSpeech;
 
 var() localized font TitleFont, SpeechFont;
+var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 function SetInitialState()
 {
+  local DeusExHUD h;
+
 	dxc = new(Outer) class'DxCanvas';
 	Super.SetInitialState();
+
+  h = DeusExHUD(level.GetLocalPlayerController().myHUD);
+  InfoLinkBG = h.InfoLinkBG;
+  InfoLinkText = h.InfoLinkText;
+  InfoLinkTitles = h.InfoLinkTitles;
+  InfoLinkFrame = h.InfoLinkFrame;
 }
 
 
@@ -25,7 +34,7 @@ function Timer()
 
 function AddBark(string text, float newDisplayTime, Actor speakingActor)
 {
-	if (TrimSpaces(text) != "")
+	if (class'DxUtil'.static.TrimSpaces(text) != "")
 	{
 		Speaker = speakingActor.GetFamiliarName();
 		fpsSpeech = text;
@@ -33,54 +42,20 @@ function AddBark(string text, float newDisplayTime, Actor speakingActor)
 	}
 }
 
-// ----------------------------------------------------------------------
-// TrimSpaces()
-// ----------------------------------------------------------------------
-function String TrimSpaces(String trimString)
-{
-	local int trimIndex;
-	local int trimLength;
-
-	if ( trimString == "" ) 
-		return trimString;
-
-	trimIndex = Len(trimString) - 1;
-	while ((trimIndex >= 0) && (Mid(trimString, trimIndex, 1) == " ") )
-		trimIndex--;
-
-	if ( trimIndex < 0 )
-		return "";
-
-	trimString = Mid(trimString, 0, trimIndex + 1);
-
-	trimIndex = 0;
-	while((trimIndex < Len(trimString) - 1) && (Mid(trimString, trimIndex, 1) == " "))
-		trimIndex++;
-
-	trimLength = len(trimString) - trimIndex;
-	trimString = Right(trimString, trimLength);
-
-	return trimString;
-}
-
 // == Прорисовка AI Barks == //
 simulated function Render(Canvas C)
 {
 	local float w,h,holdX,holdY;
-	//local int x;
-	local texture border;//, ico;
-//	local DxCanvas dxc;
+	local texture border;
 
-/*    if (dxc == none)
-     dxc = new(self) class'DxCanvas';
-    else if (dxc != none)*/
      dxc.SetCanvas(C);
 
     if(fpsSpeech != "")
     {
-        c.SetDrawColor(255,255,255);
+        //c.SetDrawColor(255,255,255);
+        c.DrawColor = InfoLinkBG;
         c.Font = TitleFont;
-        c.Style=1;
+        c.Style = ERenderStyle.STY_Translucent;
 
         c.SetOrigin(0,0);
         c.SetClip(595, c.SizeY);
@@ -96,7 +71,7 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-        c.SetDrawColor(127,127,127);
+//        c.SetDrawColor(127,127,127);
         c.Style=3;
 
         //TL
@@ -136,8 +111,11 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-        c.SetDrawColor(255,255,255);
-        c.Style=2;
+        c.DrawColor = InfoLinkFrame;
+        c.Style=ERenderStyle.STY_Translucent;
+
+//        c.SetDrawColor(255,255,255);
+//        c.Style=2;
 
         c.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
@@ -176,7 +154,7 @@ simulated function Render(Canvas C)
         c.SetClip(w, h);
 
         c.SetPos(8,0); //x,y
-
+        c.DrawColor = InfoLinkTitles;
         dxc.DrawText(Speaker); // кто
 				
 				//Нарисовать линию с тенью
@@ -185,10 +163,11 @@ simulated function Render(Canvas C)
         dxc.DrawHorizontal(int(c.CurY)+4,596);
         c.SetDrawColor(255,255,255);
 
-        c.SetPos(c.CurX, c.CurY + 8);
-
         c.font=SpeechFont;
+        c.SetPos(c.CurX, c.CurY + 8);
+        c.DrawColor = InfoLinkText;
         dxc.DrawText(fpsSpeech); // текст
+
 	      c.reset();
         c.SetClip(c.SizeX, c.SizeY);
     }

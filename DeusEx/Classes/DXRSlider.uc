@@ -67,7 +67,7 @@ function SetEnumeration(int tickPos, coerce string newStr)
 defaultproperties
 {
   VeryStrangeVariable=16
-  bTop=3
+  bTop=2.0 // wtf ??? //3
   bBoundToParent=true
   winHeight=21
   winWidth=177//243

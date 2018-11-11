@@ -8,16 +8,6 @@ class PlayerControllerEXT extends DeusExNativePlayerController // playercontroll
 
 #exec OBJ LOAD FILE=DeusExSounds
 
-const SlowDownSpeed = 0.1;
-
-// When player management menu (Inventory or Augmentations for example) is opened...
-var() config enum eInterfaceMode
-{
-  EI_Pause, // Pause game 
-  EI_SlowDown, // Set gamespeed to 0.1
-  EI_RealTime, // Do nothing 
-} InterfaceMode;
-
 var config  bool bIsAmericanWeek; // влияет только на первый день недели.
 var config int MenuThemeIndex;
 var config int HUDThemeIndex;

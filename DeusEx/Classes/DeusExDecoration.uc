@@ -203,13 +203,13 @@ function BeginPlay()
 /* Воссоздана "чечётка" из оригинала :) */
 event Attach(Actor Other)
 {
-  SupportActor(Other);
+   SupportActor(Other);
 }
 
-event Detach(Actor Other)
+/*event Detach(Actor Other)
 {
   SupportActor(Other);
-}
+}*/
 
 // ----------------------------------------------------------------------
 // Landed()

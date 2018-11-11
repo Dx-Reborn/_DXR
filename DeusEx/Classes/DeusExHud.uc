@@ -22,13 +22,16 @@ event PostLoadSavedGame()
 
 simulated event PostRender(canvas C)
 {
-	if (PlayerOwner.pawn == none)
-	return;
+	//if (PlayerOwner.pawn == none)
+//	return;
 
 	super.postrender(C);
 	TrackActors(C);
-//	RenderDebugInfo(C);//
-  if ((bUseBinocularView) == true)
+
+	if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
+	RenderDebugInfo(C);
+
+  if (bUseBinocularView)
   {
     RenderBinoculars(C);
   }

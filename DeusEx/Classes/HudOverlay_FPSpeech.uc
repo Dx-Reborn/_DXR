@@ -4,8 +4,8 @@
 
 class HudOverlay_FPSpeech extends HUDOverlay;
 
-var() private string Speaker;
-var() private string fpsSpeech;
+var() string Speaker;
+var() string fpsSpeech;
 
 var ConPlay conPlay;	// Pointer into current conPlay object
 var transient DxCanvas dxc;
@@ -218,11 +218,11 @@ function RestrictInput(bool bNewRestrictInput)
 	bRestrictInput = bNewRestrictInput;
 }
 
-function DisplaySkillChoice( ConChoice choice )
+function DisplaySkillChoice(ConChoice choice)
 {
 }
 
-function DisplayChoice( ConChoice choice )
+function DisplayChoice(ConChoice choice)
 {
 }
 

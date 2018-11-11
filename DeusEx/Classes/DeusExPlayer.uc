@@ -23,6 +23,8 @@ class DeusExPlayer extends PlayerPawn
 
 CONST maxAmountOfFire = 4;
 
+// When player management menu (Inventory or Augmentations for example) is opened...
+var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
 var globalconfig bool bUseToggleCrouch;
 var globalconfig bool bUseToggleWalk;
 var /*globalconfig*/ bool bToggleCrouch;				// True to let key toggle crouch
@@ -52,6 +54,8 @@ var globalconfig bool bAskedToTrain;
 // DXR: New options (from Vanilla Matters, but can be turned on/off)
 var globalconfig bool bLeftClickForLastItem;
 var globalconfig int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
+// DXR: New option to display debug info, in addition to built-in ShowDebug()
+var globalconfig bool bExtraDebugInfo;
 
 var() travel int itemFovCorrection;
 
@@ -3916,6 +3920,12 @@ event Attach(Actor Other)
   SupportActor(Other);
 }
 
+event Detach(Actor Other)
+{
+  SupportActor(Other);
+}
+
+
 /* ----------------------------------------------------------------------
   Called when something lands on us
   Пока точно как в оригинале не работает (декорация, свалившаяся на
@@ -3934,11 +3944,11 @@ function SupportActor(Actor standingActor)
 
   standingActor.SetBase(self);                                         
 
-  if ((standingactor.IsA('Inventory')) || (standingactor.IsA('Pickup')) || (standingactor.IsA('InventoryAttachment')))
+  if ((standingactor.IsA('Inventory')) || (standingactor.IsA('Pickup')) || (standingactor.IsA('InventoryAttachment')) || (standingactor == carriedDecoration))
 	return;
 
-	if (standingactor == carriedDecoration)
-	return;
+//	if (standingactor == carriedDecoration)
+//	return;
 
 	zVelocity    = standingActor.Velocity.Z;
 	standingMass = FMax(1, standingActor.Mass);
@@ -4447,15 +4457,16 @@ exec function debugcon()
 	DeusExPlayerController(controller).ClientOpenMenu("DeusEx.ConWindowActive");
 }
 
+simulated function bool ForceDefaultCharacter()
+{
+    return false;
+}
+
 exec function ShowInventoryWindow()
 {
 	DeusExPlayerController(controller).ClientOpenMenu("DXRMenu.GUI_Player");
 }
 
-simulated function bool ForceDefaultCharacter()
-{
-    return false;
-}
 
 function PostIntro()
 {
@@ -4526,18 +4537,21 @@ exec function ResetPlayer(optional bool bTraining)
 	if (!bTraining)
 	{
 		anItem = Spawn(class'WeaponPistolInv');
-		anItem.Frob(Self, None);
-//    anItem.GiveTo(self);
+		frobTarget = anItem;
+     HandleItemPickup(anItem,false);
+//		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'WeaponProdInv');
-		anItem.Frob(Self, None);
-//    anItem.GiveTo(self);
+		frobTarget = anItem;
+     HandleItemPickup(anItem,false);
+//		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'MedKitInv');
-		anItem.Frob(Self, None);
-//    anItem.GiveTo(self);
+		frobTarget = anItem;
+     HandleItemPickup(anItem,false);
+//		anItem.Frob(Self, None);
     putOnBelt(anItem);
 	}
 }

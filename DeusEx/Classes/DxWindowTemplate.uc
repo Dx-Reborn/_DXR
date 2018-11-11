@@ -148,8 +148,11 @@ defaultproperties
     CloseSound=sound'DeusExSounds.UserInterface.Menu_Cancel'
 
       TopEdgeTexture=texture'MenuRightBorder_Top'
-      LeftEdgeTexture=texture'MenuLeftBorder_Center'//texture'MenuLeftBorder_Bottom'
-      RightEdgeTexture=texture'MenuRightBorder_Right'//texture'MenuRightBorder_BottomRight'
+//      LeftEdgeTexture=texture'MenuLeftBorder_Center'//texture'MenuLeftBorder_Bottom'
+//      RightEdgeTexture=texture'MenuRightBorder_Right'//texture'MenuRightBorder_BottomRight'
+      LeftEdgeTexture=texture'DXR_MenuLeftBorder'
+      RightEdgeTexture=texture'DXR_MenuRightBorder'
+
       cornerTexture=texture'MenuRightBorder_TopRight'
       leftEdgeHeight=200
       RightEdgeHeight=200

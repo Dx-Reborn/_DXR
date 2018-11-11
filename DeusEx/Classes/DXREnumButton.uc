@@ -11,6 +11,8 @@ var localized String configSetting;
 var localized String actionText;
 var localized String FalseTrue[2];
 
+var transient bool bSavingChanges, bReloadSound;
+
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
     Super.InitComponent(MyController, MyOwner);
