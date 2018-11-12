@@ -8,6 +8,8 @@ function SliderOnChange(GUIComponent Sender)
 {
    super.SliderOnChange(Sender);
 
+   DeusExPlayerController(PlayerOwner()).SetInstantSoundVolume(GetValue());
+
    if (!bSavingChanges)
    {
      class'SoundManager'.static.StopSound(PlayerOwner().pawn, sound'Menu_SoundTest');
@@ -22,7 +24,7 @@ function SliderOnChange(GUIComponent Sender)
 function LoadSetting()
 {
 	Super.LoadSetting();
-//	Player.SetInstantSoundVolume(GetValue());
+//	DeusExPlayerController(PlayerOwner()).SetInstantSoundVolume(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -32,7 +34,8 @@ function LoadSetting()
 function CancelSetting()
 {
 //	Super.CancelSetting();
-	LoadSetting();
+//	LoadSetting();
+   DeusExPlayerController(PlayerOwner()).RestoreSoundVolume();
 }
 
 // ----------------------------------------------------------------------

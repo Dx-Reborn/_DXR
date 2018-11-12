@@ -35,7 +35,7 @@ function CancelSetting()
 defaultproperties
 {
     defaultValue=0.5
-    Hint="Adjusts the Sound volume of all Ambient Sounds."
+    Hint="Adjusts the Sound volume of all Ambient Sounds. Also depends on Sound effects volume."
     actionText="Ambient Sound Volume"
     configSetting="ini:Engine.Engine.AudioDevice AmbientVolume"
 }
