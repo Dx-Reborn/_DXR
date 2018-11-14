@@ -22,7 +22,7 @@
 #exec OBJ LOAD FILE=DeusExUIExtra
 #exec OBJ LOAD FILE=DxFonts
 #exec OBJ LOAD FILE=Effects
-#exec OBJ LOAD FILE=EpicParticles
+//#exec OBJ LOAD FILE=EpicParticles
 #EXEC OBJ LOAD FILE=GuiContent.utx
 
 class DeusExBasicHUD extends HUD;
@@ -130,14 +130,11 @@ var localized String NotAvailable;
 var localized String msgReloading;
 var localized String AmmoLabel;
 var localized String ClipsLabel;
-
 var localized string strUses;
 
 
-// Infolink
-/*var localized string strQueued;
-var localized string IncomingTransmission;
-var localized String EndTransmission;*/
+var(ChargedPickups) float HI_BorderX, HI_BorderY, HI_IconX, HI_IconY, HI_Back_X, HI_Back_Y;
+
 
 // Default Colors
 //var Color colBackground;
@@ -149,39 +146,38 @@ var Texture T;
 var texture ItemNameBoxT;
 var PlayerController Player;
 
-Var texture HudHitBase, HudHitFrame, HudHitBody,
+var texture HudHitBase, HudHitFrame, HudHitBody,
 												HudHitArmL,  HudHitArmR,
   									    HudHitLegL, HudHitLegR,
 												HudHitHead, HudHitTorso;
 
-Var(CrosshairCorrection) float CrosshairCorrectionX,CrosshairCorrectionY;
+var/*(CrosshairCorrection)*/ float CrosshairCorrectionX,CrosshairCorrectionY;
 
-Var() float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
-Var() int ItemNameOffsetV, ItemNameOffSetH;
-Var() int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
+var/*()*/ float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
+var/*()*/ int ItemNameOffsetV, ItemNameOffSetH;
+var/*()*/ int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
 
-Var(FrobColoredBars) float TopBarOffset, LowerBarOffSet;
-Var float Health, HealthHead, HealthTorso, HealthLegLeft, HealthLegRight, HealthArmLeft, HealthArmRight;
+var(FrobColoredBars) float TopBarOffset, LowerBarOffSet;
+var float Health, HealthHead, HealthTorso, HealthLegLeft, HealthLegRight, HealthArmLeft, HealthArmRight;
 
 // Для уменьшения рамки выделения для дверей (не самый лучший выход, но как сделать лучше я пока не знаю)
-Var(moverCorrection) float moverCorrectionA, moverCorrectionB,
-													 moverCorrectionC, moverCorrectionD;
-Var() material INBox;
+var /*(moverCorrection) */float moverCorrectionA, moverCorrectionB, moverCorrectionC, moverCorrectionD;
+var material INBox;
 
-var(Energy) int bePosX,bePosY, o2PosX, o2PosY;
-var(Energy) int beBarPosX,beBarPosY, o2BarPosX,o2BarPosY;
+var/*(Energy)*/ int bePosX,bePosY, o2PosX, o2PosY;
+var/*(Energy)*/ int beBarPosX,beBarPosY, o2BarPosX,o2BarPosY;
 
 var float	BioEnergy;
 var float	BioEnergyMax;
 
-var(PoisonEffects) bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
+var/*(PoisonEffects)*/ bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
 var bool bUseAltVBarTexture;
 
 var bool bUnderwater;
 var float	breathPercent;
-var(o2cr) float o2cr; // корректор индикатора кислорода
+var/*(o2cr)*/ float o2cr; // корректор индикатора кислорода
 
-var() bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключают весь ГДИ, midMenuMode растягивает скриншот на фоне.
+var/*() */ bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключают весь ГДИ, midMenuMode растягивает скриншот на фоне.
 
 var bool bDrawInfo;
 
@@ -199,13 +195,13 @@ var int targetLevel;
 var Actor lastTarget;
 var float lastTargetTime;
 
-var (AugVision) bool bVisionActive;
-var (AugVision) int visionLevel;
-var (AugVision) float visionLevelValue;
+var /*(AugVision)*/ bool bVisionActive;
+var /*(AugVision)*/ int visionLevel;
+var/* (AugVision)*/ float visionLevelValue;
 var int activeCount;
 
 // Можно удалить, поскольку теперь это выводится через оверлей.
-var array<Inventory> recentItems;
+//var array<Inventory> recentItems;
 
 var bool bTalking;
 var bool bIncoming;
@@ -1416,6 +1412,7 @@ simulated event PostRender(canvas C)
 		RenderAugsBelt(C); // Задействованные аугментации
     RenderAmmoDisplay(C);
     DrawTargetAugmentation(C);
+    RenderChargedPickups(C);
 
 }
 
@@ -2307,13 +2304,6 @@ function RenderAugsBelt(Canvas C)
     if (dxc != none)
      dxc.SetCanvas(C);
 
-/* AugsBeltBG=(R=139,G=105,B=35,A=255)
- AugsBeltText=(R=255,G=255,B=255,A=255)
- AugsBeltFrame=(R=185,G=177,B=140,A=255)
- AugsBeltActive=(R=202,G=158,B=73,A=255)
- AugsBeltInActive=(R=100,G=100,B=100,A=255)*/
-
-
         c.Style = 1;
         holdY = 7;
         auglen=0;
@@ -2381,19 +2371,82 @@ function RenderAugsBelt(Canvas C)
         c.DrawColor = AugsBeltFrame;//SetDrawColor(127,127,127);
         C.SetPos(C.SizeX-64,0);
         border=Texture'DeusExUI.HUDAugmentationsBorder_Top';
-        //border.bMasked=true;
         C.DrawIcon(border,1.0);
 
         C.SetPos(C.SizeX-64,21);
         border=Texture'DeusExUI.HUDAugmentationsBorder_Center';
-        //border.bMasked=true;
         c.DrawTile(border,64,auglen,0,0,64,2);
 
         C.SetPos(C.SizeX-64,13+auglen);
         border=Texture'DeusExUI.HUDAugmentationsBorder_Bottom';
-        //border.bMasked=true;
         C.DrawIcon(border,1.0);
 }
+
+function RenderChargedPickups(Canvas u)
+{
+  local inventory inv;
+  local int step, hudY, amount;
+
+  if (playerOwner.pawn == none)
+     return;
+
+  hudY = u.SizeY - 80; // Отступ от размера экрана по вертикали
+
+  for (inv=PlayerOwner.pawn.Inventory; inv!=None; inv=inv.Inventory)
+  {
+    if (ChargedPickupInv(inv) != none && ChargedPickupInv(inv).IsActive())
+    {
+      step += 40;
+      amount++;
+
+/*      if (amount == 1)
+      {
+        u.Style = ERenderStyle.STY_Translucent;
+        u.SetPos(u.SizeX-50 + HI_Back_X,hudY - step + HI_Back_Y);
+        u.DrawColor = AugsBeltBG;
+        u.DrawIcon(texture'DeusExUI.UserInterface.HUDIconsBackground',1); // background...
+
+//      u.Style = ERenderStyle.STY_Normal;
+        u.DrawColor = AugsBeltFrame;
+        u.SetPos(u.SizeX-50 + HI_BorderX,hudY - step + HI_BorderY);
+        u.DrawTileStretched(texture'DXR_HUDItemsBorder',64,64);
+
+        u.SetPos(u.SizeX-50 + HI_IconX, hudY - step + HI_IconY);
+        u.Style = ERenderStyle.STY_Normal;
+        u.SetDrawColor(255,255,255,255);
+        u.DrawIconEx(ChargedPickupInv(inv).ChargedIcon,1); // DrawIconEx can use materials (not only textures).
+
+        u.SetPos(u.SizeX-50,hudY - step + 32);
+        u.DrawColor = AugsBeltText;
+        u.Font=Font'DXFonts.FontMenuSmall_DS';
+        u.DrawText(ChargedPickupInv(inv).charge);//@amount);
+      }
+      if (amount > 1)
+      {*/
+        u.Style = ERenderStyle.STY_Translucent;
+        u.SetPos(u.SizeX-50 + HI_Back_X,hudY - step + HI_Back_Y);
+        u.DrawColor = AugsBeltBG;
+        u.DrawTileStretched(texture'DeusExUI.UserInterface.HUDIconsBackground',64, 64); // background...
+
+//      u.Style = ERenderStyle.STY_Normal;
+        u.DrawColor = AugsBeltFrame;
+        u.SetPos(u.SizeX-50 + HI_BorderX,hudY - step + HI_BorderY);
+        u.DrawTileStretched(texture'DXR_HUDItemsBorder',64,64);
+
+        u.SetPos(u.SizeX-50 + HI_IconX, hudY - step + HI_IconY);
+        u.Style = ERenderStyle.STY_Normal;
+        u.SetDrawColor(255,255,255,255);
+        u.DrawIconEx(ChargedPickupInv(inv).ChargedIcon,1); // DrawIconEx can use materials (not only textures).
+
+        u.SetPos(u.SizeX-50,hudY - step + 32);
+        u.DrawColor = AugsBeltText;
+        u.Font=Font'DXFonts.FontMenuSmall_DS';
+        u.DrawText(ChargedPickupInv(inv).charge);//@amount);
+      //}
+    }
+  }
+}
+
 
 
 // Счетчик патронов и обойм/инструментов и ключей
@@ -2577,6 +2630,14 @@ FontSansSerif_8_Bold
 
 defaultproperties
 {
+  HI_Back_X=4.5
+  HI_Back_Y=7.0
+
+  HI_IconX=4.5
+  HI_IconY=7.0
+
+
+
   toolbeltSelPos(1)=(positionX=535,positionY=60)
   toolbeltSelPos(2)=(positionX=484,positionY=60)
   toolbeltSelPos(3)=(positionX=433,positionY=60)

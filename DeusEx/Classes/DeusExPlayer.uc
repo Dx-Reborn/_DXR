@@ -235,10 +235,9 @@ var Actor lastFirstPersonConvoActor;
 var float lastFirstPersonConvoTime;
 var ConPlay conPlay;
 var DataLinkPlay dataLinkPlay;
-//var travel ConHistory conHistory; // remove?
+
 // Used to manage NPC Barks
 var travel BarkManager barkManager;
-//var(Conversation) transient object conListItems;
 var bool bInConversation;
 var string strStartMap;
 

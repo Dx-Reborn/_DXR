@@ -115,3 +115,5 @@ class ImportTextures extends Object;
 
 #exec Texture Import File=Textures\DXR_MessageBox.tga Name=DXR_MessageBox Mips=Off Masked=true
 
+#exec Texture Import File=Textures\DXR_HUDItemsBorder.bmp Name=DXR_HUDItemsBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
