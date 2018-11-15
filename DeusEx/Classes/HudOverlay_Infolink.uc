@@ -36,7 +36,12 @@ function Render(canvas c)
      dxc.SetCanvas(C);
 
     c.DrawColor = InfoLinkBG;
-    c.Style=3;
+//    c.Style=3;
+    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+           else
+             c.Style = ERenderStyle.STY_Normal;
+
 		// Фон и рамки
     c.SetPos(104,0);
     c.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_1',1.0);

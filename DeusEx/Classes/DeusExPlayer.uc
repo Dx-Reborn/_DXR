@@ -57,6 +57,11 @@ var globalconfig int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
 // DXR: New option to display debug info, in addition to built-in ShowDebug()
 var globalconfig bool bExtraDebugInfo;
 
+var globalconfig bool bHUDBordersVisible;
+var globalconfig bool bHUDBordersTranslucent;
+var globalconfig bool bHUDBackgroundTranslucent;
+var globalconfig bool bMenusTranslucent;
+
 var() travel int itemFovCorrection;
 
 var() editconst Actor FrobTarget;
@@ -115,7 +120,7 @@ struct SNanoKeyStruct
 	var() localized String Description;
 };
 var() travel array<SNanoKeyStruct> NanoKeys; // ключи
-var() travel NanoKeyRingInv KeyRing;
+var() /*travel*/ NanoKeyRingInv KeyRing;
 /* ----------------------------------------------------------------------------------------------- */
 struct SDeusExNote
 {

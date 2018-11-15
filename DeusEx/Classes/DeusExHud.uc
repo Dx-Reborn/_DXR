@@ -104,7 +104,7 @@ simulated function DisplayMessages(Canvas C)
          dxc.SetCanvas(C);
 
         c.Font = font'DXFonts.EU_8';
-        c.Style=ERenderStyle.STY_Translucent;
+//        c.Style=ERenderStyle.STY_Translucent;
 
         c.SetOrigin(0,0);
         c.SetClip(c.SizeX - 200, c.SizeY);
@@ -122,7 +122,12 @@ simulated function DisplayMessages(Canvas C)
 	                c.SetClip(w, (14 * messagecount));
                 }
        // Фон
-        c.Style=ERenderStyle.STY_Translucent;
+//        c.Style=ERenderStyle.STY_Translucent;
+        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+              else
+                c.Style = ERenderStyle.STY_Normal;
+
         c./*Set*/DrawColor = MessageBG;//(64,64,64); // Что за--?
 
 //        c.SetDrawColor(255,255,255);

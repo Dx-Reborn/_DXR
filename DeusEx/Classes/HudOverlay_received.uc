@@ -7,6 +7,7 @@ class HudOverlay_received extends HudOverlay;
 var() array<Inventory> recentItems;
 var localized string strReceived;
 var transient DxCanvas dxc;
+var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 function addItem(inventory newItem)
 {
@@ -19,8 +20,17 @@ function addItem(inventory newItem)
 
 function SetInitialState()
 {
-	dxc = new(Outer) class'DxCanvas';
+  local DeusExHUD h;
+
 	SetTimer(recentItems.Length, false);
+	dxc = new(Outer) class'DxCanvas';
+	Super.SetInitialState();
+
+  h = DeusExHUD(level.GetLocalPlayerController().myHUD);
+  InfoLinkBG = h.InfoLinkBG;
+  InfoLinkText = h.InfoLinkText;
+  InfoLinkTitles = h.InfoLinkTitles;
+  InfoLinkFrame = h.InfoLinkFrame;
 }
 
 function Timer()
@@ -55,8 +65,11 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-        c.SetDrawColor(127,127,127);
-        c.Style=3;
+        c.DrawColor=InfoLinkBG;// (127,127,127);
+        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+              else
+                c.Style = ERenderStyle.STY_Normal;
 
         //TL
         c.SetPos(-13,-16);
@@ -93,7 +106,7 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-        c.SetDrawColor(255,255,255);
+        c.DrawColor = InfoLinkFrame;//  SetDrawColor(255,255,255);
         c.Style = ERenderStyle.STY_Translucent;
 
         c.SetPos(-14,-16);
@@ -130,6 +143,7 @@ function Render(Canvas C)
         c.DrawIcon(border,1.0);
 
         c.Style=1;
+        c.DrawColor = InfoLinkTitles;
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
         c.SetPos(0,0);
@@ -149,6 +163,7 @@ function Render(Canvas C)
             	ico = DeusExPickupInv(recentItems[x]).Icon;
 	            c.DrawIconEx(ico,1.0);
   	          c.Style=1;
+              c.DrawColor = InfoLinkText;
 	            dxc.DrawTextJustified(DeusExPickupInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
             }
             if (recentItems[x].isA('DeusExWeaponInv'))
@@ -156,6 +171,7 @@ function Render(Canvas C)
             	ico = DeusExWeaponInv(recentItems[x]).Icon;
 	            c.DrawIconEx(ico,1.0);
   	          c.Style=1;
+              c.DrawColor = InfoLinkText;
 	            dxc.DrawTextJustified(DeusExWeaponInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
 	          }
 	        }

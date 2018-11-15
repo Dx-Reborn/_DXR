@@ -117,3 +117,5 @@ class ImportTextures extends Object;
 
 #exec Texture Import File=Textures\DXR_HUDItemsBorder.bmp Name=DXR_HUDItemsBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 
+#exec Texture Import File=Textures\DXR_MenuColor.bmp Name=DXR_MenuColor Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+

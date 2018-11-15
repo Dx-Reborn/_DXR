@@ -112,6 +112,10 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 	  Controller.OpenMenu("DXRMenu.DXRCustomizeKeys");
 	}
+	else if (Sender==btnColors)
+	{
+	  Controller.OpenMenu("DXRMenu.DXRColors");
+	}
 	return true;
 }
 

@@ -1475,14 +1475,17 @@ function RenderSmallHUDHitDisplay(Canvas C)
 //   local float EnergyBar;
 
 //   C.SetDrawColor(255,255,255,128);
-   C.Style = ERenderStyle.STY_Translucent;
+   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+       c.Style = ERenderStyle.STY_Translucent;
+          else
+             c.Style = ERenderStyle.STY_Normal;
    C.DrawColor = HealthBG;
    C.SetPos(11,11);
 	 C.DrawIcon(HudHitBase,1);
 
    C.SetPos(0,0);
    C.DrawColor = HealthFrame;
-//   C.Style = ERenderStyle.STY_Translucent;
+     C.Style = ERenderStyle.STY_Translucent;
 	 C.DrawIcon(HudHitFrame,1);
 
    C.SetPos(24,16);
@@ -2022,9 +2025,11 @@ function RenderCompass(Canvas C)
   local float offset, width, bearing;
 
    c.DrawColor = compassBG;
-//   c.Style = ERenderStyle.STY_Normal;
-   c.Style = ERenderStyle.STY_Translucent;
    C.SetPos(11,116);
+   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+       c.Style = ERenderStyle.STY_Translucent;
+          else
+           c.Style = ERenderStyle.STY_Normal;
    C.DrawIcon(Texture'HUDCompassBackground_1',1.0);
 
    c.DrawColor = compassFrame;
@@ -2092,8 +2097,11 @@ function RenderToolBelt(Canvas C)
 
 
     c.DrawColor = ToolBeltBG;//(127,127,127);
-    C.Style = ERenderStyle.STY_Translucent;
     C.SetPos(C.SizeX-544,C.SizeY-62);
+    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+            else
+               c.Style = ERenderStyle.STY_Normal;
     C.DrawIcon(Texture'HUDObjectBeltBackground_Left',1.0);
 
     C.SetPos(C.CurX-7,C.CurY);
@@ -2107,7 +2115,10 @@ function RenderToolBelt(Canvas C)
 //        c.Font=Font'DXFonts.EUX_7';
         c.Font=Font'DXFonts.DPix_7';
         c.DrawColor = ToolBeltBG;//(127,127,127);
-        C.Style = ERenderStyle.STY_Translucent;
+        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+               else
+                 c.Style = ERenderStyle.STY_Normal;
         C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
         C.SetPos(C.CurX-13,C.CurY);
 
@@ -2187,7 +2198,11 @@ function RenderToolBelt(Canvas C)
 
     c.Font=Font'DXFonts.DPix_7';
 
-	  C.Style = ERenderStyle.STY_Translucent;
+//	  C.Style = ERenderStyle.STY_Translucent;
+   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+       c.Style = ERenderStyle.STY_Translucent;
+          else
+             c.Style = ERenderStyle.STY_Normal;
     c.DrawColor = ToolBeltBG;
     C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
     C.SetPos(C.CurX-13,C.CurY);
@@ -2222,7 +2237,6 @@ function RenderToolBelt(Canvas C)
 function renderToolBeltSelection(canvas u)
 {
   local DeusExPlayer p;
-//  local int x;
 
   p=Human(PlayerOwner.Pawn);
   if (p == none) // || (p.InHand == none));
@@ -2230,7 +2244,7 @@ function renderToolBeltSelection(canvas u)
 
   if (p.inHand != none)
   {
-   u.SetDrawColor(255,255,0,255);
+   u.SetDrawColor(255,255,0,255); //ToDo: Get color from theme
    if (p.InHand == p.belt[1])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);
@@ -2300,9 +2314,9 @@ function RenderAugsBelt(Canvas C)
     {
         return;
     }
-	    c.Font=Font'DXFonts.FontMenuSmall_DS';
+	  c.Font=Font'DXFonts.FontMenuSmall_DS';
     if (dxc != none)
-     dxc.SetCanvas(C);
+        dxc.SetCanvas(C);
 
         c.Style = 1;
         holdY = 7;
@@ -2331,8 +2345,11 @@ function RenderAugsBelt(Canvas C)
             if(aug != none && aug.bAlwaysActive == false && aug.bHasIt == true)
             {
                 c.DrawColor = AugsBeltBG;//SetDrawColor(127,127,127);
-                c.Style = 3;
                 C.SetPos(C.SizeX-44,holdY+6);
+                if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+                    c.Style = ERenderStyle.STY_Translucent;
+                       else
+                        c.Style = ERenderStyle.STY_Normal;
                 C.DrawIcon(Texture'HUDIconsBackground',1.0);
 
                 if(aug.bIsActive)
@@ -2423,9 +2440,12 @@ function RenderChargedPickups(Canvas u)
       }
       if (amount > 1)
       {*/
-        u.Style = ERenderStyle.STY_Translucent;
         u.SetPos(u.SizeX-50 + HI_Back_X,hudY - step + HI_Back_Y);
         u.DrawColor = AugsBeltBG;
+            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+                u.Style = ERenderStyle.STY_Translucent;
+                  else
+                    u.Style = ERenderStyle.STY_Normal;
         u.DrawTileStretched(texture'DeusExUI.UserInterface.HUDIconsBackground',64, 64); // background...
 
 //      u.Style = ERenderStyle.STY_Normal;
@@ -2474,8 +2494,11 @@ function RenderAmmoDisplay(Canvas c)
         		    toolsleft = NanoKeyRingInv(DeusExPlayer(playerowner.pawn).inhand).GetKeyCount();
 
             c.DrawColor = AmmoDisplayBG;
-            c.Style = ERenderStyle.STY_Translucent;
             C.SetPos(13,C.SizeY-63);
+            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+                c.Style = ERenderStyle.STY_Translucent;
+                  else
+                    c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
             c.DrawColor = AmmoDisplayFrame;
@@ -2503,8 +2526,11 @@ function RenderAmmoDisplay(Canvas c)
         		ico = weapon.icon;
 
             c.DrawColor = AmmoDisplayBG;
-            c.Style = ERenderStyle.STY_Translucent;
             C.SetPos(13,C.SizeY-63);
+            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+                c.Style = ERenderStyle.STY_Translucent;
+                  else
+                    c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
             c.DrawColor = AmmoDisplayFrame;

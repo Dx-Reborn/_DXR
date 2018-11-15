@@ -71,8 +71,11 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-//        c.SetDrawColor(127,127,127);
-        c.Style=3;
+//        c.Style=3;
+        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+              else
+               c.Style = ERenderStyle.STY_Normal;
 
         //TL
         c.SetPos(-13,-16);

@@ -129,9 +129,7 @@ function ResetToDefault()
 }
 
 function CancelSetting();
-
-
-
+function ChangeStyle();
 
 
 defaultproperties
