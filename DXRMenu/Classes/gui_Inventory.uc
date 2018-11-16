@@ -15,6 +15,8 @@ var GUIButton btnEquip, btnUse, btnDrop, btnChangeAmmo;
 var PersonaItemButton selectedItem;			// Currently Selected Inventory item
 
 var HUDObjectSlot selectedSlot;
+var HUDObjectSlot objects[10];
+
 var GUILabel lInventory, lMoney, lMoneyAmount, winStatus; // Инвентарь, деньги, кол-во.
 var GUILabel lCheckKeys, lCheckAmmo, winItemName;
 var GUIScrollTextBox tDesc;
@@ -288,18 +290,50 @@ function CreateMyControls()
   testItem.WinTop = 182;
 	AppendComponent(testItem, true);*/
 
-	selectedSlot = new class'HUDObjectSlot';
+/*	selectedSlot = new class'HUDObjectSlot';
 	selectedSlot.bBoundToParent = true;
   selectedSlot.WinLeft = 120;
   selectedSlot.WinTop = 182;
   selectedSlot.AssignWinInv(self);
 	AppendComponent(selectedSlot, true);
-
+  */
   ApplyTheme();
 	fillList();
   SetMoney();
   CreateInventoryButtons();
+  CreateSlots();
 }
+
+// ----------------------------------------------------------------------
+// CreateSlots()
+//
+// Creates the Slots 
+// ----------------------------------------------------------------------
+function CreateSlots()
+{
+	local int i, p;
+
+	for (i=0; i<10; i++)
+	{
+	  p = 51 * i;
+		objects[i] = new class'HUDObjectSlot';
+		objects[i].WinTop = 537;
+		objects[i].WinLeft = 294 + p;
+		AppendComponent(objects[i], true);
+		objects[i].SetObjectNumber(i);
+
+		// Last item is a little shorter
+		if (i == 0)
+		{
+			objects[i].WinWidth = 44;
+      objects[i].WinLeft = 804;
+		}
+		// Заполнить...
+    if (DeusExPlayer(PlayerOwner().pawn).belt[i] != none)
+	      Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).belt[i]);
+	}
+}
+
 
 function SetMoney()
 {

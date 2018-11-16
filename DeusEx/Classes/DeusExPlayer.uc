@@ -4543,19 +4543,19 @@ exec function ResetPlayer(optional bool bTraining)
 		anItem = Spawn(class'WeaponPistolInv');
 		frobTarget = anItem;
      HandleItemPickup(anItem,false);
-//		anItem.Frob(Self, None);
+		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'WeaponProdInv');
 		frobTarget = anItem;
      HandleItemPickup(anItem,false);
-//		anItem.Frob(Self, None);
+		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'MedKitInv');
 		frobTarget = anItem;
      HandleItemPickup(anItem,false);
-//		anItem.Frob(Self, None);
+		anItem.Frob(Self, None);
     putOnBelt(anItem);
 	}
 }

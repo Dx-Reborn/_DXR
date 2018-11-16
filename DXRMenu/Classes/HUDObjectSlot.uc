@@ -151,50 +151,47 @@ function SetItem(Inventory newItem)
 	}
 
 	// Update the text that will be displayed above the icon (if any)
-//	UpdateItemText();
+	UpdateItemText();
 }
 
 // ----------------------------------------------------------------------
 // UpdateItemText()
 // ----------------------------------------------------------------------
 
-/*function UpdateItemText()
+function UpdateItemText()
 {
-	local DeusExWeapon weapon;
+	local DeusExWeaponInv weapon;
 
 	itemText = "";
 
 	if (item != None)
 	{
-		if (item.IsA('DeusExWeapon'))
+		if (item.IsA('DeusExWeaponInv'))
 		{
 			// If this is a weapon, show the number of remaining rounds 
-			weapon = DeusExWeapon(item);
+			weapon = DeusExWeaponInv(item);
 
 			// Ammo loaded
-			if ((weapon.AmmoName != class'AmmoNone') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
-				itemText = weapon.AmmoType.beltDescription;
+			if ((weapon.AmmoName != class'AmmoNoneInv') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
+				itemText = weapon.AmmoType.GetbeltDescription();
 
 			// If this is a grenade
-			if (weapon.IsA('WeaponNanoVirusGrenade') || 
-				weapon.IsA('WeaponGasGrenade') || 
-				weapon.IsA('WeaponEMPGrenade') ||
-				weapon.IsA('WeaponLAM'))
+			if (weapon.IsA('WeaponNanoVirusGrenadeInv') || weapon.IsA('WeaponGasGrenadeInv') || weapon.IsA('WeaponEMPGrenadeInv') || weapon.IsA('WeaponLAMInv'))
 			{
 				if (weapon.AmmoType.AmmoAmount > 1)
 					itemText = CountLabel @ weapon.AmmoType.AmmoAmount;
 			}
 
 		}
-		else if (item.IsA('DeusExPickup') && (!item.IsA('NanoKeyRing')))
+		else if (item.IsA('DeusExPickupInv') && (!item.IsA('NanoKeyRingInv')))
 		{
 			// If the object is a SkilledTool (but not the NanoKeyRing) then show the 
 			// number of uses
-			if (DeusExPickup(item).NumCopies > 1)
-				itemText = DeusExPickup(item).CountLabel @ String(DeusExPickup(item).NumCopies);
+			if (DeusExPickupInv(item).NumCopies > 1)
+				itemText = DeusExPickupInv(item).CountLabel @ String(DeusExPickupInv(item).NumCopies);
 		}
 	}
-}*/
+}
 
 // ----------------------------------------------------------------------
 // GetItem()
@@ -221,7 +218,8 @@ event DrawWindow(canvas u)
 {
 	// First draw the background
   u.Style = EMenuRenderStyle.MSTY_Normal;
-	u.DrawColor = colBackground;
+//	u.DrawColor = colBackground;
+  u.DrawColor=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
 	u.SetPos(ActualLeft(), ActualTop());
 	u.DrawIcon(texBackground,1);
 //	u.DrawTileStretched(texBackground, ActualWidth(), ActualHeight());
