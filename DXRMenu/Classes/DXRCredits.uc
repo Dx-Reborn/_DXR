@@ -61,11 +61,11 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    WinTitle="Need help?"
+    WinTitle="ToDo: Replace GUILabel with ListBox?"
 
     strSupport="Get Support"
     strClose="OK"
-    strText="Preview Alpha version. If you have problems running this mod and need help, click appropriate button below. Please keep in mind that this is still Alpha version, and it really does have bugs ))"
+    strText="Preview Alpha version. Please keep in mind that this is still Alpha version, and it really does have bugs.|This mod contains code from the following Deus Ex mods:|GMDX|Revision|Vanilla Matters|CoolBits|"
 
 		DefaultHeight=256
 		DefaultWidth=418

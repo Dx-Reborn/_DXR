@@ -13,10 +13,14 @@ var localized String FalseTrue[2];
 
 var transient bool bSavingChanges, bReloadSound;
 
+var transient DeusExGlobals gl;
+
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
     Super.InitComponent(MyController, MyOwner);
     Caption = actionText;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
 }
 
 

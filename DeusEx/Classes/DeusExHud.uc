@@ -14,6 +14,58 @@ var() bool bUseBinocularView;
 var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
 
+function SetInitialState()
+{
+   LoadColorTheme();
+   super.setInitialState();
+}
+
+function LoadColorTheme()
+{
+   local DeusExGlobals gl;
+   local int index;
+
+   gl = class'DeusExGlobals'.static.GetGlobals();
+   index = gl.HUDThemeIndex;
+
+   MessageBG = class'DXR_HUD'.static.GetMessageBG(index);
+   MessageText = class'DXR_HUD'.static.GetMessageText(index);
+   MessageFrame = class'DXR_HUD'.static.GetMessageFrame(index);
+
+   ToolBeltBG = class'DXR_HUD'.static.GetToolBeltBG(index);
+   ToolBeltText = class'DXR_HUD'.static.GetToolBeltText(index);
+   ToolBeltFrame = class'DXR_HUD'.static.GetToolBeltFrame(index);
+
+   AugsBeltBG = class'DXR_HUD'.static.GetAugsBeltBG(index);
+   AugsBeltText = class'DXR_HUD'.static.GetAugsBeltText(index);
+   AugsBeltFrame = class'DXR_HUD'.static.GetAugsBeltFrame(index);
+   AugsBeltActive = class'DXR_HUD'.static.GetAugsBeltActive(index);
+   AugsBeltInActive = class'DXR_HUD'.static.GetAugsBeltInActive(index);
+
+   AmmoDisplayBG = class'DXR_HUD'.static.GetAmmoDisplayBG(index);
+   AmmoDisplayFrame = class'DXR_HUD'.static.GetAmmoDisplayFrame(index);
+
+   compassBG = class'DXR_HUD'.static.GetcompassBG(index);
+   compassFrame = class'DXR_HUD'.static.GetcompassFrame(index);
+
+   HealthBG = class'DXR_HUD'.static.GetHealthBG(index);
+   HealthFrame = class'DXR_HUD'.static.GetHealthFrame(index);
+
+   BooksBG = class'DXR_HUD'.static.GetBooksBG(index);
+   BooksText = class'DXR_HUD'.static.GetBooksText(index);
+   BooksFrame = class'DXR_HUD'.static.GetBooksFrame(index);
+
+   InfoLinkBG = class'DXR_HUD'.static.GetInfoLinkBG(index);
+   InfoLinkText = class'DXR_HUD'.static.GetInfoLinkText(index);
+   InfoLinkTitles = class'DXR_HUD'.static.GetInfoLinkTitles(index);
+   InfoLinkFrame = class'DXR_HUD'.static.GetInfoLinkFrame(index);
+
+   AIBarksBG = class'DXR_HUD'.static.GetAIBarksBG(index);
+   AIBarksText = class'DXR_HUD'.static.GetAIBarksText(index);
+   AIBarksHeader = class'DXR_HUD'.static.GetAIBarksHeader(index);
+   AIBarksFrame = class'DXR_HUD'.static.GetAIBarksFrame(index);
+}
+
 event PostLoadSavedGame()
 {
   if (dxc == none)

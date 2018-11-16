@@ -155,7 +155,8 @@ function InternalOnRendered(canvas u)
 	if (bSelected)
 	{
 
-		u.DrawColor = colSelectionBorder;
+//		u.DrawColor = colSelectionBorder;
+		u.DrawColor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex);//colSelectionBorder;
 		u.Style = EMenuRenderStyle.MSTY_Masked;
 		u.SetPos(ActualLeft(),ActualTop());
 		u.DrawTileStretched(texture'WhiteBorderT', buttonWidth, buttonHeight);

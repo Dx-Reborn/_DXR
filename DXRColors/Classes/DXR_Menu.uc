@@ -285,4 +285,122 @@ defaultproperties
 
   End Object
   MenuColors(1)=col01
+
+	Begin Object Class=DXRColors.DXR_MenuColor Name=col02
+	  ThemeName="Dusk"
+	  BackgoundMode=BM_Alpha
+	  PlayerInterfaceBG=(R=255,G=182,B=255,A=255) // Цвет фона инвентаря, заметок и т.п.
+	  PlayerInterfaceHDR=(R=255,G=150,B=255,A=255) // Подзаголовок 
+	  PlayerInterfaceTextLabels=(R=255,G=175,B=0,A=255) // Текст
+    BackgroundAlpha=200 // Прозрачность
+
+    PlayerInterfaceButton=(R=255,G=182,B=255,A=255)
+    PlayerInterfaceButtonWatched=(R=255,G=192,B=255,A=200)
+    PlayerInterfaceButtonFocused=(R=255,G=172,B=255,A=200)
+    PlayerInterfaceButtonPressed=(R=255,G=162,B=255,A=200)
+    PlayerInterfaceButtonDisabled=(R=120,G=0,B=120,A=200)
+
+    PlayerInterfaceButtonText=(R=255,G=175,B=0,A=200)
+    PlayerInterfaceButtonWatchedText=(R=255,G=200,B=255,A=200)
+    PlayerInterfaceButtonFocusedText=(R=255,G=255,B=255,A=200)
+    PlayerInterfaceButtonPressedText=(R=255,G=205,B=255,A=200)
+    PlayerInterfaceButtonDisabledText=(R=255,G=99,B=255,A=200)
+
+    PlayerInterfaceFrames=(R=255,G=182,B=255,A=255)
+    PlayerInterfaceTabsBackground=(R=255,G=182,B=255,A=255)
+
+    MenuButton=(R=84,G=0,B=84,A=255)
+    MenuButtonWatched=(R=94,G=0,B=94,A=255)
+    MenuButtonButtonFocused=(R=104,G=0,B=104,A=255)
+    MenuButtonPressed=(R=80,G=0,B=80,A=255)
+    MenuButtonDisabled=(R=44,G=0,B=44,A=255)
+
+    MenuButtonText=(R=255,G=175,B=0,A=255)
+    MenuButtonWatchedText=(R=255,G=200,B=255,A=255)
+    MenuButtonButtonFocusedText=(R=255,G=255,B=255,A=255)
+    MenuButtonPressedText=(R=255,G=205,B=255,A=255)
+    MenuButtonDisabledText=(R=255,G=99,B=255,A=255)
+
+    MenuHeaderText=(R=255,G=175,B=0,A=255) // Title text color
+    MenuHeaderBubble=(R=84,G=0,B=84,A=255) // Area inside of titlebar
+    MenuHeader=(R=255,G=182,B=255,A=255) // window titlebar
+    MenuBackground=(R=255,G=182,B=255,A=255) // Background image
+    MenuBorders=(R=255,G=182,B=255,A=255) // Frames, for windows only
+
+    ScrollBarColor=(R=255,G=182,B=255,A=255)
+    ScrollBarButtonsColor=(R=255,G=182,B=255,A=255)
+    ScrollBarArea=(R=255,G=182,B=255,A=255)
+
+    SliderBG=(R=158,G=0,B=154,A=255) // Slider background
+    SliderKnob=(R=255,G=175,B=0,A=255) // Slider movable knob
+
+	  HintBG=(R=84,G=0,B=84,A=255) // Tooltip
+	  HintText=(R=255,G=175,B=0,A=255) // Tooltip text color
+
+    NotesText=(R=255,G=175,B=0,A=255) // Notes text
+    NotesFrame=(R=84,G=0,B=84,A=255) // Frame around note text
+
+    AugButtonBorder=(R=255,G=255,B=0,A=255)
+
+  End Object
+  MenuColors(2)=col02
+
+	Begin Object Class=DXRColors.DXR_MenuColor Name=col03
+	  ThemeName="Darkest Time"
+	  BackgoundMode=BM_Regular
+	  PlayerInterfaceBG=(R=82,G=82,B=80,A=255) // Цвет фона инвентаря, заметок и т.п.
+	  PlayerInterfaceHDR=(R=130,G=139,B=138,A=255) // Подзаголовок
+	  PlayerInterfaceTextLabels=(R=121,G=119,B=106,A=255) // Текст
+    BackgroundAlpha=200 // Прозрачность
+
+    PlayerInterfaceButton=(R=82,G=82,B=80,A=255)
+    PlayerInterfaceButtonWatched=(R=92,G=92,B=90,A=200)
+    PlayerInterfaceButtonFocused=(R=122,G=92,B=120,A=200)
+    PlayerInterfaceButtonPressed=(R=102,G=102,B=100,A=200)
+    PlayerInterfaceButtonDisabled=(R=42,G=42,B=40,A=200)
+
+    PlayerInterfaceButtonText=(R=130,G=139,B=138,A=200)
+    PlayerInterfaceButtonWatchedText=(R=170,G=179,B=178,A=200)
+    PlayerInterfaceButtonFocusedText=(R=180,G=189,B=188,A=200)
+    PlayerInterfaceButtonPressedText=(R=190,G=199,B=198,A=200)
+    PlayerInterfaceButtonDisabledText=(R=130,G=139,B=138,A=200)
+
+    PlayerInterfaceFrames=(R=130,G=139,B=138,A=255)
+    PlayerInterfaceTabsBackground=(R=130,G=139,B=138,A=255)
+
+    MenuButton=(R=130,G=139,B=138,A=255)
+    MenuButtonWatched=(R=130,G=139,B=138,A=255)
+    MenuButtonButtonFocused=(R=130,G=139,B=138,A=255)
+    MenuButtonPressed=(R=130,G=139,B=138,A=255)
+    MenuButtonDisabled=(R=30,G=39,B=38,A=255)
+
+    MenuButtonText=(R=175,G=176,B=178,A=255)
+    MenuButtonWatchedText=(R=195,G=196,B=198,A=255)
+    MenuButtonButtonFocusedText=(R=215,G=216,B=218,A=255)
+    MenuButtonPressedText=(R=165,G=166,B=168,A=255)
+    MenuButtonDisabledText=(R=75,G=76,B=78,A=255)
+
+    MenuHeaderText=(R=130,G=139,B=138,A=255) // Title text color
+    MenuHeaderBubble=(R=84,G=84,B=84,A=255) // Area inside of titlebar
+    MenuHeader=(R=130,G=139,B=138,A=255) // window titlebar
+    MenuBackground=(R=130,G=139,B=138,A=255) // Background image
+    MenuBorders=(R=130,G=139,B=138,A=255) // Frames, for windows only
+
+    ScrollBarColor=(R=130,G=139,B=138,A=255)
+    ScrollBarButtonsColor=(R=130,G=139,B=138,A=255)
+    ScrollBarArea=(R=130,G=139,B=138,A=255)
+
+    SliderBG=(R=130,G=139,B=138,A=255) // Slider background
+    SliderKnob=(R=180,G=189,B=188,A=255) // Slider movable knob
+
+	  HintBG=(R=130,G=139,B=138,A=255) // Tooltip
+	  HintText=(R=180,G=189,B=188,A=255) // Tooltip text color
+
+    NotesText=(R=180,G=189,B=188,A=255) // Notes text
+    NotesFrame=(R=130,G=139,B=138,A=255) // Frame around note text
+
+    AugButtonBorder=(R=128,G=128,B=128,A=255) // Same for Inventory, Augmentations, and for MedicalBot too.
+
+  End Object
+  MenuColors(3)=col03
 }

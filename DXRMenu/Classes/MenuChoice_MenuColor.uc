@@ -7,14 +7,14 @@ class MenuChoice_MenuColor extends MenuChoice_ThemeColor;
 // ----------------------------------------------------------------------
 // LoadSetting()
 // ----------------------------------------------------------------------
-/*
+
 function LoadSetting()
 {
 	// Populate the enums!
 	PopulateThemes(0);
 
-	currentTheme = player.ThemeManager.GetCurrentMenuColorTheme();
-	SetValueFromString(currentTheme.GetThemeName());
+  currentTheme = gl.MenuThemeIndex;
+	SetValueFromString(class'DXR_Menu'.static.GetThemeName(currentTheme));
 }
 
 // ----------------------------------------------------------------------
@@ -23,9 +23,11 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.MenuThemeName = enumText[GetValue()];
+	gl.MenuTheme = enumText[GetValue()];
+	gl.MenuThemeIndex = GetValue();
+  class'DeusExGlobals'.static.StaticSaveConfig();
 }
-
+/*
 // ----------------------------------------------------------------------
 // CancelSetting()
 // ----------------------------------------------------------------------
@@ -52,7 +54,7 @@ function ResetToDefault()
 
 	ChangeStyle();
 }
-
+*/
 // ----------------------------------------------------------------------
 // CycleNextValue()
 // ----------------------------------------------------------------------
@@ -60,7 +62,6 @@ function ResetToDefault()
 function CycleNextValue()
 {
 	Super.CycleNextValue();
-	player.ThemeManager.SetMenuThemeByName(enumText[GetValue()]);
 	ChangeStyle();
 }
 
@@ -71,13 +72,24 @@ function CycleNextValue()
 function CyclePreviousValue()
 {
 	Super.CyclePreviousValue();
-	player.ThemeManager.SetMenuThemeByName(enumText[GetValue()]);
 	ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
+// Change style of all opened menus, but don't save to .ini for now.
+function ChangeStyle()
+{
+  local DxWindowTemplate dx;
+
+	gl.MenuTheme = enumText[GetValue()];
+	gl.MenuThemeIndex = GetValue();
+
+     foreach AllObjects(class'DxWindowTemplate',dx)
+         dx.ApplyTheme();
+}
+
 // ----------------------------------------------------------------------
-*/
+
 defaultproperties
 {
     defaultTheme="Grey"

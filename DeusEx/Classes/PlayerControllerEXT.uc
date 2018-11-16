@@ -151,15 +151,15 @@ function AssignHUDColors(int index)
      ClientMessage("Current HUD colorTheme: "$class'DXR_HUD'.static.GetHUDThemeName(index));
    }
 }
-
+/*
 function SetInitialState()
 {
-  gl = class'DeusExGlobals'.static.GetGlobals();
   super.SetInitialState();
 
+  gl = class'DeusExGlobals'.static.GetGlobals();
   AssignHUDColors(gl.HUDThemeIndex);
 }
-
+*/
 
 // ----------------------------------------------------------------------
 // RestrictInput()

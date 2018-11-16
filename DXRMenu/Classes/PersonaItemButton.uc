@@ -70,6 +70,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	SetSize(buttonWidth, buttonHeight);
 	// Get a pointer to the player
 	player = DeusExPlayer(PlayerOwner().Pawn);
+
+	OnRendered=InternalOnRendered;
 }
 
 // ----------------------------------------------------------------------

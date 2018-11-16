@@ -7,14 +7,13 @@ class MenuChoice_HUDColor extends MenuChoice_ThemeColor;
 // ----------------------------------------------------------------------
 // LoadSetting()
 // ----------------------------------------------------------------------
-/*
+
 function LoadSetting()
 {
 	// Populate the enums!
 	PopulateThemes(1);
-
-	currentTheme = player.ThemeManager.GetCurrentHUDColorTheme();
-	SetValueFromString(currentTheme.GetThemeName());
+	currentTheme = gl.HUDThemeIndex;
+	SetValueFromString(class'DXR_HUD'.static.GetHUDThemeName(currentTheme));
 }
 
 // ----------------------------------------------------------------------
@@ -23,9 +22,11 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	player.HUDThemeName = enumText[GetValue()];
+	gl.HUDTheme = enumText[GetValue()];
+	gl.HUDThemeIndex = GetValue();
+  class'DeusExGlobals'.static.StaticSaveConfig();
 }
-
+/*
 // ----------------------------------------------------------------------
 // CancelSetting()
 // ----------------------------------------------------------------------
@@ -56,11 +57,11 @@ function ResetToDefault()
 // ----------------------------------------------------------------------
 // CycleNextValue()
 // ----------------------------------------------------------------------
-
+*/
 function CycleNextValue()
 {
 	Super.CycleNextValue();
-	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
+//	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
 	ChangeStyle();
 }
 
@@ -71,10 +72,10 @@ function CycleNextValue()
 function CyclePreviousValue()
 {
 	Super.CyclePreviousValue();
-	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
+//	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
 	ChangeStyle();
 }
-*/
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 

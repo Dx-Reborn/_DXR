@@ -36,7 +36,8 @@ function InternalOnRendered(canvas u)
 	Super.InternalOnRendered(u);
 
 	// Draw selection border
-	if (!bSelected)
+//	if (!bSelected)
+	if (bSelected)
 	{
 		u.drawcolor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex); //colBorder; //gc.SetTileColor(colBorder);
 		//gc.SetStyle(DSTY_Masked);

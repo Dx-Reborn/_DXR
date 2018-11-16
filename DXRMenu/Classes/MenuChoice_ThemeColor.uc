@@ -5,24 +5,38 @@
 class MenuChoice_ThemeColor extends DXREnumButton;
 
 var int currentTheme;
-var String     defaultTheme;
+var String defaultTheme; // Change to Integer??
 
 // ----------------------------------------------------------------------
 // PopulateThemes()
+// DXR: All themes are stored as defprops in DXR_Menu.uc and DXR_HUD.uc
+// in DXRColors package. 
 // ----------------------------------------------------------------------
 
 function PopulateThemes(int themeType)
 {
-/*	local ColorTheme theme;
-	local int themeIndex;
-	
-	theme = player.ThemeManager.GetFirstTheme(themeType);
-	
-	while(theme != None)
+	local int i, k;
+	local array<string> Themes;
+	local array<string> MenuThemes;
+
+	if (ThemeType == 1) // 1=HUD
 	{
-		enumText[themeIndex++] = theme.GetThemeName();
-		theme = player.ThemeManager.GetNextTheme();
-	}*/
+	  Themes = class'DXR_HUD'.static.GetAllHUDThemes();
+
+	  for (i=0;i<Themes.length;i++)
+	  {
+	    enumText[i] = class'DXR_HUD'.static.GetHUDThemeName(i);
+	  }
+	}//--------------------------------------------------------
+  else if (ThemeType == 0) // 0=Menu
+	{
+	  MenuThemes = class'DXR_Menu'.static.GetAllThemes();
+
+	  for (k=0;k<MenuThemes.length;k++)
+	  {
+	    enumText[k] = class'DXR_Menu'.static.GetThemeName(k);
+	  }
+	}
 }
 
 // ----------------------------------------------------------------------

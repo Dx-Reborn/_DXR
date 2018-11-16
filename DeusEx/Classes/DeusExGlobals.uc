@@ -17,6 +17,8 @@ var medicalBot lastMedBot; // указатель на медбота, которым воспользовался игрок
 
 var config int MenuThemeIndex; // Store menu theme index here, so i can read it at any time, from any object.
 var config int HUDThemeIndex; // Store HUD theme index here, so i can read it at any time, from any object.
+var config string MenuTheme;
+var config string HUDTheme;
 
 /*-- Для переносимых декораций (чтобы можно было забрать коробку на другой уровень )))--*/
 var string TravelDeco; // переносимая декорация

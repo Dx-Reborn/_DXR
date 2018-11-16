@@ -1,5 +1,5 @@
 /**/
-class STY_DXR_ButtonNavbar extends DXRStyles;//GUIStyles;
+class STY_DXR_ButtonNavbar extends DXRStyles;
 
 function ApplyTheme(int index)
 {
@@ -36,11 +36,17 @@ defaultproperties
 	FontNames(13)="UT2HeaderFont"
 	FontNames(14)="UT2HeaderFont"
 
-	RStyles(0)=MSTY_Normal
+/*	RStyles(0)=MSTY_Normal
 	RStyles(1)=MSTY_Normal
 	RStyles(2)=MSTY_Normal
 	RStyles(3)=MSTY_Normal
-	RStyles(4)=MSTY_Normal
+	RStyles(4)=MSTY_Normal*/
+
+	RStyles(0)=MSTY_Alpha
+	RStyles(1)=MSTY_Alpha
+	RStyles(2)=MSTY_Alpha
+	RStyles(3)=MSTY_Alpha
+	RStyles(4)=MSTY_Alpha
 
 		FontColors(0)=(R=211,G=211,B=211,A=255)
     FontColors(1)=(R=255,G=255,B=255,A=255)
