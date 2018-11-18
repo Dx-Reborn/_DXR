@@ -22,7 +22,7 @@ cpptext
 
 function SetInstantMusicVolume(float vol)
 {
-  default.savedMusicVolume = float(ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"));
+  savedMusicVolume = float(ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"));
   ConsoleCommand("set ini:Engine.Engine.AudioDevice MusicVolume"@vol);
 }
 

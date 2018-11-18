@@ -67,6 +67,8 @@ var bool bButtonPressed;
 function ChangeToggle()
 {
   bChecked = !bChecked;
+  bButtonPressed = bChecked;
+//    log(self@GetToggle());
 }
 
 function SetToggle(bool bNewToggle)
@@ -106,11 +108,21 @@ event InitComponent(GUIController MyController, GUIComponent MyOwner)
 //	StyleChanged();
 }
 
+function bool InternalOnClick(GUIComponent Sender)
+{
+    ChangeToggle();
+    ToggleChanged(Self, GetToggle());
+    winInv.ToggleChanged(Self, GetToggle());
+
+ return true;
+}
+
+
 // ----------------------------------------------------------------------
 // ToggleChanged()
 // ----------------------------------------------------------------------
 
-/*event bool ToggleChanged(Window button, bool bNewToggle)
+event bool ToggleChanged(GUIComponent button, bool bNewToggle)
 {
 	if ((item == None) && (bNewToggle))
 	{
@@ -121,7 +133,7 @@ event InitComponent(GUIController MyController, GUIComponent MyOwner)
 	{
 		return False;
 	}
-}*/
+}
 
 // ----------------------------------------------------------------------
 // SetObjectNumber()
@@ -202,24 +214,17 @@ function Inventory GetItem()
 	return (item);
 }
 
-/*native(1284) final function DrawTexture(float destX, float destY,
-                                        float destWidth, float destHeight,
-                                        float srcX, float srcY,
-                                        texture tx);
-native(1285) final function DrawPattern(float destX, float destY,
-                                        float destWidth, float destHeight,
-                                        float orgX, float orgY,
-                                        texture tx);
-*/
 // ----------------------------------------------------------------------
 // DrawWindow()
 // ----------------------------------------------------------------------
 event DrawWindow(canvas u)
 {
+  local float x1, x2, y1, y2;
+
 	// First draw the background
   u.Style = EMenuRenderStyle.MSTY_Normal;
-//	u.DrawColor = colBackground;
-  u.DrawColor=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+  colBackground=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+	u.DrawColor = colBackground;
 	u.SetPos(ActualLeft(), ActualTop());
 	u.DrawIcon(texBackground,1);
 //	u.DrawTileStretched(texBackground, ActualWidth(), ActualHeight());
@@ -236,8 +241,9 @@ event DrawWindow(canvas u)
 		SetFillColor();
 		u.Style = EMenuRenderStyle.MSTY_Translucent;
 		u.DrawColor = fillColor;
-    u.SetPos(ActualLeft(), ActualTop());
-    u.DrawTileStretched(texture'solid', ActualWidth(), ActualHeight());
+    u.SetPos(ActualLeft() + 1, ActualTop() + 3); // +1 && +3 
+    u.DrawTileStretched(texture'solid', slotFillWidth, slotFillHeight);
+//    u.DrawTileStretched(texture'solid', ActualWidth(), ActualHeight());
 //		gc.DrawPattern( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, Texture'Solid' );
 	}
 
@@ -252,21 +258,30 @@ event DrawWindow(canvas u)
     u.DrawIcon(item.GetIcon(), 1);
 //		gc.DrawTexture(slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, item.GetIcon());
 
-		// Text defaults
-//		gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-	//	gc.EnableWordWrap(false);
-		u.DrawColor = colObjectNum;// gc.SetTextColor(colObjectNum);
+		u.DrawColor = class'DXR_Menu'.static.GetMenuHeaderText(gl.menuThemeIndex); //colObjectNum;// gc.SetTextColor(colObjectNum);
 
 		// Draw the item description at the bottom
-		u.SetPos(ActualLeft() + 1, ActualTop() + 42);
-		u.DrawText(item.GetBeltDescription());
-//		gc.DrawText(1, 42, 42, 7, item.BeltDescription);
+     x1 = ActualLeft();
+     y1 = ActualTop();
+     x2 = ActualLeft() + ActualWidth();
+     y2 = ActualTop() + ActualHeight();
+
+     u.DrawTextJustified(item.GetBeltDescription(), 1, x1, y1, x2 - 2 , y2 + 42);
+//     u.Reset();
 
 		// If there's any additional text (say, for an ammo or weapon), draw it
 		if (itemText != "")
 		{
-      u.SetPos(ActualLeft() + slotIconX, ActualTop() + slotIconY);
-      u.DrawText(itemText);
+		   x1 = ActualLeft();
+		   y1 = ActualTop();
+		   x2 = ActualLeft() + ActualWidth();
+		   y2 = ActualTop() + ActualHeight();
+
+       u.DrawTextJustified(itemText, 1, x1, y1, x2 - 6 , (y2 + itemTextPosY) - 12);
+//       u.Reset();
+
+//      u.DrawTextJustified(itemText, 1, ActualLeft(),ActualTop(), ActualLeft() + ActualWidth(), ActualTop() + ActualHeight());
+//      u.DrawText(itemText);
 			//gc.DrawText(slotIconX, itemTextPosY, slotFillWidth, 8, itemText);
 		}
 
@@ -275,7 +290,8 @@ event DrawWindow(canvas u)
 		{
 		  u.DrawColor=colSelectionBorder;
 		  u.SetPos(ActualLeft() + slotIconX - 1, ActualTop() + slotIconY - 1);
-      u.DrawTileStretched(texture'WhiteBorderT', ActualWidth(), ActualHeight());
+//      u.DrawTileStretched(texture'WhiteBorderT', ActualWidth(), ActualHeight());
+      u. DrawTilePartialStretched(texture'WhiteBorderT', slotFillWidth + 3, slotFillHeight + 15);
 /*			gc.SetTileColor(colSelectionBorder);
 			gc.SetStyle(DSTY_Masked);
 			gc.DrawBorders(slotIconX - 1, slotIconY - 1, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);*/
@@ -284,7 +300,7 @@ event DrawWindow(canvas u)
 	
 	// Draw the Object Slot Number in upper-right corner
 //	gc.SetAlignments(HALIGN_Right, VALIGN_Center);
-  u.DrawColor = colObjectNum;
+  u.DrawColor = class'DXR_Menu'.static.GetMenuHeaderText(gl.menuThemeIndex);//colObjectNum;
   u.SetPos(ActualLeft() + slotNumberX - 1, ActualTop() + slotNumberY);
   u.DrawText(string(objectNum));
 
@@ -343,6 +359,9 @@ function SetFillColor()
 	switch(fillMode)
 	{
 		case FM_Selected:
+      colSelected.r = Int(Float(colBackground.r) * 0.50);
+      colSelected.g = Int(Float(colBackground.g) * 0.50);
+      colSelected.b = Int(Float(colBackground.b) * 0.50);
 			fillColor = colSelected;
 			break;
 		case FM_DropBad:
@@ -545,6 +564,7 @@ function GetIconPos(out int iconPosX, out int iconPosY)
 
 defaultproperties
 {
+    bBoundToParent=true
     colObjectNum=(R=0,G=170,B=255,A=255)
     colDropGood=(R=32,G=128,B=32,A=255)
     colDropBad=(R=128,G=32,B=32,A=255)
@@ -555,7 +575,7 @@ defaultproperties
     borderWidth=44
     borderHeight=50
     bAllowDragging=True
-    fillMode=3
+    fillMode=FM_None
     slotIconX=1
     slotIconY=3
     slotNumberX=38
@@ -567,5 +587,6 @@ defaultproperties
     CountLabel="COUNT:"
     StyleName=""
     OnRendered=DrawWindow
+    OnClick=InternalOnClick
     bDropSource=true
 }

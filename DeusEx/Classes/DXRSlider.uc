@@ -39,7 +39,6 @@ function InternalOnRendered(canvas u)
   u.SetPos(fLeft, ActualTop() + bTop);
   u.DrawColor = class'DXR_Menu'.static.GetSliderKnob(gl.MenuThemeIndex);
   u.DrawIcon(texture'DeusExUI.UserInterface.MenuSlider',1);
-//  style.Draw(u, MenuState, fLeft, ActualTop() + bTop, fWidth, ActualHeight());
 }
 
 function float GetNumTicks()
@@ -53,16 +52,13 @@ function SetEnumeration(int tickPos, coerce string newStr)
   enumStrings[tickPos] = newStr;
 }
 
-/*function bool MyOnDraw(canvas u)
+function bool InternalCapturedMouseMove(float deltaX, float deltaY)
 {
-  local float fLeft, fWidth;
+  if ((deltaX > 0.5) || (deltaY > 0.5) || (deltaX < -0.5) || (deltaY < -0.5)) // DXR: To avoid playing sound when mouse button is pressed.
+   playerOwner().pawn.playSound(sound'DeusExSounds.UserInterface.Menu_Slider', slot_Interface, 0.25, true); // True -- do not override sound.
 
-  fWidth = VeryStrangeVariable;
-  fLeft = (ActualLeft() + (fWidth/2) + ((ActualWidth() - fWidth) * ((Value-MinValue) / (MaxValue - MinValue)))) - (fWidth / 2);
-  style.Draw(u, MenuState, fLeft, ActualTop() + bTop, fWidth, ActualHeight());
-
-  return true;
-} */
+   return super.InternalCapturedMouseMove(deltaX,deltaY);
+}
 
 defaultproperties
 {
@@ -74,8 +70,7 @@ defaultproperties
   fx=4
   FillImage=texture'pinkmasktex'
   BarStyleName=""
-  CaptionStyleName=""//"SliderCaption"
-//  OnDraw=MyOnDraw
+  CaptionStyleName=""
   OnRendered=InternalOnRendered
   OnClickSound=CS_None
   FontScale=FNS_Small

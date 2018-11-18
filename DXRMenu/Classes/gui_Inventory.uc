@@ -57,7 +57,7 @@ function ShowPanel(bool bShow)
  	player.winInv = self;
 
   if (bShow) // как в GMDX )))
-     PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.75);
+     PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.25);
 
   EnableButtons();
 }
@@ -283,25 +283,11 @@ function CreateMyControls()
   iAmmo.OnClick = InternalOnClick;
 	AppendComponent(iAmmo, true);
 
-/*  testItem = new class'PersonaInventoryItemButton';
-  testItem.bBoundToParent = true;
-  testitem.icon = texture'LargeIconFireExtinguisher';
-  testItem.WinLeft = 120;
-  testItem.WinTop = 182;
-	AppendComponent(testItem, true);*/
-
-/*	selectedSlot = new class'HUDObjectSlot';
-	selectedSlot.bBoundToParent = true;
-  selectedSlot.WinLeft = 120;
-  selectedSlot.WinTop = 182;
-  selectedSlot.AssignWinInv(self);
-	AppendComponent(selectedSlot, true);
-  */
   ApplyTheme();
 	fillList();
   SetMoney();
   CreateInventoryButtons();
-  CreateSlots();
+  CreateToolBeltSlots();
 }
 
 // ----------------------------------------------------------------------
@@ -309,7 +295,7 @@ function CreateMyControls()
 //
 // Creates the Slots 
 // ----------------------------------------------------------------------
-function CreateSlots()
+function CreateToolBeltSlots()
 {
 	local int i, p;
 
@@ -317,8 +303,10 @@ function CreateSlots()
 	{
 	  p = 51 * i;
 		objects[i] = new class'HUDObjectSlot';
-		objects[i].WinTop = 537;
-		objects[i].WinLeft = 294 + p;
+		objects[i].WinTop = 486;
+		objects[i].WinLeft = 56 + p;
+		objects[i].WinInv = self;
+		//objects[i].OnClick = InternalOnClick;
 		AppendComponent(objects[i], true);
 		objects[i].SetObjectNumber(i);
 
@@ -326,7 +314,7 @@ function CreateSlots()
 		if (i == 0)
 		{
 			objects[i].WinWidth = 44;
-      objects[i].WinLeft = 804;
+      objects[i].WinLeft = 566;
 		}
 		// Заполнить...
     if (DeusExPlayer(PlayerOwner().pawn).belt[i] != none)
@@ -385,8 +373,6 @@ function invListChange(GUIComponent Sender)
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-  local inventory inv;
-
   if (Sender==iKeys)
   {
     ListNanoKeys();
@@ -1106,13 +1092,46 @@ function StartButtonDrag(InventoryButton newDragButton)
 	bDragging  = True;
 }
 
+event bool ToggleChanged(GUIComponent button, bool bNewToggle)
+{
+	if (button.IsA('HUDObjectSlot') && (bNewToggle))
+	{
+		if ((selectedSlot != None) && (selectedSlot != HUDObjectSlot(button)))
+			selectedSlot.HighlightSelect(False);
+
+		selectedSlot = HUDObjectSlot(button);
+
+		// Only allow to be highlighted if the slot isn't empty
+		if (selectedSlot.item != None)
+		{
+			selectedSlot.HighlightSelect(bNewToggle);
+//			SelectInventoryItem(selectedSlot.item);
+		}
+		else
+		{
+			selectedSlot = None;
+		}
+	}
+//	else if (button.IsA('PersonaCheckboxWindow'))
+//	{
+//		DeusExPlayer(PlayerOwner().pawn).bShowAmmoDescriptions = bNewToggle;
+//		DeusExPlayer(PlayerOwner().pawn).SaveConfig();
+//		UpdateAmmoDisplay();
+//	}
+
+	EnableButtons();
+
+	return True;
+}
+
+
 
 
 
 defaultproperties
 {
-    invButtonHeight=64//53
-    invButtonWidth=64//53
+    invButtonHeight=63//53
+    invButtonWidth=63//53
 
     smallInvHeight=35
     smallInvWidth=40

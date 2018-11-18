@@ -9,12 +9,12 @@ var texture         largeIcon;         // Larger-than-usual icon for the invento
 var texture         Icon;
 var int           largeIconWidth;    // Width of graphic in texture
 var int           largeIconHeight;   // Height of graphic in texture
-var int           invSlotsX;         // Number of horizontal inv. slots this item takes
-var int           invSlotsY;         // Number of vertical inv. slots this item takes
-var travel int        invPosX;           // X position on the inventory window
-var travel int        invPosY;           // Y position on the inventory window
-var travel bool       bInObjectBelt;     // Is this object actually in the object belt?
-var travel int        beltPos;           // Position on the object belt
+//var int           invSlotsX;         // Number of horizontal inv. slots this item takes
+//var int           invSlotsY;         // Number of vertical inv. slots this item takes
+//var travel int        invPosX;           // X position on the inventory window
+//var travel int        invPosY;           // Y position on the inventory window
+//var travel bool       bInObjectBelt;     // Is this object actually in the object belt?
+//var travel int        beltPos;           // Position on the object belt
 var() localized String    description;       // Description
 var localized String    beltDescription;   // Description used on the object belt
 
@@ -105,9 +105,10 @@ function RestoreAmmoAmount()
 }
 
 function string GetDescription()
-{
-  return description;
-}
+{return description;}
+
+function string GetbeltDescription()  // Description used on the object belt
+{return beltdescription;}
 
 
 

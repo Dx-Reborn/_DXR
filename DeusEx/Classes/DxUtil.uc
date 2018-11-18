@@ -153,8 +153,6 @@ static function bool LoadSoundFromFile(string Path, out Sound Sound, optional Ob
 }
 
 
-
-
 /* ----------------------------------------------------------------------
   ConvertSpaces()
   Преобразовать пробелы в подчеркивание (_)

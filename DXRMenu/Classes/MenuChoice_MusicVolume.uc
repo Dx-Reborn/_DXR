@@ -27,7 +27,8 @@ function LoadSetting()
 function CancelSetting()
 {
    Super.CancelSetting();
-   LoadSetting();
+   PlayerControllerExt(PlayerOwner()).RestoreMusicVolume();
+//   LoadSetting();
 }
 
 // ----------------------------------------------------------------------

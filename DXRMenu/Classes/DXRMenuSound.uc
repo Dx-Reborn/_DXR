@@ -45,7 +45,6 @@ var MenuChoice_SoundUsePreCache mSoundUsePreCache;
 
 var transient bool bRestartSoundSys; // changed to true when required by some options.
 
-
 function CreateMyControls()
 {
   cMusicVolume = new class'DXRChoiceInfo';
@@ -380,7 +379,6 @@ function bool InternalOnClick(GUIComponent Sender)
   return true;
 }
 
-
 defaultproperties
 {
   WinTitle="Sound settings"
@@ -410,8 +408,6 @@ defaultproperties
 
     TopRightCornerX=542
     TopRightCornerY=16
-
-
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
 		Image=Texture'DXR_MenuSoundBackground'

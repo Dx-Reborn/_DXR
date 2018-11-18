@@ -4542,20 +4542,20 @@ exec function ResetPlayer(optional bool bTraining)
 	{
 		anItem = Spawn(class'WeaponPistolInv');
 		frobTarget = anItem;
+//		DoFrob(self, none);
      HandleItemPickup(anItem,false);
-		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'WeaponProdInv');
 		frobTarget = anItem;
+//		DoFrob(self, none);
      HandleItemPickup(anItem,false);
-		anItem.Frob(Self, None);
     putOnBelt(anItem);
 
 		anItem = Spawn(class'MedKitInv');
 		frobTarget = anItem;
+//		DoFrob(self, none);
      HandleItemPickup(anItem,false);
-		anItem.Frob(Self, None);
     putOnBelt(anItem);
 	}
 }
