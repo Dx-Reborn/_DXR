@@ -318,7 +318,7 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 	}
 
 	// Energy Rate
-	winInfo.AddText("|" $ "|" $ Sprintf(EnergyRateLabel, Int(EnergyRate)));
+	winInfo.AddText("|" $ Sprintf(EnergyRateLabel, Int(EnergyRate)));
 
 	// Current Level
 	strOut = Sprintf(CurrentLevelLabel, CurrentLevel + 1);
@@ -329,11 +329,11 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 	else if (CurrentLevel == MaxLevel )
 		strOut = strOut @ MaximumLabel;
 
-	winInfo.AddText("|" $ "|" $ strOut);
+	winInfo.AddText("|" $ strOut);
 
 	// Always Active?
 	if (bAlwaysActive)
-		winInfo.AddText("|" $ "|" $ AlwaysActiveLabel);
+		winInfo.AddText("|" $ AlwaysActiveLabel);
 
 	return True;
 }

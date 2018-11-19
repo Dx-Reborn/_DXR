@@ -1373,9 +1373,10 @@ simulated event PostRender(canvas C)
 	  if (s != none)
 	  {
 	    c.setPos(0,0);
-      c.style = ERenderStyle.STY_Normal;
-      c.SetDrawColor(64,64,64,255);
-      c.DrawTile(s, c.SizeX, c.SizeY, 0, 256, 512, 256);
+      c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+//      c.SetDrawColor(64,64,64,255);
+//      c.DrawTile(s, c.SizeX, c.SizeY, 0, 256, 512, 256);
+      c.DrawTile(texture'ConWindowBackground', c.SizeX, c.SizeY, 0, 256, 512, 256);
 	  }
 	  return;
 	}

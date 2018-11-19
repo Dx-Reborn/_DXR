@@ -37,7 +37,7 @@ function CancelSetting()
 //	LoadSetting();
    DeusExPlayerController(PlayerOwner()).RestoreSoundVolume();
 }
-
+  
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties

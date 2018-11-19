@@ -96,6 +96,7 @@ function CreateMyControls()
 	iAugsOVR = new(none) class'GUIImage';
 	iAugsOVR.Image=texture'DXR_AugmentationsOverlays';
   iAugsOVR.bBoundToParent = true;
+  iAugsOVR.tag = 75;
 	iAugsOVR.WinHeight = 384;
   iAugsOVR.WinWidth = 256;
   iAugsOVR.WinLeft = 146;
@@ -326,10 +327,10 @@ function pr_OnRendered(canvas C)
 
 function GetAugInfo()
 {
-  local string strOut;
+//  local string strOut;
 
     lTitle2.Caption = selectedAug.AugmentationName;
-    AugDescArea.SetContent(selectedAug.description$"|");
+/*    AugDescArea.SetContent(selectedAug.description$"|");
     strOut = class'Actor'.static.Sprintf(selectedAug.CurrentLevelLabel, selectedAug.CurrentLevel + 1);
 	
 	// Can Upgrade / Is Active labels
@@ -343,7 +344,7 @@ function GetAugInfo()
 
 	// Always Active?
     if (selectedAug.bAlwaysActive)
-        AugDescArea.AddText(selectedAug.AlwaysActiveLabel);
+        AugDescArea.AddText(selectedAug.AlwaysActiveLabel);*/
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -419,7 +420,7 @@ function SelectAugmentation(PersonaItemButton buttonPressed)
 		selectedAugButton = buttonPressed;
 		selectedAug       = Augmentation(selectedAugButton.GetClientObject());
 
-//		selectedAug.UpdateInfo(winInfo);
+		selectedAug.UpdateInfo(AugDescArea);
 		selectedAugButton.SelectButton(True);
 		GetAugInfo();//
 
@@ -447,7 +448,7 @@ function UpgradeAugmentation()
 		// the player's inventory
 		selectedAug.IncLevel();
     GetAugInfo();
-//		selectedAug.UpdateInfo(winInfo);
+		selectedAug.UpdateInfo(AugDescArea);
 		augCan.UseOnce();
     lmsg.Caption = class'Actor'.static.Sprintf(selectedAug.AugNowHave, selectedAug.AugmentationName, selectedAug.CurrentLevel + 1);
 
@@ -486,7 +487,7 @@ function ActivateAugmentation()
 
     GetAugInfo();
 //		PersonaAugmentationItemButton(selectedAugButton).SetActive(selectedAug.IsActive());
-//	selectedAug.UpdateInfo(winInfo);
+	selectedAug.UpdateInfo(AugDescArea);
 
 	EnableButtons();
 }
@@ -733,10 +734,10 @@ defaultproperties
     augSlotSpacingY=59
 
     AugmentationsTitleText="Augmentations"
-    UpgradeButtonLabel="&Upgrade"
-    ActivateButtonLabel="Acti&vate"
-    DeactivateButtonLabel="Deac&tivate"
-    UseCellButtonLabel="Us&e Cell"
+    UpgradeButtonLabel="Upgrade"
+    ActivateButtonLabel="Activate"
+    DeactivateButtonLabel="Deactivate"
+    UseCellButtonLabel="Use Cell"
     AugCanUseText="To upgrade an Augmentation, click on the Augmentation you wish to upgrade, then on the Upgrade button."
     BioCellUseText="To replenish Bioelectric Energy for your Augmentations, click on the Use Cell button."
     AugLocationDefault="Default"

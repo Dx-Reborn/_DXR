@@ -54,6 +54,7 @@ function ApplyTheme()
 }
 
 function CreateMyControls();
+function CancelSettings();
 
 function bool InternalOnClick(GUIComponent Sender)
 {  
@@ -137,6 +138,14 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
   if (ParentPage != none)
   ParentPage.bVisible=true;
   Super.Closed(Sender, bCancelled);
+}
+
+function bool OnCanClose(optional bool bCancelled)
+{
+    if (bCancelled)
+        CancelSettings();
+
+    return Super.OnCanClose(bCancelled);
 }
 
 

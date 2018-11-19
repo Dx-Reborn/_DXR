@@ -79,6 +79,7 @@ function CreateMyControls()
 	iHealthOverlays.WinHeight = 384;
   iHealthOverlays.WinWidth = 256;
   iHealthOverlays.WinLeft = 98;
+  iHealthOverlays.tag = 75;
   iHealthOverlays.WinTop = 68;
 	AppendComponent(iHealthOverlays, true);
 

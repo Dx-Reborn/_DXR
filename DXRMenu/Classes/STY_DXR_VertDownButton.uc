@@ -20,6 +20,7 @@ function ApplyTheme(int index)
 defaultproperties
 {
     KeyName="VertDownButton"
+
     Images(0)=Texture'DeusExUI.UserInterface.MenuVScrollDownButton_Normal'
     Images(1)=Texture'DeusExUI.UserInterface.MenuVScrollDownButton_Normal'
     Images(2)=Texture'DeusExUI.UserInterface.MenuVScrollDownButton_Normal'

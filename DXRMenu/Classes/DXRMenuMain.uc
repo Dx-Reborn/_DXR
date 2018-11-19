@@ -5,7 +5,7 @@
 class DXRMenuMain extends DxWindowTemplate;
 
 #exec OBJ LOAD FILE=DeusExUI.u
-const ver="Deus Ex: Reborn v0.54 alpha.";
+const ver="Deus Ex: Reborn alpha build";
 var Automated GUIButton bNew, bLoad, bTraining, bCreators, bOptions, bMods, bIntro, bExit;
 var localized string strNew, strLoad, strTraining, strCreators, strOptions, strMods, strIntro, strExit;
 var localized string dNew, dLoad, dSave, dTraining, dCreators, dOptions, dMods, dIntro, dExit;
@@ -169,7 +169,7 @@ function PaintDXRVersion(Canvas C)
 {
   C.SetPos(i_FrameBG.ActualLeft() + 4, i_FrameBG.ActualTop() + i_FrameBG.WinWidth + 64);
   C.SetDrawColor(255,255,255);
-  C.DrawText(ver);
+  C.DrawText(ver@ class'DXRVersion'.static.GetDXRVersion());
 }
 
 

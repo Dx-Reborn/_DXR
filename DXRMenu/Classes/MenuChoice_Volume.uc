@@ -76,7 +76,7 @@ defaultproperties
 {
     VolumeOffText="OFF"
     VolumeMaxText="MAX"
-    numTicks=11
+    numTicks=12//  11
     startValue=0.00
     endValue=1.00
 }

@@ -26,6 +26,8 @@ defaultproperties
 	Images(1)=Material'DeusExUI.UserInterface.MenuVScrollScale'
 	Images(2)=Material'DeusExUI.UserInterface.MenuVScrollScale'
 	Images(3)=Material'DeusExUI.UserInterface.MenuVScrollScale'
+	Images(4)=Material'DeusExUI.UserInterface.MenuVScrollScale'
+
 
 /*	Images(0)=Material'Solid'
 	Images(1)=Material'Solid'

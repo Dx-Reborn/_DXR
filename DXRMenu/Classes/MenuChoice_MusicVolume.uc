@@ -3,7 +3,7 @@
 //=============================================================================
 
 class MenuChoice_MusicVolume extends MenuChoice_Volume;
-
+/*
 function SliderOnChange(GUIComponent Sender)
 {
    super.SliderOnChange(Sender);
@@ -30,7 +30,7 @@ function CancelSetting()
    PlayerControllerExt(PlayerOwner()).RestoreMusicVolume();
 //   LoadSetting();
 }
-
+  */
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties
