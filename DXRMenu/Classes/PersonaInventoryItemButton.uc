@@ -472,7 +472,7 @@ delegate OnDragOver(GUIComponent Sender);           // Called when the mouse is 
 defaultproperties
 {
     bAllowDragging=True
-    fillMode=5
+    fillMode=FM_None
     colDragGood=(R=0,G=255,B=0,A=0),
     colDragBad=(R=255,G=0,B=0,A=0),
     colWeaponModTrue=(R=32,G=128,B=32,A=0),

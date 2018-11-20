@@ -7,14 +7,14 @@ class AugmentationUpgradeCannisterInv extends DeusExPickupInv;
 
 var localized string MustBeUsedOn;
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	if (winInfo == None)
 		return false;
 
-	winInfo.SetContent("");
+	GUIScrollTextBox(winInfo).SetContent("");
 //	winInfo.SetTitle(itemName);
-	winInfo.AddText(Description $ "||" $ MustBeUsedOn);
+	GUIScrollTextBox(winInfo).AddText(Description $ "||" $ MustBeUsedOn);
 
 	return true;
 }

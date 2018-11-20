@@ -525,7 +525,7 @@ function RemoveItem(Inventory item)
 		return;
 
 	// Remove it from the object belt
-//	invBelt.RemoveObject(item);
+	RemoveObjectFromBelt(item);
 
 	if ((selectedItem != None) && (item == selectedItem.GetClientObject()))
 	{
@@ -643,47 +643,6 @@ function bool InventoryClick(GUIComponent Sender)
     SelectInventory(PersonaItemButton(Sender));
     return true;
   }
-}
-
-function SelectInventory(PersonaItemButton buttonPressed)
-{
-	local Inventory anItem;
-
-	// Don't do extra work.
-	if (buttonPressed != None) 
-	{
-		if (selectedItem != buttonPressed)
-		{
-			// Deselect current button
-			if (selectedItem != None)
-				selectedItem.SelectButton(False);
-
-			selectedItem = buttonPressed;
-
-			ClearSpecialHighlights();
-			HighlightSpecial(Inventory(selectedItem.GetClientObject()));
-//			SelectObjectBeltItem(Inventory(selectedItem.GetClientObject()), True);
-
-			selectedItem.SelectButton(True);
-
-			anItem = Inventory(selectedItem.GetClientObject());
-
-//			if (anItem != None)
-//				anItem.UpdateInfo(winInfo);
-
-			EnableButtons();
-		}
-	}
-	else
-	{
-		if (selectedItem != None)
-			PersonaInventoryItemButton(selectedItem).SelectButton(False);
-
-//		if (selectedSlot != None)
-//			selectedSlot.SetToggle(False);
-
-		selectedItem = None;
-	}
 }
 
 function ClearSpecialHighlights()
@@ -919,7 +878,7 @@ function RemoveSelectedItem()
 		selectedItem = None;
 
 		// Remove it from the object belt
-//		invBelt.RemoveObject(inv);
+		RemoveObjectFromBelt(inv);
 
 		// Remove it from the inventory screen
 		UnequipItemInHand();
@@ -1105,7 +1064,7 @@ event bool ToggleChanged(GUIComponent button, bool bNewToggle)
 		if (selectedSlot.item != None)
 		{
 			selectedSlot.HighlightSelect(bNewToggle);
-//			SelectInventoryItem(selectedSlot.item);
+			SelectInventoryItem(selectedSlot.item);
 		}
 		else
 		{
@@ -1123,6 +1082,117 @@ event bool ToggleChanged(GUIComponent button, bool bNewToggle)
 
 	return True;
 }
+
+// ----------------------------------------------------------------------
+// SelectInventory()
+// ----------------------------------------------------------------------
+
+function SelectInventory(PersonaItemButton buttonPressed)
+{
+	local Inventory anItem;
+
+	// Don't do extra work.
+	if (buttonPressed != None) 
+	{
+		if (selectedItem != buttonPressed)
+		{
+			// Deselect current button
+			if (selectedItem != None)
+				selectedItem.SelectButton(False);
+
+			selectedItem = buttonPressed;
+
+			ClearSpecialHighlights();
+			HighlightSpecial(Inventory(selectedItem.GetClientObject()));
+			SelectObjectBeltItem(Inventory(selectedItem.GetClientObject()), True);
+
+			selectedItem.SelectButton(True);
+
+			anItem = Inventory(selectedItem.GetClientObject());
+
+			if (anItem != None)
+				anItem.UpdateInfo(tDesc);
+
+			EnableButtons();
+		}
+	}
+	else
+	{
+		if (selectedItem != None)
+			PersonaInventoryItemButton(selectedItem).SelectButton(False);
+
+		if (selectedSlot != None)
+			selectedSlot.SetToggle(false);
+
+		selectedItem = None;
+	}
+}
+
+// ----------------------------------------------------------------------
+// SelectInventoryItem()
+//
+// Searches through the inventory items for the item passed in and
+// selects it.
+// ----------------------------------------------------------------------
+function SelectInventoryItem(Inventory item)
+{
+	local PersonaInventoryItemButton itemButton;
+	local int i;
+
+  for (i=0;i<Controls.Length;i++)
+  {
+    if (controls[i].IsA('PersonaInventoryItemButton'))
+    {
+      itemButton = PersonaInventoryItemButton(controls[i]);
+		  if (itemButton != None)
+      {
+				if (itemButton.GetClientObject() == item)
+				{
+					SelectInventory(itemButton);
+					break;
+				}
+      }
+    }
+  }
+}
+
+function SelectObjectBeltItem(Inventory item, bool bNewToggle)
+{
+//	invBelt.SelectObject(item, bNewToggle);
+	local int objectIndex;
+
+	for (objectIndex=0;objectIndex<10;objectIndex++)
+	{
+		if (objects[objectIndex].item == item)
+		{
+			if (!objects[objectIndex].GetToggle())
+				objects[objectIndex].SetToggle(bNewToggle);
+		}
+		else
+		{
+			// Make sure no other objects are toggled.
+			objects[objectIndex].SetToggle(False);		
+			objects[objectIndex].HighlightSelect(False);
+		}
+	}
+}
+
+function RemoveObjectFromBelt(Inventory item)
+{
+	local int i;
+
+	for (i=0;i<9;i++)
+	{
+		if (objects[i].GetItem() == item)
+		{
+			objects[i].SetItem(None);
+			item.RemoveFromObjectBelt();
+			item.SetbeltPos(-1);
+			break;
+		}
+	}
+}
+
 
 
 

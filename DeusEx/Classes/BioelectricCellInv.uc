@@ -38,7 +38,7 @@ state Activated
 Begin:
 }
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	local string str;
 
@@ -46,13 +46,13 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 		return false;
 
 //	winInfo.SetTitle(itemName);
-  winInfo.SetContent("");
-	winInfo.SetContent(Description $ "||");
-	winInfo.AddText(Sprintf(RechargesLabel, RechargeAmount));
+  GUIScrollTextBox(winInfo).SetContent("");
+	GUIScrollTextBox(winInfo).SetContent(Description $ "||");
+	GUIScrollTextBox(winInfo).AddText(Sprintf(RechargesLabel, RechargeAmount));
 
 	// Print the number of copies
 	str = CountLabel @ String(NumCopies);
-	winInfo.AddText("||" $ str);
+	GUIScrollTextBox(winInfo).AddText("||" $ str);
 
 	return true;
 }

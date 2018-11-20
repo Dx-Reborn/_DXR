@@ -38,7 +38,7 @@ function NoPrintMustBeUsed()
 	bNoPrintMustBeUsed = True;
 }
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	local DeusExPlayer player;
 	local String outText;
@@ -50,13 +50,13 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 
 	if (player != None)
 	{
-	  winInfo.SetContent("");
+	  GUIScrollTextBox(winInfo).SetContent("");
 //		winInfo.SetTitle(itemName);
-		winInfo.SetContent(Description $ "||");
+		GUIScrollTextBox(winInfo).SetContent(Description $ "||");
 
 		if (!bNoPrintMustBeUsed)
 		{
-			winInfo.AddText("|" $ MustBeUsedOn $ "|");
+			GUIScrollTextBox(winInfo).AddText("|" $ MustBeUsedOn $ "|");
 		}
 		else
 		{
@@ -66,7 +66,7 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 		// Print the number of copies
 		outText = CountLabel @ String(NumCopies);
 
-		winInfo.AddText("|" $ outText);
+		GUIScrollTextBox(winInfo).AddText("|" $ outText);
 	}
 	return true;
 }

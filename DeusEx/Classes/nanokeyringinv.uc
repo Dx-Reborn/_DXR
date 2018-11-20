@@ -180,7 +180,7 @@ function string GetDescription()
   return Description $"||"$ KeysAvailableLabel $ GetKeyCount();
 }
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	local int keyCount, i;
 
@@ -188,29 +188,29 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 		return False;
 
 //	winInfo.SetTitle(itemName);
-	winInfo.SetContent(KeysAvailableLabel);
-  winInfo.AddText("_____________________________________");
+	GUIScrollTextBox(winInfo).SetContent(KeysAvailableLabel);
+  GUIScrollTextBox(winInfo).AddText("_____________________________________");
 
 	if (GetPlayer() != None)
 	{
     for (i=0;i<NanoKeys.Length;i++)
     {
-       winInfo.AddText("  " $ NanoKeys[i].Description);
+       GUIScrollTextBox(winInfo).AddText("  " $ NanoKeys[i].Description);
        keyCount++;
     }
   }
 	if (keyCount > 0)
 	{
-    winInfo.AddText("_____________________________________");
-		winInfo.AddText(Description);
+    GUIScrollTextBox(winInfo).AddText("_____________________________________");
+		GUIScrollTextBox(winInfo).AddText(Description);
 	}
 	else
 	{
-		winInfo.SetContent("");
+		GUIScrollTextBox(winInfo).SetContent("");
 //		winInfo.SetTitle(itemName);
-		winInfo.AddText(NoKeys);
+		GUIScrollTextBox(winInfo).AddText(NoKeys);
 	}
-	return True;
+	return true;
 }
 
 

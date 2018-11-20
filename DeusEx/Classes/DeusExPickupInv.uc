@@ -6,22 +6,22 @@
 
 class DeusExPickupInv extends RuntimePickup abstract;
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	local string str;
 
 	if (winInfo == None)
 		return false;
 
-	winInfo.SetContent("");
+	GUIScrollTextBox(winInfo).SetContent("");
 //	winInfo.SetTitle(itemName);
-	winInfo.SetContent(Description $ "||");
+	GUIScrollTextBox(winInfo).SetContent(Description $ "||");
 
 	if (bCanHaveMultipleCopies)
 	{
 		// Print the number of copies
 		str = CountLabel @ String(NumCopies);
-		winInfo.AddText(str);
+		GUIScrollTextBox(winInfo).AddText(str);
 	}
 	return true;
 }

@@ -25,15 +25,15 @@ function bool CanUpgradeWeapon(DeusExWeaponInv weapon);
 // Describes the capabilities of this weapon mod,
 // for instance, "Increases base accuracy by 20%"
 // ----------------------------------------------------------------------
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	if (winInfo == None)
 		return False;
 
-	winInfo.SetContent("");
+	GUIScrollTextBox(winInfo).SetContent("");
 //	winInfo.SetTitle(itemName);
-	winInfo.SetContent(Description $ "||");
-	winInfo.AddText(DragToUpgrade);
+	GUIScrollTextBox(winInfo).SetContent(Description $ "||");
+	GUIScrollTextBox(winInfo).AddText(DragToUpgrade);
 
 	return True;
 }

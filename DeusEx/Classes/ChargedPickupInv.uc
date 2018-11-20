@@ -225,7 +225,7 @@ state Activated
 
 defaultproperties
 {
-    bOneUseOnly=True
+    bOneUseOnly=true
     ActivateSound=Sound'DeusExSounds.Pickup.PickupActivate'
     DeActivateSound=Sound'DeusExSounds.Pickup.PickupDeactivate'
     ChargeRemainingLabel="Charge remaining:"

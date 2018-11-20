@@ -57,7 +57,7 @@ function string GetDescription()
   return AugsAvailable$"|"$AugsStr()$"|"$Description;
 }
 
-function bool UpdateInfo(GUIScrollTextBox winInfo)
+function bool UpdateInfo(Object winInfo)
 {
 	local Int canIndex;
 	local Augmentation aug;
@@ -65,12 +65,12 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 	if (winInfo == None)
 		return false;
 
-	winInfo.SetContent("");
+	GUIScrollTextBox(winInfo).SetContent("");
 //	winInfo.SetTitle(itemName);
-	winInfo.SetContent(Description);
+	GUIScrollTextBox(winInfo).SetContent(Description);
 
-	winInfo.AddText("||" $ AugsAvailable);
-	winInfo.AddText("||");
+	GUIScrollTextBox(winInfo).AddText("||" $ AugsAvailable);
+	GUIScrollTextBox(winInfo).AddText("||");
 
 	for(canIndex=0; canIndex<ArrayCount(AddAugs); canIndex++)
 	{
@@ -79,10 +79,10 @@ function bool UpdateInfo(GUIScrollTextBox winInfo)
 			aug = GetAugmentation(canIndex);
 
 			if (aug != None)
-				winInfo.AddText(aug.default.AugmentationName $ "|");
+				GUIScrollTextBox(winInfo).AddText(aug.default.AugmentationName $ "|");
 		}
 	}
-	winInfo.AddText("|" $ MustBeUsedOn);
+	GUIScrollTextBox(winInfo).AddText("|" $ MustBeUsedOn);
 
 	return true;
 }
