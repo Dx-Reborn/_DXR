@@ -862,8 +862,8 @@ function SetInvSlots(Inventory anItem, int newValue)
 function PlaceItemInSlot(Inventory anItem, int col, int row)
 {
 	// Save in the original Inventory item also
-	log("PlaceItemInSlot. AnItem is="$anItem@"col(X)="$col@"row(Y)="$row);
-	anItem.SetinvPosX(col);
+	log("PlaceItemInSlot. AnItem is="$anItem@"InvPosX="$col@"InvPosY="$row);
+	anItem.SetInvPosX(col);
 	anItem.SetinvPosY(row);
 
 	SetInvSlots(anItem, 1);

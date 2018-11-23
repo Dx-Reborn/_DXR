@@ -13,6 +13,9 @@ var MenuChoice_HUDColor              mHUDColor;
 
 var DXRChoiceInfo iMenuTranslucency,iMenuColor,iHUDBordersVisible,iHUDBorderTranslucency,iHUDTranslucency,iHUDColor;
 
+var() float ExamplePosX, examplePosY;
+var() float ExampleFramePosX, exampleFramePosY;
+
 function CreateMyControls()
 {
   SetSize(308, 632);
@@ -202,6 +205,62 @@ function bool InternalOnClick(GUIComponent Sender)
   return true;
 }
 
+function PaintOnBG(Canvas u)
+{
+  local float x,y;
+
+  x = ActualLeft(); y = ActualTop();
+
+  Super.PaintOnBG(u);
+
+
+  if (DeusExPlayer(playerOwner().pawn).bHUDBordersVisible)
+  {
+    if (DeusExPlayer(playerOwner().pawn).bHUDBordersTranslucent)
+    u.Style = EMenuRenderStyle.MSTY_Translucent;
+    else
+    u.Style = EMenuRenderStyle.MSTY_Alpha;
+
+    u.DrawColor = class'DXR_HUD'.static.GetInfoLinkFrame(gl.HudThemeIndex);
+    u.SetPos(x + ExampleFramePosX,y + ExampleFramePosY);
+    u.DrawIcon(texture'MenuColorHUDBorders',1);
+  }
+
+  if (DeusExPlayer(playerOwner().pawn).bHUDBackgroundTranslucent)
+  u.Style = EMenuRenderStyle.MSTY_Translucent;
+  else
+  u.Style = EMenuRenderStyle.MSTY_Alpha;
+  u.DrawColor = class'DXR_HUD'.static.GetInfoLinkBG(gl.HudThemeIndex);
+  u.SetPos(x + ExamplePosX,y + ExamplePosY);
+  u.DrawIcon(texture'DXR_HUDExample',1);
+
+  u.DrawColor = class'DXR_HUD'.static.GetInfoLinkTitles(gl.HudThemeIndex);
+  u.font = font'DxFonts.HR_9';
+  u.SetPos(x + ExamplePosX + 28,y + ExamplePosY + 24);
+  u.DrawText("Infolink title");
+
+  u.DrawColor = class'DXR_HUD'.static.GetInfoLinkText(gl.HudThemeIndex);
+  u.font = font'DxFonts.MSS_8';
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 40);
+  u.DrawText("HUD Message text");
+
+  u.font = font'DxFonts.MSS_7';
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 55);
+  u.DrawText("Infolink as an example. Other");
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 65);
+  u.DrawText("HUD parts may have different");
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 75);
+  u.DrawText("colors, since HUD themes for");
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 85);
+  u.DrawText("DXR have color parameters");
+  u.SetPos(x + ExamplePosX + 26,y + ExamplePosY + 95);
+  u.DrawText("for different HUD parts.");
+
+
+
+  
+}
+
 defaultproperties
 {
   WinTitle="Colors"
@@ -224,6 +283,13 @@ defaultproperties
 
     TopRightCornerX=626
     TopRightCornerY=16
+
+    ExamplePosX=403
+    ExamplePosY=42
+
+    ExampleFramePosX=403
+    ExampleFramePosY=42
+
 
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground

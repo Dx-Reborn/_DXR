@@ -81,7 +81,8 @@ function Render(canvas c)
        c.StrLen(buffer, holdX, ttySize);
        c.SetClip(291,55);
        c.SetPos(0,textYStart);
-       c.DrawColor = InfoLinkText;
+       //c.DrawColor = InfoLinkText;
+       dxc.TeleTypeTextColor = InfoLinkText;
        dxc.DrawTextTeletype(buffer,"|", Level.TimeSeconds-ttyCounter,ttyCRate);
      }
 
@@ -98,7 +99,8 @@ function Render(canvas c)
     //Horizontal line
     c.SetOrigin(198,0);
     c.SetPos(0,0);
-    c.SetDrawColor(255,255,255);
+    //c.SetDrawColor(255,255,255);
+    c.DrawColor = InfoLinkText;
     dxc.DrawHorizontal(32,294);
 
     if(datalinkplay.dataLinkQueue[0] != none)
@@ -136,6 +138,7 @@ function Render(canvas c)
         c.DrawText(IncomingTransmission);
 
         c.SetPos(0,15);
+        c.DrawColor = InfoLinkText;
         dxc.DrawHorizontal(15, 293);
 
 //			c.reset();
@@ -143,7 +146,6 @@ function Render(canvas c)
      }
 			if (datalinkplay.bEndTransmission == true && (Level.TimeSeconds%1.0 >= 0.5))
 			{
-  	   //c.SetDrawColor(255,255,255);
        c.DrawColor = InfoLinkTitles;
      	 c.SetOrigin(198,17);
 

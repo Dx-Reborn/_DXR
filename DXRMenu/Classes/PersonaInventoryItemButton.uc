@@ -84,7 +84,7 @@ function InternalOnRendered(canvas u)
 		// belt, draw a small number in the 
 		// upper-right corner designating it's position in the belt
 
-		if ( anItem.GetInObjectBelt())
+		if (anItem.GetInObjectBelt())
 		{
 			u.font = font'MSS_8';// gc.SetFont(Font'FontMenuSmall_DS'); gc.SetAlignments(HALIGN_Right, VALIGN_Center);
 			u.DrawColor = colHeaderText;
@@ -167,6 +167,7 @@ function InternalOnRendered(canvas u)
 	}
 	if (bDrawDebug)
 	{
+	u.Reset();
 	u.SetPos(ActualLeft() + 4,ActualTop() + 4);
 	u.drawText("selected"@bSelected);
 	u.SetPos(ActualLeft() + 4,ActualTop() + 14);
@@ -175,7 +176,10 @@ function InternalOnRendered(canvas u)
 	u.drawText("invPosY="$anItem.GetInvPosY());
 
 	u.SetPos(ActualLeft() + 4,ActualTop() + 34);
-	u.drawText("bDragging="$bDragging);
+	u.drawText("bDragging="$bDragging$", bDragStart="$bDragStart$", CanDrag?="$bAllowDragging);
+
+	u.SetPos(ActualLeft() + 4,ActualTop() + 44);
+	u.drawText("ActualLeft="$ActualLeft()$", ActualTop="$ActualTop());
 	}
 }
 
@@ -301,20 +305,8 @@ function SetFillColor()
 //
 // If the user presses the mouse button, initiate drag mode
 // ----------------------------------------------------------------------
-function bool BeginDrag(GUIComponent Sender)
-{
-	local Bool bResult;
+//function bool BeginDrag(GUIComponent Sender)
 
-	bResult = False;
-
-	bDragStart = True;
-	clickX = controller.mouseX;
-	clickY = controller.mouseY;
-	bResult = True;
-
-	return bResult;
-}
- 
 /*event bool MouseButtonPressed(float pointX, float pointY, EInputKey button, int numClicks)
 {
 	local Bool bResult;
@@ -357,22 +349,27 @@ function bool BeginDrag(GUIComponent Sender)
 // MouseMoved()
 // ----------------------------------------------------------------------
 
-/*event MouseMoved(float newX, float newY)
+//Delegate OnHitTest(float MouseX, float MouseY);                         // Called when Hit test is performed for mouse input
+//function MouseMoved(float newX, float newY)
+function bool CapturedMouseMove(float newX, float newY)
 {
-	local Float invX;
-	local Float invY;
+	local float invX;
+	local float invY;
+
+//			log(self@"mousemoved?");
 
 	if (bAllowDragging)
 	{
 		if (bDragStart)
 		{
+
 			// Only start a drag even if the cursor has moved more than, say,
 			// two pixels.  This prevents problems if the user just wants to 
 			// click on an item to select it but is a little sloppy.  :)
 			if (( Abs(newX - clickX) > 2 ) || ( Abs(newY- clickY) > 2 ))
 			{
 				StartButtonDrag();
-				SetCursorPos(width/2, height/2);
+//				SetCursorPos(ActualLeft() + ActualWidth(), ActualTop() + ActualHeight());
 			}
 		}
 
@@ -385,7 +382,8 @@ function bool BeginDrag(GUIComponent Sender)
 			winInv.UpdateDragMouse(invX, invY);
 		}
 	}
-}*/
+	return true;
+}
 
 // ----------------------------------------------------------------------
 // CursorRequested()
@@ -423,25 +421,25 @@ function bool BeginDrag(GUIComponent Sender)
 // StartButtonDrag()
 // ----------------------------------------------------------------------
 
-/*function StartButtonDrag()
+function StartButtonDrag()
 {
 	bDragStart = False;
 	bDragging  = True;
 
 	winInv.StartButtonDrag(Self);
-}*/
+}
 
 // ----------------------------------------------------------------------
 // FinishButtonDrag()
 // ----------------------------------------------------------------------
 
-/*function FinishButtonDrag()
+function FinishButtonDrag()
 {
 	bDragStart = False;
 	bDragging  = False;
 
 	winInv.FinishButtonDrag();
-}*/
+}
 
 // Подсказки
 //Delegate OnMousePressed(GUIComponent Sender, bool bRepeat);     // Sent when a mouse is pressed (initially)
@@ -473,12 +471,12 @@ defaultproperties
 {
     bAllowDragging=True
     fillMode=FM_None
-    colDragGood=(R=0,G=255,B=0,A=0),
-    colDragBad=(R=255,G=0,B=0,A=0),
-    colWeaponModTrue=(R=32,G=128,B=32,A=0),
-    colWeaponModFalse=(R=128,G=32,B=32,A=0),
-    colDropGood=(R=32,G=128,B=32,A=0),
-    colDropBad=(R=128,G=32,B=32,A=0),
+    colDragGood=(R=0,G=255,B=0,A=255)
+    colDragBad=(R=255,G=0,B=0,A=255)
+    colWeaponModTrue=(R=32,G=128,B=32,A=255)
+    colWeaponModFalse=(R=128,G=32,B=32,A=255)
+    colDropGood=(R=32,G=128,B=32,A=255)
+    colDropBad=(R=128,G=32,B=32,A=255)
     fillTexture=Texture'Solid'
     CountLabel="Count: %d"
     RoundLabel="%d Rd"
@@ -486,7 +484,10 @@ defaultproperties
 
     OnRendered=InternalOnRendered
 
-    OnBeginDrag=BeginDrag
+//    OnBeginDrag=BeginDrag
+
+//    OnHitTest=MouseMoved
+//      OnCapturedMouseMove=CapturedMouseMove
 /*    OnEndDrag=
     OnDragDrop=
     OnDragEnter=          // Called on the target component when the mouse enters the components bounds

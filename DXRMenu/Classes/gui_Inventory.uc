@@ -311,10 +311,13 @@ function CreateToolBeltSlots()
 		objects[i].SetObjectNumber(i);
 
 		// Last item is a little shorter
+		// DXR: Don't allow to remove KeyRing.
 		if (i == 0)
 		{
 			objects[i].WinWidth = 44;
       objects[i].WinLeft = 566;
+      objects[i].bDropSource = false;
+      objects[i].bAllowDragging = false;
 		}
 		// Заполнить...
     if (DeusExPlayer(PlayerOwner().pawn).belt[i] != none)
@@ -367,7 +370,7 @@ function fillList()
 
 function invListChange(GUIComponent Sender)
 {
-  tDesc.SetContent(invList.List.GetExtra());
+//  tDesc.SetContent(invList.List.GetExtra());
 }
 
 
@@ -397,6 +400,7 @@ function bool InternalOnClick(GUIComponent Sender)
   {
      DropSelectedItem();
   }
+
 	return true;
 }
 
@@ -426,6 +430,17 @@ function PaintFrames(canvas u)
 
   u.SetPos(x + rFrameXb, y + rframeYb);
   u.drawtileStretched(texture'InventoryBorder_6', rfSizeXb, rfSizeYb);
+}
+
+function UpdateDragMouse(float newX, float newY)
+{
+   // ToDo: Найти что это делает.
+   // Или работать через встроенные Delegates??
+}
+
+function FinishButtonDrag()
+{
+   //
 }
 
 // ----------------------------------------------------------------------
@@ -641,6 +656,7 @@ function bool InventoryClick(GUIComponent Sender)
   if (Sender.IsA('PersonaItemButton'))
   {
     SelectInventory(PersonaItemButton(Sender));
+    log("SelectInventory");//
     return true;
   }
 }
@@ -817,7 +833,7 @@ function UnequipItemInHand()
 function DropSelectedItem()
 {
 	local Inventory anItem;
-	local int numCopies;
+	local int numCopies, i;
 
 	if (selectedItem == None)
 		return;
@@ -843,7 +859,7 @@ function DropSelectedItem()
 				// Remove the item, but first check to see if it was stackable
 				// and there are more than 1 copies available
 
-				if ( (!anItem.IsA('DeusExPickupInv')) || (anItem.IsA('DeusExPickupInv') && (numCopies <= 1)))
+				if ( (!anItem.IsA('DeusExPickupInv')) || (anItem.IsA('DeusExPickupInv') && (numCopies <= 1))) // <=1
 				{
 					RemoveSelectedItem();
 				}
@@ -851,6 +867,8 @@ function DropSelectedItem()
 				winStatus.Caption = class'Actor'.static.Sprintf(DroppedLabel, anItem.itemName);
 
 				// Update the object belt
+        for (i=1;i<10;i++)
+             Objects[i].UpdateItemText();
 			//	invBelt.UpdateBeltText(anItem);
 			}
 			else
@@ -873,7 +891,8 @@ function RemoveSelectedItem()
 	if (inv != None)
 	{
 		// Destroy the button
-		selectedItem.free(); //Destroy();
+		RemoveComponent(selectedItem);
+//		selectedItem.free(); //Destroy();
 //		class'ObjectManager'.static.Destroy(selectedItem);
 		selectedItem = None;
 
@@ -889,13 +908,15 @@ function RemoveSelectedItem()
 
 		tDesc.SetContent(""); //winInfo.Clear();
 		EnableButtons();
+
+//		player.RemoveItemFromSlot(inv);
 	}
 }
 
 function UseSelectedItem()
 {
 	local Inventory inv;
-	local int numCopies;
+	local int numCopies, i;
 
 	inv = Inventory(selectedItem.GetClientObject());
 
@@ -918,7 +939,7 @@ function UseSelectedItem()
 		// Check to see if this is a stackable item, and keep track of 
 		// the count
 		if ((inv.IsA('DeusExPickupInv')) && (DeusExPickupInv(inv).bCanHaveMultipleCopies))
-			numCopies = DeusExPickupInv(inv).NumCopies - 1;
+			numCopies = DeusExPickupInv(inv).NumCopies;// - 1;??
 		else
 			numCopies = 0;
 
@@ -926,7 +947,9 @@ function UseSelectedItem()
 //		invBelt.UpdateBeltText(inv);
 
 		// Refresh the info!
-//		if (numCopies > 0)
+		if (numCopies > 0)
+		  for (i=1;i<10;i++)
+        Objects[i].UpdateItemText();
 	//		UpdateWinInfo(inv);
 	}
 }
@@ -954,9 +977,7 @@ function HighlightSpecial(Inventory item)
 	if (item != None)
 	{
 		if (item.IsA('WeaponModInv'))
-			HighlightModWeapons(WeaponModInv(item));
-//		else if (item.IsA('DeusExAmmoInv'))
-//			HighlightAmmoWeapons(DeusExAmmoInv(item));
+	      HighlightModWeapons(WeaponModInv(item));
 	}
 }
 
@@ -1223,6 +1244,8 @@ defaultproperties
     NoAmmoLabel="No Ammo Available"
     strCredits="Credits:"
     strNoKeys="No keys!"
+
+    bDropTarget=true
 /*----------------------------------------------------------------*/
 
  lFrameX=0

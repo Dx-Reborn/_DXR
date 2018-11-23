@@ -39,9 +39,9 @@ function Timer()
 }
 
 //
-// УҐ•§ЃђЂп•в ®£аЃ™† Ѓ вЃђ звЃ ѓЃЂгз•≠ ѓа•§ђ•в ®≠Ґ•≠в†ап.
-// Н† Ѓб≠ЃҐ• ™Ѓ§† ®І Reborn.
-// 27/12/2017 : ѓ•а•§•Ђ†≠Ѓ Ґ ЃҐ•аЂ•©.
+// ”ведомл€ет игрока о том что получен предмет инвентар€.
+// Ќа основе кода из Reborn.
+// 27/12/2017 : переделано в оверлей.
 //
 function Render(Canvas C)
 {
@@ -160,6 +160,7 @@ function Render(Canvas C)
             c.SetPos(60+40*x, 0);
             if (recentItems[x].isA('DeusExPickupInv'))
             {
+              c.SetDrawColor(255,255,255); // »справлено, иконки были залиты текущим цветом.
             	ico = DeusExPickupInv(recentItems[x]).Icon;
 	            c.DrawIconEx(ico,1.0);
   	          c.Style=1;
@@ -168,6 +169,7 @@ function Render(Canvas C)
             }
             if (recentItems[x].isA('DeusExWeaponInv'))
             {
+              c.SetDrawColor(255,255,255); // »справлено, иконки были залиты текущим цветом.
             	ico = DeusExWeaponInv(recentItems[x]).Icon;
 	            c.DrawIconEx(ico,1.0);
   	          c.Style=1;

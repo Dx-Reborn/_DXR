@@ -27,6 +27,18 @@ function SetSize(float newWidth, float newHeight)
 
 function SetPos(float newX, float newY);
 
+
+function SetCursorPos(float newX, float newY)
+{
+   PlayerOwner().ConsoleCommand("SETMOUSE" @ NewX @ NewY);
+}
+
+function ConvertCoordinates(GUIComponent fromWin, float fromX, float fromY, GUIComponent toWin, out float toX, out float toY)
+{
+ toX = toWin.ActualLeft();// fromX;
+ toY = toWin.ActualTop();// fromY;
+}
+
 defaultproperties
 {
 	bMouseOverSound=false

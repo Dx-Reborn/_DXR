@@ -74,6 +74,7 @@ function ChangeToggle()
 function SetToggle(bool bNewToggle)
 {
   bChecked = bNewToggle;
+    bButtonPressed = bChecked;//
 }
 
 function bool GetToggle()
@@ -199,7 +200,7 @@ function UpdateItemText()
 		{
 			// If the object is a SkilledTool (but not the NanoKeyRing) then show the 
 			// number of uses
-			if (DeusExPickupInv(item).NumCopies > 1)
+			if (DeusExPickupInv(item).NumCopies > 0) //1
 				itemText = DeusExPickupInv(item).CountLabel @ String(DeusExPickupInv(item).NumCopies);
 		}
 	}
@@ -289,12 +290,9 @@ event DrawWindow(canvas u)
 		if (bButtonPressed)
 		{
 		  u.DrawColor=colSelectionBorder;
+//      u.Style = EMenuRenderStyle.MSTY_Modulated;
 		  u.SetPos(ActualLeft() + slotIconX - 1, ActualTop() + slotIconY - 1);
-//      u.DrawTileStretched(texture'WhiteBorderT', ActualWidth(), ActualHeight());
       u. DrawTilePartialStretched(texture'WhiteBorderT', slotFillWidth + 3, slotFillHeight + 15);
-/*			gc.SetTileColor(colSelectionBorder);
-			gc.SetStyle(DSTY_Masked);
-			gc.DrawBorders(slotIconX - 1, slotIconY - 1, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);*/
 		}
 	}
 	
@@ -588,5 +586,5 @@ defaultproperties
     StyleName=""
     OnRendered=DrawWindow
     OnClick=InternalOnClick
-    bDropSource=true
+//    bDropSource=true
 }

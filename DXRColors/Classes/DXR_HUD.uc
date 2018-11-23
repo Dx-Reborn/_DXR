@@ -125,6 +125,7 @@ defaultproperties
      ToolBeltBG=(R=139,G=105,B=35,A=255)
      ToolBeltText=(R=255,G=255,B=255,A=255)
      ToolBeltFrame=(R=185,G=177,B=140,A=255)
+     ToolBeltHighlight=(R=0,G=255,B=100,A=255)
 
      AugsBeltBG=(R=139,G=105,B=35,A=255)
      AugsBeltText=(R=255,G=255,B=255,A=255)
@@ -161,42 +162,86 @@ defaultproperties
 	Begin Object Class=DXRColors.DXR_HUDColor Name=col01
      MessageBG=(R=128,G=0,B=0,A=255)   // ClientMessage Background
      MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
-     MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
+     MessageFrame=(R=255,G=25,B=25,A=255) // ClientMessage frame
 
      ToolBeltBG=(R=128,G=0,B=0,A=255)
      ToolBeltText=(R=200,G=0,B=0,A=255)
-     ToolBeltFrame=(R=255,G=255,B=255,A=255)
+     ToolBeltFrame=(R=255,G=25,B=25,A=255)
+     ToolBeltHighlight=(R=255,G=0,B=0,A=255)
 
      AugsBeltBG=(R=128,G=0,B=0,A=255)
      AugsBeltText=(R=200,G=0,B=0,A=255)
-     AugsBeltFrame=(R=255,G=255,B=255,A=255)
+     AugsBeltFrame=(R=255,G=25,B=25,A=255)
      AugsBeltActive=(R=0,G=233,B=177,A=255)
      AugsBeltInActive=(R=100,G=100,B=100,A=255)
 
      AmmoDisplayBG=(R=128,G=0,B=0,A=255)
-     AmmoDisplayFrame=(R=255,G=255,B=255,A=255)
+     AmmoDisplayFrame=(R=255,G=25,B=25,A=255)
 
      compassBG=(R=128,G=0,B=0,A=255)
-     compassFrame=(R=255,G=255,B=255,A=255)
+     compassFrame=(R=255,G=25,B=25,A=255)
 
      HealthBG=(R=128,G=0,B=0,A=255)
-     HealthFrame=(R=255,G=255,B=255,A=255)
+     HealthFrame=(R=255,G=25,B=25,A=255)
 
      BooksBG=(R=128,G=0,B=0,A=255)
      BooksText=(R=200,G=0,B=0,A=255)
-     BooksFrame=(R=255,G=255,B=255,A=255)
+     BooksFrame=(R=255,G=25,B=25,A=255)
 
      InfoLinkBG=(R=128,G=0,B=0,A=255)
-     InfoLinkText=(R=200,G=0,B=0,A=255)
+     InfoLinkText=(R=200,G=255,B=0,A=255)
      InfoLinkTitles=(R=255,G=0,B=0,A=255)
-     InfoLinkFrame=(R=255,G=255,B=255,A=255)
+     InfoLinkFrame=(R=255,G=25,B=25,A=255)
 
      AIBarksBG=(R=128,G=0,B=0,A=255)
      AIBarksText=(R=200,G=0,B=0,A=255)
      AIBarksHeader=(R=255,G=0,B=0,A=255)
-     AIBarksFrame=(R=255,G=255,B=255,A=255)
+     AIBarksFrame=(R=255,G=25,B=25,A=255)
      HUDName="Terminator"
 	End Object
 	HUDColors(1)=col01
+
+	// Darkest Time
+	Begin Object Class=DXRColors.DXR_HUDColor Name=col02
+     MessageBG=(R=82,G=82,B=80,A=255)   // ClientMessage Background
+     MessageText=(R=130,G=139,B=138,A=255) // ClientMessage Text
+     MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
+
+     ToolBeltBG=(R=82,G=82,B=80,A=255) // ToolBelt Background
+     ToolBeltText=(R=130,G=139,B=138,A=255) // ToolBelt items text
+     ToolBeltFrame=(R=55,G=55,B=55,A=255) // Frame
+     ToolBeltHighlight=(R=200,G=200,B=200,A=255) // Selected item
+
+     AugsBeltBG=(R=82,G=82,B=80,A=255)
+     AugsBeltText=(R=130,G=139,B=138,A=255)
+     AugsBeltFrame=(R=82,G=82,B=80,A=255)
+     AugsBeltActive=(R=0,G=233,B=177,A=255) // Active aug color
+     AugsBeltInActive=(R=100,G=100,B=100,A=255)
+
+     AmmoDisplayBG=(R=82,G=82,B=80,A=255)
+     AmmoDisplayFrame=(R=82,G=82,B=80,A=255)
+
+     compassBG=(R=82,G=82,B=80,A=255)
+     compassFrame=(R=82,G=82,B=80,A=255)
+
+     HealthBG=(R=82,G=82,B=80,A=255)
+     HealthFrame=(R=82,G=82,B=80,A=255)
+
+     BooksBG=(R=82,G=82,B=80,A=255) // Text background for contents of datacubes, newspapers, etc.
+     BooksText=(R=130,G=139,B=138,A=255) // Color of text contents
+     BooksFrame=(R=82,G=82,B=80,A=255) // Frame around background
+
+     InfoLinkBG=(R=82,G=82,B=80,A=255) // Self explaining?
+     InfoLinkText=(R=130,G=139,B=138,A=255)
+     InfoLinkTitles=(R=170,G=179,B=178,A=255)
+     InfoLinkFrame=(R=82,G=82,B=80,A=255)
+
+     AIBarksBG=(R=82,G=82,B=80,A=255)
+     AIBarksText=(R=130,G=139,B=138,A=255)
+     AIBarksHeader=(R=170,G=179,B=178,A=255)
+     AIBarksFrame=(R=82,G=82,B=80,A=255)
+     HUDName="Darkest Time"
+	End Object
+	HUDColors(2)=col02
 
 }

@@ -1,7 +1,7 @@
 /* Объединенные текстуры */
 class ImportTextures extends Object;
 
-#exec texture import file=textures\DXR_Scroll.bmp name=DXR_Scroll  Mips=Off masked=true UCLAMPMODE=CLAMP //VCLAMPMODE=CLAMP
+#exec texture import file=textures\DXR_Scroll.bmp name=DXR_Scroll  Mips=Off masked=false UCLAMPMODE=CLAMP //VCLAMPMODE=CLAMP // masked=true
 #exec Texture Import File=Textures\DXR_Inventory.tga Name=DXR_Inventory Mips=Off ALPHA=true
 // Растягивать до 800x600 не вижу смысла, это всего лишь список последних 128 ClientMessage.
 #exec Texture Import File=Textures\DXR_LogsBackground.bmp Name=DXR_LogsBackground Mips=Off Masked=true
@@ -118,4 +118,9 @@ class ImportTextures extends Object;
 #exec Texture Import File=Textures\DXR_HUDItemsBorder.bmp Name=DXR_HUDItemsBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 
 #exec Texture Import File=Textures\DXR_MenuColor.bmp Name=DXR_MenuColor Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+// Russian compass (texture by Alex Shevchenko)
+#exec Texture Import File=Textures\HUDCompassTicks_RUS.bmp Name=HUDCompassTicks_RUS Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+#exec Texture Import File=Textures\DXR_HUDEXample.bmp Name=DXR_HUDEXample Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 

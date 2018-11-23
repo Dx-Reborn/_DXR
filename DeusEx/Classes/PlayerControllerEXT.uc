@@ -118,6 +118,7 @@ function AssignHUDColors(int index)
      m.ToolBeltBG = class'DXR_HUD'.static.GetToolBeltBG(index);
      m.ToolBeltText = class'DXR_HUD'.static.GetToolBeltText(index);
      m.ToolBeltFrame = class'DXR_HUD'.static.GetToolBeltFrame(index);
+     m.ToolBeltHighlight = class'DXR_HUD'.static.GetToolBeltHighlight(index);
 
      m.AugsBeltBG = class'DXR_HUD'.static.GetAugsBeltBG(index);
      m.AugsBeltText = class'DXR_HUD'.static.GetAugsBeltText(index);

@@ -1,18 +1,19 @@
-//===============================
-// DXCanvas from Reborn Project
-// Contains text parser and some useful functions.
+/*------------------------------------------------------
+   DXCanvas from Reborn Project
+   Contains text parser and some useful functions.
+------------------------------------------------------*/
 
 class DXCanvas extends Object;
-//                       transient;
-
-//#exec OBJ LOAD File=DeusExControls.utx
 
 var Canvas c;
 
-event Created()
+/*event Created()
 {
  log(self$" created",'DxCanvas');
-}
+} */
+
+var color TeleTypeTextColor;
+var string CursorChar;
 
 function SetCanvas(Canvas inc)
 {
@@ -40,7 +41,7 @@ function TextSize(string text, out float x, out float y)
 
 function DrawTextTeletype(string text, string newline, float time, float rate)
 {
-    local float holdx, holdy, holdxclip, xstep, ystep, alpha;
+    local float holdx, holdy, holdxclip, xstep, ystep, R,G,B;// alpha;
     local int x, y, z, strlen;
     local array<string> mytext;
     local string temp;
@@ -71,17 +72,28 @@ function DrawTextTeletype(string text, string newline, float time, float rate)
             temp = Mid(mytext[x],y,1);
             if(time-(z*rate) > 0)
             {
-                alpha = time-(z*rate);
-                alpha = FClamp(alpha, 0.0, 1.0);
-                alpha *= 255;
-                c.SetDrawColor(alpha,alpha,alpha);
+                R = time-(z*rate);
+                R = FClamp(R, 0.0, 1.0);
+                R *= TeleTypeTextColor.R;
+
+                G = time-(z*rate);
+                G = FClamp(G, 0.0, 1.0);
+                G *= TeleTypeTextColor.G;
+
+                B = time-(z*rate);
+                B = FClamp(B, 0.0, 1.0);
+                B *= TeleTypeTextColor.B;
+
+                c.SetDrawColor(R,G,B);
+                //c.DrawColor = TeleTypeTextColor;
                 c.DrawTextClipped(temp);
                 c.SetPos(c.CurX+xstep,holdy);
             }
             else
             {
-                c.SetDrawColor(255,255,255);
-                c.DrawTextClipped("_");
+                //c.SetDrawColor(255,255,255);
+                c.DrawColor = TeleTypeTextColor;
+                c.DrawTextClipped(CursorChar);
                 c.SetPos(c.CurX+xstep,holdy);
                 return;
             }
@@ -90,8 +102,9 @@ function DrawTextTeletype(string text, string newline, float time, float rate)
 
         if((x+1) == mytext.length && time%0.5 >= 0.25)
         {
-            c.SetDrawColor(255,255,255);
-            c.DrawTextClipped("_");
+            //c.SetDrawColor(255,255,255);
+            c.DrawColor = TeleTypeTextColor;
+            c.DrawTextClipped(CursorChar);
             c.SetPos(c.CurX+xstep,holdy);
         }
 
@@ -143,7 +156,7 @@ function DrawTextTeletypeEx(string text, string newline, float time, float rate,
             else
             {
                 c.SetDrawColor(255,255,255);
-                c.DrawTextClipped("_");
+                c.DrawTextClipped(CursorChar);
                 c.SetPos(c.CurX+xstep,holdy);
                 return;
             }
@@ -153,7 +166,7 @@ function DrawTextTeletypeEx(string text, string newline, float time, float rate,
         if (((x+1) == mytext.length && time%0.5 >= 0.25) && (bShowCursor == true))
         {
             c.SetDrawColor(255,255,255);
-            c.DrawTextClipped("_");
+            c.DrawTextClipped(CursorChar);
             c.SetPos(c.CurX+xstep,holdy);
         }
 
@@ -576,4 +589,11 @@ function DrawParseText(string text)
         c.StrLen(result, XL, YL);
         DrawTextJustified(result, 1, 0, c.CurY, c.ClipX, c.CurY+YL);
     }
+}
+
+
+defaultproperties
+{
+  TeleTypeTextColor=(R=255,G=255,B=255,A=255) // white by default
+  CursorChar="_" // Can be more than one char.
 }

@@ -22,9 +22,9 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	gl.HUDTheme = enumText[GetValue()];
-	gl.HUDThemeIndex = GetValue();
+  ChangeStyle();
   class'DeusExGlobals'.static.StaticSaveConfig();
+  DeusExHUD(PlayerOwner().myHUD).LoadColorTheme();// Reload color theme
 }
 /*
 // ----------------------------------------------------------------------
@@ -61,7 +61,6 @@ function ResetToDefault()
 function CycleNextValue()
 {
 	Super.CycleNextValue();
-//	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
 	ChangeStyle();
 }
 
@@ -72,8 +71,13 @@ function CycleNextValue()
 function CyclePreviousValue()
 {
 	Super.CyclePreviousValue();
-//	player.ThemeManager.SetHUDThemeByName(enumText[GetValue()]);
 	ChangeStyle();
+}
+
+function ChangeStyle()
+{
+	gl.HUDTheme = enumText[GetValue()];
+	gl.HUDThemeIndex = GetValue();
 }
 
 // ----------------------------------------------------------------------

@@ -238,10 +238,16 @@ function int GetinvPosY() // Y position on the inventory window
 {return invPosY;}
 
 function SetinvPosX(int position) // X position on the inventory window
-{invPosX = position;}
+{
+   log(self$" invPosX="$position);
+   invPosX = position;
+}
 
 function SetinvPosY(int position) // Y position on the inventory window
-{invPosY = position;}
+{
+   log(self$" invPosY="$position);
+   invPosY = position;
+}
 
 function texture GetIcon()
 {return icon;}

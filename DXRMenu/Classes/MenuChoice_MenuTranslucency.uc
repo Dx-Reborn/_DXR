@@ -56,6 +56,14 @@ function CyclePreviousValue()
 }
 
 // ----------------------------------------------------------------------
+function ChangeStyle()
+{
+  local DxWindowTemplate dx;
+
+     foreach AllObjects(class'DxWindowTemplate',dx)
+         dx.ApplyTheme();
+}
+
 // ----------------------------------------------------------------------
 defaultproperties
 {

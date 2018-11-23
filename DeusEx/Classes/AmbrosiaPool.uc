@@ -5,7 +5,29 @@ class AmbrosiaPool extends DeusExDecal;
 
 var float spreadTime;
 var float maxDrawScale;
-var float time;
+var float mytime;
+
+function PostBeginPlay()
+{
+   Super.PostBeginPlay();
+//   SetTimer(0.1, true);
+}
+
+function Tick(float deltaTime)
+{
+	mytime += deltaTime;
+
+	super.Tick(deltaTime);
+
+	if (mytime <= spreadTime)
+	{
+//    DetachProjector(True);
+		SetDrawScale(maxDrawScale * mytime / spreadTime);
+		log(self@drawScale);
+//    AttachProjector();
+	}
+}
+
 
 defaultproperties
 {

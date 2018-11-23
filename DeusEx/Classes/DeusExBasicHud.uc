@@ -43,6 +43,7 @@ var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
   var() color ToolBeltBG;
   var() color ToolBeltText;
   var() color ToolBeltFrame;
+  var() color ToolBeltHighlight;
 
   var() color AugsBeltBG;
   var() color AugsBeltText;
@@ -1351,7 +1352,7 @@ function SetInitialState()
 // —тоит использовать переменные из оригинала.
 simulated event PostRender(canvas C)
 {
-  local texture s;
+//  local texture s;
 
 	super.postrender(C);
 	if (cubemapmode)
@@ -1363,21 +1364,25 @@ simulated event PostRender(canvas C)
 	  c.style = ERenderStyle.STY_Normal;
 	  c.SetDrawColor(1,1,1,255);
 	  c.DrawTileStretched(texture'solid', c.SizeX, c.SizeY);
+/*    c.setPos(0,0);
+    c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+    c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);*/
 
 	  return;
 	}
 
 	if (midMenuMode)
 	{
-	  s = class'DeusExGlobals'.default.lastScreenShot;
-	  if (s != none)
-	  {
+//	  s = class'DeusExGlobals'.default.lastScreenShot;
+	//  if (s != none)
+//	  {
 	    c.setPos(0,0);
       c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+      c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);
 //      c.SetDrawColor(64,64,64,255);
 //      c.DrawTile(s, c.SizeX, c.SizeY, 0, 256, 512, 256);
-      c.DrawTile(texture'ConWindowBackground', c.SizeX, c.SizeY, 0, 256, 512, 256);
-	  }
+//      c.DrawTile(texture'ConWindowBackground', c.SizeX, c.SizeY, 0, 256, 512, 256);
+//	  }
 	  return;
 	}
 
@@ -2092,11 +2097,6 @@ function RenderToolBelt(Canvas C)
 
     c.Font=Font'DXFonts.DPix_7';
 
-/*     ToolBeltBG=(R=139,G=105,B=35,A=255)
- ToolBeltText=(R=255,G=255,B=255,A=255)
- ToolBeltFrame=(R=185,G=177,B=140,A=255)*/
-
-
     c.DrawColor = ToolBeltBG;//(127,127,127);
     C.SetPos(C.SizeX-544,C.SizeY-62);
     if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
@@ -2221,6 +2221,7 @@ function RenderToolBelt(Canvas C)
         c.SetPos(holdX + 51, holdY);
         c.SetDrawColor(255,255,255);
         c.DrawIcon(p.belt[0].GetIcon(), 1);
+        c.DrawColor = ToolBeltText;
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }
 
@@ -2245,7 +2246,7 @@ function renderToolBeltSelection(canvas u)
 
   if (p.inHand != none)
   {
-   u.SetDrawColor(255,255,0,255); //ToDo: Get color from theme
+   u.DrawColor = ToolBeltHighlight;
    if (p.InHand == p.belt[1])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);

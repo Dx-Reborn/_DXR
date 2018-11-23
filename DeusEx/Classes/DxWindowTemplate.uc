@@ -51,6 +51,12 @@ function ApplyTheme()
     wtf.initialize();
   }
   i_FrameBG.ImageColor = class'DXR_Menu'.static.GetMenuBackground(gl.MenuThemeIndex);
+
+  if (DeusExPlayer(PlayerOwner().pawn).bMenusTranslucent)
+      i_FrameBG.ImageRenderStyle = MSTY_Translucent; //Normal
+  else
+      i_FrameBG.ImageRenderStyle = MSTY_Alpha;
+
 }
 
 function CreateMyControls();
@@ -167,6 +173,8 @@ defaultproperties
       RightEdgeHeight=200
       TopEdgeLength=200
       bubbleWidthCorrector=5
+
+      bRequire640x480=false//true
 
     bPersistent=false
     bAllowedAsLast=true

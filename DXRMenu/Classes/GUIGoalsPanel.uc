@@ -50,12 +50,13 @@ function bool GUIDraw(Canvas c)
     local float holdX,holdY;
     local float indent, addIndent;
 
-    c.Font = font'DxFonts.MSS_9'; //'DXFonts.EUX_9';
+//    c.font = font'DxFonts.HR_9';  //font'DxFonts.MSS_9'; //'DXFonts.EUX_9';
     c.SetOrigin(self.ActualLeft(), self.ActualTop());
     c.SetClip(self.ActualWidth(), self.ActualHeight());
     c.SetPos(0,0);
 
-    c.SetDrawColor(255,255,255);
+//    c.SetDrawColor(255,255,255);
+    c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
 
     x=0;
     addIndent=16;
@@ -65,6 +66,7 @@ function bool GUIDraw(Canvas c)
 
     c.SetPos(x,y);
     c.StrLen(strPrimaryGoals,charwidth,lineHeight);
+    c.font = font'DxFonts.HR_9'; //
     c.DrawTextClipped(strPrimaryGoals);
     y+=lineHeight;
     /*-------------------------------------------------------------------------------------------*/
@@ -89,6 +91,7 @@ function bool GUIDraw(Canvas c)
                 holdX=c.CurX;
                 holdY=c.CurY;
                 c.SetPos(holdX+indent/2-charwidth*2,holdY);
+                c.font = font'DxFonts.MSS_9'; // Goal text
                 c.DrawTextClipped("*");
                 c.SetPos(holdX,holdY);
 
@@ -102,11 +105,13 @@ function bool GUIDraw(Canvas c)
                         c.StrLen(newlines[lineIt],dummy,lineHeight);
 
                         if (!gl.goals[goalIt].bCompleted)
-                        c.SetDrawColor(255,255,255);
+                        c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+                        //c.SetDrawColor(255,255,255);
 
                         if (gl.goals[goalIt].bCompleted)
                         c.SetDrawColor(155,155,155);
 
+                        c.font = font'DxFonts.MSS_9';
                         c.DrawTextClipped(newlines[lineIt]);
                         c.SetPos(c.CurX,c.CurY+lineHeight);
                     }
@@ -123,8 +128,10 @@ function bool GUIDraw(Canvas c)
         c.SetOrigin(c.OrgX-indent,c.OrgY);
     }
     c.SetPos(x,y);
-    c.SetDrawColor(255,255,255);
+//    c.SetDrawColor(255,255,255);
+    c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
     c.StrLen(strSecondaryGoals,charwidth,lineHeight);
+    c.font = font'DxFonts.HR_9';
     c.DrawTextClipped(strSecondaryGoals);
     y+=lineHeight;
     /*-------------------------------------------------------------------------------------------*/
@@ -150,6 +157,7 @@ function bool GUIDraw(Canvas c)
                 holdX=c.CurX;
                 holdY=c.CurY;
                 c.SetPos(holdX+indent/2-charwidth*2,holdY);
+                c.font = font'DxFonts.MSS_9'; // Secondary Goal text
                 c.DrawTextClipped("*");
                 c.SetPos(holdX,holdY);
 
@@ -162,7 +170,8 @@ function bool GUIDraw(Canvas c)
                         c.StrLen(newlines[lineIt],dummy,lineHeight);
 
                         if (!gl.goals[goalIt].bCompleted)
-                        c.SetDrawColor(255,255,255);
+                        c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+                        //c.SetDrawColor(255,255,255);
 
                         if (gl.goals[goalIt].bCompleted)
                         c.SetDrawColor(155,155,155);
@@ -197,7 +206,7 @@ function bool GUIDraw(Canvas c)
 
 function CheckChange(GUIComponent Sender)
 {
-    bShowComplete=myCheckBox.IsChecked();
+    bShowComplete = myCheckBox.IsChecked();
 }
 
 // Только для тестирования!
@@ -205,7 +214,7 @@ function AddTestData()
 {
     local int x;
     local bool bPrimary;
-    local DeusExPlayer.SDeusExGoal goals;
+//    local DeusExPlayer.SDeusExGoal goals;
 
 /*    DeusExPlayer(self.PlayerOwner().Pawn)*/gl.goals.Length=10;
     //TEST DATA
@@ -213,14 +222,14 @@ function AddTestData()
     {
         bPrimary = !bPrimary;
 
-        goals.bPrimaryGoal = bPrimary;
+        gl.goals[x].bPrimaryGoal = bPrimary;
 
-        goals.bCompleted = false;
+        gl.goals[x].bCompleted = false;
         if((x+1)%3==0)
-        goals.bCompleted = true;
+        gl.goals[x].bCompleted = true;
 
-        goals.text = "[Completed="$goals.bCompleted$"]"@"Test Goal. Here is some text. Unicode && localization support. Color is "$green$"green, now i want"$gray$" grey. No, i wanted "$orange$"orange. Color codes support.";
-        DeusExPlayer(self.PlayerOwner().Pawn).goals[x]=goals;
+        gl.goals[x].text = "[Completed="$gl.goals[x].bCompleted$"]"@"Test Goal. Here is some text. Unicode && localization support. Color is "$green$"green, now i want"$gray$" grey. No, i wanted "$orange$"orange. Color codes support.";
+//        DeusExPlayer(self.PlayerOwner().Pawn).goals[x]=goals;
     }
 }
 

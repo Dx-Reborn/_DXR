@@ -35,6 +35,7 @@ function LoadColorTheme()
    ToolBeltBG = class'DXR_HUD'.static.GetToolBeltBG(index);
    ToolBeltText = class'DXR_HUD'.static.GetToolBeltText(index);
    ToolBeltFrame = class'DXR_HUD'.static.GetToolBeltFrame(index);
+   ToolBeltHighlight = class'DXR_HUD'.static.GetToolBeltHighlight(index);
 
    AugsBeltBG = class'DXR_HUD'.static.GetAugsBeltBG(index);
    AugsBeltText = class'DXR_HUD'.static.GetAugsBeltText(index);
