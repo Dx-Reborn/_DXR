@@ -51,7 +51,7 @@ simulated function Render(Canvas C)
 
         c.DrawColor = InfoLinkBG;
         c.Font = TitleFont;
-        c.Style=ERenderStyle.STY_Translucent;
+//        c.Style=ERenderStyle.STY_Translucent;
 
         c.SetOrigin(0,0);
         c.SetClip(595, c.SizeY);
@@ -113,8 +113,14 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
+   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   {
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+        else
+        c.Style = ERenderStyle.STY_Alpha;
+
         c.DrawColor = InfoLinkFrame;
-        c.Style=ERenderStyle.STY_Translucent;
 
         c.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
@@ -147,6 +153,7 @@ simulated function Render(Canvas C)
         c.SetPos(c.ClipX-3, c.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
         c.DrawIcon(border,1.0);
+   }
 
         c.Style=ERenderStyle.STY_Normal;
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
@@ -208,9 +215,6 @@ function Hide()
 {
 	bIsVisible=false;
 }
-
-
-
 
 function Clear()
 {

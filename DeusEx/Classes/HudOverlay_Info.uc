@@ -69,8 +69,11 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-//        c.Style=ERenderStyle.STY_Normal;
-        c.style = ERenderStyle.STY_Translucent; // 3
+        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+              else
+                c.Style = ERenderStyle.STY_Normal;
+
         c.DrawColor = BooksBG;
 
         //TL
@@ -107,8 +110,14 @@ simulated function Render(Canvas C)
         c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
 
 
-        // Рисуем рамки
-//        c.Style=ERenderStyle.STY_Translucent; 
+   // Рисуем рамки
+   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   {
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+        else
+        c.Style = ERenderStyle.STY_Alpha;
+
         c.SetOrigin((c.SizeX-w)/2, (c.SizeY-h)/2);
         c.SetClip(w, h);
 
@@ -146,10 +155,7 @@ simulated function Render(Canvas C)
         c.SetPos(c.ClipX-3, c.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
         c.DrawIcon(border,1.0);
-
-//        c.Style=ERenderStyle.STY_Normal;
-//        c.SetDrawColor(128,128,128,255);
-//        c.SetDrawColor(64,64,64);
+   }
         c.DrawColor = BooksText;
         c.SetOrigin((c.SizeX-w)/2, (c.SizeY-h)/2);
         c.SetClip(w, h);
