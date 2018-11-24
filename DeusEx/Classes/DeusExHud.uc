@@ -233,17 +233,21 @@ simulated function DisplayMessages(Canvas C)
 
         // Рамки
 
+   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   {
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+        else
+        c.Style = ERenderStyle.STY_Alpha;
+
         if (messageCount > 3)
         c.SetClip(w, (14 * messagecount));
         if (messageCount <= 3)
         c.SetClip(w, h);
 
-        c.Style=ERenderStyle.STY_Translucent;
+        //c.Style=ERenderStyle.STY_Translucent;
         // Рамка
-        c.DrawColor = MessageFrame;//(64,64,64); 
-//        c.SetDrawColor(64,64,64); // Что за--?
-//        c.SetDrawColor(255,255,255);
-//        c.SetDrawColor(128,128,128,128);
+        c.DrawColor = MessageFrame;
 
         c.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
@@ -283,6 +287,7 @@ simulated function DisplayMessages(Canvas C)
         c.SetPos(c.ClipX-3, c.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
         c.DrawIcon(border,1.0);
+   }
 
         // Иконка сообщения
         c.Style=ERenderStyle.STY_Normal;

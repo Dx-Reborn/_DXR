@@ -1472,15 +1472,8 @@ function RenderCrosshair(Canvas C)
   }
 }
 
-// Обычный индикатор здоровья (удвоенный удален)
-// 03/07/2017 коррекция.
-// 03/09/17 координаты из Reborn
 function RenderSmallHUDHitDisplay(Canvas C)
 {
-//   local float X,Y;
-//   local float EnergyBar;
-
-//   C.SetDrawColor(255,255,255,128);
    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
        c.Style = ERenderStyle.STY_Translucent;
           else
@@ -1489,11 +1482,18 @@ function RenderSmallHUDHitDisplay(Canvas C)
    C.SetPos(11,11);
 	 C.DrawIcon(HudHitBase,1);
 
+   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   {
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         c.Style = ERenderStyle.STY_Translucent;
+         else
+         c.Style = ERenderStyle.STY_Alpha;
+
    C.SetPos(0,0);
    C.DrawColor = HealthFrame;
-     C.Style = ERenderStyle.STY_Translucent;
 	 C.DrawIcon(HudHitFrame,1);
-
+	 }
+   C.Style = ERenderStyle.STY_Translucent;
    C.SetPos(24,16);
 	 C.DrawIcon(HudHitBody,1);
 
@@ -2225,12 +2225,19 @@ function RenderToolBelt(Canvas C)
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }
 
-    C.SetPos(C.SizeX-544,C.SizeY-68);
-	  C.Style = ERenderStyle.STY_Translucent;
-    c.DrawColor = ToolBeltFrame;
-    C.DrawIcon(Texture'HUDObjectBeltBorder_1',1.0);
-    C.DrawIcon(Texture'HUDObjectBeltBorder_2',1.0);
-    C.DrawIcon(Texture'HUDObjectBeltBorder_3',1.0);
+    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+    {
+      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         c.Style = ERenderStyle.STY_Translucent;
+          else
+           c.Style = ERenderStyle.STY_Alpha;
+
+          C.SetPos(C.SizeX-544,C.SizeY-68);
+          c.DrawColor = ToolBeltFrame;
+          C.DrawIcon(Texture'HUDObjectBeltBorder_1',1.0);
+          C.DrawIcon(Texture'HUDObjectBeltBorder_2',1.0);
+          C.DrawIcon(Texture'HUDObjectBeltBorder_3',1.0);
+    }
 
   c.ReSet();
   renderToolBeltSelection(c);
@@ -2386,19 +2393,28 @@ function RenderAugsBelt(Canvas C)
             aug = aug.next;
         }
         //c.SetDrawColor(127,127,127);
-        c.Style = 3;
-        c.DrawColor = AugsBeltFrame;//SetDrawColor(127,127,127);
-        C.SetPos(C.SizeX-64,0);
-        border=Texture'DeusExUI.HUDAugmentationsBorder_Top';
-        C.DrawIcon(border,1.0);
+        //c.Style = 3;
 
-        C.SetPos(C.SizeX-64,21);
-        border=Texture'DeusExUI.HUDAugmentationsBorder_Center';
-        c.DrawTile(border,64,auglen,0,0,64,2);
+        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+        {
+           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+               c.Style = ERenderStyle.STY_Translucent;
+                 else
+                   c.Style = ERenderStyle.STY_Alpha;
 
-        C.SetPos(C.SizeX-64,13+auglen);
-        border=Texture'DeusExUI.HUDAugmentationsBorder_Bottom';
-        C.DrawIcon(border,1.0);
+            c.DrawColor = AugsBeltFrame;//SetDrawColor(127,127,127);
+            C.SetPos(C.SizeX-64,0);
+            border=Texture'DeusExUI.HUDAugmentationsBorder_Top';
+            C.DrawIcon(border,1.0);
+
+            C.SetPos(C.SizeX-64,21);
+            border=Texture'DeusExUI.HUDAugmentationsBorder_Center';
+            c.DrawTile(border,64,auglen,0,0,64,2);
+
+            C.SetPos(C.SizeX-64,13+auglen);
+            border=Texture'DeusExUI.HUDAugmentationsBorder_Bottom';
+            C.DrawIcon(border,1.0);
+        }
 }
 
 function RenderChargedPickups(Canvas u)
@@ -2451,9 +2467,17 @@ function RenderChargedPickups(Canvas u)
         u.DrawTileStretched(texture'DeusExUI.UserInterface.HUDIconsBackground',64, 64); // background...
 
 //      u.Style = ERenderStyle.STY_Normal;
-        u.DrawColor = AugsBeltFrame;
-        u.SetPos(u.SizeX-50 + HI_BorderX,hudY - step + HI_BorderY);
-        u.DrawTileStretched(texture'DXR_HUDItemsBorder',64,64);
+        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+        {
+          if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+              u.Style = ERenderStyle.STY_Translucent;
+              else
+              u.Style = ERenderStyle.STY_Alpha;
+
+           u.DrawColor = AugsBeltFrame;
+           u.SetPos(u.SizeX-50 + HI_BorderX,hudY - step + HI_BorderY);
+           u.DrawTileStretched(texture'DXR_HUDItemsBorder',64,64);
+        }
 
         u.SetPos(u.SizeX-50 + HI_IconX, hudY - step + HI_IconY);
         u.Style = ERenderStyle.STY_Normal;
@@ -2509,6 +2533,7 @@ function RenderAmmoDisplay(Canvas c)
 
             c.Style = ERenderStyle.STY_Normal;
             C.SetPos(21,C.SizeY-58);
+            c.SetDrawColor(255,255,255,255);
             C.DrawIconEx(ico,1.0);
 
             C.SetPos(66,C.SizeY-50);
@@ -2516,8 +2541,7 @@ function RenderAmmoDisplay(Canvas c)
             c.SetDrawColor(0,255,0,255);// R G B A
             C.DrawTextJustified(toolsleft,1,66,C.SizeY-50,85,C.SizeY-41);
           }
-          else
-          if (item.IsA('DeusExWeaponInv'))
+          else if (item.IsA('DeusExWeaponInv'))
           {
           	if (DeusExPlayer(playerowner.pawn) != None)
                 weapon = DeusExWeaponInv(DeusExPlayer(playerowner.pawn).InHand);
@@ -2535,9 +2559,17 @@ function RenderAmmoDisplay(Canvas c)
                     c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
+           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+           {
+            if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+              c.Style = ERenderStyle.STY_Translucent;
+              else
+              c.Style = ERenderStyle.STY_Alpha;
+
             c.DrawColor = AmmoDisplayFrame;
             C.SetPos(0,C.SizeY-77);
             C.DrawIcon(Texture'HUDAmmoDisplayBorder_1',1.0);
+           }
 
             c.Style = ERenderStyle.STY_Normal;
             c.SetDrawColor(255,255,255,255);

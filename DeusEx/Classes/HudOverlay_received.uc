@@ -106,8 +106,15 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-        c.DrawColor = InfoLinkFrame;//  SetDrawColor(255,255,255);
+   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   {
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
+        else
+        c.Style = ERenderStyle.STY_Alpha;
+
+        c.DrawColor = InfoLinkFrame;//  SetDrawColor(255,255,255);
+        //c.Style = ERenderStyle.STY_Translucent;
 
         c.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
@@ -141,6 +148,7 @@ function Render(Canvas C)
         c.SetPos(c.ClipX-3, c.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
         c.DrawIcon(border,1.0);
+   }
 
         c.Style=1;
         c.DrawColor = InfoLinkTitles;

@@ -36,7 +36,6 @@ function Render(canvas c)
      dxc.SetCanvas(C);
 
     c.DrawColor = InfoLinkBG;
-//    c.Style=3;
     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
            else
@@ -47,13 +46,22 @@ function Render(canvas c)
     c.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_1',1.0);
     c.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_2',1.0);
 
-    c.DrawColor = InfoLinkFrame;
-    c.Style=3;
-    border = texture'DeusExUI.HUDInfolinkBorder_1';
-    c.SetPos(104,0);
-    c.DrawIcon(border,1.0);
-    border = texture'DeusExUI.HUDInfolinkBorder_2';
-    c.DrawIcon(border,1.0);
+
+    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+    {
+      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         c.Style = ERenderStyle.STY_Translucent;
+          else
+           c.Style = ERenderStyle.STY_Alpha;
+
+      c.DrawColor = InfoLinkFrame;
+      border = texture'DeusExUI.HUDInfolinkBorder_1';
+      c.SetPos(104,0);
+      c.DrawIcon(border,1.0);
+      border = texture'DeusExUI.HUDInfolinkBorder_2';
+      c.DrawIcon(border,1.0);
+    }
+
     c.Style=1;
     c.SetDrawColor(255,255,255);
 		// Аватарка
@@ -81,7 +89,6 @@ function Render(canvas c)
        c.StrLen(buffer, holdX, ttySize);
        c.SetClip(291,55);
        c.SetPos(0,textYStart);
-       //c.DrawColor = InfoLinkText;
        dxc.TeleTypeTextColor = InfoLinkText;
        dxc.DrawTextTeletype(buffer,"|", Level.TimeSeconds-ttyCounter,ttyCRate);
      }
@@ -247,5 +254,5 @@ defaultproperties
 
 	IncomingTransmission="Incoming Transmission..."
 	EndTransmission="End transmission..."
-	strQueued="Next message waiting..."
+	strQueued="Message waiting..."
 }
