@@ -82,8 +82,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
   bExit.bBoundToParent = true;
   bExit.OnClick = InternalOnClick;
   bExit.WinHeight = 21;
-  bExit.WinWidth = 68;
-  bExit.WinLeft = 726;
+  bExit.WinWidth = 66;
+  bExit.WinLeft = 728;
   bExit.WinTop = 0;//-11;
 	AppendComponent(bExit, true);
 }
@@ -94,9 +94,9 @@ function IWantToDrawSomething(canvas u)
 
   x = ActualLeft(); y = ActualTop();
 
-//  u.SetDrawColor(0,255,128,255);
   u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceFrames(gl.MenuThemeIndex);
   u.Style = EMenuRenderStyle.MSTY_Translucent;
+
   u.SetPos(x + lFrameX, y + lframeY);
   u.drawtileStretched(texture'DXR_NavBarBorder_1', lfSizeX, lfSizeY);
 
@@ -107,9 +107,23 @@ function IWantToDrawSomething(canvas u)
   u.drawtileStretched(texture'DXR_NavBarBorder_3', rfSizeX, rfSizeY);
 
   // DXR: colors in required style are ignored, so draw buttons background here...
-  u.SetPos(x - TabBackgroundX ,y - TabBackgroundY);
-  u.DrawColor=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
-  u.DrawIcon(texture'DXR_NavBar',1);
+  u.SetPos(x - TabBackgroundX,y - TabBackgroundY);
+  u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+
+  if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+    u.Style = EMenuRenderStyle.MSTY_Masked;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
+  u.Style = EMenuRenderStyle.MSTY_Translucent;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
+  u.Style = EMenuRenderStyle.MSTY_Additive;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
+   {
+     u.Style = eMenuRenderStyle.MSTY_Alpha;
+     u.DrawColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
+   }
+  u.DrawIcon(texture'DXR_NavBar_fill',1);
+
+  u.Reset();
 }
 
 
@@ -251,7 +265,8 @@ defaultproperties
 
     OnOpen=GUI_Player.InternalOnOpen
     OnClose=GUI_Player.InternalOnClose
-    OnRendered=IWantToDrawSomething
+    OnRender=IWantToDrawSomething
+    //OnRendered=IWantToDrawSomething
 
   Background=none
 	WinWidth=800

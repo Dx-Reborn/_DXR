@@ -151,8 +151,7 @@ function SetBorderSize(int newWidth, int newHeight)
 
 function SelectButton(bool bNewSelected)
 {
-	// TODO: Replace with HUD sounds
-	PlayerOwner().pawn.PlaySound(Sound'Menu_Press',, 0.25); 
+	PlayerOwner().pawn.PlaySound(Sound'Menu_Press',SLOT_Interface, 0.25); 
 
 	bSelected = bNewSelected;
 }

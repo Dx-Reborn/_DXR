@@ -2,7 +2,7 @@
 // Уменьшенная версия кнопки
 //
 
-class STY_DXR_MediumButton extends DXRStyles;// STY2SquareButton;
+class STY_DXR_MediumButton extends DXRStyles;
 
 #exec OBJ LOAD FILE=GuiContent.utx
 

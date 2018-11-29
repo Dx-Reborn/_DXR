@@ -30,7 +30,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow) 
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
 }
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
@@ -218,7 +218,7 @@ function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, b
     u.SetPos(imageList.ActualLeft() + 200, Y+1);
     u.DrawText("C");
   }
-   if (XL > 20) // if image description longer than 20 characters...
+   if (XL > 30) // if image description longer than 20 characters...
        imageList.Style.DrawText(u,MenuState, imageList.ActualLeft() + 2, Y, imageList.ActualWidth(), H, TXTA_Left, Left(myStr, 21)$"...", imageList.FontScale);
    else  // or as usually
        imageList.Style.DrawText(u,MenuState, imageList.ActualLeft() + 2, Y, imageList.ActualWidth(), H, TXTA_Left, myStr, imageList.FontScale);

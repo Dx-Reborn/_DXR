@@ -1,9 +1,6 @@
-// ====================================================================
-//  Class:  GUI2K4.STY_NoBackground
-//  Parent: XInterface.GUIStyles
-//
-//  <Enter a description here>
-// ====================================================================
+/*
+  Style for ListBox contents.
+*/
 
 class STY_DXR_Listbox extends DXRStyles;
 
@@ -28,21 +25,21 @@ defaultproperties
     BorderOffsets(2)=0
     BorderOffsets(3)=0
 
-    FontNames(0)="UT2ServerListFont"
-    FontNames(1)="UT2ServerListFont"
-    FontNames(2)="UT2ServerListFont"
-    FontNames(3)="UT2ServerListFont"
-    FontNames(4)="UT2ServerListFont"
+    FontNames(0)="UT2SmallFont"
+    FontNames(1)="UT2SmallFont"
+    FontNames(2)="UT2SmallFont"
+    FontNames(3)="UT2SmallFont"
+    FontNames(4)="UT2SmallFont"
 
-    FontNames(5)="UT2ServerListFont"
-    FontNames(6)="UT2ServerListFont"
-    FontNames(7)="UT2ServerListFont"
-    FontNames(8)="UT2ServerListFont"
-    FontNames(9)="UT2ServerListFont"
+    FontNames(5)="UT2SmallFont"
+    FontNames(6)="UT2SmallFont"
+    FontNames(7)="UT2SmallFont"
+    FontNames(8)="UT2SmallFont"
+    FontNames(9)="UT2SmallFont"
 
-    FontNames(10)="UT2ServerListFont"
-    FontNames(11)="UT2ServerListFont"
-    FontNames(12)="UT2ServerListFont"
-    FontNames(13)="UT2ServerListFont"
-    FontNames(14)="UT2ServerListFont"
+    FontNames(10)="UT2SmallFont"
+    FontNames(11)="UT2SmallFont"
+    FontNames(12)="UT2SmallFont"
+    FontNames(13)="UT2SmallFont"
+    FontNames(14)="UT2SmallFont"
 }

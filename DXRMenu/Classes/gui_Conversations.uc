@@ -5,9 +5,11 @@ class gui_Conversations extends PlayerInterfacePanel;
 var GUIImage iConvos;
 var GUILabel lCons;
 var GuiButton bClear;
-var GUIListBox ConvoList;
-//var DeusExGlobals gl;
+var DXRConListBox ConvoList;
 var GUIScrollTextBox ConvoDetails;
+var DXRConList cList;
+
+var GUIButton bsSpeaker, bsLocation, bsType;
 
 /* Frames positioning */
 var(leftPart) float lFrameX, lframeY, lfSizeX, lfSizeY;
@@ -23,7 +25,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow) 
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
 }
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
@@ -73,32 +75,70 @@ function CreateMyControls()
   bClear.WinTop = 533;//517;
 	AppendComponent(bClear, true);
 
-  ConvoList = new(none) class'GUIListBox';
-  ConvoList.MyScrollBar.WinWidth = 16;
-  ConvoList.SelectedStyleName="STY_DXR_ListSelection";
-  ConvoList.StyleName = "STY_DXR_Listbox";
+  ConvoList = new(none) class'DXRConListBox';
   ConvoList.bBoundToParent = true;
-  ConvoList.OnChange=ConvoListChange;
   ConvoList.WinHeight = 134;
   ConvoList.WinWidth = 480;
   ConvoList.WinLeft = 116;
   ConvoList.WinTop = 85;//69;
+  ConvoList.bDisplayHeader = false;
 	AppendComponent(ConvoList, true);
-  ConvoList.list.TextAlign = TXTA_Left;
+	cList = ConvoList.aList;
+  cList.OnChange = ConvoListChange;
 
   ConvoDetails = new(none) class'GUIScrollTextBox'; // описание (считывается из SaveInfo.dxs)
   ConvoDetails.StyleName="STY_DXR_DeusExScrollTextBox";
   ConvoDetails.FontScale=FNS_Small;
 	ConvoDetails.WinHeight = 306;
   ConvoDetails.WinWidth = 478;
-  ConvoDetails.WinLeft = 357;
-  ConvoDetails.WinTop = 302;//286;
-  ConvoDetails.bRepeat = false;//true;
+  ConvoDetails.WinLeft = 118;
+  ConvoDetails.WinTop = 240;
+  ConvoDetails.bRepeat = false;
   ConvoDetails.bNoTeletype = true;
-  ConvoDetails.EOLDelay = 0.1;//75;
+  ConvoDetails.EOLDelay = 0.1;
   ConvoDetails.CharDelay = 0.005;
   ConvoDetails.RepeatDelay = 3.0;
+  ConvoDetails.bBoundToParent = true;
 	AppendComponent(ConvoDetails, true);
+
+	bsSpeaker = new(none) class'GUIButton';
+  bsSpeaker.FontScale = FNS_Small;
+  bsSpeaker.Caption = "Speaker";
+  bsSpeaker.Hint = "";
+  bsSpeaker.StyleName="STY_DXR_Personal";
+  bsSpeaker.bBoundToParent = true;
+//  bsSpeaker.OnClick = InternalOnClick;
+  bsSpeaker.WinHeight = 18;
+  bsSpeaker.WinWidth = 194;
+  bsSpeaker.WinLeft = 114;
+  bsSpeaker.WinTop = 66;
+	AppendComponent(bsSpeaker, true);
+
+	bsLocation = new(none) class'GUIButton';
+  bsLocation.FontScale = FNS_Small;
+  bsLocation.Caption = "Location";
+  bsLocation.Hint = "";
+  bsLocation.StyleName="STY_DXR_Personal";
+  bsLocation.bBoundToParent = true;
+//  bsLocation.OnClick = InternalOnClick;
+  bsLocation.WinHeight = 18;
+  bsLocation.WinWidth = 247;
+  bsLocation.WinLeft = 308;
+  bsLocation.WinTop = 66;
+	AppendComponent(bsLocation, true);
+
+	bsType = new(none) class'GUIButton';
+  bsType.FontScale = FNS_Small;
+  bsType.Caption = "Type";
+  bsType.Hint = "";
+  bsType.StyleName="STY_DXR_Personal";
+  bsType.bBoundToParent = true;
+//  bsType.OnClick = InternalOnClick;
+  bsType.WinHeight = 18;
+  bsType.WinWidth = 47;
+  bsType.WinLeft = 555;
+  bsType.WinTop = 66;
+	AppendComponent(bsType, true);
 
 	ApplyTheme();
   fillNamesAndLocations();
@@ -118,23 +158,35 @@ function fillNamesAndLocations()
   if (gl.myConHistory.length < 1)
   return;
 
+  cList.Clear();
+  cList.ConvoHistory.length = gl.myConHistory.length;
+
 // Наверное цикл нужно будет перевернуть...
   for (x=0; x<gl.myConHistory.length; x++)
   {
-    ConvoList.list.Add(gl.myConHistory[x].conOwnerName @ gl.myConHistory[x].strLocation @ gl.myConHistory[x].bInfoLink);
+    cList.ConvoHistory[x].Speaker = gl.myConHistory[x].conOwnerName;
+    cList.ConvoHistory[x].Location = gl.myConHistory[x].strLocation;
+
+    if (gl.myConHistory[x].bInfoLink)
+        cList.ConvoHistory[x].Type="B";
+        else
+        cList.ConvoHistory[x].Type="A";
+
+    cList.AddedItem();
   }
-  ConvoListChange(none);
+//  ConvoListChange(none);
 }
 
 function fillDetails()
 {
+//    ConvoDetails.AddText(lstEmail.aList.myMailList[lstEmail.alist.CurrentListId()].text[x]);
   local int x;
 
   ConvoDetails.SetContent("");
 
-  for (x=0; x<gl.myConHistory[ConvoList.list.index].conHistoryEvents.length; x++)
+  for (x=0; x<gl.myConHistory[cList.CurrentListId()].conHistoryEvents.length; x++)
   {
-    ConvoDetails.AddText(gl.myConHistory[ConvoList.list.index].conHistoryEvents[x].conSpeaker $"|    "$ gl.myConHistory[ConvoList.list.index].conHistoryEvents[x].speech$"|");
+    ConvoDetails.AddText(gl.myConHistory[cList.CurrentListId()].conHistoryEvents[x].conSpeaker $"|"$chr(9)$chr(9)$ gl.myConHistory[cList.CurrentListId()].conHistoryEvents[x].speech$"|");
   }
 }
 

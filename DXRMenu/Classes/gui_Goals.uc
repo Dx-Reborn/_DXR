@@ -25,7 +25,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow)
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
 
   if (gl.notes.length < 1)
       bClear.DisableMe();

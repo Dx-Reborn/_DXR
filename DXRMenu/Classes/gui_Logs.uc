@@ -22,7 +22,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow) 
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
 
      UpdateData();
      UpdateCounter();
@@ -100,7 +100,7 @@ function CreateMyControls()
 	eFindWhat.WinHeight = 20;
   eFindWhat.WinWidth = 276;
   eFindWhat.WinLeft = 328;
-  eFindWhat.WinTop = 532;//518;
+  eFindWhat.WinTop = 534;
 	AppendComponent(eFindWhat, true);
 
   bFind = new(none) class'GUIButton';

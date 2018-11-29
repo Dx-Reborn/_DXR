@@ -35,7 +35,7 @@ function ShowPanel(bool bShow)
   super.ShowPanel(bShow);
   if (bShow) 
     {
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
      EnableButtons();
      fillvalues();
     }
@@ -929,7 +929,6 @@ function PaintFrames(canvas u)
 
   x = ActualLeft(); y = ActualTop();
 
-//  u.SetDrawColor(0,255,0,128);
   u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceFrames(gl.MenuThemeIndex);
   u.Style = EMenuRenderStyle.MSTY_Translucent;
 
@@ -955,39 +954,38 @@ function PaintFrames(canvas u)
 
 defaultproperties
 {
- lFrameX=48
- lframeY=26
- lfSizeX=257
- lfSizeY=257
+   lFrameX=48
+   lframeY=26
+   lfSizeX=257
+   lfSizeY=257
 
- mFrameX=305
- mframeY=26
- mfSizeX=362
- mfSizeY=315
+   mFrameX=305
+   mframeY=26
+   mfSizeX=362
+   mfSizeY=315
 
- rFrameX=667
- rframeY=26
- rfSizeX=64
- rfSizeY=315//
-/////////////////
+   rFrameX=667
+   rframeY=26
+   rfSizeX=64
+   rfSizeY=315
 
- lFrameXb=48
- lframeYb=283
- lfSizeXb=257
- lfSizeYb=266
+   lFrameXb=48
+   lframeYb=283
+   lfSizeXb=257
+   lfSizeYb=266
 
- mFrameXb=305
- mframeYb=341
- mfSizeXb=362
- mfSizeYb=256
+   mFrameXb=305
+   mframeYb=341
+   mfSizeXb=362
+   mfSizeYb=256
 
- rFrameXb=667 //
- rframeYb=341
- rfSizeXb=64
- rfSizeYb=256
+   rFrameXb=667
+   rframeYb=341
+   rfSizeXb=64
+   rfSizeYb=256
 
- OnRendered=InternalOnRendered
- bShowHealButtons=true
+   OnRendered=InternalOnRendered
+   bShowHealButtons=true
 
    HealthPartDesc(0)="Head wounds are fatal in the vast majority of threat scenarios; however, in those cases where death is not instantaneous, agents will often find that head injuries impair vision and aim. Care should be taken to heal such injuries as quickly as possible or death may result.||Light Wounds: Slightly decreased accuracy.|Medium Wounds: Wavering vision.|Heavy Wounds: Death."
    HealthPartDesc(1)="The torso is by far the portion of the human anatomy able to absorb the most damage, but it is also the easiest to target in close quarters combat. As progressively more damage is inflicted to the torso, agents may find their movements impaired and eventually bleed to death even if a mortal blow to a vital organ is not suffered.||Light Wounds: Slightly impaired movement.|Medium Wounds: Significantly impaired movement.|Major Wounds: Death."
@@ -996,7 +994,7 @@ defaultproperties
    PointsHealedLabel="%d points healed"
    MedKitUseText="To heal a specific region of the body, click on the region, then click the Heal button."
    HealthTitleText="Health"
-   HealAllButtonLabel="H&eal All"
+   HealAllButtonLabel="Heal All"
    HealthLocationHead="Head"
    HealthLocationTorso="Torso"
    HealthLocationRightArm="Right Arm"

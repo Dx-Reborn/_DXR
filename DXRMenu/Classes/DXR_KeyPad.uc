@@ -135,6 +135,44 @@ function bool AlignFrame(Canvas C)
 }
 
 
+// From DeusEx\PlayerInterfacePanel.uc
+function ApplyTheme()
+{
+  local int i;
+
+  for (i=0;i<Controls.Length;i++)
+  {
+     if ((controls[i].IsA('GUIImage')) && (controls[i].tag == 75))
+     {
+       if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+          {
+           GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Normal;
+           GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+           GUIImage(controls[i]).ImageColor.A = 255;
+          }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Translucent;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = 255;
+               }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Additive;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = 255;
+               }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Alpha;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
+               }
+     }
+  }
+}
+
+
 function bool InternalOnClick(GUIComponent Sender)
 {
 	local bool bHandled;
@@ -308,7 +346,7 @@ function PressButton(int num)
 			case 10:	tone = sound'Touchtone0'; break;
 			case 11:	tone = sound'Touchtone11'; break;
 		}
-		player.PlaySound(tone, SLOT_None);
+		player.PlaySound(tone, SLOT_Interface);
 	}
 
 	GenerateKeypadDisplay();
@@ -447,6 +485,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+		Tag=75
 	End Object
 	i_FrameBG=FloatingFrameBackground
   /* Заголовок */

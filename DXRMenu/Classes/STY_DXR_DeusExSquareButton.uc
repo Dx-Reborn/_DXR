@@ -1,5 +1,5 @@
 /**/
-class STY_DXR_DeusExSquareButton extends DXRStyles;// GUI2Styles;
+class STY_DXR_DeusExSquareButton extends DXRStyles;
 
 defaultproperties
 {

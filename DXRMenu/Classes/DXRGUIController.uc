@@ -55,8 +55,8 @@ defaultproperties
     FONT_NUM=12
 //	FONT_NUM=11
 
-    MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
-    ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
+//    MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
+//    ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
     EditSound			=none //sound'DeusExSounds.UserInterface.Menu_Slider'
     UpSound=none		//		=sound'DeusExSounds.UserInterface.'
     DownSound=none //			=sound'DeusExSounds.UserInterface.Menu_Activate'
@@ -123,5 +123,6 @@ defaultproperties
     DefaultStyleNames(81)="DXRMenu.STY_DXR_ImgBorder"
     DefaultStyleNames(82)="DXRMenu.STY_DXR_AugBorder"
     DefaultStyleNames(83)="DXRMenu.STY_DXR_DeusExScrollTextBox_ex"
-    STYLE_NUM=84
+    DefaultStyleNames(84)="DXRMenu.STY_DXR_Personal"
+    STYLE_NUM=85
 }

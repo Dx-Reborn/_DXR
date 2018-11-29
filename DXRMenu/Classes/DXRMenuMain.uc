@@ -216,7 +216,7 @@ defaultproperties
 		MinPageWidth=264
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'menumainbackground_dxr'
+		Image=Texture'DXR_MenuMainBackground'
 		ImageRenderStyle=MSTY_Translucent
 		ImageStyle=ISTY_Tiled //PartialScaled
 		ImageColor=(R=255,G=255,B=255,A=255)
@@ -232,7 +232,7 @@ defaultproperties
 	End Object
 	i_FrameBG=FloatingFrameBackground
   /* Заголовок */
-	Begin Object Class=GUIHeader Name=TitleBar
+/*	Begin Object Class=GUIHeader Name=TitleBar
 		WinWidth=0.98
 		WinHeight=128
 		WinLeft=-2
@@ -251,5 +251,5 @@ defaultproperties
     StyleName="STY_DXR_DXWinHeader";
     Justification=TXTA_Left
 	End Object
-	t_WindowTitle=TitleBar
+	t_WindowTitle=TitleBar*/
 }

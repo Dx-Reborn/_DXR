@@ -6,8 +6,8 @@ var GUIImage iSkills;
 var GUIButton bUpgrade;
 var GUIScrollTextBox SkillInfo;
 var GUILabel winStatus, winhdr2;
-var GUILabel lTitle, lPointsHeader, lPointsNeededHeader, lLevelHeader;
-var localized string SkillsTitleText, UpgradeButtonLabel, PointsNeededHeaderText;
+var GUILabel lTitle, lPointsHeader, lPointsNeededHeader, lLevelHeader, lPointsAvailable;
+var localized string SkillsTitleText, UpgradeButtonLabel, PointsNeededHeaderText, strAnyText;
 var localized string SkillLevelHeaderText, SkillPointsHeaderText, SkillUpgradedLevelLabel;
 
 var() PersonaSkillButtonWindow skillButtons[15];
@@ -28,7 +28,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow) 
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
 }
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
@@ -81,17 +81,32 @@ function CreateMyControls()
   lPointsHeader = new(none) class'GUILabel';
   lPointsHeader.bBoundToParent = true;
   lPointsHeader.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lPointsHeader.caption = SkillPointsHeaderText @ DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
+  lPointsHeader.caption = SkillPointsHeaderText;
   lPointsHeader.TextFont="UT2HeaderFont";
   lPointsHeader.bMultiLine = true;
-  lPointsHeader.TextAlign = TXTA_Right;//Center;
+  lPointsHeader.TextAlign = TXTA_Right;
   lPointsHeader.VertAlign = TXTA_Center;
   lPointsHeader.FontScale = FNS_Small;
- 	lPointsHeader.WinHeight = 20;
-  lPointsHeader.WinWidth = 195;
-  lPointsHeader.WinLeft = 170;
-  lPointsHeader.WinTop = 462;
+ 	lPointsHeader.WinHeight = 26;
+  lPointsHeader.WinWidth = 135;
+  lPointsHeader.WinLeft = 168;
+  lPointsHeader.WinTop = 459;
 	AppendComponent(lPointsHeader, true);
+
+	lPointsAvailable = new(none) class'GUILabel';
+  lPointsAvailable.bBoundToParent = true;
+  lPointsAvailable.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+  lPointsAvailable.caption = string(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail);
+  lPointsAvailable.TextFont="UT2HeaderFont";
+  lPointsAvailable.bMultiLine = true;
+  lPointsAvailable.TextAlign = TXTA_Center;
+  lPointsAvailable.VertAlign = TXTA_Center;
+  lPointsAvailable.FontScale = FNS_Small;
+ 	lPointsAvailable.WinHeight = 20;
+  lPointsAvailable.WinWidth = 81;
+  lPointsAvailable.WinLeft = 306;
+  lPointsAvailable.WinTop = 462;
+	AppendComponent(lPointsAvailable, true);
 
   lTitle = new(none) class'GUILabel';
   lTitle.bBoundToParent = true;
@@ -164,11 +179,11 @@ function bool InternalOnClick(GUIComponent Sender)
   if (Sender==bUpgrade)
   {
     UpgradeSkill();
-    lPointsHeader.caption = SkillPointsHeaderText @ DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
+    lPointsAvailable.caption = string(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail);
   }
   if (Sender.IsA('PersonaSkillButtonWindow'))
   {
-    lPointsHeader.caption = SkillPointsHeaderText @ DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
+    lPointsAvailable.caption = string(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail);
     selectedSkill = PersonaSkillButtonWindow(Sender).GetSkill();
     SkillInfo.SetContent(selectedSkill.Description);
     winhdr2.caption = selectedSkill.SkillName;
@@ -252,6 +267,7 @@ function CreateSkillsList()
   RealignSkills();
 }
 
+// ToDo: upend this "list"?
 function RealignSkills()
 {
   local int i;
@@ -275,11 +291,12 @@ function InternalOnRendered(canvas u)
 {
   u.setPos(ActualLeft() + 67 , ActualTop() + 423);
   u.Style = EMenuRenderStyle.MSTY_Alpha;
-  u.SetDrawColor(128, 128, 128, 128);
-  u.DrawTileStretched(texture'Solid', 319, 34);
+  u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+  u.DrawTileStretched(texture'ConWindowBackground', 319, 34);
   u.setPos(ActualLeft() + 70 , ActualTop() + 430);
+  u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   u.font=font'MSS_9';
-  u.DrawText(":)");
+  u.DrawText(strAnyText);
 
   PaintFrames(u);
 }
@@ -357,5 +374,6 @@ defaultproperties
     SkillLevelHeaderText="Skill Level"
     SkillPointsHeaderText="Skill Points:    "
     SkillUpgradedLevelLabel="%s upgraded"
+    strAnyText="Placeholder"
     onRendered=InternalOnRendered
 }

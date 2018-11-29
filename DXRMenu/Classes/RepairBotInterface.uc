@@ -26,14 +26,8 @@ var() GUILabel winBioBarText, winRepairBotBarText, winRepairBotInfoText, winTitl
 
 var localized String RechargeButtonLabel,CloseButtonLabel,RechargeTitle,RepairBotInfoText,RepairBotStatusLabel,RepairBotReadyLabel;
 var localized String ReadyLabel,SecondsPluralLabel,SecondsSingularLabel,BioStatusLabel,RepairBotRechargingLabel,RepairBotYouAreHealed;
+var localized string strHintRecharge, strHintClose;
 
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-//event InitWindow()
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
 	Super.InitComponent(MyController, MyOwner);
@@ -46,8 +40,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	UpdateBioWindows();
 
 	bTickEnabled = true;
-
-//	StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -62,7 +54,7 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 	{
 		repairBot.PlayAnim('Stop');
 		repairBot.PlaySound(sound'RepairBotLowerArm', SLOT_None);
-//		repairBot.FollowOrders();
+		repairBot.FollowOrders();
 	}
   super.Closed(Sender, bCancelled);
 }
@@ -75,7 +67,7 @@ function RenderFrames(canvas u)
   x = ActualLeft(); y = ActualTop();
 
   u.Style = EMenuRenderStyle.MSTY_Translucent;
-  u.SetDrawColor(0,255,255,255);
+  u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceFrames(gl.MenuThemeIndex);
   u.SetPos(x + lFrameX, y + lframeY);
   u.drawtileStretched(texture'HUDRepairbotBorder_1', lfSizeX, lfSizeY);
   u.SetPos(x + rFrameX, y + rframeY);
@@ -182,7 +174,7 @@ function CreateControls()
 
   WinTitleName = new(none) class'GUILabel';
   WinTitleName.bBoundToParent = true;
-  WinTitleName.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  WinTitleName.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
   WinTitleName.caption = RechargeTitle;
   WinTitleName.TextFont="UT2HeaderFont";
   WinTitleName.bMultiLine = false;
@@ -197,7 +189,7 @@ function CreateControls()
 
   winInfo = new(none) class'GUILabel';
   winInfo.bBoundToParent = true;
-  winInfo.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winInfo.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winInfo.TextFont="UT2SmallFont";
   winInfo.bMultiLine = true;
   winInfo.TextAlign = TXTA_Left;
@@ -211,7 +203,7 @@ function CreateControls()
 
   winBioBarText = new(none) class'GUILabel';
   winBioBarText.bBoundToParent = true;
-  winBioBarText.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winBioBarText.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winBioBarText.caption = BioStatusLabel;
   winBioBarText.TextFont="UT2SmallFont";
   winBioBarText.bMultiLine = false;
@@ -226,7 +218,7 @@ function CreateControls()
 
   winRepairBotBarText = new(none) class'GUILabel';
   winRepairBotBarText.bBoundToParent = true;
-  winRepairBotBarText.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winRepairBotBarText.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winRepairBotBarText.TextFont="UT2SmallFont";
   winRepairBotBarText.bMultiLine = false;
   winRepairBotBarText.TextAlign = TXTA_Left;
@@ -240,7 +232,7 @@ function CreateControls()
 
   winRepairBotInfoText = new(none) class'GUILabel';
   winRepairBotInfoText.bBoundToParent = true;
-  winRepairBotInfoText.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winRepairBotInfoText.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winRepairBotInfoText.TextFont="UT2SmallFont";
   winRepairBotInfoText.bMultiLine = false;
   winRepairBotInfoText.TextAlign = TXTA_Left;
@@ -251,10 +243,43 @@ function CreateControls()
   winRepairBotInfoText.WinLeft = 26;
   winRepairBotInfoText.WinTop = 140;
 	AppendComponent(winRepairBotInfoText, true);
+}
 
+// From DeusEx\PlayerInterfacePanel.uc
+function ApplyTheme()
+{
+  local int i;
 
-
-
+  for (i=0;i<Controls.Length;i++)
+  {
+     if ((controls[i].IsA('GUIImage')) && (controls[i].tag == 75))
+     {
+       if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+          {
+           GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Normal;
+           GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+           GUIImage(controls[i]).ImageColor.A = 255;
+          }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Translucent;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = 255;
+               }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Additive;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = 255;
+               }
+          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
+               {
+                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Alpha;
+                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+                GUIImage(controls[i]).ImageColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
+               }
+     }
+  }
 }
 
 function pr_OnRendered(canvas u)
@@ -502,7 +527,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
-//		OnRendered=PaintOnBG
+		tag=75
 	End Object
 	i_FrameBG=FloatingFrameBackground
 

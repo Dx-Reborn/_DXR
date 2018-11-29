@@ -59,7 +59,7 @@ function ShowPanel(bool bShow)
   super.ShowPanel(bShow);
   if (bShow) 
     {
-     PlayerOwner().pawn.PlaySound(Sound'Menu_OK');
+     PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
      EnableButtons();
      UpdateAugCans();
      UpdateBioCells();
