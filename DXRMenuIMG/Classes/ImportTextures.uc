@@ -5,8 +5,10 @@ class ImportTextures extends Object;
 #exec Texture Import File=Textures\DXR_Inventory.tga Name=DXR_Inventory Mips=Off ALPHA=true
 // Растягивать до 800x600 не вижу смысла, это всего лишь список последних 128 ClientMessage.
 #exec Texture Import File=Textures\DXR_LogsBackground.bmp Name=DXR_LogsBackground Mips=Off Masked=true
-#exec Texture Import File=Textures\DXR_NavBar.bmp Name=DXR_NavBar Mips=Off
-#exec Texture Import File=Textures\DXR_NavBar_Fill.bmp Name=DXR_NavBar_Fill Mips=Off
+
+#exec Texture Import File=Textures\DXR_NavBar.tga Name=DXR_NavBar Mips=Off Alpha=true masked=true LODSET=LODSET_Interface
+#exec Texture Import File=Textures\DXR_NavBar_Fill.tga Name=DXR_NavBar_Fill Mips=Off Alpha=true LODSET=LODSET_Interface
+
 #exec Texture Import File=Textures\DXR_PersonaButton.bmp Name=DXR_PersonaButton Mips=Off UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 #exec Texture Import File=Textures\DXR_MenuInfoButton.bmp Name=DXR_MenuInfoButton Mips=Off Masked=true
 #exec Texture Import File=Textures\DXR_ConversationsBackground.bmp Name=DXR_ConversationsBackground Mips=Off Masked=true
@@ -123,4 +125,9 @@ class ImportTextures extends Object;
 #exec Texture Import File=Textures\HUDCompassTicks_RUS.bmp Name=HUDCompassTicks_RUS Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 
 #exec Texture Import File=Textures\DXR_HUDEXample.bmp Name=DXR_HUDEXample Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+#exec Texture Import File=Textures\DXR_PersonaButtonA.tga Name=DXR_PersonaButtonA Mips=Off Alpha=true Masked=true LODSET=LODSET_Interface // UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+#exec Texture Import File=Textures\DXR_MenuMainBackground.bmp Name=DXR_MenuMainBackground Mips=Off Masked=true LODSET=LODSET_Interface
+
 
