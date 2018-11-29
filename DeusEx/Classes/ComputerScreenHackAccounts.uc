@@ -39,6 +39,7 @@ function CreateMyControls()
   lstAccounts.WinTop = 59;
 	AppendComponent(lstAccounts, true);
   lstAccounts.list.TextAlign = TXTA_Left;
+  lstAccounts.list.OnDblClick = ListDoubleClick;
 
   /* -- Text labels ------------------------------------------------*/
   winCurrentUser = new(none) class'GUILabel';
@@ -141,10 +142,15 @@ function ChangeSelectedAccount()
 		winTerm.ChangeAccount(userIndex);
 }
 
+function bool ListDoubleClick(GUIComponent Sender)      // The mouse was double-clicked on this control
+{
+  InternalOnClick(btnChangeAccount);
+  return true;
+}
+
 // ----------------------------------------------------------------------
 // ButtonActivated()
 // ----------------------------------------------------------------------
-
 function bool InternalOnClick(GUIComponent Sender)
 {
 	local bool bHandled;
@@ -171,15 +177,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
 function bool AlignFrame(Canvas C)
 {
-  local int x,y;
-
-  x = ActualLeft(); y = ActualTop();
-  c.SetPos(x - fx, y - fy);
-  c.Style = eMenuRenderStyle.MSTY_Translucent;
-  c.SetDrawColor(255,255,255);
-  c.DrawIcon(texture'ComputerHackAccountsBorder', 1);
-
-  winLeft = controller.ResX - 196;//206;
+  winLeft = controller.ResX - 196;
   winTop = 150;
 
   bVisible=true;
@@ -192,6 +190,16 @@ function bool OnCanClose(optional Bool bCancelled)
  return false;
 }
 
+function PaintListWindowFrame(canvas u)
+{
+  local int x,y;
+
+  x = ActualLeft(); y = ActualTop();
+  u.SetPos(x - fx, y - fy);
+  u.Style = eMenuRenderStyle.MSTY_Translucent;
+  u.SetDrawColor(255,255,255);
+  u.DrawIcon(texture'ComputerHackAccountsBorder', 1);
+}
 
 
 // ----------------------------------------------------------------------
@@ -226,6 +234,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+		OnRendered=PaintListWindowFrame
 	End Object
 	i_FrameBG=FloatingFrameBackground
 
