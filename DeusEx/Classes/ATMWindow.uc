@@ -22,7 +22,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 //  atmOwner = ATM(player.frobTarget);
 
   CreateControls();
-  OnKeyEvent=InternalOnKeyEvent;
+  OnKeyEvent = InternalOnKeyEvent;
+  FloatingImage(Controls[0]).OnRendered = PaintOnBG; // For unknown reason, delegate assignment in defprops leads to compiler error, so now it here.
 }
 
 function CreateControls()
@@ -30,7 +31,7 @@ function CreateControls()
   btnLogin = new(none) class'GUIButton';
   btnLogin.WinHeight = 21;
   btnLogin.WinWidth = 100;
-  btnLogin.WinLeft = 245;
+  btnLogin.WinLeft = 246;
   btnLogin.WinTop = 259;
   btnLogin.StyleName = "STY_DXR_MediumButton";
   btnLogin.Caption = strLogin;
@@ -40,7 +41,7 @@ function CreateControls()
   btnCancel = new(none) class'GUIButton';
   btnCancel.WinHeight = 21;
   btnCancel.WinWidth = 100;
-  btnCancel.WinLeft = 142;
+  btnCancel.WinLeft = 144;
   btnCancel.WinTop = 259;
   btnCancel.StyleName = "STY_DXR_MediumButton";
   btnCancel.Caption = strExit;
@@ -69,7 +70,7 @@ function CreateControls()
 
   lLogin = new(none) class'GUILabel';
   lLogin.bBoundToParent = true;
-  lLogin.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  lLogin.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
   lLogin.caption = AccountLabel;
   lLogin.TextFont="UT2HeaderFont";
   lLogin.bMultiLine = true;
@@ -84,7 +85,7 @@ function CreateControls()
 
   lPin = new(none) class'GUILabel';
   lPin.bBoundToParent = true;
-  lPin.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  lPin.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
   lPin.caption = PinLabel;
   lPin.TextFont="UT2HeaderFont";
   lPin.bMultiLine = true;
@@ -99,7 +100,7 @@ function CreateControls()
 
   lAddress = new(none) class'GUILabel';
   lAddress.bBoundToParent = true;
-  lAddress.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  lAddress.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lAddress.caption = StatusText;
   lAddress.TextFont="UT2HeaderFont";
   lAddress.bMultiLine = true;
@@ -114,7 +115,7 @@ function CreateControls()
 
   winLoginError = new(none) class'GUILabel';
   winLoginError.bBoundToParent = true;
-  winLoginError.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winLoginError.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
   winLoginError.caption = "";
   winLoginError.TextFont="UT2HeaderFont";
   winLoginError.bMultiLine = true;
@@ -124,12 +125,12 @@ function CreateControls()
  	winLoginError.WinHeight = 24;
   winLoginError.WinWidth = 326;
   winLoginError.WinLeft = 14;
-  winLoginError.WinTop = 193; //225;
+  winLoginError.WinTop = 193;
   AppendComponent(winLoginError, true);
 
   winLoginInfo = new(none) class'GUILabel';
   winLoginInfo.bBoundToParent = true;
-  winLoginInfo.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winLoginInfo.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winLoginInfo.caption = LoginInfoText;
   winLoginInfo.TextFont="UT2HeaderFont";
   winLoginInfo.bMultiLine = true;
@@ -144,7 +145,7 @@ function CreateControls()
 
   winWarning = new(none) class'GUILabel';
   winWarning.bBoundToParent = true;
-  winWarning.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+  winWarning.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winWarning.caption = WarningText;
   winWarning.TextFont="UT2HeaderFont";
   winWarning.bMultiLine = true;
@@ -317,6 +318,21 @@ defaultproperties
 		MaxPageWidth=356
 		MinPageHeight=256
 		MinPageWidth=356
+
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=275
+
+		RightEdgeCorrectorX=347
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=252
+
+		TopEdgeCorrectorX=260
+		TopEdgeCorrectorY=16
+    TopEdgeLength=86
+
+    TopRightCornerX=345
+    TopRightCornerY=16
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
 		Image=Texture'DXR_BankLogin'
