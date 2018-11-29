@@ -317,6 +317,22 @@ defaultproperties
     strSave="Save to Datavault"
     ComputerNodeFunctionLabel="Email"
 
+ 		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=545
+
+		RightEdgeCorrectorX=521
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=523
+
+		TopEdgeCorrectorX=269
+		TopEdgeCorrectorY=16
+    TopEdgeLength=250
+
+    TopRightCornerX=519
+    TopRightCornerY=16
+
+
 		DefaultHeight=512
 		DefaultWidth=512
 		MaxPageHeight=512
@@ -337,7 +353,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
-//				OnRendered=PaintOnBG
+    OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
 }

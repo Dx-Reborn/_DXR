@@ -155,6 +155,22 @@ return false;
 
 defaultproperties
 {
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=545
+
+		RightEdgeCorrectorX=521
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=523
+
+		TopEdgeCorrectorX=269
+		TopEdgeCorrectorY=16
+    TopEdgeLength=250
+
+    TopRightCornerX=519
+    TopRightCornerY=16
+
+
     NoBulletinsTodayText="No Bulletins Today!"
     BulletinsHeaderText="Please choose a bulletin to view:"
     ComputerNodeFunctionLabel="Bulletins"
