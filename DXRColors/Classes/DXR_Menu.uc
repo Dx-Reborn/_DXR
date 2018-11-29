@@ -309,11 +309,11 @@ defaultproperties
     PlayerInterfaceFrames=(R=255,G=182,B=255,A=255)
     PlayerInterfaceTabsBackground=(R=255,G=182,B=255,A=255)
 
-    MenuButton=(R=84,G=0,B=84,A=255)
-    MenuButtonWatched=(R=94,G=0,B=94,A=255)
-    MenuButtonButtonFocused=(R=104,G=0,B=104,A=255)
-    MenuButtonPressed=(R=80,G=0,B=80,A=255)
-    MenuButtonDisabled=(R=44,G=0,B=44,A=255)
+    MenuButton=(R=184,G=0,B=184,A=255)
+    MenuButtonWatched=(R=194,G=0,B=194,A=255)
+    MenuButtonButtonFocused=(R=204,G=0,B=204,A=255)
+    MenuButtonPressed=(R=180,G=0,B=180,A=255)
+    MenuButtonDisabled=(R=144,G=0,B=144,A=255)
 
     MenuButtonText=(R=255,G=175,B=0,A=255)
     MenuButtonWatchedText=(R=255,G=200,B=255,A=255)
