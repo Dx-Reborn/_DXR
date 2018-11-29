@@ -68,8 +68,8 @@ function GUITabPanel AddTab(string InCaption, string PanelClass, optional GUITab
         NewTabPanel.MyButton.Caption        = Eval(InCaption != "", InCaption, NewTabPanel.PanelCaption);
         NewTabPanel.MyButton.OnClick        = InternalTabClick;
         NewTabPanel.MyButton.MyPanel        = NewTabPanel;
-        NewTabPanel.MyButton.FocusInstead   = self;
-        NewTabPanel.MyButton.bNeverFocus    = true;
+//        NewTabPanel.MyButton.FocusInstead   = self;
+//        NewTabPanel.MyButton.bNeverFocus    = false;//true;
 
         NewTabPanel.InitPanel();
 
@@ -89,7 +89,7 @@ function GUITabPanel AddTab(string InCaption, string PanelClass, optional GUITab
 defaultproperties
 {
 //   bDockPanels=false
-   TabStyle="STY_DXR_ButtonNavbar"//"STY_DXR_MediumButton"
+   TabStyle="STY_DXR_Personal"// "STY_DXR_ButtonNavbar"//"STY_DXR_MediumButton"
    TabHeight=21
 }
 

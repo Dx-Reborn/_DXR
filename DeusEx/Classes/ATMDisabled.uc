@@ -45,7 +45,7 @@ function CreateMyControls()
   btnClose = new(none) class'GUIButton';
   btnClose.WinHeight = 21;
   btnClose.WinWidth = 100;
-  btnClose.WinLeft = 321;
+  btnClose.WinLeft = 320;
   btnClose.WinTop = 237;
   btnClose.StyleName = "STY_DXR_MediumButton";
   btnClose.Caption = ButtonLabelClose;
@@ -65,7 +65,7 @@ function bool InternalOnClick(GUIComponent Sender)
 {
 
 }*/
-
+/*
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
 {
   super.Closed(Sender, bCancelled);
@@ -74,7 +74,7 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 event free()
 {
   super.free();
-}
+} */
 
 
 
@@ -86,6 +86,21 @@ defaultproperties
 		MaxPageWidth=418
 		MinPageHeight=256
 		MinPageWidth=418
+
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=251
+
+		RightEdgeCorrectorX=422
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=230
+
+		TopEdgeCorrectorX=333
+		TopEdgeCorrectorY=16
+    TopEdgeLength=86
+
+    TopRightCornerX=419
+    TopRightCornerY=16
 
     ButtonLabelClose="Close"
     LoginInfoText="Sorry, this terminal is out of service (ERR 06MJ12)||We apologize for the inconvenience but would gladly service you at any of the other 231,000 PageNet Banking Terminals around the globe."

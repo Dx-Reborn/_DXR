@@ -343,13 +343,28 @@ defaultproperties
     escapeAction="LOGOUT"
     ComputerNodeFunctionLabel="ATMWD"
 
+		leftEdgeCorrectorX=4
+		leftEdgeCorrectorY=0
+		leftEdgeHeight=275
+
+		RightEdgeCorrectorX=347
+		RightEdgeCorrectorY=20
+		RightEdgeHeight=252
+
+		TopEdgeCorrectorX=260
+		TopEdgeCorrectorY=16
+    TopEdgeLength=86
+
+    TopRightCornerX=345
+    TopRightCornerY=16
+
 		DefaultHeight=256
 		DefaultWidth=356
 		MaxPageHeight=256
 		MaxPageWidth=356
 		MinPageHeight=256
 		MinPageWidth=356
-    bRenderWorld=false
+
     OnRendered=InternalOnRendered
 
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
@@ -365,6 +380,7 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+		OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
 }

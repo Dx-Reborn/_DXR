@@ -1124,6 +1124,7 @@ function RegisterConFiles(string Path)
 
 function LoadConsForMission(int mission)
 {
+ if (bindName != "")
   class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
 //  class'ConversationManager'.static.LoadConversations(mission, conList);
 }

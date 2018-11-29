@@ -85,6 +85,19 @@ function IWantToDrawSomething(canvas u)
   // DXR: colors in required style are ignored, so draw buttons background here...
   u.SetPos(x - TabBackgroundX ,y - TabBackgroundY);
   u.DrawColor=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+
+  if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+    u.Style = EMenuRenderStyle.MSTY_Masked;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
+  u.Style = EMenuRenderStyle.MSTY_Translucent;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
+  u.Style = EMenuRenderStyle.MSTY_Additive;
+   else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
+   {
+     u.Style = eMenuRenderStyle.MSTY_Alpha;
+     u.DrawColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
+   }
+
   u.DrawIcon(texture'DXR_NavBar_Fill',1);
 
   u.font = font'DxFonts.HR_9';
@@ -92,8 +105,6 @@ function IWantToDrawSomething(canvas u)
   u.DrawText(MedbotInterfaceText);
 
   u.reset(); // Это нужно, иначе кнопки с аугментациями для установки будут нарисованы на зеленом фоне 0_0
-
-
 }
 
 
@@ -122,7 +133,7 @@ function InternalOnClose(bool bCancelled)
 //		{
 			gl.lastMedBot.PlayAnim('Stop');
 			gl.lastMedBot.PlaySound(sound'MedicalBotLowerArm', SLOT_None);
-//			medBot.FollowOrders();
+			gl.lastMedBot.FollowOrders();
 //		}
 	}
 }

@@ -1,6 +1,9 @@
-//=============================================================================
-// ComputerSecurity.
-//=============================================================================
+/*-----------------------------------------------------------------------------
+  ComputerSecurity.
+  Important! You must fill titleString for all used views, and they are must
+  be different, for example Cam1, Cam2, Cam3, otherwise interface will not
+  work correctly.
+-----------------------------------------------------------------------------*/
 class ComputerSecurity extends Computers;
 
 struct sViewInfo
