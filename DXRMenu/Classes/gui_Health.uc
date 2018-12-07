@@ -215,7 +215,7 @@ function CreateMyControls()
   HealthDetails.WinLeft = 423;
   HealthDetails.WinTop = 75;
   HealthDetails.bRepeat = false;//true;
-  HealthDetails.bNoTeletype = true;
+  HealthDetails.bNoTeletype = gl.bUseCursorEffects;
   HealthDetails.EOLDelay = 0.1;//75;
   HealthDetails.CharDelay = 0.005;
   HealthDetails.RepeatDelay = 3.0;
@@ -989,7 +989,7 @@ defaultproperties
 
    HealthPartDesc(0)="Head wounds are fatal in the vast majority of threat scenarios; however, in those cases where death is not instantaneous, agents will often find that head injuries impair vision and aim. Care should be taken to heal such injuries as quickly as possible or death may result.||Light Wounds: Slightly decreased accuracy.|Medium Wounds: Wavering vision.|Heavy Wounds: Death."
    HealthPartDesc(1)="The torso is by far the portion of the human anatomy able to absorb the most damage, but it is also the easiest to target in close quarters combat. As progressively more damage is inflicted to the torso, agents may find their movements impaired and eventually bleed to death even if a mortal blow to a vital organ is not suffered.||Light Wounds: Slightly impaired movement.|Medium Wounds: Significantly impaired movement.|Major Wounds: Death."
-   HealthPartDesc(2)="Obviously damage to the arm is of concern in any combat situation as it has a direct effect on the agent's ability to utilize a variety of weapons. Losing the use of one arm will certainly lower the agent's combat efficiency, while the loss of both arms will render it nearly impossible for an agent to present even a nominal threat to most hostiles.||Light Wounds: Slightly decreased accuracy.|nMedium Wounds: Moderately decreased accuracy.|Major Wounds: Significantly decreased accuracy."
+   HealthPartDesc(2)="Obviously damage to the arm is of concern in any combat situation as it has a direct effect on the agent's ability to utilize a variety of weapons. Losing the use of one arm will certainly lower the agent's combat efficiency, while the loss of both arms will render it nearly impossible for an agent to present even a nominal threat to most hostiles.||Light Wounds: Slightly decreased accuracy.|Medium Wounds: Moderately decreased accuracy.|Major Wounds: Significantly decreased accuracy."
    HealthPartDesc(3)="Injuries to the leg will result in drastically diminished mobility. If an agent in hostile territory is unfortunate enough to lose the use of both legs but still remain otherwise viable, they are ordered to execute UNATCO Special Operations Order 99009 (Self-Termination).||Light Wounds: Slightly impaired movement.|Medium Wounds: Moderately impaired movement.|Heavy Wounds: Significantly impaired movement."
    PointsHealedLabel="%d points healed"
    MedKitUseText="To heal a specific region of the body, click on the region, then click the Heal button."

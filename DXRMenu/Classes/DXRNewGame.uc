@@ -52,7 +52,7 @@ function CreateMyControls()
   sSkillInfo.WinLeft = 205;
   sSkillInfo.WinTop = 246;
   sSkillInfo.bRepeat = false;
-  sSkillInfo.bNoTeletype = true;
+  sSkillInfo.bNoTeletype = gl.bUseCursorEffects;
   sSkillInfo.EOLDelay = 0.1;//75;
   sSkillInfo.CharDelay = 0.005;
   sSkillInfo.RepeatDelay = 3.0;

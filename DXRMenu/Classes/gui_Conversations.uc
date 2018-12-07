@@ -94,7 +94,7 @@ function CreateMyControls()
   ConvoDetails.WinLeft = 118;
   ConvoDetails.WinTop = 240;
   ConvoDetails.bRepeat = false;
-  ConvoDetails.bNoTeletype = true;
+  ConvoDetails.bNoTeletype = gl.bUseCursorEffects;
   ConvoDetails.EOLDelay = 0.1;
   ConvoDetails.CharDelay = 0.005;
   ConvoDetails.RepeatDelay = 3.0;

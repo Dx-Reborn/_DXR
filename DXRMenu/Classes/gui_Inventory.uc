@@ -147,7 +147,7 @@ function CreateMyControls()
   tDesc.WinLeft = 425;
   tDesc.WinTop = 78;
   tDesc.bRepeat = false;//true;
-  tDesc.bNoTeletype = true;
+  tDesc.bNoTeletype = gl.bUseCursorEffects;
   tDesc.EOLDelay = 0.01;//75;
   tDesc.CharDelay = 0.01;
   tDesc.RepeatDelay = 3.0;

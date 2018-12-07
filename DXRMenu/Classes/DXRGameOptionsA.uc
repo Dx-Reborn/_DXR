@@ -8,7 +8,9 @@ var MenuChoice_LeftClickForLastItem mLeftClickForLastItem;
 var MenuChoice_RemainingAmmo mRemainingAmmo;
 var MenuChoice_ExtraDebugInfo mExtraDebugInfo;
 var MenuChoice_PlayerInterfaceMode mPlayerInterfaceMode;
-var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, iExtraDebugInfo, iPlayerInterfaceMode;
+var MenuChoice_UseCursorEffects mUseCursorEffects;
+
+var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, iExtraDebugInfo, iPlayerInterfaceMode, iUseCursorEffects;
 var localized string strOK, strCancel, strDefault;
 var localized string strGamma, strGraphics, strPhysics;
 var GUIButton btnDefault, btnOK, btnCancel;
@@ -41,6 +43,12 @@ function CreateMyControls()
   iPlayerInterfaceMode.WinTop = 154;
   iPlayerInterfaceMode.WinWidth = 78;
   AppendComponent(iPlayerInterfaceMode, true);
+
+  iUseCursorEffects = new class'DXRChoiceInfo';
+  iUseCursorEffects.WinLeft = 285;
+  iUseCursorEffects.WinTop = 190;
+  iUseCursorEffects.WinWidth = 78;
+  AppendComponent(iUseCursorEffects, true);
 
   mLeftClickForLastItem = new class'MenuChoice_LeftClickForLastItem';
   mLeftClickForLastItem.WinLeft = 15;
@@ -77,6 +85,15 @@ function CreateMyControls()
   mPlayerInterfaceMode.info = iPlayerInterfaceMode;
   mPlayerInterfaceMode.LoadSetting();
   mPlayerInterfaceMode.UpdateInfoButton();
+
+  mUseCursorEffects = new class'MenuChoice_UseCursorEffects';
+  mUseCursorEffects.WinLeft = 15;
+  mUseCursorEffects.WinTop = 190;
+  mUseCursorEffects.WinWidth = 244;
+  AppendComponent(mUseCursorEffects, true);
+  mUseCursorEffects.info = iUseCursorEffects;
+  mUseCursorEffects.LoadSetting();
+  mUseCursorEffects.UpdateInfoButton();
 
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;
@@ -128,6 +145,7 @@ function resetToDefaults()
      }
   }
  	DeusExPlayer(playerOwner().pawn).SaveConfig();
+  gl.SaveConfig();
 }
 
 function SaveSettings()
@@ -140,6 +158,7 @@ function SaveSettings()
         DXREnumButton(controls[i]).SaveSetting();
   }
  	DeusExPlayer(playerOwner().pawn).SaveConfig();
+  gl.SaveConfig();
 }
 
 function CancelSettings()
@@ -152,6 +171,7 @@ function CancelSettings()
         DXREnumButton(controls[i]).CancelSetting();
   }
  	DeusExPlayer(playerOwner().pawn).SaveConfig();
+  gl.SaveConfig();
 }
 
 function bool InternalOnClick(GUIComponent Sender)

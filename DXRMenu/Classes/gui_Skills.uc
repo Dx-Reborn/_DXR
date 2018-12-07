@@ -48,7 +48,7 @@ function CreateMyControls()
   SkillInfo.WinLeft = 430;
   SkillInfo.WinTop = 75;
   SkillInfo.bRepeat = false;//true; 
-  SkillInfo.bNoTeletype = false;//true; Forgive... my vision is augmented ;)
+  SkillInfo.bNoTeletype = gl.bUseCursorEffects;
   SkillInfo.EOLDelay = 0.01;//75;
   SkillInfo.CharDelay = 0.001;
   SkillInfo.RepeatDelay = 1.0;

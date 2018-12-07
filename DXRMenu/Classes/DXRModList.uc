@@ -68,7 +68,7 @@ function CreateAControls()
 	lb_ModInfo.WinWidth = 256;
 	lb_ModInfo.WinLeft = 524;
 	lb_ModInfo.WinTop = 304;
-  lb_ModInfo.bNoTeletype = true;
+  lb_ModInfo.bNoTeletype = gl.bUseCursorEffects;
 	AppendComponent(lb_ModInfo, true);
 	/*--------------------------------------------*/
   bLoad = new(none) class'GUIButton'; // Загрузить

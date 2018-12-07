@@ -112,7 +112,7 @@ function CreateMyControls()
   AugDescArea.WinLeft = 423;
   AugDescArea.WinTop = 66;
   AugDescArea.bRepeat = false;//true;
-  AugDescArea.bNoTeletype = true;
+  AugDescArea.bNoTeletype = gl.bUseCursorEffects;
   AugDescArea.EOLDelay = 0.1;//75;
   AugDescArea.CharDelay = 0.005;
   AugDescArea.RepeatDelay = 3.0;
