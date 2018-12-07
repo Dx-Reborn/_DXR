@@ -682,8 +682,8 @@ function BecomePickup()
 	bOnlyOwnerSee = false;
 	bHidden       = false;
 	NetPriority   = 1.4;
-	SetCollision(true, true, false);		// make things block actors as well - DEUS_EX CNN
-}
+	SetCollision(true, false, false);		// make things block actors as well - DEUS_EX CNN
+}                    //true
 
 function BecomeItem()
 {
