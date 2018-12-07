@@ -10,7 +10,7 @@ defaultproperties
      FragType=Class'DeusEx.GlassFragment'
      ItemName="Flourescent Light"
      mesh=mesh'DeusExDeco.HangingShopLight'
-     PrePivot=(Z=39.450001)
+     //PrePivot=(Z=39.450001)
      CollisionRadius=42.500000
      CollisionHeight=39.450001
      Mass=30.000000

@@ -1,7 +1,7 @@
 //=============================================================================
 // WeaponNanoVirusGrenade.
 //=============================================================================
-class WeaponNanoVirusGrenadeInv extends DeusExWeaponInv;
+class WeaponNanoVirusGrenadeInv extends GrenadeWeaponInv;
 
 function Fire(float Value)
 {

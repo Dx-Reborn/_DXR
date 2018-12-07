@@ -231,7 +231,7 @@ function JumpToConversation(ConDialogue jumpCon, String startLabel)
 		SetPlayedFlag();
 
 		// Some cleanup for the existing conversation
-		con.radiusDistance = saveRadiusDistance;
+		con.InvokeRadius = saveRadiusDistance;
 
 		// Assign the new conversation and bind the events
 		con = jumpCon;
@@ -1095,7 +1095,7 @@ function EEventAction SetupEventSpeechPost(ConEventSpeech theevent, out String n
 
 	// Calculate the length of the text string, this is used later
 
-	speech = theevent.speech;
+	speech = con@ theevent.speech; // added con
 
 	bHaveSpeechAudio = (CheckConversationsAudio(theevent) != "");
 
@@ -1135,8 +1135,8 @@ function EEventAction SetupEventSpeechPost(ConEventSpeech theevent, out String n
 				// Clear the window
 				conWinThird.Clear();
 
-				conWinThird.DisplayName( player.GetDisplayName(theevent.speaker) );
-				conWinThird.DisplayText( speech, currentSpeaker );
+				conWinThird.DisplayName(player.GetDisplayName(theevent.speaker));
+				conWinThird.DisplayText(speech, currentSpeaker);
 			}
 		}
 	}

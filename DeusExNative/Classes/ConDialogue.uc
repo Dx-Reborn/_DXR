@@ -22,13 +22,12 @@ var bool bInvokeBump;
 var bool bInvokeFrob;
 var bool bInvokeSight;
 var bool bInvokeRadius;
-var int InvokeRadius;
+var int InvokeRadius;		// Distance from PC needed to invoke conversation, 0 = Frob
 var() Array<ConFlagRef> FlagRefList;
 var() Array<ConEvent> EventList;
 
 var float lastPlayedTime;		// Time when conversation last played (ended).
 var int	  ownerRefCount;		// Number of owners this conversation has
-var int   radiusDistance;		// Distance from PC needed to invoke conversation, 0 = Frob
 var int   currentIndex;
 
 var() array<int> foundIndexes;

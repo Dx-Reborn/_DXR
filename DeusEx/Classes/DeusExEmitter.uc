@@ -112,4 +112,5 @@ static function Resume (Emitter TheOne)
 defaultproperties
 {
      bNoDelete=false
+     bDirectional=true
 }

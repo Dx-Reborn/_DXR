@@ -188,6 +188,16 @@ exec function testwm()
   ClientMessage(s);
 }
 
+exec function unhidePawns()
+{
+   local ScriptedPawn sp;
+
+   foreach AllActors(class'ScriptedPawn', sp)
+   {
+      sp.EnterWorld();
+   }
+}
+
 
 
 // ----------------------------------------------------------------------

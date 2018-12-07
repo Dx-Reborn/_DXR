@@ -93,6 +93,7 @@ function PaintOnHeader(Canvas C)
   icon = texture'DeusExSmallIcon';
   C.SetPos(t_WindowTitle.ActualLeft() + 8, t_WindowTitle.ActualTop() + 3);
   C.SetDrawColor(255,255,255);
+  icon.bMasked = false;
   C.DrawIcon(icon, 1);
 
   /* Новый текст заголовка окна, поскольку начальный мы только что закрыли. */
@@ -154,6 +155,8 @@ function bool OnCanClose(optional bool bCancelled)
     return Super.OnCanClose(bCancelled);
 }
 
+function SetMouseCursorIndex(int index);
+
 
 
 
@@ -163,8 +166,6 @@ defaultproperties
     CloseSound=sound'DeusExSounds.UserInterface.Menu_Cancel'
 
       TopEdgeTexture=texture'MenuRightBorder_Top'
-//      LeftEdgeTexture=texture'MenuLeftBorder_Center'//texture'MenuLeftBorder_Bottom'
-//      RightEdgeTexture=texture'MenuRightBorder_Right'//texture'MenuRightBorder_BottomRight'
       LeftEdgeTexture=texture'DXR_MenuLeftBorder'
       RightEdgeTexture=texture'DXR_MenuRightBorder'
 
@@ -175,6 +176,8 @@ defaultproperties
       bubbleWidthCorrector=5
 
       bRequire640x480=false//true
+
+     	HeaderMouseCursorIndex=0
 
     bPersistent=false
     bAllowedAsLast=true

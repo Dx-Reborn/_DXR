@@ -30,7 +30,7 @@ defaultproperties
      HitPoints=10
      FragType=Class'DeusEx.WoodFragment'
      ItemName="Combat Supply Crate"
-     contents=Class'DeusEx.Ammo10mm'
+     contents=Class'DeusEx.Ammo10mmInv'
      skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex3'
      HoldTexture=Shader'DeusExDeco.Shaders.CrateBreakableMedTex3_SH'
      mesh=mesh'DeusExDeco.CrateBreakableMed'

@@ -209,7 +209,15 @@ function ResetConvOrders()
 
 function pawn GetPlayerPawn()
 {
-  return level.GetLocalPlayerController().pawn;
+ local DeusExPlayer playerP;
+
+ foreach AllActors(class'DeusExPlayer', playerP)
+ break;
+
+ if (PlayerP != none)
+ return PlayerP;
+
+ return level.GetLocalPlayerController().pawn;
 }
 
 function StopBlendAnims()

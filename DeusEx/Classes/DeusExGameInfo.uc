@@ -73,35 +73,33 @@ event DetailChange()
 {
    Super.DetailChange();
 
-       log("**************** DetailChange called!");
+   log("**************** DetailChange called!");
 }
 
 //--- !Скопировано из Reborn
 
 event PostLogin(PlayerController NewPlayer)
 {
-//    local class<HUD> HudClass;
-//    local String SongName;
+  log("************* DeusExGameInfo PostLogin");
 
-    Log("************* DeusExGameInfo PostLogin");
-
-    // Log player's login.
+  // Log player's login.
 	if (GameStats!=None)
 	{
 		GameStats.ConnectEvent(NewPlayer.PlayerReplicationInfo);
 		GameStats.GameEvent("NameChange",NewPlayer.PlayerReplicationInfo.playername,NewPlayer.PlayerReplicationInfo);		
 	}
 
-	if (NewPlayer.Pawn == None ) // Changed by Demiurge (Runtime)
+	if (NewPlayer.Pawn == None) // Changed by Demiurge (Runtime)
 	{
 		// start match, or let player enter, immediately
 		bRestartLevel = false;	// let player spawn once in levels that must be restarted after every death
 		bKeepSamePlayerStart = true;
-		if ( bWaitingToStartMatch )
-			{
+
+		if (bWaitingToStartMatch)
+		{
 				StartMatch();
-				Log("StartMatch");
-			}
+				log("StartMatch");
+		}
 		else
 			RestartPlayer(newPlayer);
 			Log("RestartPlayer");
@@ -109,19 +107,12 @@ event PostLogin(PlayerController NewPlayer)
 		bRestartLevel = Default.bRestartLevel;
 	}
 
-	// Start player's music.
-//    SongName = Level.Song;
-//    if(SongName != "" && SongName != "None")
-//        NewPlayer.ClientSetMusic(SongName, MTRAN_Fade);
-	
 		NewPlayer.ClientSetHUD(class'DeusExHud',none);
-//    NewPlayer.Player.InteractionMaster.AddInteraction("DeusEx.DeusExInteraction", NewPlayer.Player);
-//    NewPlayer.Player.InteractionMaster.AddInteraction("Engine.StreamInteraction", NewPlayer.Player);
 
 		if (NewPlayer.Pawn != None)
 		{
 			NewPlayer.Pawn.ClientSetRotation(NewPlayer.Pawn.Rotation);
-			//
+      log("****** PlayerPawn = "$NewPlayer.pawn);
 		}
 
 	SpawnScript();
@@ -202,6 +193,11 @@ function DeusExLevelInfo GetLevelInfo()
 	return info;
 }
 
+event PostLoadSavedGame()
+{
+   InitSavedLevel();
+}
+
 
 event PlayerController Login(string Portal,string Options,out string Error)
 {
@@ -213,8 +209,6 @@ event PlayerController Login(string Portal,string Options,out string Error)
     local pawn 							TestPawn;
     local DeusExLevelInfo 	DX;
 
-//    Log("************* DeusExGameInfo Login");
-
 		Options = StripColor(Options);	// Strip out color Codes
 
     BaseMutator.ModifyLogin(Portal, Options);
@@ -224,15 +218,11 @@ event PlayerController Login(string Portal,string Options,out string Error)
     InTeam     = GetIntOption( Options, "Team", 255 ); // default to "no team"
 
 		DX=GetLevelInfo();
-//		SavedIndex=DX.SavedIndex;
-//    Log("************* DeusExGameInfo Login :" $DX);
-//    Log("************* DeusExGameInfo Login :" $Portal $options);
 
 	if ( HasOption(Options, "Load"))
 	{
 		log("Loading Savegame");
-
-		InitSavedLevel();
+    InitSavedLevel(); // Always recreate ObjectPool?
 		bIsSaveGame = true;
 
 		// Try to match up to existing unoccupied player in level,
@@ -246,7 +236,6 @@ event PlayerController Login(string Portal,string Options,out string Error)
 					TestPawn.SetRotation(TestPawn.Controller.Rotation);
 				log("FOUND "$TestPlayer@TestPlayer.PlayerReplicationInfo.PlayerName);
 				return TestPlayer;
-				
 			}
 		}
 	}
@@ -283,7 +272,7 @@ event PlayerController Login(string Portal,string Options,out string Error)
 
 		newPlayer.StartSpot = StartSpot;
 
-		if ( bTestMode )
+		if (bTestMode)
 		TestLevel();
 
     return newPlayer;

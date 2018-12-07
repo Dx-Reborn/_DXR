@@ -372,7 +372,7 @@ exec function SaveCurrentMap()
   foreach AllActors(class'Ammunition', amm)//inv)
   {
 //    if ((inv != none) && (inv.owner.IsA('DeusExPlayer')))
-    if ((amm != none) && (amm.owner.IsA('DeusExPlayer')))
+    if ((amm != none) && (amm.Owner != none) && (amm.owner.IsA('DeusExPlayer')))
     {
       log("Transient inventory:"@amm);
       DeusExAmmoInv(amm).SaveAmmoAmount(); // :)

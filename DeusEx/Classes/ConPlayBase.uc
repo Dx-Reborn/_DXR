@@ -154,7 +154,7 @@ function bool SetConversation(ConDialogue newCon)
 	startCon = newCon;
 	con      = newCon;
 
-	saveRadiusDistance = con.radiusDistance;
+	saveRadiusDistance = con.InvokeRadius;
 
 	return True;
 }
@@ -264,7 +264,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 	}
 
 	// Save the conversation radius
-	saveRadiusDistance = con.radiusDistance;
+	saveRadiusDistance = con.InvokeRadius;
 
 	// Initialize Windowing System
 	PC = DeusExPlayerController(Level.GetLocalPlayerController());
@@ -297,7 +297,7 @@ function TerminateConversation(optional bool bContinueSpeech, optional bool bNoP
 	//con.ClearBindEvents();
 
 	// Reset the conversation radious
-	con.radiusDistance = saveRadiusDistance;
+	con.InvokeRadius = saveRadiusDistance;
 
 	// Notify the conversation participants to go about their
 	// business.

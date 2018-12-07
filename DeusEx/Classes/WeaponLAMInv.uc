@@ -1,7 +1,7 @@
 //=============================================================================
 // WeaponLAM.
 //=============================================================================
-class WeaponLAMInv extends DeusExWeaponInv;
+class WeaponLAMInv extends GrenadeWeaponInv;
 
 var localized String shortName;
 

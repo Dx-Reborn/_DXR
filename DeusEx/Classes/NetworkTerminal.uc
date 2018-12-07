@@ -35,6 +35,9 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
   CreateHackWindow();
   DeusExHUD(PlayerOwner().MyHUD).menuMode = true;
 	bTickEnabled = true;
+
+	if (player.DataLinkPlay != none)
+	    player.DataLinkPlay.terminal = self;
 }
 
 // ----------------------------------------------------------------------
@@ -63,6 +66,10 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 	}
 
   DeusExHUD(PlayerOwner().MyHUD).menuMode = false;
+
+  if (player.DataLinkPlay != none)
+	    player.DataLinkPlay.terminal = none;
+
 	// Now finish destroy us.
 	Super.Closed(Sender, bCancelled); // DestroyWindow();
 }

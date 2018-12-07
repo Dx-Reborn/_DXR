@@ -1,7 +1,7 @@
 //=============================================================================
 // WeaponEMPGrenade.
 //=============================================================================
-class WeaponEMPGrenadeInv extends DeusExWeaponInv;
+class WeaponEMPGrenadeInv extends GrenadeWeaponInv;
 
 function Fire(float Value)
 {
@@ -31,6 +31,8 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed)
 
 	if (proj != None)
 		proj.PlayAnim('Open');
+
+		return proj;
 }
 
 defaultproperties

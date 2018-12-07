@@ -34,6 +34,8 @@ var DatalinkTrigger datalinkTrigger;
 
 var localized String EndTransmission;
 
+var NetworkTerminal terminal;
+
 // ----------------------------------------------------------------------
 // SetConversation()
 //
@@ -87,9 +89,7 @@ function SetTrigger(DataLinkTrigger newDatalinkTrigger)
 // ----------------------------------------------------------------------
 function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
 {
-//	local Actor tempActor;
-
-	if ( Super.StartConversation(newPlayer, newInvokeActor, bForcePlay) == False )
+	if (Super.StartConversation(newPlayer, newInvokeActor, bForcePlay) == False)
 		return False;
 
 	// Create the DataLink display if necessary.  If it already exists,
@@ -103,7 +103,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 	//
 	// In these cases we'll just queue it up instead
 
-	if (( dataLink == None ) && ((player.conPlay == None))) // Когда будут готовы интерфейсы для компьютеров, прописать условие здесь. && (NetworkTerminal(rootWindow.GetTopWindow()) == None)))
+	if ((dataLink == None) && ((player.conPlay == None)) && (terminal == none))
 	{
 		lastSpeechTextLength = 0;
 		bEndTransmission = False;

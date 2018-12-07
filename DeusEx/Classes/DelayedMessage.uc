@@ -45,6 +45,7 @@ function SetPlayer(DeusExPlayer p)
 
 function Activate()
 {
+   if (messages.length > 0)
    GoToState('DelayedMessages');
 }
 

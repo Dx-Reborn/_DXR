@@ -309,14 +309,14 @@ defaultproperties
 		ImageStyle=ISTY_Tiled
 		ImageColor=(R=255,G=255,B=255,A=255)
 		DropShadow=None
-		WinWidth=512
-		WinHeight=256
+		WinWidth=366
+		WinHeight=170
 		WinLeft=8
 		WinTop=20
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
-				OnRendered=PaintOnBG
+		OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
 

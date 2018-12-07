@@ -1106,12 +1106,12 @@ state PlayerMousing
 
 state Conversation
 {
-ignores SeePlayer, HearNoise, Bump;
+ignores SeePlayer, HearNoise, NotifyBump;
 
 	event PlayerTick(float deltaTime)
 	{
-		local rotator tempRot;
-		local float   yawDelta;
+//		local rotator tempRot;
+//		local float   yawDelta;
 
 		UpdateRotation(DeltaTime, 0);
 
@@ -1136,7 +1136,7 @@ ignores SeePlayer, HearNoise, Bump;
 //		LipSynch(deltaTime);
 
 		// Keep turning towards the person we're speaking to
-		if (Human(pawn).ConversationActor != None)
+/*		if (Human(pawn).ConversationActor != None)
 		{
 //			Human(pawn).LookAtActor(Human(pawn).ConversationActor, true, true, true, 0, 0.5);
 
@@ -1151,7 +1151,7 @@ ignores SeePlayer, HearNoise, Bump;
 			else if (tempRot.Yaw < -yawDelta)
 				tempRot.Yaw = -yawDelta;
 			SetRotation(Rotation + tempRot);
-		}
+		}*/
 
 		// Update Time Played
 //		UpdateTimePlayed(deltaTime);
@@ -1171,13 +1171,11 @@ ignores SeePlayer, HearNoise, Bump;
 	}
 
 Begin:
-//function BeginState()
-// {
 		ClientMessage(self@"entered State Conversation");
 	// Make sure we're stopped
-		Velocity.X = 0;
-		Velocity.Y = 0;
-		Velocity.Z = 0;
+		Human(pawn).Velocity.X = 0;
+		Human(pawn).Velocity.Y = 0;
+		Human(pawn).Velocity.Z = 0;
 
 		Human(pawn).Acceleration = Velocity;
 
@@ -1192,7 +1190,8 @@ Begin:
 
 //		Human(pawn).LookAtActor(Human(pawn).conPlay.startActor, true, false, true, 0, 0.5);
 
-		Human(pawn).SetRotation(DesiredRotation);
+    Focus = Human(pawn).conPlay.startActor;
+//		Human(pawn).SetRotation(DesiredRotation);
 
 		Human(pawn).PlayTurning();
 //	TurnToward(conPlay.startActor);
@@ -1214,7 +1213,6 @@ Begin:
 			if (Human(pawn).conPlay.GetDisplayMode() == DM_ThirdPerson )
 				bBehindView = true;	
 		}
-// }
 }
 
 

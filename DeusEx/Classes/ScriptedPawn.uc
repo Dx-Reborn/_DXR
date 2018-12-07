@@ -3331,9 +3331,9 @@ function Tick(float deltaTime)
 	local bool         bCheckOther;
 	local bool         bCheckPlayer;
 
-	Super.Tick(deltaTime);
-
 	player = DeusExPlayer(GetPlayerPawn());
+
+//	Super.Tick(deltaTime);
 
 	bDoLowPriority = true;
 	bCheckPlayer   = true;
@@ -4187,13 +4187,17 @@ function bool IsWeaponReloading()
 
 function bool SpecialCalcView(out Actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
 {
-	return true;
+	return false;
 }
 
-function Pawn GetPlayerPawn()
+function pawn GetPlayerPawn()
 {
-    return Level.GetLocalPlayerController().Pawn;
+  if (level.GetLocalPlayerController().pawn != none)
+  return level.GetLocalPlayerController().pawn;
+
+
 }
+
 
 // ----------------------------------------------------------------------
 function string GetBindName()

@@ -29,7 +29,7 @@ defaultproperties
      HitPoints=10
      FragType=Class'DeusEx.WoodFragment'
      ItemName="General Supply Crate"
-     contents=Class'DeusEx.Lockpick'
+     contents=Class'DeusEx.LockpickInv'
      skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex2'
      HoldTexture=Shader'DeusExDeco.Shaders.CrateBreakableMedTex2_SH'
      mesh=mesh'DeusExDeco.CrateBreakableMed'

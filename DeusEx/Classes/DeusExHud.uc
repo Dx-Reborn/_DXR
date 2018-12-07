@@ -355,7 +355,7 @@ function RenderDebugInfo(Canvas c)
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText("InHand:"$DeusExPlayer(PlayerOwner.pawn).InHand);
     c.SetPos(c.SizeX/3, c.CurY);
-    c.DrawText("CheckConversationInvokeRadius? "$DebugConString2);
+    c.DrawText("CheckConversationInvokeRadius ="$DebugConString2);
 //    c.DrawText(MAXSTEPHEIGHT);
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText(DebugConString);

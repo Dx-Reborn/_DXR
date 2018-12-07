@@ -5,7 +5,7 @@
    ѕеременные можно добавл€ть и свои тоже.
 ------------------------------------------------------------------------------------- */
 
-class DeusExGlobals extends Object config (DeusExGlobals);// transient;
+class DeusExGlobals extends Object config (DeusExGlobals);
 
 const RF_Native = 0x04000000;
 
@@ -19,6 +19,9 @@ var config int MenuThemeIndex; // Store menu theme index here, so i can read it 
 var config int HUDThemeIndex; // Store HUD theme index here, so i can read it at any time, from any object.
 var config string MenuTheme;
 var config string HUDTheme;
+
+// »спользовать эффект текста, по€вл€ющегос€ за курсором?
+var config bool bUseCursorEffects;
 
 /*-- ƒл€ переносимых декораций (чтобы можно было забрать коробку на другой уровень )))--*/
 var string TravelDeco; // переносима€ декораци€

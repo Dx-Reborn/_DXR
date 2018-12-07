@@ -21,7 +21,8 @@ class DeusExPlayer extends PlayerPawn
                            config;
 
 
-CONST maxAmountOfFire = 4;
+const maxAmountOfFire = 4;
+const DefaultStartMap = "01_NYC_UNATCOIsland";
 
 // When player management menu (Inventory or Augmentations for example) is opened...
 var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
@@ -2166,12 +2167,12 @@ function bool TouchingWaterVolume()
 
 function SpawnBlood(Vector HitLocation, float Damage)
 {
-//	local int i;
+	local int i;
 
-/*	spawn(class'xEffects.BloodSpurt',,,HitLocation);
-	spawn(class'xEffects.BloodSplatter',,,HitLocation);
+	spawn(class'BloodSpurt',,,HitLocation);
+	spawn(class'BloodDrop',,,HitLocation);
 	for (i=0; i<int(Damage); i+=10)
-		spawn(class'xEffects.BloodSplatter',,,HitLocation);*/
+		spawn(class'BloodDrop',,,HitLocation);
 }
 
 // ----------------------------------------------------------------------
@@ -2255,7 +2256,7 @@ function Bleed(float deltaTime)
 		while (dropCounter >= dropPeriod)
 		{
 			bloodVector = vect(0,0,1)*CollisionHeight*0.5;  // so folks don't bleed from the crotch
-			//spawn(Class'xEffects.BloodSplatter',,,bloodVector+Location);
+			spawn(Class'BloodDrop',,,bloodVector+Location);
 			dropCounter -= dropPeriod;
 		}
 		bleedRate -= deltaTime/clotPeriod;
@@ -3700,8 +3701,7 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 		// don't drop it if it's in a strange state
 		if (item.IsA('DeusExWeaponInv'))
 		{
-			if (!DeusExWeaponInv(item).IsInState('Idle') && !DeusExWeaponInv(item).IsInState('Idle2') && 
-     !DeusExWeaponInv(item).IsInState('DownWeapon') && !DeusExWeaponInv(item).IsInState('Reload'))
+			if (!DeusExWeaponInv(item).IsInState('Idle') && !DeusExWeaponInv(item).IsInState('Idle2') && !DeusExWeaponInv(item).IsInState('DownWeapon') && !DeusExWeaponInv(item).IsInState('Reload'))
 			{
 				return False;
 			}
@@ -4302,7 +4302,7 @@ function name GetWallMaterial(out vector wallNormal)
 
  	foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
 	{
-		if ((target == Level) || target.IsA('Mover'))
+		if ((target == Level) || target.IsA('Mover') || target.IsA('TerrainInfo'))
 			break;
 	}
 
@@ -4328,10 +4328,10 @@ function name GetFloorMaterial()
 
 	foreach class'ActorManager'.static.TraceTexture(self, class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
 	{
-		if ((target == Level) || target.IsA('Mover'))
+		if ((target == Level) || target.IsA('Mover') || target.IsA('TerrainInfo'))
 			break;
 	}
-
+//	ClientMessage(texName @ texGroup @ target);
 	return texGroup;
 }
 
@@ -4511,7 +4511,7 @@ exec function StartNewGame(String startMap)
 
 	// Send the player to the specified map!
 	if (startMap == "")
-		Level.Game.SendPlayer(DeusExPlayerController(Self.controller), "01_NYC_UNATCOIsland");		// TODO: Must be stored somewhere!
+		Level.Game.SendPlayer(DeusExPlayerController(Self.controller), DefaultStartMap);		// TODO: Must be stored somewhere!
 	else
 		Level.Game.SendPlayer(DeusExPlayerController(Self.controller), startMap);
 }
@@ -4944,8 +4944,8 @@ function bool StartConversation(Actor invokeActor, EInvokeMethod invokeMethod, o
 		// of this radius + 100.
 		if ((invokeMethod == IM_Named) || (invokeMethod == IM_Frob))
 		{
-			conPlay.SetOriginalRadius(con.radiusDistance);
-			con.radiusDistance = VSize(invokeActor.Location - Location);
+			conPlay.SetOriginalRadius(con.InvokeRadius);
+			con.InvokeRadius = VSize(invokeActor.Location - Location);
 		}
 
 		// If the invoking actor is a ScriptedPawn, then force this person 
@@ -4967,10 +4967,10 @@ function bool StartConversation(Actor invokeActor, EInvokeMethod invokeMethod, o
 
 		if ((!con.bFirstPerson) && (!bForcePlay))
 		{
-			if 	(!DeusExPlayerController(Controller).IsInState('Conversation'))
-			{
+//			if 	(!DeusExPlayerController(Controller).IsInState('Conversation'))
+//			{
 				DeusExPlayerController(Controller).GotoState('Conversation');
-			}
+//			}
 		}
 		else
 		{
@@ -5003,7 +5003,7 @@ function CheckActiveConversationRadius()
 		// exceed that radius plus
 
 		if (conPlay.con.bInvokeRadius)
-			checkRadius = conPlay.con.radiusDistance + 100;
+			checkRadius = conPlay.con.InvokeRadius + 100;
 		else
 			checkRadius = 300;
 
@@ -5036,7 +5036,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 {
 	local int i;
 	local ConDialogue con;
-	local Name flagName;
+	local /*Name*/ string flagName;
 	local bool bAbortConversation;
 
 	// If we don't have a valid invokeActor or the flagbase
@@ -5091,11 +5091,12 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 				case IM_Radius:
 					if (con.bInvokeRadius)
 					{
-						// Calculate the distance between the player and the owner
+   					// Calculate the distance between the player and the owner
 						// and if the player is inside that radius, we've passed 
 						// this check.
 
 						bAbortConversation = !CheckConversationInvokeRadius(invokeActor, con);
+						//log("GetActiveConversation = "$bAbortConversation);
 
 						// First check to make sure that at least 10 seconds have passed
 						// before playing a radius-induced conversation after a letterbox
@@ -5103,30 +5104,42 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 						//
 						// Check:
 						//  
-						// 1.  Player finished letterbox convo in last 10 seconds
+						// 1.  Player finished letterbox convo in last[ 10 seconds
 						// 2.  Conversation was with this NPC
 						// 3.  This new radius conversation is with same NPC.
 
 						if ((!bAbortConversation) && ((Level.TimeSeconds - lastThirdPersonConvoTime) < 10) && (lastThirdPersonConvoActor == invokeActor))
+						{
 							bAbortConversation = True;
+              //log("GetActiveConversation = "$bAbortConversation);
+						}
 
 						// Now check if this conversation ended in the last ten seconds or so
 						// We want to prevent the user from getting trapped inside the same 
 						// radius conversation 
 						
 						if ((!bAbortConversation) && (con.lastPlayedTime > 0))
+						{
 							bAbortConversation = ((Level.TimeSeconds - con.lastPlayedTime) < 10);
+              //log("GetActiveConversation = "$bAbortConversation);
+						}
 
 						// Now check to see if the player just ended a radius, third-person
 						// conversation with this NPC in the last 5 seconds.  If so, punt, 
 						// because we don't want these to chain together too quickly.
 
 						if ((!bAbortConversation) && ((Level.TimeSeconds - lastFirstPersonConvoTime) < 5) && (lastFirstPersonConvoActor == invokeActor))
+						{
 							bAbortConversation = True;
+              //log("GetActiveConversation = "$bAbortConversation);
+						}
+//           DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString = "InvokerActor = ÿÿ_"$invokeActor$"___, ConDialogue = ÿÿ_"$con;
+  //         DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString2 = "bAbortConversation?="$bAbortConversation @"con.radiusDistance = _ÿÿ"$con.radiusDistance;
 					}
 					else
 					{
 						bAbortConversation = True;
+            //log("GetActiveConversation = "$bAbortConversation);
 					}
 					break;
 
@@ -5154,7 +5167,8 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 		// Check if this conversation is only to be played once 
 		if ((!bAbortConversation) && (con.bDisplayOnce))
 		{
-			flagName = class'DxUtil'.static.StringToName(con.Name $ "_Played");
+			//flagName = class'DxUtil'.static.StringToName(con.Name $ "_Played");
+			flagName = con.Name $ "_Played";
 			bAbortConversation = (GetflagBase().GetBool(flagName) == True);
 		}
 
@@ -5166,7 +5180,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 		}
 
 		if (!bAbortConversation)
-			break;
+	      break;
 //		conListItem = conListItem.next;
 	}
 
@@ -5245,18 +5259,15 @@ function bool StartConversationByName(string conName,	Actor conOwner,	optional b
 // invoking actor and the conversation passed in.
 function bool CheckConversationInvokeRadius(Actor invokeActor, ConDialogue con)
 {
-	local int  invokeRadius;
+	local int  radius, invRadius;
 	local int  dist;
 
 	dist = VSize(Location - invokeActor.Location);
+	radius = con.InvokeRadius;
 
-	invokeRadius = Max(/*(InvokeActor.CollisionRadius + CollisionRadius) +*/ 60, con.radiusDistance);
-	                  //16
+	invRadius = Max(16, radius);
 
-	DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString = "InvokerActor = "$invokeActor$", ConDialogue = "$con;
-	DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString2 = "dist = "$dist$" (must be <=) InvokeRadius = "$invokeRadius;
-
-	return (dist <= invokeRadius);
+	return (dist <= invRadius);
 }
 
 // Checks to make sure the player and the invokeActor are fairly close

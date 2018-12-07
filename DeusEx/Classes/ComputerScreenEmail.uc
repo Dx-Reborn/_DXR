@@ -63,7 +63,7 @@ function CreateControls()
   winEmail.WinLeft = 18;
   winEmail.WinTop = 172;
   winEmail.bRepeat = false;
-  winEmail.bNoTeletype = false;//true;
+  winEmail.bNoTeletype = gl.bUseCursorEffects;
   winEmail.OnClick = InternalOnClick;
   winEmail.EOLDelay = 0.1;//75;
   winEmail.CharDelay = 0.005;

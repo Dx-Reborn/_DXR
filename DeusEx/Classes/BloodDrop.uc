@@ -18,7 +18,7 @@ auto state Flying
 		SetRotation(Rotator(Velocity));
 
 		// Gore check
-		if (Level.Game.bLowGore) // || Level.Game.bVeryLowGore)
+		if (Level.Game.bLowGore)
 		{
 			Destroy();
 			return;

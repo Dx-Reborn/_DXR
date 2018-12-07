@@ -207,7 +207,7 @@ function PostBeginPlay()
 
 event PostLoadSavedGame()
 {
-  Super.PostLoadSavedGame();
+  log(self@"PostLoadSavedGame()");
 	ConBindEvents();
 }
 
@@ -327,8 +327,8 @@ function LipSynch(float deltaTime)
 //			PlayBlendAnim('Blink', 1.0, 0.1, 1);
 		}
 	}
-//	LoopHeadConvoAnim();
-//	LoopBaseConvoAnim();
+	LoopHeadConvoAnim();
+	LoopBaseConvoAnim();
 }
 
 //
@@ -339,15 +339,36 @@ function bool PlayTurnHead(ELookDirection dir, float rate, float tweentime)
 {
 	local name lookName;
 	local bool bSuccess;
+	local rotator r;
 
 	if (dir == LOOK_Left)
+	{
 		lookName = 'HeadLeft';
+		r.roll = 2000;
+		r.pitch = 2000;
+		r.yaw = 2000;
+	}
 	else if (dir == LOOK_Right)
+	{
 		lookName = 'HeadRight';
+		r.roll = 16384;
+		r.pitch = 16384;
+		r.yaw = 16384;
+	}
 	else if (dir == LOOK_Up)
+	{
 		lookName = 'HeadUp';
+		r.roll = 8000;
+		r.pitch = 8000;
+		r.yaw = 8000;
+	}
 	else if (dir == LOOK_Down)
+	{
 		lookName = 'HeadDown';
+		r.roll = 32768;
+		r.pitch = 32768;
+		r.yaw = 32768;
+	}
 	else
 		lookName = 'Still';
 
@@ -360,8 +381,9 @@ function bool PlayTurnHead(ELookDirection dir, float rate, float tweentime)
 			if (BlendAnimSequence[3] == '')
 				BlendAnimSequence[3] = 'Still';
 
-//        AnimBlendParams(0, 0.1);
-   	    PlayAnim(lookName, rate, tweentime);
+        SetBoneDirection('273', r,, tweentime, 1); // ToDo: I think I must turn ALL head bones... There is really many bones :D
+   	    //PlayAnim(lookName, rate, tweentime,1);
+//   	    log(self$"I gonna turn my head!");
 //			PlayBlendAnim(lookName, rate, tweentime, 3);
 			bSuccess = true;
 		}

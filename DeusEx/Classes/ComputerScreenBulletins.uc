@@ -66,7 +66,7 @@ function CreateMyControls()
   winBulletin.WinLeft = 18;
   winBulletin.WinTop = 163;
   winBulletin.bRepeat = false;//true;
-  winBulletin.bNoTeletype = false;
+  winBulletin.bNoTeletype = gl.bUseCursorEffects;
   winBulletin.EOLDelay = 0.1;//75;
   winBulletin.CharDelay = 0.005;
   winBulletin.RepeatDelay = 3.0;

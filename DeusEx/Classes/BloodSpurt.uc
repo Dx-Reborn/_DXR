@@ -12,7 +12,7 @@ auto state Flying
 		PlayAnim('Spurt');
 
 		// Gore check
-		if (Level.Game.bLowGore) // || Level.Game.bVeryLowGore)
+		if (Level.Game.bLowGore)
 		{
 			Destroy();
 			return;

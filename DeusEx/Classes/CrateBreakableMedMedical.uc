@@ -29,7 +29,7 @@ defaultproperties
      HitPoints=10
      FragType=Class'DeusEx.WoodFragment'
      ItemName="Medical Supply Crate"
-     contents=Class'DeusEx.MedKit'
+     contents=Class'DeusEx.MedKitInv'
      skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex1'
      HoldTexture=Shader'DeusExDeco.Shaders.CrateBreakableMedTex1_SH'
      mesh=mesh'DeusExDeco.CrateBreakableMed'

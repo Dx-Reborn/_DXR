@@ -1,7 +1,7 @@
 //=============================================================================
 // WeaponGasGrenade.
 //=============================================================================
-class WeaponGasGrenadeInv extends DeusExWeaponInv;
+class WeaponGasGrenadeInv extends GrenadeWeaponInv;
 
 function Fire(float Value)
 {

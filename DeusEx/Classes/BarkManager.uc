@@ -196,7 +196,6 @@ function bool HasBarkTypePlayedRecently(ScriptedPawn newBarkPawn, eventManager.E
 // ----------------------------------------------------------------------
 function bool CheckRadius(ScriptedPawn invokePawn)
 {
-//	local Int  invokeRadius;
 	local int  dist;
 
 	dist = VSize(DeusExPlayer(owner).Location - invokePawn.Location);

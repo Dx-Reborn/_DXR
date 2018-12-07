@@ -153,11 +153,11 @@ auto state Active
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation,Vector momentum, class<DamageType> damageType)
 	{
 		Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, DamageType);
-//		if ((DamageType == class'Shot') || (DamageType == class'Exploded'))
-//		{
+		if ((DamageType == class'DM_Shot') || (DamageType == class'DM_Exploded'))
+		{
 			CalculateHit(HitLocation, Momentum);
 			bSwaying = True;
-//		}
+		}
 
 		if (!bSwaying)
 			swayTimer = 0;

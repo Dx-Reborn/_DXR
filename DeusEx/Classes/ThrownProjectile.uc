@@ -182,7 +182,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
 
 			// smoke a bit
 			gen = Spawn(class'ParticleGenerator', Self,, Location, rot(16384,0,0));
-			if (gen != None)
+/*			if (gen != None)
 			{
 				gen.checkTime = 0.25;
 				gen.LifeSpan = 2;
@@ -196,7 +196,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
 				gen.spawnSound = Sound'Spark2';
 				gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
 				gen.SetBase(Self);
-			}
+			}*/
 		}
 
 		return;
@@ -225,7 +225,7 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
 	if ((damageType == class'DM_Exploded') && bStuck)
 	{
 		gen = spawn(class'ParticleGenerator',,, HitLocation, rot);
-		if (gen != None)
+/*		if (gen != None)
 		{
 			gen.LifeSpan = FRand() * 10 + 10;
 			gen.CheckTime = 0.25;
@@ -233,7 +233,7 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
 			gen.RiseRate = 20.0;
 			gen.bRandomEject = True;
 			gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
-		}
+		}*/
 	}
 
 	// don't draw damage art on destroyed movers
