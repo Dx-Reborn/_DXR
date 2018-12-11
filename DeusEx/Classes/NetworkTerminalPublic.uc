@@ -16,6 +16,22 @@ function CloseScreen(String action)
 		Super.CloseScreen("EXIT");
 }
 
+function bool OnCanClose(optional Bool bCancelled)
+{
+  return true;
+}
+
+function Timer()
+{
+ local bool bDone;
+
+  if (!bDone)
+     Controller.CloseMenu();
+  bDone = true;
+}
+
+
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties

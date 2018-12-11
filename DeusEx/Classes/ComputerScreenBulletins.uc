@@ -132,7 +132,6 @@ function lstBulletinsChange(GUIComponent Sender)
   winBulletin.SetContent("");
   for (x=0; x<es.text.length; x++)
   {
-    //log(es.text[x]);
     winBulletin.AddText(class'DxUtil'.static.HtmlStrip(es.text[x]));
   }
 }
@@ -151,6 +150,12 @@ function bool InternalOnClick(GUIComponent Sender)
    CloseScreen("EXIT");
 
 return false;
+}
+
+function InternalOnClose(optional bool bCancelled)
+{
+  if (WinTerm != none)
+   WinTerm.SetTimer(0.1, false);
 }
 
 defaultproperties
@@ -182,6 +187,8 @@ defaultproperties
 		MaxPageWidth=512
 		MinPageHeight=512
 		MinPageWidth=512
+
+		OnClose=InternalOnClose
 
 		openSound=sound'publicterminalfrob' // sound from GMDX mod
 

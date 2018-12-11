@@ -509,14 +509,6 @@ function renderScopeView(canvas u)
 }
 
 
-function RenderCrosshair(Canvas C)
-{
-   Super.RenderCrosshair(C);
-
-//   if (playerowner.pawn != none)
-//     c.DrawText("Time played/SaveTime -> "$class'DxUtil'.static.SecondsToTime(DeusExPlayer(playerowner.pawn).savetime));
-}
-
 defaultproperties
 {
 	bUseCameraTrick=true
