@@ -50,7 +50,8 @@ function ApplyTheme()
    if (wtf != none)
     wtf.initialize();
   }
-  i_FrameBG.ImageColor = class'DXR_Menu'.static.GetMenuBackground(gl.MenuThemeIndex);
+  if (i_FrameBG != none)
+      i_FrameBG.ImageColor = class'DXR_Menu'.static.GetMenuBackground(gl.MenuThemeIndex);
 
   if (DeusExPlayer(PlayerOwner().pawn).bMenusTranslucent)
      if (i_FrameBG != none)

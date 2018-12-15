@@ -1012,14 +1012,14 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
 
 function Destroyed()
 {
-	local inventory dropped;
+//	local inventory dropped;
 	local DeusExPlayer Player;
 
-		if( (Contents!=None) && !Level.bStartup)
+/*		if( (Contents!=None) && !Level.bStartup)
 		{
 			dropped = Spawn(Contents);
 			dropped.DropFrom(Location);
-		}	
+		}	*/
 
 	if (bPushSoundPlaying)
 	{
@@ -1045,10 +1045,10 @@ function Destroyed()
 
 	player = DeusExPlayer(GetPlayerPawn());
 
-/*	if ((player != None) && (player.conPlay != None))
+	if ((player != None) && (player.conPlay != None))
 	{
 		player.conPlay.ActorDestroyed(Self);
-	}*/
+	}
 	DropThings();
 
 	if (!IsA('Containers'))
