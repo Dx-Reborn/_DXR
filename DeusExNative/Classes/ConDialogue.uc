@@ -1,13 +1,12 @@
 class ConDialogue extends ConBase native transient
 		dependson(Times);
 
-
 var int Id;
 var string Name;
 var string Description;
-var Times.FileTime CreatedOn;
+var Times.OleTime CreatedOn;
 var string CreatedBy;
-var Times.FileTime LastModifiedOn;
+var Times.OleTime LastModifiedOn;
 var string LastModifiedBy;
 var string OwnerName;
 var string Notes;
@@ -22,16 +21,13 @@ var bool bInvokeBump;
 var bool bInvokeFrob;
 var bool bInvokeSight;
 var bool bInvokeRadius;
-var int InvokeRadius;		// Distance from PC needed to invoke conversation, 0 = Frob
-var() Array<ConFlagRef> FlagRefList;
-var() Array<ConEvent> EventList;
+var int InvokeRadius;
+var Array<ConFlagRef> FlagRefList;
+var Array<ConEvent> EventList;
 
 var float lastPlayedTime;		// Time when conversation last played (ended).
 var int	  ownerRefCount;		// Number of owners this conversation has
 var int   currentIndex;
-
-var() array<int> foundIndexes;
-var() array<String> foundLabels;
 
 
 // Подхватить следующее событие исходя из переданного.
@@ -73,14 +69,16 @@ function ConEvent GetEventFromLabel(String searchLabel)
   {
         if (Caps(searchLabel) == Caps(EventList[i].Label))
         break;
+
         currentEvent = EventList[i +1];
         currentIndex = i;
   }
-//  log(self@" currentEvent="$currentEvent);
+  //log("GetEventFromLabel(), searchLabel="$searchLabel);
+
   if (currentEvent != none)
       return currentEvent;
-    else 
-  return EventList[currentIndex]; // Нету? Подхватить последнее.
+    else
+  return none; //EventList[currentIndex]; // Нету? Подхватить последнее.
 }
 
 // ----------------------------------------------------------------------
@@ -94,7 +92,8 @@ function bool CheckActors(optional bool bLogActors)
 	local bool bActorsValid;
 	local int i;
 
-	log(self$" checking actors...");
+	if (bLogActors)
+      log(self$" checking actors...");
 
 	bActorsValid = true;
 
@@ -132,7 +131,9 @@ function bool CheckActors(optional bool bLogActors)
 			}
 		}
 	}
-	log("checkActors actors are valid? "$bActorsValid);
+	if (bLogActors)
+      log("checkActors actors are valid? "$bActorsValid);
+
 	return bActorsValid;
 }
 

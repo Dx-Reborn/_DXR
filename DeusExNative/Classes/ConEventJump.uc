@@ -2,7 +2,7 @@ class ConEventJump extends ConEvent native transient;
 
 
 var string JumpLabel;
-var ConDialogue JumpCon;
+var ConDialogue JumpCon; //
 var int ConId;
 
 

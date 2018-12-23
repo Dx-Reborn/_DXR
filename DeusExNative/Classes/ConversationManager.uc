@@ -1,5 +1,4 @@
-class ConversationManager extends Object abstract native transient
-		dependson(Times);
+class ConversationManager extends Object abstract native transient;
 
 
 native static function int RegisterConFile(string ConFileName, Array<byte> ConFileData);

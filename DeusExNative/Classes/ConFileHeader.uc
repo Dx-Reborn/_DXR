@@ -3,12 +3,10 @@ class ConFileHeader extends ConBase native transient
 
 
 var int ConVersion;
-var Times.FileTime CreatedOn;
+var Times.OleTime CreatedOn;
 var string CreatedBy;
-var Times.FileTime LastModifiedOn;
+var Times.OleTime LastModifiedOn;
 var string LastModifiedBy;
 var string AudioPackageName;
 var string Notes;
-var() Array<int> MissionList;
-
-
+var Array<int> MissionList;
