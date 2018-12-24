@@ -8,6 +8,18 @@
     После вызова функции Activate(), каждые lifeTime выводится новое сообщение
     и связанный с ним звук.
   Когда сообщения закончились, этот актор самоуничтожается.
+
+  ---------------------------------------------------------
+
+  Delayed messages (used after conversation).
+  DeusEx uses timer in HUD windows for this, but this version looks simpler.
+
+  How to use:
+    Messages and related sounds are added to array. Nothing happens for now.
+    After calling Activate(), each message is displayed with delay (lifeTime)
+    and associated sound is played.
+  This actor destroys yourself when no messages left.
+
 */
 
 class DelayedMessage extends Actor

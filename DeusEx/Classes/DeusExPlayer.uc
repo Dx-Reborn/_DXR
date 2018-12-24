@@ -4283,6 +4283,7 @@ function ClimbLadder(LadderVolume L)
 // GetWallMaterial()
 //
 // gets the name of the texture group that we are facing
+// DXR: Probably never used, even in mods. Or was used before release?
 // ----------------------------------------------------------------------
 function name GetWallMaterial(out vector wallNormal)
 {
@@ -4302,7 +4303,7 @@ function name GetWallMaterial(out vector wallNormal)
 
  	foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
 	{
-		if ((target == Level) || target.IsA('Mover') || target.IsA('TerrainInfo'))
+		if (target == Level)
 			break;
 	}
 
@@ -4318,20 +4319,31 @@ function name GetWallMaterial(out vector wallNormal)
 // ----------------------------------------------------------------------
 function name GetFloorMaterial()
 {
-	local vector EndTrace, HitLocation, HitNormal;
+	local vector EndTrace, HitLocation, HitNormal, Start;
 	local actor target;
 	local int texFlags;
 	local name texName, texGroup;
+	local material mat;
 
 	// trace down to our feet
-	EndTrace = Location - CollisionHeight * 2 * vect(0,0,1);
+	EndTrace = Location - CollisionHeight * 1.1 * vect(0,0,1); //*2
 
 	foreach class'ActorManager'.static.TraceTexture(self, class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
 	{
-		if ((target == Level) || target.IsA('Mover') || target.IsA('TerrainInfo'))
+		if (target == Level) // movers are staticmeshes in this version of the engine.
 			break;
 	}
-//	ClientMessage(texName @ texGroup @ target);
+  if (texGroup == 'None') // None? Then try built-in Trace().
+	{
+     Start = Location - Vect(0,0,1)*CollisionHeight;
+     EndTrace = Start - Vect(0,0,32);
+	   Trace(HitLocation, HitNormal, EndTrace, Start, false, , mat);
+
+	   if (mat != none)
+         texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
+	}
+
+	ClientMessage("TexName="$texName @ "texGroup="$texGroup @ "target="$target @ "mat="$mat);
 	return texGroup;
 }
 
@@ -5530,7 +5542,7 @@ function RemoveItemDuringConversation(Inventory item)
 /* ----------------------------------------------------------------- */
 defaultproperties
 {
-    MovementAnims(0)=Run
+/*    MovementAnims(0)=Run
     MovementAnims(1)=Run
     MovementAnims(2)=Run
     MovementAnims(3)=Run
@@ -5565,7 +5577,7 @@ defaultproperties
     IdleCrouchAnim=Crouch
     IdleSwimAnim=Tread
     IdleWeaponAnim=BreatheLight
-    IdleChatAnim=BreatheLight
+    IdleChatAnim=BreatheLight*/
 //-------------------------------------------
 //		bPlayOwnFootSteps=false
 		bCanWalkOffLedges=true
@@ -5585,7 +5597,7 @@ defaultproperties
 	  DrawType=DT_Mesh
 		itemFovCorrection=75
 	  GroundSpeed=320.0
-		WaterSpeed=200.00
+		WaterSpeed=300.00
 //    AirSpeed=4000.000000
     AccelRate=1000.000000
 //     AccelRate=2048.000000
@@ -5596,6 +5608,7 @@ defaultproperties
     Mass=150.000000
     Buoyancy=155.000000
 //    RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
+
      DodgeSpeedFactor=1.500000
      DodgeSpeedZ=210.000000
      AirControl=0.050000
@@ -5613,7 +5626,7 @@ defaultproperties
     bCanPickupInventory=true
     bCanStrafe=True
 	  DrawScale=1.0
-	  bPhysicsAnimUpdate=true
+	  bPhysicsAnimUpdate=false//true
     bCanSwim=true
 	  bCanCrouch=true
 	  bActorShadows=true

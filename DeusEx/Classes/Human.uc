@@ -49,3 +49,20 @@ exec function DumpInventoryGrid()
 	log("_____________________________________________________________");
 }
 
+
+defaultproperties
+{
+//    bIsHuman=True
+    WaterSpeed=300.00
+    AirSpeed=4000.00
+    AccelRate=1000.00
+    JumpZ=300.00
+    BaseEyeHeight=40.00
+    UnderWaterTime=20.00
+    CollisionRadius=20.00
+    CollisionHeight=47.50
+    Mass=150.00
+    Buoyancy=155.00
+    RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
+}
+
