@@ -1208,5 +1208,6 @@ defaultproperties
 
 		 bHardAttach=false//true
 
-		 	 bShouldBaseAtStartup=false
+	 	 bShouldBaseAtStartup=false
+	 	 bIgnoreOutOfWorld=true
 }

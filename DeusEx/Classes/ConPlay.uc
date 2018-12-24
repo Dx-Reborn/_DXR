@@ -220,6 +220,8 @@ function JumpToConversation(ConDialogue jumpCon, String startLabel)
 {
   local DeusExGlobals gl;
 
+  log("******* Jump to convo?");
+
 	assert(jumpCon != None);
 
 	gl = class'DeusExGlobals'.static.GetGlobals();
@@ -570,7 +572,7 @@ state PlayEvent
 				break;
 
 			case ET_Jump:
-				nextAction = SetupEventJump( ConEventJump(currentEvent), nextLabel );
+				nextAction = SetupEventJump(ConEventJump(currentEvent), nextLabel);
 				break;
 
 			case ET_Random:
@@ -631,7 +633,7 @@ state WaitForConWin
 		if (((displayMode == DM_FirstPerson) && (conWinFirst != None) && (!conWinFirst.IsVisible())) ||
 			 ((displayMode == DM_ThirdPerson ) && (conWinThird != None) && (!conWinThird.IsVisible())))
 		{
-		  log(self$" check for conWindow...");
+		  //log(self$" check for conWindow...");
 
 			SetTimer(0, False);
 			ConWinFinished();
@@ -1307,7 +1309,6 @@ function EEventAction SetupSkipComment(ConEventComment ev, out String nextLabel)
   nextLabel = "";
   return EA_NextEvent;
 }
-
 
 defaultproperties
 {

@@ -141,11 +141,26 @@ var() editconst int conActorCount;
 
 var DelayedMessage dMsg;
 
+// Использовать DelayedMessage только если есть события типа AddGoal или AddNote (возможно какие-то еще?).
+function bool UseDelayedMessage()
+{
+  local int i;
+
+  if (con == none)
+     return false;
+
+  for (i=0; i<con.EventList.length; i++)
+  {
+    if (ConEventAddGoal(con.EventList[i]) != none || ConEventAddNote(con.EventList[i]) != none)
+       return true; // Да.
+      else
+    return false; // Нет.
+  }
+}
+
 function SetStartActor(Actor newStartActor)
 {
 	startActor = newStartActor;
-  dMsg = Spawn(class'DelayedMessage'); // DXR: Spawn our delayedMessages actor
-  dMsg.SetPlayer(DeusExPlayer(Level.GetLocalPlayerController().pawn)); // Сама себе напоминаю!!!
 }
 
 // Sets the conversation to be played.
@@ -155,6 +170,12 @@ function bool SetConversation(ConDialogue newCon)
 	con      = newCon;
 
 	saveRadiusDistance = con.InvokeRadius;
+
+	if (UseDelayedMessage())
+	{
+    dMsg = Spawn(class'DelayedMessage'); // DXR: Spawn our delayedMessage actor
+    dMsg.SetPlayer(DeusExPlayer(Level.GetLocalPlayerController().pawn)); // Сама себе напоминаю!!!
+  }
 
 	return True;
 }
@@ -240,7 +261,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
 	if ((!bForcePlay) && (!con.bDataLinkCon) && (!con.CheckActors(false))) // true для вывода списка в лог.
 	{
-		log("forcePlay=false, not datalink, "$con$"CheckActors returned false");
+		log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
 		return False;
 	}
 
@@ -248,7 +269,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 	// from one another (excluding the player)
 	if ((!bForcePlay) && (!con.CheckActorDistances(player)))
 	{
-		log("forcePlay=false, "$con$"CheckActorDistances("$player$") false");
+		log(self$" forcePlay=false, "$con$"CheckActorDistances("$player$") false");
 		return False;
 	}
 
@@ -1006,6 +1027,8 @@ function EEventAction SetupEventJump(ConEventJump event, out String nextLabel)
 {
 	local EEventAction nextAction;
 
+  SetPointerToJumpToCon(event); //
+
 	// Check to see if the jump label is empty.  If so, then we just want
 	// to fall through to the next event.  This can happen when jump
 	// events get inserted during the import process.  ConEdit will not
@@ -1558,6 +1581,19 @@ event Destroyed()
       dMsg.Activate(); // DXR: Start displaying delayed messages
 
    Super.Destroyed();
+}
+
+// Set JumpCon using unique ID.
+function SetPointerToJumpToCon(ConEventJump jump)
+{
+  local conDialogue dialog;
+
+  foreach AllObjects(class'ConDialogue', dialog)
+  {
+    if (jump.ConID == dialog.ID)
+    break;
+  }
+  jump.JumpCon = dialog;
 }
 
 
