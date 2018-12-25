@@ -1258,7 +1258,7 @@ function EEventAction SetupEventEnd(ConEventEnd event, out String nextLabel)
 // ----------------------------------------------------------------------
 function SetupHistory(String ownerName, optional Bool bInfoLink)
 {
-	local Name flagName;
+	local string flagName;
 	local bool bBarkConvo;
 	local DeusExGlobals gl;
 
@@ -1270,7 +1270,11 @@ function SetupHistory(String ownerName, optional Bool bInfoLink)
 	// Also ignore Bark conversations.
 
 	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
-	flagName   = class'DxUtil'.static.StringToName(con.Name $ "_Played");
+
+	if (bBarkConvo)
+	    return;
+
+	flagName = con.Name $ "_Played";
 
 	if ((player.GetflagBase().GetBool(flagName) == False) && (!bBarkConvo))
 	{
@@ -1292,6 +1296,12 @@ function AddHistoryEvent(String eventSpeaker, ConEventSpeech eventSpeech)
 //	local ConHistoryEvent newEvent;
 	local DeusExGlobals gl;
 	local int c;
+	local bool bBarkConvo;
+
+	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
+
+	if (bBarkConvo)
+	    return;
 
 	gl = class'DeusExGlobals'.static.GetGlobals();
 
