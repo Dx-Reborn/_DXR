@@ -419,17 +419,17 @@ function PlaySpeech(Sound soundID, Actor speaker)
 		{
 			// Check how close the player is to this actor.  If the player is 
 			// close enough to the speaker, play through the speaker.
-			if ((speaker == None) || (VSize(player.Location - speaker.Location) > 400))
-			{
-				playingSoundID = player.PlaySoundEx(soundID, SLOT_None,SpeechVolume,true,65536.0,, false); 
-//				log("currently playing "$playingSoundID);
+			if ((speaker == None) || (VSize(player.Location - speaker.Location) > 400) || (SoundID.Duration == 14.759184))
+			{                                                                             // Special case for Intro
+				playingSoundID = player.PlaySoundEx(soundID, SLOT_Talk,SpeechVolume,true,65536.0,, false); 
+				log(player@"currently playing "$playingSoundID);
 			}
 			else
 			{
-				playingSoundID = speaker.PlaySoundEx(soundID, SLOT_None,SpeechVolume,true,65536.0,, false); 
-//				log("currently playing "$playingSoundID);
+				playingSoundID = speaker.PlaySoundEx(soundID, SLOT_Talk,SpeechVolume,true,65536.0,, false); 
+				log(speaker@"currently playing "$playingSoundID);
 			}
-		}
+		}   
 		else
 		{
 			// If this is a forced conversation (bCannotBeInterrupted = True)
