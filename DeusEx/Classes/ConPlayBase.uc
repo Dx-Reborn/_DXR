@@ -1297,10 +1297,13 @@ function AddHistoryEvent(String eventSpeaker, ConEventSpeech eventSpeech)
 	local DeusExGlobals gl;
 	local int c;
 	local bool bBarkConvo;
+	local bool bIntroConvo;
 
+	// Don't save conversations history for Intro && AIBarks
 	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
+	bIntroConvo = DeusExPlayerController(level.GetLocalPlayerController()).GetLevelInfo().MapName == "Intro";
 
-	if (bBarkConvo)
+	if (bBarkConvo || bIntroConvo)
 	    return;
 
 	gl = class'DeusExGlobals'.static.GetGlobals();
