@@ -6,6 +6,14 @@ enum ScaleMode {
 };
 
 
+struct native Resolution {
+	var int Width;
+	var int Height;
+};
+
+
+native static function bool GetResolutionList(out Array<Resolution> ResolutionList, int ColorBits);
+
 native static function bool TakeScreenShot(Level Level, out Texture Texture, optional Object Outer);
 
 native static function bool ScaleTexture(Texture Texture, int NewWidth, int NewHeight, ScaleMode ScaleMode, optional int BackgroundColor);

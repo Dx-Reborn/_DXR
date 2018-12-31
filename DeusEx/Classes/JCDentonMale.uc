@@ -3,6 +3,9 @@
 //=============================================================================
 class JCDentonMale extends Human config;
 
+var travel class TravelClass;
+var bool bMouseMode;
+
 event TravelPostAccept()
 {
 	Super.TravelPostAccept();
@@ -198,6 +201,84 @@ exec function unhidePawns()
    }
 }
 
+// 13 1084
+exec function TestJump(int zapros)
+{
+   local ConEventJump jump;
+
+   forEach AllObjects(class'ConEventJump', jump)
+   {
+      if (jump.ConId == zapros)
+      log(jump);
+   }
+}
+
+// 13 1084
+exec function TestID(int zapros)
+{
+   local ConDialogue con;
+
+   forEach AllObjects(class'ConDialogue', con)
+   {
+      if (con.Id == zapros)
+      log(con);
+   }
+}
+
+exec function debugcon()
+{
+	local HudOverlay_ConWindowThird conwin;
+
+	conwin = Spawn(class'HudOverlay_ConWindowThird',self);
+	DeusExHUD(level.GetLocalPlayerController().myHUD).AddHudOverlay(conwin);
+}
+
+
+
+
+// Used to check var travel class.
+/*exec function SetTravelClass(class InTravelClass)
+{
+    TravelClass = InTravelClass;
+
+    log( "TravelClass is now "$InTravelClass);
+}
+
+exec function GetTravelClass()
+{
+    log( "TravelClass is "$TravelClass);
+}*/
+
+exec function mTest()
+{
+  bMouseMode = !bMouseMode;
+
+  if (bMouseMode)
+  controller.GoToState('PlayerMousing');
+  else
+  controller.GoToState('PlayerWalking');
+}
+
+exec function getres(int bits)
+{
+/*	local array<GraphicsManager.Resolution> resl;
+	local bool ret;
+	ret = class'GraphicsManager'.static.GetResolutionList(resl, bits);
+	ClientMessage("Resolution count: " $ resl.Length);
+	if (resl.Length > 0)
+	{
+		ClientMessage("First resolution: " $ resl[0].Width $ "x" $ resl[0].Height);
+	}*/
+	local array<string> res;
+	local int i;
+
+	res = class'DxUtil'.static.GetScreenResolutions(bits);
+
+  for (i=0; i<res.length; i++)
+  {
+     ClientMessage(res[i]);
+  }
+}
 
 
 // ----------------------------------------------------------------------

@@ -176,8 +176,8 @@ exec function QuickLoad()
     CopyToCurrent(sd$"\\QuickSave\\*.dxs", sd$"\\QuickSave\\", true);
 
     bIsQuickLoading = true;
-    ClientTravel(sd$"\\Current\\"$whatMap$".dxs?load", TRAVEL_Partial, false);
-//    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load", TRAVEL_Absolute, false);
+//    ClientTravel(sd$"\\Current\\"$whatMap$".dxs?load", TRAVEL_Partial, false);
+    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load", TRAVEL_Absolute, false);
 //    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load", TRAVEL_Partial, false);
   }
   else
@@ -356,18 +356,18 @@ exec function SaveCurrentMap()
 
 	info = GetLevelInfo();
 	/* Исключает информацию из сохранения */
-  class'ObjectManager'.static.SetActorFlags(Human(pawn), RF_Transient); // исключить игрока
-  class'ObjectManager'.static.SetActorFlags(PlayerReplicationInfo, RF_Transient); // исключить PlayerReplicationInfo
-  class'ObjectManager'.static.SetActorFlags(self, RF_Transient); // исключить контроллер
+  class'ObjectManager'.static.SetObjectFlags(Human(pawn), RF_Transient); // исключить игрока
+  class'ObjectManager'.static.SetObjectFlags(PlayerReplicationInfo, RF_Transient); // исключить PlayerReplicationInfo
+  class'ObjectManager'.static.SetObjectFlags(self, RF_Transient); // исключить контроллер
 
   if (human(pawn).carriedDecoration != none)
-  class'ObjectManager'.static.SetActorFlags(Human(pawn).carriedDecoration, RF_Transient); // исключить переносимый предмет, поскольку Destroy() на него не действует ((
+  class'ObjectManager'.static.SetObjectFlags(Human(pawn).carriedDecoration, RF_Transient); // исключить переносимый предмет, поскольку Destroy() на него не действует ((
 
   if (human(pawn).AugmentationSystem != none)
-  class'ObjectManager'.static.SetActorFlags(Human(pawn).AugmentationSystem, RF_Transient);
+  class'ObjectManager'.static.SetObjectFlags(Human(pawn).AugmentationSystem, RF_Transient);
 
   if (human(pawn).SkillSystem != none)
-  class'ObjectManager'.static.SetActorFlags(Human(pawn).SkillSystem, RF_Transient);
+  class'ObjectManager'.static.SetObjectFlags(Human(pawn).SkillSystem, RF_Transient);
 
   foreach AllActors(class'Ammunition', amm)//inv)
   {
@@ -376,7 +376,7 @@ exec function SaveCurrentMap()
     {
       log("Transient inventory:"@amm);
       DeusExAmmoInv(amm).SaveAmmoAmount(); // :)
-      class'ObjectManager'.static.SetActorFlags(amm, RF_Transient);
+      class'ObjectManager'.static.SetObjectFlags(amm, RF_Transient);
       amm.Destroy();
     }
   }
@@ -389,17 +389,17 @@ exec function SaveCurrentMap()
   foreach AllActors(class'Augmentation', aug)
   {
     if (aug != none)
-    class'ObjectManager'.static.SetActorFlags(aug, RF_Transient);
+    class'ObjectManager'.static.SetObjectFlags(aug, RF_Transient);
   }
   foreach AllActors(class'Skill', skl)
   {
     if (skl != none)
-    class'ObjectManager'.static.SetActorFlags(skl, RF_Transient);
+    class'ObjectManager'.static.SetObjectFlags(skl, RF_Transient);
   }
   foreach AllActors(class'Beam', lt)
   {
     if (lt != none)
-    class'ObjectManager'.static.SetActorFlags(lt, RF_Transient);
+    class'ObjectManager'.static.SetObjectFlags(lt, RF_Transient);
   }
 
 

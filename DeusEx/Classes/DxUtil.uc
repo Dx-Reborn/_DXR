@@ -595,6 +595,36 @@ static function DestroyObject(Object obj)
    class'ObjectManager'.static.Destroy(obj);
 }
 
+// Returns array of screen resolutions.
+static function array<string> GetScreenResolutions(int bits)
+{
+	local array<GraphicsManager.Resolution> resl;
+	local array<string> resolutions;
+	local bool ret;
+	local int i;
+
+	ret = class'GraphicsManager'.static.GetResolutionList(resl, bits);
+
+	if ((ret) && (resl.Length > 0))
+	{
+	  resolutions.length = resl.length;
+
+	  for (i=0; i<resl.length; i++)
+	  {
+	    resolutions[i] = resl[i].Width $ "x" $ resl[i].Height;
+	    log(resolutions[i]);
+	  }
+	  return resolutions;
+	}
+	else
+	{
+	  resolutions.length = 0;
+	  resolutions[0]="800x600";
+
+	  return resolutions;
+	}
+}
+
 
 
 defaultproperties
