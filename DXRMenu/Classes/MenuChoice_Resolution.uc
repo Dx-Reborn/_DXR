@@ -16,6 +16,8 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 	currentResY = PlayerOwner().ConsoleCommand("get ini:Engine.Engine.ViewportManager FullscreenViewportY");
 
 	currentRes = currentResX$"x"$currentResY;
+
+	GetScreenResolutions();
 }
 
 
@@ -74,6 +76,20 @@ function ResetToDefault()
 {
 	// Reset to the current resolution
 	LoadSetting();
+}
+
+
+function GetScreenResolutions()
+{
+  local array<string> resolutions;
+  local int i;
+
+  resolutions = class'DxUtil'.static.GetScreenResolutions(32);
+
+  for (i=0; i<resolutions.length; i++)
+  {
+    EnumText[i] = resolutions[i];
+  }
 }
 
 // ----------------------------------------------------------------------

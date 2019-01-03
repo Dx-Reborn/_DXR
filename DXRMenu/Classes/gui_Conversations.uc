@@ -162,7 +162,8 @@ function fillNamesAndLocations()
   cList.ConvoHistory.length = gl.myConHistory.length;
 
 // Ќаверное цикл нужно будет перевернуть...
-  for (x=0; x<gl.myConHistory.length; x++)
+//  for (x=0; x<gl.myConHistory.length; x++)
+  for(x=gl.myConHistory.length-1; x>=0; x--)
   {
     cList.ConvoHistory[x].Speaker = gl.myConHistory[x].conOwnerName;
     cList.ConvoHistory[x].Location = gl.myConHistory[x].strLocation;

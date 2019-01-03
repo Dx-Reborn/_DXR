@@ -85,6 +85,7 @@ function ChangeStyle()
 	gl.MenuThemeIndex = GetValue();
 
      foreach AllObjects(class'DxWindowTemplate',dx)
+     if (dx != none)
          dx.ApplyTheme();
 }
 

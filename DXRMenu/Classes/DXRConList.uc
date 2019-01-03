@@ -14,6 +14,8 @@ var() array<S_Convos> ConvoHistory;
 var string MySelectionStyle;
 var GUIStyles SelStyle;
 
+const charIndent = 10;
+
 /*function bool InternalOnClick(GUIComponent Sender)
 {
   super.InternalOnClick(Sender);
@@ -60,14 +62,14 @@ function MyOnDrawItem(Canvas u, int i, float X, float Y, float W, float H, bool 
     {
       u.Font = font'FontHUDWingDings';
       u.Style = EMenuRenderStyle.MSTY_Normal;
-      u.SetPos(X + CellLeft + 20, Y+1);
+      u.SetPos(X + CellLeft + charIndent, Y+1);
       u.DrawText("A");
     }
     else if (ConvoHistory[SortData[i].SortItem].Type == "B")
     {
       u.Font = font'FontHUDWingDings';
       u.Style = EMenuRenderStyle.MSTY_Normal;
-      u.SetPos(X + CellLeft + 20, Y+1);
+      u.SetPos(X + CellLeft + charIndent, Y+1);
       u.DrawText("B");
     }
 
