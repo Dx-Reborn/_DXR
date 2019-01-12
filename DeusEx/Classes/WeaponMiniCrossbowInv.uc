@@ -70,9 +70,9 @@ defaultproperties
      AmmoName=Class'DeusEx.AmmoDartPoisonInv'
      ReloadCount=4
      PickupAmmoCount=4
-     FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
+     //FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
 
-     ProjSpawnOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
+     ProjSpawnOffset=(X=-15.00,Y=8.00,Z=-5.00) // (X=-25.000000,Y=8.000000,Z=14.000000)
      ProjectileClass=Class'DeusEx.DartPoison'
      FireSound=Sound'DeusExSounds.Weapons.MiniCrossbowFire'
      ReloadEndSound=Sound'DeusExSounds.Weapons.MiniCrossbowReloadEnd'
@@ -80,7 +80,7 @@ defaultproperties
      SelectSound=Sound'DeusExSounds.Weapons.MiniCrossbowSelect'
      InventoryGroup=9
      ItemName="Mini-Crossbow"
-     PlayerViewOffset=(X=25.000000,Y=13.000000,Z=-14.000000)
+     PlayerViewOffset=(X=25.00,Y=8.00,Z=-14.00)  //(X=25.000000,Y=13.000000,Z=-14.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconCrossbow'
      CollisionRadius=8.000000

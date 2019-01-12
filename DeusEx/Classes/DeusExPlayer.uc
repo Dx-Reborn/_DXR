@@ -1874,9 +1874,9 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
 			upDir.Z = CollisionHeight / 2;		// put it up near eye level
 			savedDeco.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir);
 		}
-    PrePivot        -= centerDelta;
-		BaseEyeHeight   = newHeight - deltaEyeHeight;
-		EyeHeight		-= centerDelta.Z;
+//    PrePivot        -= centerDelta;
+//		BaseEyeHeight   = newHeight - deltaEyeHeight;
+//		EyeHeight		-= centerDelta.Z;
 	}
 	return (bSuccess);
 }
@@ -3240,9 +3240,11 @@ function PutCarriedDecorationInHand()
 		upDir = vect(0,0,0);
 		upDir.Z = CollisionHeight / 2;		// put it up near eye level
 		CarriedDecoration.SetPhysics(PHYS_Falling);
-
+		  
 		if ( CarriedDecoration.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir) )
 		{
+//      CarriedDecoration.bHardAttach = true;
+
 			CarriedDecoration.SetPhysics(PHYS_None);
 			CarriedDecoration.SetBase(self);
 			CarriedDecoration.SetCollision(False, False, False);
@@ -3626,6 +3628,7 @@ exec function DropDecoration()
 			CarriedDecoration.SetBase(None);
 			CarriedDecoration.SetPhysics(PHYS_Falling);
 			CarriedDecoration.Instigator = Self;
+			CarriedDecoration.bHardAttach = false;//
 
 			// turn off translucency
 			CarriedDecoration.Style = CarriedDecoration.Default.Style;
@@ -4343,7 +4346,7 @@ function name GetFloorMaterial()
          texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
 	}
 
-	ClientMessage("TexName="$texName @ "texGroup="$texGroup @ "target="$target @ "mat="$mat);
+//	ClientMessage("TexName="$texName @ "texGroup="$texGroup @ "target="$target @ "mat="$mat);
 	return texGroup;
 }
 
@@ -4467,11 +4470,6 @@ function ResetConversationHistory()
 
 
 function PlayTurning();
-
-exec function debugcon()
-{
-	DeusExPlayerController(controller).ClientOpenMenu("DeusEx.ConWindowActive");
-}
 
 simulated function bool ForceDefaultCharacter()
 {

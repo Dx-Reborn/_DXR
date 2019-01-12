@@ -24,14 +24,12 @@ function UpdateAIEvents()
 	if (bActive)
 	{
 		// Make noise and light
-//		AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
-	Log("Alarm AI event");
+		class'EventManager'.static.AIStartEvent(self,'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 	}
 	else
 	{
 		// Stop making noise and light
-//		AIEndEvent('Alarm', EAITYPE_Audio);
-	Log("Alarm AI event END");
+		class'EventManager'.static.AIEndEvent(self,'Alarm', EAITYPE_Audio);
 	}
 }
 

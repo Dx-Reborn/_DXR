@@ -14,6 +14,7 @@ var bool CurrentSaveDirectoryCleared;
 var int Flags;
 var transient texture lastScreenShot; // последний сделанный скриншот (дл€ фона)
 var medicalBot lastMedBot; // указатель на медбота, которым воспользовалс€ игрок. — ремонтным было проще )))
+var HudOverlay_ConWindowThird conWindow;
 
 var config int MenuThemeIndex; // Store menu theme index here, so i can read it at any time, from any object.
 var config int HUDThemeIndex; // Store HUD theme index here, so i can read it at any time, from any object.

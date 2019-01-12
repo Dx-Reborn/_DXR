@@ -8,6 +8,8 @@ class MapExit extends NavigationPoint
 // MapExit transports you to the next map
 // change bCollideActors to False to make it triggered instead of touched
 //
+// DXR: To travel to another map using flying camera, you have to trigger this MapExit
+// using SubActionTrigger in SceneManager.
 
 var() string DestMap;
 var() bool bPlayTransition;

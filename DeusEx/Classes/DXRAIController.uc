@@ -24,14 +24,41 @@ var actor LastMoveTarget;
 
 /** Utilities ********************************************************************************************************************************************************************/
 
+event PrepareForMove(NavigationPoint Goal, ReachSpec Path)
+{
+   log("***** PrepareForMove called!");
+}
+
+event LongFall() // called when latent function WaitForLanding() doesn't return after 4 seconds
+{
+	SetFall();
+	GotoState('FallingState', 'LongFall');
+}
+
+function SetFall()
+{
+	GotoState('FallingState');
+}
+
 function LookAtVector(vector v)
 {
+   Focus = none;
    FocalPoint = v;		// location being looked at
+}
+
+function TurnTo(vector NewFocus)
+{
+   LookAtVector(NewFocus);
 }
 
 function LookAtActor(Actor A)
 {
    Focus = A;			// actor being looked at
+}
+
+function bool IsSeatValid(Actor checkActor)
+{
+   return ScriptedPawn(pawn).IsSeatValid(checkActor);
 }
 
 // idk what there 0_^
@@ -165,6 +192,8 @@ function SetOrdersEx(Name orderName, optional Name newOrderTag, optional bool bI
 {
 	local bool bHostile;
 	local DXRPawn orderEnemy;
+
+	log("SetOrders: Name="$orderName$" OrderTag="$newOrderTag);
 
 	switch (orderName)
 	{
@@ -338,6 +367,23 @@ function PickDestination()
       LookAtVector(pawn.Location + 20 * VRand());
 }
 
+//
+function LookInRandomDirection()
+{
+	local vector checkpos;
+	local Rotator userot;
+
+	userot = Pawn.Rotation;
+	userot.Yaw+=((FRand()*32768) - 16384);
+	userot.Yaw = userot.Yaw & 65535;
+
+	checkpos = 4096*vector(userot) + Pawn.Location;
+
+	Focus = None;
+	FocalPoint = checkpos;
+}
+
+
 
 function bool AIDirectionReachable(vector focus, int yaw, int pitch, float minDist, float maxDist, out vector bestDest)
 {
@@ -397,8 +443,8 @@ auto state StartUp
     scriptedPawn(pawn).bCanConverse = false;
 
     scriptedPawn(pawn).SetMovementPhysics(); 
-    if (pawn.Physics == PHYS_Walking)
-      pawn.SetPhysics(PHYS_Falling);
+    //if (pawn.Physics == PHYS_Walking)
+      //pawn.SetPhysics(PHYS_Falling);
       
     scriptedPawn(pawn).bStasis = false;
     ScriptedPawn(pawn).SetDistress(false);
@@ -473,6 +519,37 @@ Begin:
 
 
 // ----------------------------------------------------------------------
+// state Paralyzed
+//
+// Do nothing -- ignore all
+// (this state lets ViewModel work correctly)
+// ----------------------------------------------------------------------
+
+state Paralyzed
+{
+	ignores bump, frob/*, reacttoinjury*/;
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		ScriptedPawn(pawn).BlockReactions(true);
+		ScriptedPawn(pawn).bCanConverse = false;
+		SeekPawn = None;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+	}
+	function EndState()
+	{
+		ScriptedPawn(pawn).ResetReactions();
+		ScriptedPawn(pawn).bCanConverse = True;
+	}
+
+Begin:
+	ScriptedPawn(pawn).Acceleration = vect(0,0,0);
+	ScriptedPawn(pawn).PlayAnimPivot('Still');
+}
+
+
+
+// ----------------------------------------------------------------------
 // state Patrolling
 //
 // Move from point to point in a predescribed pattern.
@@ -482,20 +559,27 @@ State Patrolling
 {
 	function SetFall()
 	{
-		//StartFalling('Patrolling', 'ContinuePatrol');
+		StartFalling('Patrolling', 'ContinuePatrol');
 	}
 
 	//function HitWall(vector HitNormal, actor Wall)
+  event bool NotifyBump(Actor Other)
+  {
+    log(pawn$"NotifyBump here");
+    return false;
+  }
+
 	event bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
+    log(pawn$"NotifyHitWall here");
 		if (pawn.Physics == PHYS_Falling)
-			return false;
+        return false;
 	}
 	
 	function AnimEnd(int Channel)
 	{
-//    if (pawn.Acceleration == vect(0, 0, 0))
-		pawn.PlayWaiting();
+    if (pawn.Acceleration == vect(0, 0, 0))
+        pawn.PlayWaiting();
 	}
 
 	function PatrolPoint PickStartPoint()
@@ -579,11 +663,11 @@ State Patrolling
 	}
 
 Begin:
-  WaitForLanding();
 	destPoint = None;
 
 Patrol:
 	//Disable('Bump');
+	WaitForLanding();
 	PickDestination();
 
 Moving:
@@ -597,14 +681,17 @@ Moving:
 			while (MoveTarget != None)
 			{
 				if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+				{
+          pawn.SetWalking(true);
 					scriptedPawn(pawn).PlayWalking();
-//					scriptedPawn(pawn).MaxDesiredSpeed = scriptedPawn(pawn).WalkingSpeed;
+				}
+				MoveToward(MoveTarget, MoveTarget,0,false, true);
 
-				LookAtVector(destPoint.location);
-				MoveToward(MoveTarget,,0,false, true);
 				scriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
+
 				if (MoveTarget == destPoint)
 					break;
+
 				MoveTarget = FindPathToward(destPoint, true);
 			}
 			scriptedPawn(pawn).EnableCheckDestLoc(false);
@@ -652,49 +739,52 @@ ContinueFromDoor:
 // 0_o
 state Sitting
 {
-/*	ignores EnemyNotVisible;
+	ignores EnemyNotVisible;
 
 	function SetFall()
 	{
-		//StartFalling('Sitting', 'ContinueSit');
+		StartFalling('Sitting', 'ContinueSit');
 	}
 
-	function pawn.AnimEnd()
+	function AnimEnd(int channel)
 	{
 		pawn.PlayWaiting();
 	}
 
-	function HitWall(vector HitNormal, actor Wall)
+	function bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
 		if (pawn.Physics == PHYS_Falling)
-			return;
+			return false;
 
 		if (!scriptedPawn(pawn).bAcceptBump)
 			scriptedPawn(pawn).NextDirection = TURNING_None;
-		Global.HitWall(HitNormal, Wall);
-		CheckOpenDoor(HitNormal, Wall);
+
+			return false;
+//		Global.HitWall(HitNormal, Wall);
+	//	CheckOpenDoor(HitNormal, Wall);
 	}
 
-	function bool HandleTurn(Actor Other)
+/*	function bool HandleTurn(Actor Other)
 	{
-		if (Other == SeatActor)
+		if (Other == scriptedPawn(pawn).SeatActor)
 			return true;
 		else
 			return Global.HandleTurn(Other);
-	}
+	}*/
 
-	function Bump(actor bumper)
+	function bool NotifyBump(actor bumper)
 	{
 		// If we hit our chair, move to the right place
-		if ((bumper == SeatActor) && bAcceptBump)
+		if ((bumper == scriptedPawn(pawn).SeatActor) && scriptedPawn(pawn).bAcceptBump)
 		{
-			bAcceptBump = false;
+			scriptedPawn(pawn).bAcceptBump = false;
 			GotoState('Sitting', 'CircleToFront');
+			return true;
 		}
-
-		// Handle conversations, if need be
-		else
-			Global.Bump(bumper);
+    // Handle conversations, if need be
+//		else
+//		  return false;
+			// Global.NotifyBump(bumper);
 	}
 
 	function Tick(float deltaSeconds)
@@ -703,29 +793,30 @@ state Sitting
 		local vector newPos;
 		local float  delta;
 
-		Global.Tick(deltaSeconds);
+		//Global.Tick(deltaSeconds);
 
-		if (bSitInterpolation && (SeatActor != None))
+		if (scriptedPawn(pawn).bSitInterpolation && (scriptedPawn(pawn).SeatActor != None))
 		{
-			endPos = SitPosition(SeatActor, SeatSlot);
-			if ((deltaSeconds < remainingSitTime) && (remainingSitTime > 0))
+			endPos = SitPosition(scriptedPawn(pawn).SeatActor, scriptedPawn(pawn).SeatSlot);
+			if ((deltaSeconds < scriptedPawn(pawn).remainingSitTime) && (scriptedPawn(pawn).remainingSitTime > 0))
 			{
-				delta = deltaSeconds/remainingSitTime;
-				newPos = (endPos-Location)*delta + Location;
-				remainingSitTime -= deltaSeconds;
+				delta = deltaSeconds/scriptedPawn(pawn).remainingSitTime;
+				newPos = (endPos-pawn.Location)*delta + pawn.Location;
+				scriptedPawn(pawn).remainingSitTime -= deltaSeconds;
 			}
 			else
 			{
-				remainingSitTime = 0;
-				bSitInterpolation = false;
+				scriptedPawn(pawn).remainingSitTime = 0;
+				scriptedPawn(pawn).bSitInterpolation = false;
 				newPos = endPos;
-				Acceleration = vect(0,0,0);
-				Velocity = vect(0,0,0);
-				SetBase(SeatActor);
-				bSitting = true;
+				scriptedPawn(pawn).Acceleration = vect(0,0,0);
+				scriptedPawn(pawn).Velocity = vect(0,0,0);
+				scriptedPawn(pawn).SetBase(scriptedPawn(pawn).SeatActor);
+				scriptedPawn(pawn).bHardAttach = true; //
+				scriptedPawn(pawn).bSitting = true;
 			}
-			SetLocation(newPos);
-			DesiredRotation = SeatActor.Rotation+Rot(0, -16384, 0);
+			scriptedPawn(pawn).SetLocation(newPos);
+			scriptedPawn(pawn).DesiredRotation = scriptedPawn(pawn).SeatActor.Rotation+Rot(0, -16384, 0);
 		}
 	}
 
@@ -733,8 +824,8 @@ state Sitting
 	{
 		local float newAssHeight;
 
-		newAssHeight = GetDefaultCollisionHeight() + BaseAssHeight;
-		newAssHeight = -(CollisionHeight - newAssHeight);
+		newAssHeight = scriptedPawn(pawn).GetDefaultCollisionHeight() + scriptedPawn(pawn).BaseAssHeight;
+		newAssHeight = -(scriptedPawn(pawn).CollisionHeight - newAssHeight);
 
 		return ((seatActor.sitPoint[slot]>>seatActor.Rotation)+seatActor.Location+(vect(0,0,-1)*newAssHeight));
 	}
@@ -745,13 +836,13 @@ state Sitting
 		local Vector  destPos;
 
 		if (seatActor == None)
-			return (Location);
+			return (pawn.Location);
 
 		seatRot = seatActor.Rotation + Rot(0, -16384, 0);
 		seatRot.Pitch = 0;
 		destPos = seatActor.Location;
-		destPos += vect(0,0,1)*(CollisionHeight-seatActor.CollisionHeight);
-		destPos += Vector(seatRot)*(seatActor.CollisionRadius+CollisionRadius+extraDist);
+		destPos += vect(0,0,1)*(pawn.CollisionHeight-seatActor.CollisionHeight);
+		destPos += Vector(seatRot)*(seatActor.CollisionRadius+pawn.CollisionRadius+extraDist);
 
 		return (destPos);
 	}
@@ -762,8 +853,8 @@ state Sitting
 		local vector testVector;
 
 		bIntersect = false;
-		if (SeatActor != None)
-			bIntersect = IsOverlapping(SeatActor);
+		if (scriptedPawn(pawn).SeatActor != None)
+			bIntersect = IsOverlapping(scriptedPawn(pawn).SeatActor);
 
 		return (bIntersect);
 	}
@@ -777,13 +868,13 @@ state Sitting
 
 		bestSlot = -1;
 		bestDist = 100;
-		if (!seatActor.Region.Zone.bWaterZone)
+		if (!seatActor.PhysicsVolume.bWaterVolume)
 		{
 			for (i=0; i<seatActor.numSitPoints; i++)
 			{
 				if (seatActor.sittingActor[i] == None)
 				{
-					dist = VSize(SitPosition(seatActor, i) - Location);
+					dist = VSize(SitPosition(seatActor, i) - pawn.Location);
 					if ((bestSlot < 0) || (bestDist > dist))
 					{
 						bestDist = dist;
@@ -808,11 +899,11 @@ state Sitting
 		local int   bestSlot;
 		local bool  bTry;
 
-		if (bUseFirstSeatOnly && bSeatHackUsed)
+		if (scriptedPawn(pawn).bUseFirstSeatOnly && scriptedPawn(pawn).bSeatHackUsed)
 		{
-			bestSeat = SeatHack;  // use the seat hack
+			bestSeat = scriptedPawn(pawn).SeatHack;  // use the seat hack
 			bestSlot = -1;
-			if (!IsSeatValid(bestSeat))
+			if (!scriptedPawn(pawn).IsSeatValid(bestSeat))
 				bestSeat = None;
 			else
 			{
@@ -828,10 +919,10 @@ state Sitting
 		}
 		else
 		{
-			bestSeat = Seat(OrderActor);  // try the ordered seat first
+			bestSeat = Seat(scriptedPawn(pawn).OrderActor);  // try the ordered seat first
 			if (bestSeat != None)
 			{
-				if (!IsSeatValid(OrderActor))
+				if (!IsSeatValid(scriptedPawn(pawn).OrderActor))
 					bestSeat = None;
 				else
 				{
@@ -849,7 +940,7 @@ state Sitting
 			{
 				bestDist = 10001;
 				bestSlot = -1;
-				foreach RadiusActors(Class'Seat', curSeat, 10000)
+				foreach pawn.RadiusActors(Class'Seat', curSeat, 10000)
 				{
 					if (IsSeatValid(curSeat))
 					{
@@ -873,27 +964,27 @@ state Sitting
 
 		if (bestSeat != None)
 		{
-			bestSeat.sittingActor[bestSlot] = self;
-			SeatLocation       = bestSeat.Location;
-			bSeatLocationValid = true;
+			bestSeat.sittingActor[bestSlot] = scriptedPawn(pawn);
+			scriptedPawn(pawn).SeatLocation       = bestSeat.Location;
+			scriptedPawn(pawn).bSeatLocationValid = true;
 		}
 		else
-			bSeatLocationValid = false;
+			scriptedPawn(pawn).bSeatLocationValid = false;
 
-		if (bUseFirstSeatOnly && !bSeatHackUsed)
+		if (scriptedPawn(pawn).bUseFirstSeatOnly && !scriptedPawn(pawn).bSeatHackUsed)
 		{
-			SeatHack      = bestSeat;
-			bSeatHackUsed = true;
+			scriptedPawn(pawn).SeatHack      = bestSeat;
+			scriptedPawn(pawn).bSeatHackUsed = true;
 		}
 
-		SeatActor = bestSeat;
-		SeatSlot  = bestSlot;
+		scriptedPawn(pawn).SeatActor = bestSeat;
+		scriptedPawn(pawn).SeatSlot  = bestSlot;
 	}
 
 	function FollowSeatFallbackOrders()
 	{
 		FindBestSeat();
-		if (IsSeatValid(SeatActor))
+		if (IsSeatValid(scriptedPawn(pawn).SeatActor))
 			GotoState('Sitting', 'Begin');
 		else
 			GotoState('Wandering');
@@ -901,85 +992,86 @@ state Sitting
 
 	function BeginState()
 	{
-		SetEnemy(None, EnemyLastSeen, true);
+		SetEnemy(None, scriptedPawn(pawn).EnemyLastSeen, true);
 		Disable('AnimEnd');
-		bCanJump = false;
+		scriptedPawn(pawn).bCanJump = false;
 
-		bAcceptBump = True;
+		scriptedPawn(pawn).bAcceptBump = True;
 
-		if (SeatActor == None)
+		if (scriptedPawn(pawn).SeatActor == None)
 			FindBestSeat();
 
-		bSitInterpolation = false;
+		scriptedPawn(pawn).bSitInterpolation = false;
 
-		bStasis = False;
+		scriptedPawn(pawn).bStasis = false;
 
-		SetupWeapon(false);
-		SetDistress(false);
-		SeekPawn = None;
-		EnableCheckDestLoc(true);
+		//scriptedPawn(pawn).SetupWeapon(false);
+		scriptedPawn(pawn).SetDistress(false);
+		scriptedPawn(pawn).SeekPawn = None;
+		scriptedPawn(pawn).EnableCheckDestLoc(true);
 	}
 
 	function EndState()
 	{
-		EnableCheckDestLoc(false);
-		if (!bSitting)
-			StandUp();
+		scriptedPawn(pawn).EnableCheckDestLoc(false);
+		if (!scriptedPawn(pawn).bSitting)
+			scriptedPawn(pawn).StandUp();
 
-		bAcceptBump = True;
+		scriptedPawn(pawn).bAcceptBump = True;
 
-		if (JumpZ > 0)
-			bCanJump = true;
+		if (scriptedPawn(pawn).JumpZ > 0)
+			scriptedPawn(pawn).bCanJump = true;
 
-		bSitInterpolation = false;
+		scriptedPawn(pawn).bSitInterpolation = false;
 
-		bStasis = True;
+		scriptedPawn(pawn).bStasis = true;
 	}
 
 Begin:
 	WaitForLanding();
-	if (!IsSeatValid(SeatActor))
+	if (!scriptedPawn(pawn).IsSeatValid(scriptedPawn(pawn).SeatActor))
 		FollowSeatFallbackOrders();
-	if (!bSitting)
+	if (!scriptedPawn(pawn).bSitting)
 		WaitForLanding();
 	else
 	{
-		TurnTo(Vector(SeatActor.Rotation+Rot(0, -16384, 0))*100+Location);
+		//TurnTo(Vector(SeatActor.Rotation+Rot(0, -16384, 0))*100+Location);
+		LookAtVector(Vector(scriptedPawn(pawn).SeatActor.Rotation+Rot(0, -16384, 0))*100+pawn.Location);
 		Goto('ContinueSitting');
 	}
 
 MoveToSeat:
 	if (IsIntersectingSeat())
 		Goto('MoveToPosition');
-	bAcceptBump = true;
+	scriptedPawn(pawn).bAcceptBump = true;
 	while (true)
 	{
-		if (!IsSeatValid(SeatActor))
+		if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
 			FollowSeatFallbackOrders();
-		destLoc = GetDestinationPosition(SeatActor);
-		if (PointReachable(destLoc))
+		scriptedPawn(pawn).destLoc = GetDestinationPosition(scriptedPawn(pawn).SeatActor);
+		if (PointReachable(scriptedPawn(pawn).destLoc))
 		{
-			if (ShouldPlayWalk(destLoc))
-				PlayWalking();
-			MoveTo(destLoc, GetWalkingSpeed());
-			CheckDestLoc(destLoc);
+			if (scriptedPawn(pawn).ShouldPlayWalk(scriptedPawn(pawn).destLoc))
+				scriptedPawn(pawn).PlayWalking();
+			MoveTo(scriptedPawn(pawn).destLoc,, true);//, GetWalkingSpeed());
+			scriptedPawn(pawn).CheckDestLoc(scriptedPawn(pawn).destLoc);
 
-			if (IsPointInCylinder(self, GetDestinationPosition(SeatActor), 16, 16))
+			if (IsPointInCylinder(pawn, GetDestinationPosition(scriptedPawn(pawn).SeatActor), 16, 16))
 			{
-				bAcceptBump = false;
+				scriptedPawn(pawn).bAcceptBump = false;
 				Goto('MoveToPosition');
 				break;
 			}
 		}
 		else
 		{
-			MoveTarget = GetNextWaypoint(SeatActor);
+			MoveTarget = GetNextWaypoint(scriptedPawn(pawn).SeatActor);
 			if (MoveTarget != None)
 			{
-				if (ShouldPlayWalk(MoveTarget.Location))
-					PlayWalking();
-				MoveToward(MoveTarget, GetWalkingSpeed());
-				CheckDestLoc(MoveTarget.Location, true);
+				if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+					scriptedPawn(pawn).PlayWalking();
+				MoveToward(MoveTarget,,0,false,true);//, GetWalkingSpeed());
+				scriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
 			}
 			else
 				break;
@@ -987,32 +1079,36 @@ MoveToSeat:
 	}
 
 CircleToFront:
-	bAcceptBump = false;
-	if (!IsSeatValid(SeatActor))
+	scriptedPawn(pawn).bAcceptBump = false;
+	if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
 		FollowSeatFallbackOrders();
-	if (ShouldPlayWalk(GetDestinationPosition(SeatActor, 16)))
-		PlayWalking();
-	MoveTo(GetDestinationPosition(SeatActor, 16), GetWalkingSpeed());
+
+	if (scriptedPawn(pawn).ShouldPlayWalk(GetDestinationPosition(scriptedPawn(pawn).SeatActor, 16)))
+		scriptedPawn(pawn).PlayWalking();
+    MoveTo(GetDestinationPosition(scriptedPawn(pawn).SeatActor, 16),,true);//, 16));//, GetWalkingSpeed());
 
 MoveToPosition:
-	if (!IsSeatValid(SeatActor))
+	if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
 		FollowSeatFallbackOrders();
-	bSitting = true;
-	EnableCollision(false);
-	Acceleration=vect(0,0,0);
+
+	scriptedPawn(pawn).bSitting = true;
+	scriptedPawn(pawn).EnableCollision(false);
+	scriptedPawn(pawn).Acceleration=vect(0,0,0);
 
 Sit:
-	Acceleration=vect(0,0,0);
-	Velocity=vect(0,0,0);
-	if (!IsSeatValid(SeatActor))
+	scriptedPawn(pawn).Acceleration=vect(0,0,0);
+	scriptedPawn(pawn).Velocity=vect(0,0,0);
+	if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
 		FollowSeatFallbackOrders();
-	remainingSitTime = 0.8;
-	PlaySittingDown();
-	SetBasedPawnSize(CollisionRadius, GetSitHeight());
-	SetPhysics(PHYS_Flying);
-	StopStanding();
-	bSitInterpolation = true;
-	while (bSitInterpolation)
+
+	scriptedPawn(pawn).remainingSitTime = 0.8;
+	scriptedPawn(pawn).PlaySittingDown();
+	scriptedPawn(pawn).SetBasedPawnSize(scriptedPawn(pawn).CollisionRadius, scriptedPawn(pawn).GetSitHeight());
+  scriptedPawn(pawn).SetPhysics(PHYS_None);
+//	scriptedPawn(pawn).SetPhysics(PHYS_Flying); // DXR: This is scary! And funny :D
+	scriptedPawn(pawn).StopStanding();
+	scriptedPawn(pawn).bSitInterpolation = true;
+	while (scriptedPawn(pawn).bSitInterpolation)
 		Sleep(0);
 	FinishAnim();
 	Goto('ContinueSitting');
@@ -1021,25 +1117,28 @@ ContinueFromDoor:
 	Goto('MoveToSeat');
 
 ContinueSitting:
-	if (!IsSeatValid(SeatActor))
+	if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
 		FollowSeatFallbackOrders();
-	SetBasedPawnSize(CollisionRadius, GetSitHeight());
-	SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
-	PlaySitting();
-	bStasis  = True;*/
+	scriptedPawn(pawn).SetBasedPawnSize(scriptedPawn(pawn).CollisionRadius, scriptedPawn(pawn).GetSitHeight());
+	pawn.SetCollision(pawn.default.bCollideActors, pawn.default.bBlockActors, pawn.default.bBlockPlayers);
+	scriptedPawn(pawn).PlaySitting();
+	scriptedPawn(pawn).bStasis = true;
+	FinishRotation();
 	// nil
 }
 
-/*
+
 state FallingState 
 {
 	ignores NotifyBump, NotifyHitwall;//, WarnTarget, ReactToInjury;
 
-	function PhysicsVolumeChange(PhysicsVolume newVolume)
+  event bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
 	{
-		Global.ZoneChange(newZone);
-		if (newZone.bWaterZone)
+//		Global.ZoneChange(newZone);
+		if (newVolume.bWaterVolume)
 			GotoState('FallingState', 'Splash');
+
+	return false;
 	}
 
 	//choose a jump velocity
@@ -1051,11 +1150,11 @@ state FallingState
 		velZ = pawn.Velocity.Z;
 		FullVel = Normal(pawn.Velocity) * pawn.GroundSpeed;
 
-		If (pawn.Location.Z > pawn.Destination.Z + pawn.CollisionHeight + 2 * MaxStepHeight)
+		If (pawn.Location.Z > Destination.Z + pawn.CollisionHeight + 2 * MaxStepHeight)
 		{
 			pawn.Velocity = FullVel;
 			pawn.Velocity.Z = velZ;
-			pawn.Velocity = ScriptedPawn(pawn).EAdjustJump();
+			pawn.Velocity = EAdjustJump(0,pawn.GroundSpeed);
 			pawn.Velocity.Z = 0;
 			if (VSize(pawn.Velocity) < 0.9 * pawn.GroundSpeed)
 			{
@@ -1064,9 +1163,9 @@ state FallingState
 			}
 		}
 
-		pawn.Velocity = FullVel;
-		pawn.Velocity.Z = JumpZ + velZ;
-		pawn.Velocity = ScriptedPawn(pawn).EAdjustJump();
+		ScriptedPawn(pawn).Velocity = FullVel;
+		ScriptedPawn(pawn).Velocity.Z = ScriptedPawn(pawn).JumpZ + velZ;
+		ScriptedPawn(pawn).Velocity = EAdjustJump(0,pawn.GroundSpeed);
 	}
 
 	singular function BaseChange()
@@ -1079,9 +1178,9 @@ state FallingState
 		{
 			minJumpZ = FMax(pawn.JumpZ, 150.0);
 			ScriptedPawn(pawn).bJustLanded = true;
-			if (Health > 0)
+			if (pawn.Health > 0)
 			{
-				if ((pawn.Velocity.Z < -0.8 * ScriptedPawn(pawn).minJumpZ) || pawn.bUpAndOut)
+				if ((pawn.Velocity.Z < -0.8 * minJumpZ) || pawn.bUpAndOut)
 					GotoState('FallingState', 'Landed');
 				else if (pawn.Velocity.Z < -0.8 * pawn.JumpZ)
 					GotoState('FallingState', 'FastLanded');
@@ -1091,14 +1190,14 @@ state FallingState
 		}
 	}
 
-	function Landed(vector HitNormal)
+  event bool NotifyLanded(vector HitNormal)
 	{
 		local float landVol, minJumpZ;
 		local vector legLocation;
 
 		minJumpZ = FMax(pawn.JumpZ, 150.0);
 
-		if ( (pawn.Velocity.Z < -0.8 * ScriptedPawn(pawn).minJumpZ) || pawn.bUpAndOut)
+		if ( (pawn.Velocity.Z < -0.8 * minJumpZ) || pawn.bUpAndOut)
 		{
 			ScriptedPawn(pawn).PlayLanded(pawn.Velocity.Z);
 			if (pawn.Velocity.Z < -700)
@@ -1111,12 +1210,14 @@ state FallingState
 				pawn.TakeDamage(-0.04 * (Velocity.Z + 700), pawn, legLocation, vect(0,0,0), class'fell');
 			}
 			landVol = pawn.Velocity.Z/pawn.JumpZ;
-			landVol = 0.005 * Mass * FMin(5, landVol * landVol);
+			landVol = 0.005 * pawn.Mass * FMin(5, landVol * landVol);
 			if (!pawn.PhysicsVolume.bWaterVolume)
 				pawn.PlaySound(ScriptedPawn(pawn).Land, SLOT_Interact, FMin(20, landVol));
 		}
 		else if ( pawn.Velocity.Z < -0.8 * pawn.JumpZ )
 			ScriptedPawn(pawn).PlayLanded(Velocity.Z);
+
+  return false;
 	}
 
 	function SetFall()
@@ -1135,21 +1236,21 @@ state FallingState
 			Disable('HearNoise');
 			Disable('SeePlayer');
 		}
-		bInterruptState = false;
-		bCanConverse = False;
-		bStasis = False;
-		bInTransientState = true;
-		EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bInterruptState = false;
+		ScriptedPawn(pawn).bCanConverse = False;
+		ScriptedPawn(pawn).bStasis = False;
+		ScriptedPawn(pawn).bInTransientState = true;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
 	}
 
 	function EndState()
 	{
-		EnableCheckDestLoc(false);
-		pawn.bUpAndOut = false;
-		bInterruptState = true;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bUpAndOut = false;
+		ScriptedPawn(pawn).bInterruptState = true;
 		ScriptedPawn(pawn).bCanConverse = True;
 		ScriptedPawn(pawn).bStasis = True;
-		bInTransientState = false;
+		ScriptedPawn(pawn).bInTransientState = false;
 	}
 
 LongFall:
@@ -1168,7 +1269,7 @@ LongFall:
 		else
 			pawn.Velocity = pawn.groundspeed * VRand();
 
-		Velocity.Z = FMax(JumpZ, 250);
+		Velocity.Z = FMax(ScriptedPawn(pawn).JumpZ, 250);
 	}
 	Goto('LongFall');
 
@@ -1179,7 +1280,8 @@ FastLanded:
 
 Landed:
 	if (!bIsPlayer) //bots act like players
-		pawn.Acceleration = vect(0,0,0);
+      ScriptedPawn(pawn).Acceleration = vect(0,0,0);
+
 	ScriptedPawn(pawn).FinishAnim();
 	ScriptedPawn(pawn).TweenToWaiting(0.2);
 	if (!bIsPlayer)
@@ -1193,7 +1295,7 @@ Done:
 		GotoState('Wandering');
 
 Splash:
-	pawn.bUpAndOut = false;
+	ScriptedPawn(pawn).bUpAndOut = false;
 	ScriptedPawn(pawn).FinishAnim();
 	if (HasNextState())
 		GotoNextState();
@@ -1224,8 +1326,8 @@ Begin:
 			pawn.SetPhysics(PHYS_Swimming);
 			GotoNextState();
 		}	
-		if (!bJumpOffPawn)
-			ScriptedPawn(pawn).AdjustJump();
+		if (!ScriptedPawn(pawn).bJumpOffPawn)
+			/*ScriptedPawn(pawn).*/AdjustJump();
 		else
 			ScriptedPawn(pawn).bJumpOffPawn = false;
 
@@ -1241,7 +1343,7 @@ PlayFall:
 
 Ducking:
 		
-}*/
+}
 
 
 // Диалог от третьего лица.

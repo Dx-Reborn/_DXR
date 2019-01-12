@@ -151,11 +151,12 @@ function bool UseDelayedMessage()
 
   for (i=0; i<con.EventList.length; i++)
   {
-    if (ConEventAddGoal(con.EventList[i]) != none || ConEventAddNote(con.EventList[i]) != none)
+    if (ConEventAddGoal(con.EventList[i]) != none)
        return true; // Да.
-      else
-    return false; // Нет.
+    if (ConEventAddNote(con.EventList[i]) != none)
+       return true;
   }
+  return false; // Нет.
 }
 
 function SetStartActor(Actor newStartActor)
@@ -526,6 +527,7 @@ function EEventAction SetupEventCheckFlag(ConEventCheckFlag event, out String ne
 			action = EA_NextEvent;
 			break;
 		}
+//	break;
   }
 
 /*	currentRef = event.flagRef;
@@ -1270,11 +1272,10 @@ function SetupHistory(String ownerName, optional Bool bInfoLink)
 	// Also ignore Bark conversations.
 
 	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
-
-	if (bBarkConvo)
-	    return;
-
 	flagName = con.Name $ "_Played";
+
+//	if (bBarkConvo)
+//	    return;
 
 	if ((player.GetflagBase().GetBool(flagName) == False) && (!bBarkConvo))
 	{

@@ -30,11 +30,11 @@ function UpdateProjector()
     loc = Player.Location;
     loc.z = loc.z + Player.EyeHeight;
 
-	    if (AL != none)
+/*	    if (AL != none)
 	    {
   	  AL.SetRotation(Player.GetViewRotation());
 	    AL.SetLocation(loc);
-	    }
+	    }*/
 }
 
 function SetBeamLocation()
@@ -80,8 +80,8 @@ state Active
 	{
 		SetBeamLocation();
 		SetGlowLocation();
-//	   If (AL != none)
-//		UpdateProjector(); //
+	   If (AL != none)
+		UpdateProjector(); //
 	}
 	
 	function BeginState()

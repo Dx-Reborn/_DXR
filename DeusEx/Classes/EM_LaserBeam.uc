@@ -11,14 +11,7 @@ var bool bFrozen;				// are we out of the player's sight?
 var bool bRandomBeam;
 var bool bBlueBeam;				// is this beam blue?
 var bool bHiddenBeam;			// is this beam hidden?
-
-var float beamPlusCorrector;
-
-function PostBeginPlay()
-{
-   super.PostBeginPlay();
-     SetTimer(1.0, true);
-}
+var LaserProxy proxy;
 
 function CalcTrace(float deltaTime)
 {
@@ -26,7 +19,6 @@ function CalcTrace(float deltaTime)
 	local actor target;
 	local int i, texFlags;
 	local name texName, texGroup;
-//	local material material;
 
 	StartTrace = Location;
 	EndTrace = Location + 5000 * vector(Rotation);
@@ -56,18 +48,17 @@ function CalcTrace(float deltaTime)
 		// draw first beam
 		if (i == 0)
 		{
-//			if (LaserIterator(RenderInterface) != None)
-//				LaserIterator(RenderInterface).AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
+//			if (LaserIterator != None)
+//				LaserIterator.AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
           BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(Location - HitLocation);
           BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(Location - HitLocation);
 		}
 		else
 		{
-//			if (LaserIterator(RenderInterface) != None)
-//				LaserIterator(RenderInterface).AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
+//			if (LaserIterator != None)
+//				LaserIterator.AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
           BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(StartTrace - HitLocation - HitNormal);
           BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(StartTrace - HitLocation - HitNormal);
-
 		}
 
 		if (spot[i] == None)
@@ -191,6 +182,15 @@ function Tick(float deltaTime)
 		CalcTrace(deltaTime);
 //		CalcTrace(timerRate);
 	}
+}
+
+function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	// create our proxy laser beam
+	if (proxy == None)
+		proxy = Spawn(class'LaserProxy',,, Location, Rotation);
 }
 
 

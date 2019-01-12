@@ -611,8 +611,9 @@ static function array<string> GetScreenResolutions(int bits)
 
 	  for (i=0; i<resl.length; i++)
 	  {
-	    resolutions[i] = resl[i].Width $ "x" $ resl[i].Height;
-	    log(resolutions[i]);
+      resolutions[i] = resl[i].Width $ "x" $ resl[i].Height;
+	    if (bDebug)
+          log(resolutions[i]);
 	  }
 	  return resolutions;
 	}

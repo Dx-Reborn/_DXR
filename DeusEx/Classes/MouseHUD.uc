@@ -24,6 +24,8 @@ var sIconInfo iconInfo[7];
 
 var localized String msgAbsorbed;
 
+var Texture MouseCursorTexture;
+
 function SetData()
 {
 	// couldn't get these to work in the defaultproperties section
@@ -253,14 +255,59 @@ c.SetClip(c.sizeX, c.sizeY);
 c.Reset();
 }
 
-
-
-
-simulated event PostRender(Canvas C)
+simulated function DrawMouseCursor(Canvas u)
 {
-   Super.PostRender(C);
+  local float XPos, YPos;
 
-	 DrawDamageHUD(C);
+  if (!PlayerOwner.IsInState('PlayerMousing')) 
+      return;
+
+  DeusExPlayerController(PlayerOwner).LastHUDSizeX = u.SizeX;
+  DeusExPlayerController(PlayerOwner).LastHUDSizeY = u.SizeY;
+  
+  u.SetDrawColor(255, 255, 255);
+  u.Style = ERenderStyle.STY_Alpha;
+  
+  // find position of cursor, and clamp it to screen
+  XPos = DeusExPlayerController(PlayerOwner).PlayerMouse.X + u.SizeX / 2.0;
+  if (XPos < 0)
+  {
+     DeusExPlayerController(PlayerOwner).PlayerMouse.X -= XPos;
+     XPos = 0;
+  }
+  else if (XPos >= u.SizeX)
+  {
+     DeusExPlayerController(PlayerOwner).PlayerMouse.X -= (XPos - u.SizeX);
+     XPos = u.SizeX - 1;
+  }
+  YPos = DeusExPlayerController(PlayerOwner).PlayerMouse.Y + u.SizeY / 2.0;
+  if (YPos < 0)
+  {
+     DeusExPlayerController(PlayerOwner).PlayerMouse.Y -= YPos;
+     YPos = 0;
+  }
+  else if (YPos >= u.SizeY)
+  {
+     DeusExPlayerController(PlayerOwner).PlayerMouse.Y -= (YPos - u.SizeY);
+     YPos = u.SizeY - 1;
+  }
+  
+  // render mouse cursor
+  u.SetPos(XPos, YPos);
+  u.DrawIcon(MouseCursorTexture,1);
+  
+  return;
+}
+
+simulated event PostRender(Canvas u)
+{
+   Super.PostRender(u);
+
+   if (playerOwner.pawn != none)
+   {
+      DrawDamageHUD(u);
+      DrawMouseCursor(u);
+	 }
 }
 
 
@@ -273,4 +320,6 @@ defaultproperties
     arrowiconHeight=64
     fadeTime=2.00
     msgAbsorbed="%d%% Absorb"
+
+    MouseCursorTexture=texture'DeusExCursor10'
 }

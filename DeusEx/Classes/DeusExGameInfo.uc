@@ -108,6 +108,7 @@ event PostLogin(PlayerController NewPlayer)
 	}
 
 		NewPlayer.ClientSetHUD(class'DeusExHud',none);
+    NewPlayer.Player.InteractionMaster.AddInteraction("DeusEx.DeusExInteraction", NewPlayer.Player);
 
 		if (NewPlayer.Pawn != None)
 		{

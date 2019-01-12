@@ -3,7 +3,7 @@
 //=============================================================================
 class MissionIntro extends MissionScript;
 
-var byte savedSoundVolume;
+var float savedSoundVolume;
 
 function InitStateMachine()
 {

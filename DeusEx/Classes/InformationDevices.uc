@@ -104,6 +104,9 @@ function tick(float deltatime)
     pc = DeusExPlayerController(level.GetLocalPlayerController());
     player = DeusExPlayer(pc.pawn);
 
+    if (player == none)
+        return;
+
     if ((pc != none) || (player != none)) // Если игрок погиб, не спамить в лог.
     {
       if ((player.frobtarget != self) && (pc != none) && (info != none))

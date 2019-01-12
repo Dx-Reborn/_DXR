@@ -233,6 +233,10 @@ exec function debugcon()
 	DeusExHUD(level.GetLocalPlayerController().myHUD).AddHudOverlay(conwin);
 }
 
+exec function invokeCon()
+{
+  Level.GetLocalPlayerController().ClientOpenMenu("DXRMenu.InvokeConWindow");
+}
 
 
 
@@ -280,6 +284,16 @@ exec function getres(int bits)
   }
 }
 
+
+exec function randRot()
+{
+   local DXRAiController DXR;
+
+   foreach AllActors(class'DXRAiController', DXR)
+   {
+     DXR.LookInRandomDirection();
+   }
+}
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

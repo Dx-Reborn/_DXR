@@ -437,7 +437,7 @@ ignores SeePlayer, HearNoise, Bump;
 //				if (Human(pawn).bIsCrouched || Human(pawn).bForceDuck) //////////////
      		if (Human(pawn).bIsCrouched || Human(pawn).bForceDuck)
 				{
-//					Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
+					//Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
 					bRun=0;
 					Human(pawn).SetWalking(true); // Перейти в режим ходьбы
 
@@ -1076,6 +1076,7 @@ state PlayerMousing
    exec function Fire(float f)
    {
       // do stuff here for when players click their fire/select button
+      ClientMessage("LMB pressed!");
 
       return;
    }
@@ -1220,8 +1221,12 @@ exec function QuickSave();
 
 function ShowMidGameMenu(bool bPause)
 {
-  if ((DeusExGameInfo(level.game).missionNumber == -2) || (DeusExGameInfo(level.game).missionNumber == -1))
+  if ((getFlagBase().missionNumber == -2) || (getFlagBase().missionNumber == -1) ||
+      (getFlagBase().missionNumber == 98) || (getFlagBase().missionNumber == 99))
   ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
+
+//  if ((DeusExGameInfo(level.game).missionNumber == 98) || (DeusExGameInfo(level.game).missionNumber == 99))
+//  return;
 
    else
     {

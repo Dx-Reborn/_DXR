@@ -79,6 +79,10 @@ simulated event PostRender(canvas C)
 //	return;
 
 	super.postrender(C);
+
+	if (PlayerOwner.pawn == none)
+	    return;
+
 	TrackActors(C);
 
 	if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
@@ -127,7 +131,7 @@ simulated function DisplayMessages(Canvas C)
 //	local DxCanvas dxc;
 //	local int x;
 
-  if (cubeMapMode)
+  if ((cubeMapMode) || (PlayerOwner.pawn == none))
   return;
 
 	    for(i = 0; i<ConsoleMessageCount; i++)
@@ -341,7 +345,7 @@ function RenderDebugInfo(Canvas c)
        if (target.isA('pawn'))
        {
           if (pawn(target).controller != none)
-             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName());
+             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName() $ ", bAdvancedTactics?="@pawn(target).controller.bAdvancedTactics);
        }
        else
        c.DrawText(target $ " in state "$target.GetStateName());

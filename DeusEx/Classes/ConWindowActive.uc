@@ -45,7 +45,6 @@ function DisplayName(string text)
 
 function SetForcePlay(bool bNewForcePlay)
 {
-	    SpeakerName.caption = "bForcePlay";
 	bForcePlay = bNewForcePlay;
 }
 
@@ -75,7 +74,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
 	Super.InitComponent(MyController, MyOwner);
 
-	// Передать указатель на себя.
+	// Ia?aaaou oeacaoaeu ia naay.
 	DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
 
 	t_WindowTitle.DockAlign = PGA_Top;
@@ -116,7 +115,7 @@ function AbortCinematicConvo()
 		script.FinishCinematic();
 }
 
-// Может уничтожить их той функцией?
+// Ii?ao oie?oi?eou eo oie ooieoeae?
 function RemoveChoices()
 {
 	local int buttonIndex;
@@ -166,7 +165,7 @@ function DisplayChoice(ConChoice choice)
 // DisplaySkillChoice()
 // Displays a Skilled choice, a choice that's only visible if the user
 // has a particular skill at a certain skill level
-// В оригинальной игре не использовалось.
+// A i?eaeiaeuiie ea?a ia eniieuciaaeinu.
 // ----------------------------------------------------------------------
 function DisplaySkillChoice(ConChoice choice)
 {
@@ -198,15 +197,15 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 {
   Super.Closed(Sender, bCancelled);
 
-// По непонятной причине, восстановление ГДИ напрямую вызывает вылет. 
-// Поэтому я добавила задержку в 1/2 секунды.
+// Ii iaiiiyoiie i?e?eia, ainnoaiiaeaiea AAE iai?yio? aucuaaao aueao. 
+// Iiyoiio y aiaaaeea caaa??eo a 1/2 naeoiau.
 	DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
 
   moveMode     = MM_None;
   bTickEnabled = false;
 }
 
-event Free() // Должно устранить вылет на нажатию ESC.
+event Free() // Aie?ii ono?aieou aueao ia ia?aoe? ESC.
 {
   Super.Free();
 
@@ -321,19 +320,19 @@ function Tick(float deltaTime)
 function FloatingRendered(Canvas C)
 {
 	if (bMoving)
-	{ //Признак перемещения окна. Хотя здесь это не нужно.
+	{ //I?eciae ia?aiauaiey ieia. Oioy caanu yoi ia io?ii.
 		C.SetPos( FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()),
 	          	FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
 		C.SetDrawColor(255,255,255,255);
 		C.DrawTileStretched( Controller.WhiteBorder, ActualWidth(), ActualHeight() );
 	}
   if (bTickEnabled)
-      Tick(controller.renderDelta); // Как таковой функции Tick нет, но можно использовать RenderDelta.
+      Tick(controller.renderDelta); // Eae oaeiaie ooieoee Tick iao, ii ii?ii eniieuciaaou RenderDelta.
 }
 
 function AddSystemMenu()
 {
-//отключить лишнее
+//ioee??eou eeoiaa
 	local eFontScale tFontScale;
 
 	b_ExitButton = GUIButton(t_WindowTitle.AddComponent( "XInterface.GUIButton" ));
@@ -349,60 +348,58 @@ function AddSystemMenu()
 	b_ExitButton.bRepeatClick = False;
 }
 
-// HEX коды клавиш 
-// 0x20 -- пробел, 0x1B -- ESC
+// HEX eiau eeaaeo 
+// 0x20 -- i?iaae, 0x1B -- ESC
 function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
 	local Interactions.EInputKey iKey;
 
 	iKey = EInputKey(Key);
 
-/*	if (bForcePlay)
-	{
-    if (Key == 0x20 && state == 1) // 1--нажато
+	if (bForcePlay)
+    if (Key == 0x1B && state == 1) // 1--ia?aoi
     {
 	    AbortCinematicConvo();
-		  return true;
+		  return false; //true;
     }
-  }*/
-	// Пробел || колесико мыши
+	// I?iaae || eieaneei iuoe
 	if ((key == 0x20) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown))
 	{
 		if (NumChoices < 1)
 		conPlay.PlayNextEvent();
 		return true;
 	}
- return false;
+ return true; //false;
 }
 
-singular function bool OnCanClose(optional bool bCancelled)
+function bool OnCanClose(optional bool bCancelled)
 {
-	if (bForcePlay && bCancelled)
-	    {
+	if (bForcePlay)
+  {
 	    AbortCinematicConvo();
-	    return true;
-	    }
+//	    return true;
+	}
 
-     if (NumChoices == 0)// < 1)
+/*     if (NumChoices == 0)// < 1)
      {
       if (ConPlay != none)
       {
        conPlay.PlayNextEvent();
-       return false;
+       //return false;
       }
       else return true;
      }
 
-   else if (ConPlay == none)
-       return bCancelled; //true;
+   if (ConPlay == none)
+       return true;*/
 
-//    return false; // false = ignore ESC key
+  return true; // false = ignore ESC key
 }
 
 
 function ShowReceivedItem(Inventory invItem, int count)
 {
-	// Пока заглушка
+	// Iiea caaeooea
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -422,7 +419,7 @@ function bool InternalOnClick(GUIComponent Sender)
 		if (sender == conChoices[buttonIndex])
 		{
 			conPlay.PlayChoice(ConChoice(conChoices[buttonIndex].GetUserObject()));
-			ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText); // отобразить вариант ответа как текст.
+			ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText); // ioia?aceou aa?eaio ioaaoa eae oaeno.
 
 			// Clear the screen
 			RemoveChoices();
@@ -482,7 +479,8 @@ defaultproperties
     WinTop=0.000000
     WinHeight=1.000000
 
-    ChoiceBeginningChar="  "    movePeriod=0.60
+    ChoiceBeginningChar="  "
+        movePeriod=0.60
 
 		Begin Object class=GUIScrollTextBox Name=MySubTitles
 			RenderWeight=0.8
@@ -498,12 +496,12 @@ defaultproperties
 				RepeatDelay=3.0
 				StyleName="STY_DXR_DXSubTitles"
 				FontScale=FNS_Small
-// Выглядит жутко 0_o        TextAlign=TXTA_Center
+// Auaeyaeo ?ooei 0_o        TextAlign=TXTA_Center
 		End Object
     winSpeech=MySubtitles
 
     Begin Object Class=GUILabel Name=MySpeaker
-        Caption=""
+        Caption=" "
         TextAlign=TXTA_Left
         TextColor=(B=255,G=255,R=255)
         FontScale=FNS_Small

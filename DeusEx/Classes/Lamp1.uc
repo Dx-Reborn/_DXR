@@ -12,7 +12,7 @@ defaultproperties
      LightBrightness=192
      LightHue=44
      LightSaturation=128
-     LightRadius=8
+     LightRadius=4 //8
      Mass=40.000000
      Buoyancy=10.000000
 }

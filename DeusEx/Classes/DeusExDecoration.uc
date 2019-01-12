@@ -293,11 +293,12 @@ singular function SupportActor(Actor standingActor)
 
 	/* Исправлена жуткая ошибка: турели отваливались от основания и проваливались сквозь уровень ((( 
      возможно нужно будет добавить еще исключения */
-  if ((standingActor.IsA('EmptyClass')) ||
+  if ((standingActor.IsA('EmptyClass')) || 
      (standingActor.IsA('AutoTurretGun')) || (standingActor.IsA('AutoTurretGunSmall')) ||
      (standingActor.IsA('AutoTurret')) || (standingActor.IsA('AutoTurretSmall')) || (standingActor.IsA('Emitter')) ||
-     (standingActor.IsA('xEmitter')))
-  return;
+     (standingActor.IsA('xEmitter')) || (standingActor.IsA('Light')) || (standingActor.IsA('ScaledSprite')) || // Добавлены исключения для ходовых огней.
+     (standingActor.GetStateName() == 'Sitting'));
+  return;                   
 
 	zVelocity = standingActor.Velocity.Z;
 	// We've been stomped!

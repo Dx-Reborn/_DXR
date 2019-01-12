@@ -3,12 +3,16 @@
 //=============================================================================
 class InterpolateTrigger extends DeusExTrigger;
 
+// DXR: For compatibility, any trigger can be used to activate SceneManager (theoretically :D).
+
+
+
 // Send an actor on a spline path through the level
 // Copied and modified from Engine.SpecialEvent
 // Set this trigger's Event to match the Tag of the target actor
 // The target actor's Event should match the Tag of the InterpolationPoints
 
-var() name ObjectPathTag;
+/*var() name ObjectPathTag;
 
 // Чтобы срабатывал ObjectPath
 function Trigger(Actor Other, Pawn Instigator)
@@ -19,7 +23,7 @@ function Trigger(Actor Other, Pawn Instigator)
    {
       path.Trigger(Other, Instigator);
    }
-}
+}*/
 
 /*
 function Trigger(Actor Other, Pawn Instigator)

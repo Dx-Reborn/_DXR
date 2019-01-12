@@ -23,6 +23,8 @@ var() travel int HealthArmRight;
 
 var		bool		bCanGlide;   // DEUS_EX STM -- added for flying/swimming states
 
+var		bool		bJumpOffPawn;		
+
 //
 // misc. stuff for Deus Ex - DEUS_EX CNN
 //
@@ -423,10 +425,11 @@ var Bool bConversationEndedNormally;
 var Bool bInConversation;
 var Actor ConversationActor;						// Actor currently speaking to or speaking to us
 
-var() sound WalkSound;
+var(Sounds) sound WalkSound;
 var(Sounds)	sound	Die;
 var(Sounds) sound HitSound1;
 var(Sounds) sound HitSound2;
+var(Sounds) sound Land;
 
 
 var float swimBubbleTimer;
@@ -907,22 +910,72 @@ function EnableCollision(bool bSet)
 // ----------------------------------------------------------------------
 // SetBasedPawnSize()
 // ----------------------------------------------------------------------
+function bool SetBasedPawnSize(float newRadius, float newHeight)
+{
+	local float  oldRadius, oldHeight;
+	local bool   bSuccess;
+	local vector centerDelta;
+	local float  deltaEyeHeight;
 
+	if (newRadius < 0)
+		newRadius = 0;
+	if (newHeight < 0)
+		newHeight = 0;
 
+	oldRadius = CollisionRadius;
+	oldHeight = CollisionHeight;
+
+	if ((oldRadius == newRadius) && (oldHeight == newHeight))
+		return true;
+
+	centerDelta    = vect(0, 0, 1)*(newHeight-oldHeight);
+	deltaEyeHeight = GetDefaultCollisionHeight() - Default.BaseEyeHeight;
+
+	bSuccess = false;
+	if ((newHeight <= CollisionHeight) && (newRadius <= CollisionRadius))  // shrink
+	{
+		SetCollisionSize(newRadius, newHeight);
+		if (Move(centerDelta))
+			bSuccess = true;
+		else
+			SetCollisionSize(oldRadius, oldHeight);
+	}
+	else
+	{
+		if (Move(centerDelta))
+		{
+			SetCollisionSize(newRadius, newHeight);
+			bSuccess = true;
+		}
+	}
+
+	if (bSuccess)
+	{
+		PrePivotOffset  = vect(0, 0, 1)*(GetDefaultCollisionHeight()-newHeight);
+		PrePivot        -= centerDelta;
+		DesiredPrePivot -= centerDelta;
+		BaseEyeHeight   = newHeight - deltaEyeHeight;
+	}
+
+	return (bSuccess);
+}
 
 // ----------------------------------------------------------------------
 // ResetBasedPawnSize()
 // ----------------------------------------------------------------------
 function ResetBasedPawnSize()
 {
-//  SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight());
+  SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight());
 }
 
 
 // ----------------------------------------------------------------------
 // GetDefaultCollisionHeight()
 // ----------------------------------------------------------------------
-
+function float GetDefaultCollisionHeight()
+{
+	return (Default.CollisionHeight-4.5);
+}
 
 
 // ----------------------------------------------------------------------
@@ -934,8 +987,10 @@ function ResetBasedPawnSize()
 // ----------------------------------------------------------------------
 // GetSitHeight()
 // ----------------------------------------------------------------------
-
-
+function float GetSitHeight()
+{
+	return (GetDefaultCollisionHeight()+(BaseAssHeight*0.5));
+}
 
 // ----------------------------------------------------------------------
 // IsPointInCylinder()
@@ -966,7 +1021,6 @@ function bool IsPointInCylinder(Actor cylinder, Vector point, optional float ext
 // ----------------------------------------------------------------------
 // GetNextWaypoint()
 // ----------------------------------------------------------------------
-
 
 
 // ----------------------------------------------------------------------
@@ -1328,7 +1382,10 @@ function DrawShield()
 		shield.SetBase(Self);
 }
 
-
+function bool IsOverlapping(Actor CheckActor)
+{
+  return class'ActorManager'.static.IsOverlapping(self, CheckActor);
+}
 
 
 // ----------------------------------------------------------------------
@@ -1336,7 +1393,7 @@ function DrawShield()
 // ----------------------------------------------------------------------
 function StandUp(optional bool bInstant)
 {
-/*  local vector placeToStand;
+  local vector placeToStand;
 
   if (bSitting)
   {
@@ -1348,12 +1405,11 @@ function StandUp(optional bool bInstant)
     SetPhysics(PHYS_Falling);
     ResetBasedPawnSize();
 
-    if (!bInstant && (SeatActor != None)) // && IsOverlapping(SeatActor))
+    if (!bInstant && (SeatActor != None) && IsOverlapping(SeatActor))
     {
       bStandInterpolation = true;
       remainingStandTime  = 0.3;
-      StandRate = (Vector(SeatActor.Rotation+Rot(0, -16384, 0))*CollisionRadius) /
-                  remainingStandTime;
+      StandRate = (Vector(SeatActor.Rotation+Rot(0, -16384, 0))*CollisionRadius) / remainingStandTime;
     }
     else
       StopStanding();
@@ -1367,7 +1423,7 @@ function StandUp(optional bool bInstant)
   }
 
   if (bDancing)
-    bDancing = false;*/
+    bDancing = false;
 }
 
 function Carcass SpawnCarcass()
@@ -2680,19 +2736,55 @@ function PlayWalking()
 // ----------------------------------------------------------------------
 // TweenToRunning()
 // ----------------------------------------------------------------------
-
+function TweenToRunning(float tweentime)
+{
+//	ClientMessage("TweenToRunning()");
+	bIsWalking = False;
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',, tweentime,, GetSwimPivot());
+	else
+	{
+		if (HasTwoHandedWeapon())
+			LoopAnimPivot('RunShoot2H', runAnimMult, tweentime);
+		else
+			LoopAnimPivot('Run', runAnimMult, tweentime);
+	}
+}
 
 
 // ----------------------------------------------------------------------
 // PlayRunning()
 // ----------------------------------------------------------------------
+function PlayRunning()
+{
+//	ClientMessage("PlayRunning()");
+	bIsWalking = False;
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,,GetSwimPivot());
+	else
+	{
+		if (HasTwoHandedWeapon())
+			LoopAnimPivot('RunShoot2H', runAnimMult);
+		else
+			LoopAnimPivot('Run', runAnimMult);
+	}
+}
+
 
 
 
 // ----------------------------------------------------------------------
 // PlayPanicRunning()
 // ----------------------------------------------------------------------
-
+function PlayPanicRunning()
+{
+//	ClientMessage("PlayPanicRunning()");
+	bIsWalking = False;
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,,GetSwimPivot());
+	else
+		LoopAnimPivot('Panic', runAnimMult);
+}
 
 
 // ----------------------------------------------------------------------
@@ -2720,6 +2812,9 @@ function TweenToWaiting(float tweentime)
 // ----------------------------------------------------------------------
 function PlayWaiting()
 {
+ if (Controller.IsInState('Paralyzed') || bSitting)
+    return;
+
  if (Acceleration == vect(0, 0, 0))
  {
 //  ClientMessage("PlayWaiting()");
@@ -3312,6 +3407,11 @@ function AgitateAlliance(Name newEnemy, float agitation)
 
 
 
+
+function bool InStasis()
+{
+   return bStasis;
+}
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // CALLBACKS AND OVERRIDDEN FUNCTIONS
@@ -3333,7 +3433,7 @@ function Tick(float deltaTime)
 
 	player = DeusExPlayer(GetPlayerPawn());
 
-//	Super.Tick(deltaTime);
+	Super.Tick(deltaTime);
 
 	bDoLowPriority = true;
 	bCheckPlayer   = true;
@@ -3348,6 +3448,52 @@ function Tick(float deltaTime)
 		if ((DistanceFromPlayer() > 600) && (LastRendered() >= 5.0))
 			bCheckOther = false;
 	}
+
+	if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
+	{
+	  Controller.Destroy();
+		Destroy();
+		return;
+	}
+
+	if (AvoidWallTimer > 0)
+	{
+		AvoidWallTimer -= deltaTime;
+		if (AvoidWallTimer < 0)
+			AvoidWallTimer = 0;
+	}
+
+	if (AvoidBumpTimer > 0)
+	{
+		AvoidBumpTimer -= deltaTime;
+		if (AvoidBumpTimer < 0)
+			AvoidBumpTimer = 0;
+	}
+
+	if (ObstacleTimer > 0)
+	{
+		ObstacleTimer -= deltaTime;
+		if (ObstacleTimer < 0)
+			ObstacleTimer = 0;
+	}
+
+	if (controller.bAdvancedTactics)
+	{
+		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
+		{
+			controller.bAdvancedTactics = false;
+			if (TurnDirection != TURNING_None)
+				controller.MoveTimer -= 4.0;
+
+			ActorAvoiding    = None;
+			NextDirection    = TURNING_None;
+			TurnDirection    = TURNING_None;
+			bClearedObstacle = true;
+			ObstacleTimer    = 0;
+		}
+	}
+
+
 
 	if (bStandInterpolation)
 		UpdateStanding(deltaTime);
@@ -3478,6 +3624,18 @@ function StopStanding()
 // ----------------------------------------------------------------------
 // BaseChange()
 // ----------------------------------------------------------------------
+/*singular function BaseChange()
+{
+	Super.BaseChange();
+
+	if (bSitting && !IsSeatValid(SeatActor))
+	{
+		StandUp();
+		if (Controller.GetStateName() == 'Sitting')
+			Controller.GotoState('Sitting', 'Begin');
+	}
+} */
+
 
 
 
@@ -3781,6 +3939,7 @@ function Bump(actor Other)
 
 		// Enable AlterDestination()
 			controller.bAdvancedTactics = true;
+			AlterDestination();
 
       avoidPawn = ScriptedPawn(ActorAvoiding);
 
@@ -3809,6 +3968,137 @@ function Bump(actor Other)
 }
 
 
+function AlterDestination()
+{
+	local Rotator  dir;
+	local int      avoidYaw;
+	local int      destYaw;
+	local int      moveYaw;
+	local int      angle;
+	local bool     bPointInCylinder;
+	local float    dist1, dist2;
+	local bool     bAround;
+	local vector   tempVect;
+	local ETurning oldTurnDir;
+
+	oldTurnDir = TurnDirection;
+
+	// Sanity check -- are we done walking around the actor?
+	if (TurnDirection != TURNING_None)
+	{
+		if (!bWalkAround)
+			TurnDirection = TURNING_None;
+		else if (bClearedObstacle)
+			TurnDirection = TURNING_None;
+		else if (ActorAvoiding == None)
+			TurnDirection = TURNING_None;
+		else if (ActorAvoiding.bDeleteMe)
+			TurnDirection = TURNING_None;
+		else if (!IsPointInCylinder(ActorAvoiding, Location, CollisionRadius*2, CollisionHeight*2))
+			TurnDirection = TURNING_None;
+	}
+
+	// Are we still turning?
+	if (TurnDirection != TURNING_None)
+	{
+		bAround = false;
+
+		// Is our destination point inside the actor we're walking around?
+		bPointInCylinder = IsPointInCylinder(ActorAvoiding, controller.Destination,CollisionRadius-8, CollisionHeight-8);
+		if (bPointInCylinder)
+		{
+			dist1 = VSize((Location - ActorAvoiding.Location)*vect(1,1,0));
+			dist2 = VSize((Location - controller.Destination)*vect(1,1,0));
+
+			// Are we on the right side of the actor?
+			if (dist1 > dist2)
+			{
+				// Just make a beeline, if possible
+				tempVect = controller.Destination - ActorAvoiding.Location;
+				tempVect.Z = 0;
+				tempVect = Normal(tempVect) * (ActorAvoiding.CollisionRadius + CollisionRadius);
+
+				if (tempVect == vect(0,0,0))
+					controller.Destination = Location;
+				else
+				{
+					tempVect += ActorAvoiding.Location;
+					tempVect.Z = controller.Destination.Z;
+					controller.Destination = tempVect;
+				}
+			}
+			else
+				bAround = true;
+		}
+		else
+			bAround = true;
+
+		// We have a valid destination -- continue to walk around
+		if (bAround)
+		{
+			// Determine the destination-self-obstacle angle
+			dir      = Rotator(ActorAvoiding.Location-Location);
+			avoidYaw = dir.Yaw;
+			dir      = Rotator(controller.Destination-Location);
+			destYaw  = dir.Yaw;
+
+			if (TurnDirection == TURNING_Left)
+				angle = (avoidYaw - destYaw) & 65535;
+			else
+				angle = (destYaw - avoidYaw) & 65535;
+			if (angle < 0)
+				angle += 65536;
+
+			// If the angle is between 90 and 180 degrees, we've cleared the obstacle
+			if (bPointInCylinder || (angle < 16384) || (angle > 32768))  // haven't cleared the actor yet
+			{
+				if (TurnDirection == TURNING_Left)
+					moveYaw = avoidYaw - 16384;
+				else
+					moveYaw = avoidYaw + 16384;
+				controller.Destination = Location + Vector(rot(0,1,0)*moveYaw)*400;
+			}
+			else  // cleared the actor -- move on
+				TurnDirection = TURNING_None;
+		}
+	}
+
+	if (TurnDirection == TURNING_None)
+	{
+		if (ObstacleTimer > 0)
+		{
+			TurnDirection = oldTurnDir;
+			bClearedObstacle = true;
+		}
+	}
+	else
+		ObstacleTimer = 1.5;
+
+	// Reset if done turning
+	if (TurnDirection == TURNING_None)
+	{
+		NextDirection    = TURNING_None;
+		ActorAvoiding    = None;
+		controller.bAdvancedTactics = false;
+		ObstacleTimer    = 0;
+		bClearedObstacle = true;
+
+		if (oldTurnDir != TURNING_None)
+			controller.MoveTimer -= 4.0;
+	}
+}
+
+/*singular*/ event Falling()
+{
+	if (bCanFly)
+	{
+		SetPhysics(PHYS_Flying);
+		return;
+	}
+	SetPhysics(PHYS_Falling); //note - done by default in physics
+ 	if (health > 0)
+		Controller.SetFall();
+}
 
 
 // ----------------------------------------------------------------------
@@ -4052,7 +4342,7 @@ state idle
 // ----------------------------------------------------------------------
 state Dying
 {
-	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, ZoneChange, Falling, WarnTarget, Died, Timer, TakeDamage;
+//	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, ZoneChange, Falling, WarnTarget, /*Died,*/ Timer/*, TakeDamage*/;
 
 	event Landed(vector HitNormal)
 	{
@@ -4117,12 +4407,23 @@ state Dying
 		bStasis = False;
 		SetDistress(true);
 		DeathTimer = 0;
+
+		Controller.Destroy();
+    Controller = none;
 	}
 
+	function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
+	{
+	   Global.Died(Killer, damageType, HitLocation);
+	}
+
+
 Begin:
+//  DXRAiController(Controller).ClearNextState();
 	Controller.WaitForLanding();
 	Controller.UnPossess();
 	Controller.Destroy();
+  Controller = none;
 
 	MoveFallingBody();
 
@@ -4135,7 +4436,7 @@ Begin:
 
 //	SetWeapon(None);
 
-	bHidden = True;
+	bHidden = true;
 
 	Acceleration = vect(0,0,0);
 	SpawnCarcass();
@@ -4147,6 +4448,19 @@ event Landed(vector HitNormal)
 {
     super.Landed(HitNormal);
 }
+
+function JumpOffPawn()
+{
+	/*
+	Velocity += (60 + CollisionRadius) * VRand();
+	Velocity.Z = 180 + CollisionHeight;
+	SetPhysics(PHYS_Falling);
+	bJumpOffPawn = true;
+	SetFall();
+	*/
+	//log("ERROR - JumpOffPawn should not be called!");
+}
+
 
 
 function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
@@ -4335,7 +4649,7 @@ defaultproperties
 		  bSpecialCalcView=true
     RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
 
-		//	ConstantAcceleration=(X=0.00,Y=0.00,Z=-20.00)
+			ConstantAcceleration=(X=0.00,Y=0.00,Z=-120.00)
 			physics=phys_falling//none
 
 			bPhysicsAnimUpdate=false
@@ -4343,4 +4657,5 @@ defaultproperties
 
 			bActorShadows=true
 
+      bIgnoreOutOfWorld=true // Don't destroy if fell out of world
 }

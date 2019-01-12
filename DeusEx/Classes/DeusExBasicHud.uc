@@ -1355,7 +1355,7 @@ simulated event PostRender(canvas C)
 //  local texture s;
 
 	super.postrender(C);
-	if (cubemapmode)
+	if ((cubemapmode) || (playerOwner.pawn == none))
 	return;
 
 	if (menuMode)
