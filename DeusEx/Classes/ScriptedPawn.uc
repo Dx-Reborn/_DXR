@@ -2812,7 +2812,7 @@ function TweenToWaiting(float tweentime)
 // ----------------------------------------------------------------------
 function PlayWaiting()
 {
- if (Controller.IsInState('Paralyzed') || bSitting)
+ if (Controller.IsInState('Paralyzed') || bSitting || bDancing)
     return;
 
  if (Acceleration == vect(0, 0, 0))

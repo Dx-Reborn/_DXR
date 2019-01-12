@@ -48,7 +48,8 @@ function LookAtVector(vector v)
 
 function TurnTo(vector NewFocus)
 {
-   LookAtVector(NewFocus);
+   Focus = none;//pawn;
+   FocalPoint = NewFocus;
 }
 
 function LookAtActor(Actor A)
@@ -2095,6 +2096,142 @@ ContinueFromDoor:
 	ScriptedPawn(pawn).FinishAnim();
 	ScriptedPawn(pawn).PlayWalking();
 	Goto('Wander');
+}
+
+
+/*-----------------------------*/
+
+state Dancing
+{
+	ignores EnemyNotVisible;
+
+	function SetFall()
+	{
+		StartFalling('Dancing', 'ContinueDance');
+	}
+
+	function AnimEnd(int channel)
+	{
+		ScriptedPawn(pawn).PlayDancing();
+	}
+
+	event bool NotifyHitWall(vector HitNormal, actor Wall)
+	{
+		if (pawn.Physics == PHYS_Falling)
+			return false;
+//		Global.HitWall(HitNormal, Wall);
+	//	CheckOpenDoor(HitNormal, Wall);
+	}
+
+	function BeginState()
+	{
+		if (ScriptedPawn(pawn).bSitting && !ScriptedPawn(pawn).bDancing)
+			ScriptedPawn(pawn).StandUp();
+		ScriptedPawn(pawn).SetEnemy(None, ScriptedPawn(pawn).EnemyLastSeen, true);
+		Disable('AnimEnd');
+		ScriptedPawn(pawn).bCanJump = false;
+
+		ScriptedPawn(pawn).bStasis = false;
+
+		//ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetDistress(false);
+		ScriptedPawn(pawn).SeekPawn = None;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+	}
+
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bAcceptBump = True;
+
+		if (ScriptedPawn(pawn).JumpZ > 0)
+			ScriptedPawn(pawn).bCanJump = true;
+		ScriptedPawn(pawn).bStasis = true;
+
+//		ScriptedPawn(pawn).StopBlendAnims();
+	}
+
+Begin:
+	WaitForLanding();
+	if (ScriptedPawn(pawn).bDancing)
+	{
+		if (ScriptedPawn(pawn).bUseHome)
+			TurnTo(ScriptedPawn(pawn).Location + ScriptedPawn(pawn).HomeRot);
+		Goto('StartDance');
+	}
+	if (!ScriptedPawn(pawn).bUseHome)
+		Goto('StartDance');
+
+MoveToBase:
+	if (!IsPointInCylinder(pawn, ScriptedPawn(pawn).HomeLoc, 16-pawn.CollisionRadius))
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(true);
+		while (true)
+		{
+			if (PointReachable(ScriptedPawn(pawn).HomeLoc))
+			{
+				if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).HomeLoc))
+					ScriptedPawn(pawn).PlayWalking();
+				MoveTo(ScriptedPawn(pawn).HomeLoc,,true);//, GetWalkingSpeed());
+				ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).HomeLoc);
+				break;
+			}
+			else
+			{
+				MoveTarget = FindPathTo(ScriptedPawn(pawn).HomeLoc);
+				if (MoveTarget != None)
+				{
+					if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+						ScriptedPawn(pawn).PlayWalking();
+					MoveToward(MoveTarget,,0,false,true);//, GetWalkingSpeed());
+					ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
+				}
+				else
+					break;
+			}
+		}
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+	}
+	TurnTo(ScriptedPawn(pawn).Location + ScriptedPawn(pawn).HomeRot);
+
+StartDance:
+  WaitForLanding();
+	pawn.Acceleration=vect(0,0,0);
+	Goto('Dance');
+
+ContinueFromDoor:
+	Goto('MoveToBase');
+
+Dance:
+ContinueDance:
+	// nil
+	ScriptedPawn(pawn).bDancing = true;
+	ScriptedPawn(pawn).PlayDancing();
+	ScriptedPawn(pawn).bStasis = true;
+	if (!ScriptedPawn(pawn).bHokeyPokey)
+		Goto('DoNothing');
+
+Spin:
+	Sleep(FRand()*5+5);
+	ScriptedPawn(pawn).useRot = pawn.DesiredRotation;
+	if (FRand() > 0.5)
+	{
+		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,16384,0)));
+//		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,32768,0)));
+//		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,49152,0)));
+	}
+	else
+	{
+		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,49152,0)));
+//		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,32768,0)));
+//		TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot+rot(0,16384,0)));
+	}
+//	TurnTo(pawn.Location+1000*vector(ScriptedPawn(pawn).useRot));
+	FinishRotation();
+	Goto('Spin');
+
+DoNothing:
+	// nil
 }
 
 
