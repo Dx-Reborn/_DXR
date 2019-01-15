@@ -25,7 +25,7 @@ enum ELookDirection
 var(Alliances) Name Alliance; // alliance tag
 var(Conversation) editconst transient array<ConDialogue> conlist; // Диалоги хранятся здесь.
 var(Conversation) String BindName,BarkBindName,FamiliarName,UnfamiliarName;
-var(Conversation) float ConStartInterval;     // Amount of time required between two convos.
+var/*(Conversation)*/ float ConStartInterval;     // Amount of time required between two convos.
 var	travel   float       LastConEndTime;			// Time when last conversation ended
 
 var(Advanced) bool        bBlockSight;   // True if pawns can't see through this actor.

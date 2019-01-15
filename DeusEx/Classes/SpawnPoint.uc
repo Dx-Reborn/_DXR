@@ -7,7 +7,7 @@ class SpawnPoint extends NavigationPoint
 defaultproperties
 {
      bDirectional=True
-     Texture=Texture'Engine.S_ClipMarker'
+     Texture=S_Flag
      CollisionRadius=12.00
      CollisionHeight=15.00
 }

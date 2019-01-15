@@ -18,4 +18,5 @@ defaultproperties
     bDirectional=True
     CollisionRadius=12.00
     CollisionHeight=15.00
+    Texture=S_BezierHandle
 }
