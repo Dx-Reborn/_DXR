@@ -4,6 +4,9 @@
 
 class DXRAiController extends AIController;
 
+const Stunned_Delay = 15;
+const RubbingEyes_Delay = 15;
+
 var name NextState;
 var name NextLabel;
 
@@ -33,6 +36,20 @@ event LongFall() // called when latent function WaitForLanding() doesn't return 
 {
 	SetFall();
 	GotoState('FallingState', 'LongFall');
+}
+
+function GotoDisabledState(class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos)
+{
+	if (!ScriptedPawn(pawn).bCollideActors && !ScriptedPawn(pawn).bBlockActors && !ScriptedPawn(pawn).bBlockPlayers)
+		return;
+	else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas'))
+		GotoState('RubbingEyes');
+	else if (damageType == class'DM_Stunned')
+		GotoState('Stunned');
+	else if (ScriptedPawn(pawn).CanShowPain())
+		ScriptedPawn(pawn).TakeHit(hitPos);
+	else
+		GotoNextState();
 }
 
 function SetFall()
@@ -144,6 +161,32 @@ function GotoNextState()
 		ClearNextState();
 }
 
+
+function bool GetNextVector(Actor destination, out vector outVect)
+{
+	local bool    bValid;
+	local rotator rot;
+	local float   dist;
+	local float   maxDist;
+
+	bValid = true;
+	if (destination != None)
+	{
+		maxDist = 64;
+		rot     = Rotator(destination.Location - pawn.Location);
+		dist    = VSize(destination.Location - pawn.Location);
+		if (dist < maxDist)
+			outVect = destination.Location;
+		else if (!pointReachable(destination.Location)); //(!AIDirectionReachable(pawn.Location, rot.Yaw, rot.Pitch, 0, maxDist, outVect))
+			bValid = false;
+	}
+	else
+		bValid = false;
+
+	return (bValid);
+}
+
+
 function FollowOrders(optional bool bDefer)
 {
 	local bool bSetEnemy;
@@ -189,12 +232,12 @@ function FollowOrders(optional bool bDefer)
 	}
 }
 
-function SetOrdersEx(Name orderName, optional Name newOrderTag, optional bool bImmediate)
+function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 {
 	local bool bHostile;
 	local DXRPawn orderEnemy;
 
-	log("SetOrders: Name="$orderName$" OrderTag="$newOrderTag);
+	log("SetOrders from Controller: Name="$orderName$" OrderTag="$newOrderTag$" bImmediate="$bImmediate);
 
 	switch (orderName)
 	{
@@ -239,14 +282,6 @@ function ResetConvOrders()
 
 function pawn GetPlayerPawn()
 {
- local DeusExPlayer playerP;
-
- foreach AllActors(class'DeusExPlayer', playerP)
- break;
-
- if (PlayerP != none)
- return PlayerP;
-
  return level.GetLocalPlayerController().pawn;
 }
 
@@ -385,11 +420,13 @@ function LookInRandomDirection()
 }
 
 
+/* Нужно реализовывать через C++ (walkMove, flyMove...) */
+function bool AIDirectionReachable(vector focus, int yaw, int pitch, float minDist, float maxDist, out vector bestDest);
+/*{
+  local vector v;
 
-function bool AIDirectionReachable(vector focus, int yaw, int pitch, float minDist, float maxDist, out vector bestDest)
-{
-  return TestDirection(focus, bestDest, minDist, maxDist);
-}
+  return pointReachable(bestDest); //return TestDirection(focus, bestDest, minDist, maxDist);
+}*/
 
 function bool AIPickRandomDestination(float minDist, float maxDist,
                                       int centralYaw, float yawDistribution, int centralPitch, float pitchDistribution,int tries, float multiplier,out vector dest)
@@ -482,12 +519,6 @@ Start:
   FollowOrders();
 }
 
-state GoingTo
-{
-Begin:
-    log(pawn @ self@"GoingTo");
-}
-
 state Attacking
 {
 Begin:
@@ -566,13 +597,13 @@ State Patrolling
 	//function HitWall(vector HitNormal, actor Wall)
   event bool NotifyBump(Actor Other)
   {
-    log(pawn$"NotifyBump here");
+//    log(pawn$"NotifyBump here");
     return false;
   }
 
 	event bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
-    log(pawn$"NotifyHitWall here");
+//    log(pawn$"NotifyHitWall here");
 		if (pawn.Physics == PHYS_Falling)
         return false;
 	}
@@ -752,7 +783,7 @@ state Sitting
 		pawn.PlayWaiting();
 	}
 
-	function bool NotifyHitWall(vector HitNormal, actor Wall)
+/*	function bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
 		if (pawn.Physics == PHYS_Falling)
 			return false;
@@ -763,14 +794,14 @@ state Sitting
 			return false;
 //		Global.HitWall(HitNormal, Wall);
 	//	CheckOpenDoor(HitNormal, Wall);
-	}
+	}*/
 
 /*	function bool HandleTurn(Actor Other)
 	{
 		if (Other == scriptedPawn(pawn).SeatActor)
 			return true;
 		else
-			return Global.HandleTurn(Other);
+			return global.HandleTurn(Other);
 	}*/
 
 	function bool NotifyBump(actor bumper)
@@ -780,7 +811,7 @@ state Sitting
 		{
 			scriptedPawn(pawn).bAcceptBump = false;
 			GotoState('Sitting', 'CircleToFront');
-			return true;
+			return false;//true;
 		}
     // Handle conversations, if need be
 //		else
@@ -813,7 +844,7 @@ state Sitting
 				scriptedPawn(pawn).Acceleration = vect(0,0,0);
 				scriptedPawn(pawn).Velocity = vect(0,0,0);
 				scriptedPawn(pawn).SetBase(scriptedPawn(pawn).SeatActor);
-				scriptedPawn(pawn).bHardAttach = true; //
+				//scriptedPawn(pawn).bHardAttach = true; //
 				scriptedPawn(pawn).bSitting = true;
 			}
 			scriptedPawn(pawn).SetLocation(newPos);
@@ -1392,7 +1423,7 @@ state FirstPersonConversation
 		}
    }
 
-   function SetOrdersEx(Name orderName, optional Name newOrderTag, optional bool bImmediate)
+   function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 	 {
 		 ConvOrders   = orderName;
 	   ConvOrderTag = newOrderTag;
@@ -1408,7 +1439,7 @@ state FirstPersonConversation
 		 ResetConvOrders();  // must do this before calling SetOrders(), or recursion will result
 
 		 if (tempConvOrders != '')
-		  Global.SetOrdersEx(tempConvOrders, tempConvOrderTag, true);
+		  Global.SetOrders(tempConvOrders, tempConvOrderTag, true);
 		 else
 			Global.FollowOrders(bDefer);
 	 }
@@ -2099,7 +2130,7 @@ ContinueFromDoor:
 }
 
 
-/*-----------------------------*/
+/*-- State Dancing ------------*/
 
 state Dancing
 {
@@ -2234,6 +2265,235 @@ DoNothing:
 	// nil
 }
 
+
+// ----------------------------------------------------------------------
+// state RunningTo
+//
+// Move to an actor really fast.
+// ----------------------------------------------------------------------
+
+state RunningTo
+{
+	function SetFall()
+	{
+		StartFalling('RunningTo', 'ContinueRun');
+	}
+
+	event bool NotifyHitWall(vector HitNormal, actor Wall)
+	{
+		if (pawn.Physics == PHYS_Falling)
+			return false;
+		//Global.HitWall(HitNormal, Wall);
+		//CheckOpenDoor(HitNormal, Wall);
+	}
+
+	function bool NotifyBump(actor bumper)
+	{
+    // If we hit the guy we're going to, end the state
+		if (bumper == ScriptedPawn(pawn).OrderActor)
+			GotoState('RunningTo', 'Done');
+
+
+      return false;
+
+		// Handle conversations, if need be
+		//Global.Bump(bumper);
+	}
+
+/*	function Touch(actor toucher)
+	{
+		// If we hit the guy we're going to, end the state
+		if (toucher == OrderActor)
+			GotoState('RunningTo', 'Done');
+
+		// Handle conversations, if need be
+		Global.Touch(toucher);
+	}*/
+
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		//BlockReactions();
+		ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetDistress(false);
+		ScriptedPawn(pawn).bStasis = false;
+		ScriptedPawn(pawn).SeekPawn = None;
+		ScriptedPawn(pawn).EnableCheckDestLoc(true);
+	}
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		//ResetReactions();
+		ScriptedPawn(pawn).bStasis = true;
+	}
+
+Begin:
+  WaitForLanding();
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	if (ScriptedPawn(pawn).orderActor == None)
+		Goto('Done');
+
+Follow:
+	if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+		Goto('Done');
+	MoveTarget = GetNextWaypoint(ScriptedPawn(pawn).orderActor);
+	if ((MoveTarget != None) && (!MoveTarget.PhysicsVolume.bWaterVolume) && (MoveTarget.Physics != PHYS_Falling))
+	{
+		if ((MoveTarget == ScriptedPawn(pawn).orderActor) && MoveTarget.IsA('Pawn'))
+		{
+			if (GetNextVector(ScriptedPawn(pawn).orderActor, ScriptedPawn(pawn).useLoc))
+			{
+				if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).useLoc))
+					ScriptedPawn(pawn).PlayRunning();
+				MoveToward(MoveTarget,, 0, false, false); //MoveTo(useLoc, MaxDesiredSpeed);
+				ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).useLoc);
+			}
+			else
+				Goto('Pause');
+		}
+		else
+		{
+			if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+				ScriptedPawn(pawn).PlayRunning();
+        MoveToward(MoveTarget,, 0, false, false);			//MoveToward(MoveTarget, MaxDesiredSpeed);
+			ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
+		}
+		if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+			Goto('Done');
+		else
+			Goto('Follow');
+	}
+
+Pause:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	LookAtActor(ScriptedPawn(pawn).orderActor); //TurnToward(orderActor);
+	ScriptedPawn(pawn).PlayWaiting();
+	Sleep(1.0);
+	Goto('Follow');
+
+Done:
+	if (ScriptedPawn(pawn).orderActor.IsA('PatrolPoint'))
+		TurnTo(ScriptedPawn(pawn).Location + PatrolPoint(ScriptedPawn(pawn).orderActor).lookdir);
+	GotoState('Standing');
+
+ContinueRun:
+ContinueFromDoor:
+	ScriptedPawn(pawn).PlayRunning();
+	Goto('Follow');
+}
+
+// ----------------------------------------------------------------------
+// state GoingTo
+//
+// Move to an actor.
+// ----------------------------------------------------------------------
+
+state GoingTo
+{
+	function SetFall()
+	{
+		StartFalling('GoingTo', 'ContinueGo');
+	}
+
+/*	function HitWall(vector HitNormal, actor Wall)
+	{
+		if (Physics == PHYS_Falling)
+			return;
+		Global.HitWall(HitNormal, Wall);
+		CheckOpenDoor(HitNormal, Wall);
+	}
+
+	function Bump(actor bumper)
+	{
+		// If we hit the guy we're going to, end the state
+		if (bumper == OrderActor)
+			GotoState('GoingTo', 'Done');
+
+		// Handle conversations, if need be
+		Global.Bump(bumper);
+	}
+
+	function Touch(actor toucher)
+	{
+		// If we hit the guy we're going to, end the state
+		if (toucher == OrderActor)
+			GotoState('GoingTo', 'Done');
+
+		// Handle conversations, if need be
+		Global.Touch(toucher);
+	}*/
+
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		//BlockReactions();
+		ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetDistress(false);
+		ScriptedPawn(pawn).bStasis = False;
+		ScriptedPawn(pawn).SeekPawn = None;
+		ScriptedPawn(pawn).EnableCheckDestLoc(true);
+	}
+
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		//ResetReactions();
+		ScriptedPawn(pawn).bStasis = true;
+	}
+
+Begin:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	if (ScriptedPawn(pawn).orderActor == None)
+		Goto('Done');
+
+Follow:
+	if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+		Goto('Done');
+	MoveTarget = GetNextWaypoint(ScriptedPawn(pawn).orderActor);
+	if ((MoveTarget != None) && (!MoveTarget.PhysicsVolume.bWaterVolume) && (MoveTarget.Physics != PHYS_Falling))
+	{
+		if ((MoveTarget == ScriptedPawn(pawn).orderActor) && MoveTarget.IsA('Pawn'))
+		{
+			if (GetNextVector(ScriptedPawn(pawn).orderActor, ScriptedPawn(pawn).useLoc))
+			{
+				if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).useLoc))
+					ScriptedPawn(pawn).PlayWalking();
+            MoveTo(ScriptedPawn(pawn).useLoc, , true); //MoveTo(useLoc, GetWalkingSpeed());
+				ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).useLoc);
+			}
+			else
+				Goto('Pause');
+		}
+		else
+		{
+			if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+				ScriptedPawn(pawn).PlayWalking();
+        MoveToward(MoveTarget,, 0, false, true);			//MoveToward(MoveTarget, GetWalkingSpeed());
+			ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
+		}
+		if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+			Goto('Done');
+		else
+			Goto('Follow');
+	}
+
+Pause:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	LookAtActor(ScriptedPawn(pawn).orderActor); //TurnToward(orderActor);
+	ScriptedPawn(pawn).PlayWaiting();
+	Sleep(1.0);
+	Goto('Follow');
+
+Done:
+	if (ScriptedPawn(pawn).orderActor.IsA('PatrolPoint'))
+		TurnTo(pawn.Location + PatrolPoint(ScriptedPawn(pawn).orderActor).lookdir);
+	GotoState('Standing');
+
+ContinueGo:
+ContinueFromDoor:
+	ScriptedPawn(pawn).PlayWalking();
+	Goto('Follow');
+}
 
 
 
