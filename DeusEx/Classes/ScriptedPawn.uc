@@ -538,6 +538,9 @@ function PreBeginPlay()
 
   Super.PreBeginPlay();
 
+  // DXR: Fix walking speed by just one line of code :)
+  WalkingPct = WalkingSpeed;
+
   // Set our alliance
   SetAlliance(Alliance);
 
@@ -718,18 +721,16 @@ function bool IsSeatValid(Actor checkActor)
 	}
 }
 
-
-
 // ----------------------------------------------------------------------
 // SetDistress()
 // ----------------------------------------------------------------------
 function SetDistress(bool bDistress)
 {
 	bDistressed = bDistress;
-/*	if (bDistress && bEmitDistress)
-		AIStartEvent('Distress', EAITYPE_Visual);
+	if (bDistress && bEmitDistress)
+		class'EventManager'.static.AIStartEvent(self, 'Distress', EAITYPE_Visual);
 	else
-		AIEndEvent('Distress', EAITYPE_Visual);*/
+		class'EventManager'.static.AIEndEvent(self,'Distress', EAITYPE_Visual);
 }
 
 
@@ -738,6 +739,11 @@ function SetDistress(bool bDistress)
 // ----------------------------------------------------------------------
 // SetDistressTimer()
 // ----------------------------------------------------------------------
+function SetDistressTimer()
+{
+	DistressTimer = 0;
+}
+
 
 
 
@@ -1078,7 +1084,7 @@ function Actor FindTaggedActor(Name actorTag, optional bool bRandom, optional Cl
 			}
 		}
 	}
-
+	log("FindTaggedActor returned "$bestActor);
 	return bestActor;
 }
 
@@ -1298,24 +1304,229 @@ function StopPoison()
 // ----------------------------------------------------------------------
 // SetupWeapon()
 // ----------------------------------------------------------------------
+function SetupWeapon(bool bDrawWeapon, optional bool bForce)
+{
+	if (bKeepWeaponDrawn && !bForce)
+		bDrawWeapon = true;
 
-
+	if (ShouldDropWeapon())
+		DropWeapon();
+	else if (bDrawWeapon)
+	{
+//		if (Weapon == None)
+		SwitchToBestWeapon();
+	}
+	else
+		SetWeapon(None);
+}
 
 // ----------------------------------------------------------------------
 // DropWeapon()
 // ----------------------------------------------------------------------
+function DropWeapon()
+{
+	local DeusExWeaponInv dxWeapon;
+	local Weapon       oldWeapon;
 
-
+	if (Weapon != None)
+	{
+		dxWeapon = DeusExWeaponInv(Weapon);
+		if ((dxWeapon == None) || !dxWeapon.bNativeAttack)
+		{
+			oldWeapon = Weapon;
+			SetWeapon(None);
+			oldWeapon.DropFrom(Location);
+		}
+	}
+}
 
 // ----------------------------------------------------------------------
 // SetWeapon()
 // ----------------------------------------------------------------------
+
+function SetWeapon(Weapon newWeapon)
+{
+	if (Weapon == newWeapon)
+	{
+		if (Weapon != None)
+		{
+			if (Weapon.IsInState('DownWeapon'))
+				Weapon.BringUp();
+			Weapon.SetDefaultDisplayProperties();
+		}
+//		if (Inventory != None)
+//			Inventory.ChangedWeapon();
+		PendingWeapon = None;
+		return;
+	}
+
+	PlayWeaponSwitch(newWeapon);
+	if (Weapon != None)
+	{
+		Weapon.SetDefaultDisplayProperties();
+		Weapon.PutDown();
+	}
+
+	Weapon = newWeapon;
+//	if (Inventory != None)
+//		Inventory.ChangedWeapon();
+//	if (Weapon != None)
+//		Weapon.BringUp();
+
+	PendingWeapon = None;
+}
+
+
+function IncreaseFear(Actor actorInstigator, float addedFearLevel, optional float newFearTimer)
+{
+//	local DeusExPlayer player;
+	local DXRPawn instigator;
+
+	instigator = InstigatorToPawn(actorInstigator);
+	if (instigator != None)
+	{
+		if (FearTimer < (FearSustainTime-newFearTimer))
+			FearTimer = FearSustainTime-newFearTimer;
+		if (FearTimer > 0)
+		{
+			if (addedFearLevel > 0)
+			{
+				FearLevel += addedFearLevel;
+				if (FearLevel > 1.0)
+					FearLevel = 1.0;
+			}
+		}
+	}
+}
+
+function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
+{
+	local DXRPawn  instigator;
+	local float minLevel;
+
+	instigator = InstigatorToPawn(actorInstigator);
+	if (instigator != None)
+	{
+		AgitationTimer = AgitationSustainTime;
+		if (AgitationCheckTimer <= 0)
+		{
+			AgitationCheckTimer = 1.5;  // hardcoded for now
+			if (AgitationLevel == 0)
+			{
+				if (MaxProvocations < 0)
+					MaxProvocations = 0;
+				AgitationLevel = 1.0/(MaxProvocations+1);
+			}
+			if (AgitationLevel > 0)
+			{
+				bAlliancesChanged    = True;
+				bNoNegativeAlliances = False;
+				AgitateAlliance(instigator.Alliance, AgitationLevel);
+			}
+		}
+	}
+}
+
+function DecreaseAgitation(Actor actorInstigator, float AgitationLevel)
+{
+	local float        newLevel;
+	local DeusExPlayer player;
+	local DXRPawn      instigator;
+
+	player = DeusExPlayer(GetPlayerPawn());
+
+	if (Inventory(actorInstigator) != None)
+	{
+		if (Inventory(actorInstigator).Owner != None)
+			actorInstigator = Inventory(actorInstigator).Owner;
+	}
+	else if (DeusExDecoration(actorInstigator) != None)
+		actorInstigator = player;
+
+	instigator = DXRPawn(actorInstigator);
+	if ((instigator == None) || (instigator == self))
+		return;
+
+	AgitationTimer  = AgitationSustainTime;
+	if (AgitationLevel > 0)
+	{
+		bAlliancesChanged    = True;
+		bNoNegativeAlliances = False;
+		AgitateAlliance(instigator.Alliance, -AgitationLevel);
+	}
+
+}
+
+
+
+
+function DXRPawn InstigatorToPawn(Actor eventActor)
+{
+	local DXRPawn pawnActor;
+
+	if (Inventory(eventActor) != None)
+	{
+		if (Inventory(eventActor).Owner != None)
+			eventActor = Inventory(eventActor).Owner;
+	}
+	else if (DeusExDecoration(eventActor) != None)
+		eventActor = GetPlayerPawn();
+	else if (DeusExProjectile(eventActor) != None)
+		eventActor = eventActor.Instigator;
+
+	pawnActor = DXRPawn(eventActor);
+	if (pawnActor == self)
+		pawnActor = None;
+
+	return pawnActor;
+
+}
+
 
 
 
 // ----------------------------------------------------------------------
 // ReactToInjury()
 // ----------------------------------------------------------------------
+function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, EHitLocation hitPos)
+{
+	local Name currentState;
+	local bool bHateThisInjury;
+	local bool bFearThisInjury;
+
+	if ((health > 0) && (instigatedBy != None) && (bLookingForInjury || bLookingForIndirectInjury))
+	{
+		currentState = Controller.GetStateName();
+
+		bHateThisInjury = ShouldReactToInjuryType(damageType, bHateInjury, bHateIndirectInjury);
+		bFearThisInjury = ShouldReactToInjuryType(damageType, bFearInjury, bFearIndirectInjury);
+
+		if (bHateThisInjury)
+			IncreaseAgitation(instigatedBy);
+		if (bFearThisInjury)
+			IncreaseFear(instigatedBy, 2.0);
+
+		if (SetEnemy(instigatedBy))
+		{
+			SetDistressTimer();
+			Controller.SetNextState('HandlingEnemy');
+		}
+		else if (bFearThisInjury && IsFearful())
+		{
+			SetDistressTimer();
+			Controller.SetEnemy(instigatedBy, , true);
+			Controller.SetNextState('Fleeing');
+		}
+		else
+		{
+//			if (instigatedBy.bIsPlayer)
+//				ReactToFutz();
+			Controller.SetNextState(currentState);
+		}
+		DXRAiController(Controller).GotoDisabledState(damageType, hitPos);
+	}
+}
+
 
 
 
@@ -1362,7 +1573,13 @@ function ComputeFallDirection(float totalTime, int numFrames,
 }
 
 
-
+function bool IsFearful()
+{
+	if (FearLevel >= 1.0)
+		return true;
+	else
+		return false;
+}
 
 // ----------------------------------------------------------------------
 // WillTakeStompDamage()
@@ -1523,9 +1740,7 @@ function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation, Vector off
 		EnableCloak(bCloakOn);
 		return false;
 	}
-
 	return true;
-
 }
 
 
@@ -1623,12 +1838,56 @@ function bool CanShowPain()
 // ----------------------------------------------------------------------
 // IsPrimaryDamageType()
 // ----------------------------------------------------------------------
+function bool IsPrimaryDamageType(class<DamageType> damageType)
+{
+	local bool bPrimary;
+
+	switch (damageType)
+	{
+		case class'DM_Exploded':
+		case class'DM_TearGas':
+		case class'DM_HalonGas':
+		case class'DM_PoisonGas':
+		case class'DM_PoisonEffect':
+		case class'DM_Radiation':
+		case class'DM_EMP':
+		case class'DM_Drowned':
+		case class'DM_NanoVirus':
+			bPrimary = false;
+			break;
+
+		case class'DM_Stunned':
+		case class'DM_KnockedOut':
+		case class'DM_Burned':
+		case class'DM_Flamed':
+		case class'DM_Poison':
+		case class'DM_Shot':
+		case class'DM_Sabot':
+		default:
+			bPrimary = true;
+			break;
+	}
+	return (bPrimary);
+}
+
 
 
 
 // ----------------------------------------------------------------------
 // ShouldReactToInjuryType()
 // ----------------------------------------------------------------------
+function bool ShouldReactToInjuryType(class<DamageType> damageType, bool bHatePrimary, bool bHateSecondary)
+{
+	local bool bIsPrimary;
+
+	bIsPrimary = IsPrimaryDamageType(damageType);
+	if ((bHatePrimary && bIsPrimary) || (bHateSecondary && !bIsPrimary))
+		return true;
+	else
+		return false;
+}
+
+
 
 
 
@@ -1865,8 +2124,8 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 	if ((DamageType == class'DM_Flamed') && !bOnFire)
 		CatchFire();
 
-//	ReactToInjury(instigatedBy, damageType, hitPos);
-	Log(self@"Damaged by"@instigatedBy@"amount:"@Damage);
+	ReactToInjury(instigatedBy, damageType, hitPos);
+	log(self@"Damaged by"@instigatedBy@"amount:"@Damage);
 }
 
 
@@ -3369,8 +3628,13 @@ function AgitateAlliance(Name newEnemy, float agitation)
 // ----------------------------------------------------------------------
 // ShouldDropWeapon()
 // ----------------------------------------------------------------------
-
-
+function bool ShouldDropWeapon()
+{
+	if (((HealthArmLeft <= 0) || (HealthArmRight <= 0)) && (Health > 0))
+		return true;
+	else
+		return false;
+}
 
 // ----------------------------------------------------------------------
 // TryLocation()
@@ -3624,8 +3888,10 @@ function StopStanding()
 // ----------------------------------------------------------------------
 // BaseChange()
 // ----------------------------------------------------------------------
-/*singular function BaseChange()
+singular function BaseChange()
 {
+  Controller.BaseChange();
+
 	Super.BaseChange();
 
 	if (bSitting && !IsSeatValid(SeatActor))
@@ -3634,7 +3900,7 @@ function StopStanding()
 		if (Controller.GetStateName() == 'Sitting')
 			Controller.GotoState('Sitting', 'Begin');
 	}
-} */
+} 
 
 
 
@@ -3698,6 +3964,300 @@ function SetMovementPhysics()
 // ----------------------------------------------------------------------
 // SwitchToBestWeapon()
 // ----------------------------------------------------------------------
+function bool SwitchToBestWeapon()
+{
+/*	local Inventory    inv;
+	local DeusExWeapon curWeapon;
+	local float        score;
+	local DeusExWeapon dxWeapon;
+	local DeusExWeapon bestWeapon;
+	local float        bestScore;
+	local int          fallbackLevel;
+	local int          curFallbackLevel;
+	local bool         bBlockSpecial;
+	local bool         bValid;
+	local bool         bWinner;
+	local float        minRange, accRange;
+	local float        range, centerRange;
+	local float        cutoffRange;
+	local float        enemyRange;
+	local float        minEnemy, accEnemy, maxEnemy;
+	local ScriptedPawn enemyPawn;
+	local Robot        enemyRobot;
+	local DeusExPlayer enemyPlayer;
+	local float        enemyRadius;
+	local bool         bEnemySet;
+	local int          loopCount, i;  // hack - check for infinite inventory
+	local Inventory    loopInv;       // hack - check for infinite inventory
+
+	if (ShouldDropWeapon())
+	{
+		DropWeapon();
+		return false;
+	}
+
+	bBlockSpecial = false;
+	dxWeapon = DeusExWeapon(Weapon);
+	if (dxWeapon != None)
+	{
+		if (dxWeapon.AITimeLimit > 0)
+		{
+			if (SpecialTimer <= 0)
+			{
+				bBlockSpecial = true;
+				FireTimer = dxWeapon.AIFireDelay;
+			}
+		}
+	}
+
+	bestWeapon      = None;
+	bestScore       = 0;
+	fallbackLevel   = 0;
+	inv             = Inventory;
+
+	bEnemySet   = false;
+	minEnemy    = 0;
+	accEnemy    = 0;
+	enemyRange  = 400;  // default
+	enemyRadius = 0;
+	enemyPawn   = None;
+	enemyRobot  = None;
+	if (Enemy != None)
+	{
+		bEnemySet   = true;
+		enemyRange  = VSize(Enemy.Location - Location);
+		enemyRadius = Enemy.CollisionRadius;
+		if (DeusExWeapon(Enemy.Weapon) != None)
+			DeusExWeapon(Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
+		enemyPawn   = ScriptedPawn(Enemy);
+		enemyRobot  = Robot(Enemy);
+		enemyPlayer = DeusExPlayer(Enemy);
+	}
+
+	loopCount = 0;
+	while (inv != None)
+	{
+		// THIS IS A MAJOR HACK!!!
+		loopCount++;
+		if (loopCount == 9999)
+		{
+			log("********** RUNAWAY LOOP IN SWITCHTOBESTWEAPON ("$self$") **********");
+			loopInv = Inventory;
+			i = 0;
+			while (loopInv != None)
+			{
+				i++;
+				if (i > 300)
+					break;
+				log("   Inventory "$i$" - "$loopInv);
+				loopInv = loopInv.Inventory;
+			}
+		}
+
+		curWeapon = DeusExWeapon(inv);
+		if (curWeapon != None)
+		{
+			bValid = true;
+			if (curWeapon.ReloadCount > 0)
+			{
+				if (curWeapon.AmmoType == None)
+					bValid = false;
+				else if (curWeapon.AmmoType.AmmoAmount < 1)
+					bValid = false;
+			}
+
+			// Ensure we can actually use this weapon here
+			if (bValid)
+			{
+				// lifted from DeusExWeapon...
+				if ((curWeapon.EnviroEffective == ENVEFF_Air) || (curWeapon.EnviroEffective == ENVEFF_Vacuum) ||
+				    (curWeapon.EnviroEffective == ENVEFF_AirVacuum))
+					if (curWeapon.Region.Zone.bWaterZone)
+						bValid = false;
+			}
+
+			if (bValid)
+			{
+				GetWeaponBestRange(curWeapon, minRange, accRange);
+				cutoffRange = minRange+(CollisionRadius+enemyRadius);
+				range = (accRange - minRange) * 0.5;
+				centerRange = minRange + range;
+				if (range < 50)
+					range = 50;
+				if (enemyRange < centerRange)
+					score = (centerRange - enemyRange)/range;
+				else
+					score = (enemyRange - centerRange)/range;
+				if ((minRange >= minEnemy) && (accRange <= accEnemy))
+					score += 0.5;  // arbitrary
+				if ((cutoffRange >= enemyRange-CollisionRadius) && (cutoffRange >= 256)) // do not use long-range weapons on short-range targets
+					score += 10000;
+
+				curFallbackLevel = 3;
+				if (curWeapon.bFallbackWeapon && !bUseFallbackWeapons)
+					curFallbackLevel = 2;
+				if (!bEnemySet && !curWeapon.bUseAsDrawnWeapon)
+					curFallbackLevel = 1;
+				if ((curWeapon.AIFireDelay > 0) && (FireTimer > 0))
+					curFallbackLevel = 0;
+				if (bBlockSpecial && (curWeapon.AITimeLimit > 0) && (SpecialTimer <= 0))
+					curFallbackLevel = 0;
+
+				// Adjust score based on opponent and damage type.
+				// All damage types are listed here, even the ones that aren't used by weapons... :)
+				// (hacky...)
+
+				switch (curWeapon.WeaponDamageType())
+				{
+					case 'Exploded':
+						// Massive explosions are always good
+						score -= 0.2;
+						break;
+
+					case 'Stunned':
+						if (enemyPawn != None)
+						{
+							if (enemyPawn.bStunned)
+								score += 1000;
+							else
+								score -= 1.5;
+						}
+						if (enemyPlayer != None)
+							score += 10;
+						break;
+
+					case 'TearGas':
+						if (enemyPawn != None)
+						{
+							if (enemyPawn.bStunned)
+								//score += 1000;
+								bValid = false;
+							else
+								score -= 5.0;
+						}
+						if (enemyRobot != None)
+							//score += 10000;
+							bValid = false;
+						break;
+
+					case 'HalonGas':
+						if (enemyPawn != None)
+						{
+							if (enemyPawn.bStunned)
+								//score += 1000;
+								bValid = false;
+							else if (enemyPawn.bOnFire)
+								//score += 10000;
+								bValid = false;
+							else
+								score -= 3.0;
+						}
+						if (enemyRobot != None)
+							//score += 10000;
+							bValid = false;
+						break;
+
+					case 'PoisonGas':
+					case 'Poison':
+					case 'PoisonEffect':
+					case 'Radiation':
+						if (enemyRobot != None)
+							//score += 10000;
+							bValid = false;
+						break;
+
+					case 'Burned':
+					case 'Flamed':
+					case 'Shot':
+						if (enemyRobot != None)
+							score += 0.5;
+						break;
+
+					case 'Sabot':
+						if (enemyRobot != None)
+							score -= 0.5;
+						break;
+
+					case 'EMP':
+					case 'NanoVirus':
+						if (enemyRobot != None)
+							score -= 5.0;
+						else if (enemyPlayer != None)
+							score += 5.0;
+						else
+							//score += 10000;
+							bValid = false;
+						break;
+
+					case 'Drowned':
+					default:
+						break;
+				}
+
+				// Special case for current weapon
+				if ((curWeapon == Weapon) && (WeaponTimer < 10.0))
+				{
+					// If we last changed weapons less than five seconds ago,
+					// keep this weapon
+					if (WeaponTimer < 5.0)
+						score = -10;
+
+					// If between five and ten seconds, use a sliding scale
+					else
+						score -= (10.0 - WeaponTimer)/5.0;
+				}
+
+				// Throw a little randomness into the computation...
+				else
+				{
+					score += FRand()*0.1 - 0.05;
+					if (score < 0)
+						score = 0;
+				}
+
+				if (bValid)
+				{
+					// ugly
+					if (bestWeapon == None)
+						bWinner = true;
+					else if (curFallbackLevel > fallbackLevel)
+						bWinner = true;
+					else if (curFallbackLevel < fallbackLevel)
+						bWinner = false;
+					else if (bestScore > score)
+						bWinner = true;
+					else
+						bWinner = false;
+					if (bWinner)
+					{
+						bestScore     = score;
+						bestWeapon    = curWeapon;
+						fallbackLevel = curFallbackLevel;
+					}
+				}
+			}
+		}
+		inv = inv.Inventory;
+	}
+
+	// If we're changing weapons, reset the weapon timers
+	if (Weapon != bestWeapon)
+	{
+		if (!bEnemySet)
+			WeaponTimer = 10;  // hack
+		else
+			WeaponTimer = 0;
+		if (bestWeapon != None)
+			if (bestWeapon.AITimeLimit > 0)
+				SpecialTimer = bestWeapon.AITimeLimit;
+		ReloadTimer = 0;
+	}
+
+	SetWeapon(bestWeapon);
+  */
+	return false;
+}
+
 
 
 
@@ -4465,7 +5025,7 @@ function JumpOffPawn()
 
 function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 {
-   DXRAiController(Controller).SetOrdersEx(orderName, newOrderTag, bImmediate);
+   Controller.SetOrders(orderName, newOrderTag, bImmediate);
 }
 
 
