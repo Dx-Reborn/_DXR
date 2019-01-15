@@ -1136,8 +1136,7 @@ Sit:
 	scriptedPawn(pawn).remainingSitTime = 0.8;
 	scriptedPawn(pawn).PlaySittingDown();
 	scriptedPawn(pawn).SetBasedPawnSize(scriptedPawn(pawn).CollisionRadius, scriptedPawn(pawn).GetSitHeight());
-  scriptedPawn(pawn).SetPhysics(PHYS_None);
-//	scriptedPawn(pawn).SetPhysics(PHYS_Flying); // DXR: This is scary! And funny :D
+  scriptedPawn(pawn).SetPhysics(PHYS_Spider); // PHYS_None / PHYS_Flying
 	scriptedPawn(pawn).StopStanding();
 	scriptedPawn(pawn).bSitInterpolation = true;
 	while (scriptedPawn(pawn).bSitInterpolation)
@@ -1155,8 +1154,28 @@ ContinueSitting:
 	pawn.SetCollision(pawn.default.bCollideActors, pawn.default.bBlockActors, pawn.default.bBlockPlayers);
 	scriptedPawn(pawn).PlaySitting();
 	scriptedPawn(pawn).bStasis = true;
-	FinishRotation();
+//	FinishRotation();
 	// nil
+}
+
+// ----------------------------------------------------------------------
+// state HandlingEnemy
+//
+// Fight-or-flight state
+// ----------------------------------------------------------------------
+
+state HandlingEnemy
+{
+	function BeginState()
+	{
+		if (Enemy == None)
+			GotoState('Seeking');
+		else if (ScriptedPawn(pawn).RaiseAlarm == RAISEALARM_BeforeAttacking)
+			GotoState('Alerting');
+		else
+			GotoState('Attacking');
+	}
+Begin:
 }
 
 
@@ -1204,7 +1223,7 @@ state FallingState
 	{
 		local float minJumpZ;
 
-		Global.BaseChange();
+		//Global.BaseChange();
 
 		if (pawn.Physics == PHYS_Walking)
 		{
@@ -1600,6 +1619,156 @@ Begin:
 	else
 		GotoState('Wandering');
 }
+
+
+// ----------------------------------------------------------------------
+// state RubbingEyes
+//
+// React to evil things like pepper spray.
+// ----------------------------------------------------------------------
+
+state RubbingEyes
+{
+	ignores seeplayer, hearnoise, bump, hitwall;
+
+/*	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
+	{
+		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
+	}
+
+	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
+	{
+		if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
+			Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	}*/
+
+	function SetFall()
+	{
+		StartFalling(NextState, NextLabel);
+	}
+
+	function AnimEnd(int channel)
+	{
+		pawn.PlayWaiting();
+	}
+
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		Disable('AnimEnd');
+//		LastPainTime = Level.TimeSeconds;
+//		LastPainAnim = AnimSequence;
+		ScriptedPawn(pawn).bInterruptState = false;
+		ScriptedPawn(pawn).BlockReactions();
+		ScriptedPawn(pawn).bCanConverse = false;
+		ScriptedPawn(pawn).bStasis = false;
+		ScriptedPawn(pawn).SetupWeapon(false, true);
+		ScriptedPawn(pawn).SetDistress(true);
+		ScriptedPawn(pawn).bStunned = true;
+		ScriptedPawn(pawn).bInTransientState = true;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+	}
+
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bInterruptState = true;
+		ScriptedPawn(pawn).ResetReactions();
+		ScriptedPawn(pawn).bCanConverse = true;
+		ScriptedPawn(pawn).bStasis = true;
+		if (ScriptedPawn(pawn).Health > 0)
+			ScriptedPawn(pawn).bStunned = False;
+		ScriptedPawn(pawn).bInTransientState = false;
+	}
+
+Begin:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	ScriptedPawn(pawn).PlayTearGasSound();
+
+RubEyes:
+	ScriptedPawn(pawn).PlayRubbingEyesStart();
+	FinishAnim(0);
+	ScriptedPawn(pawn).PlayRubbingEyes();
+	Sleep(RubbingEyes_Delay);
+	ScriptedPawn(pawn).PlayRubbingEyesEnd();
+	FinishAnim(0);
+	if (HasNextState())
+		GotoNextState();
+	else
+		GotoState('Wandering');
+}
+
+
+
+// ----------------------------------------------------------------------
+// state Stunned
+//
+// React to being stunned.
+// ----------------------------------------------------------------------
+state Stunned
+{
+	ignores seeplayer, hearnoise, bump, hitwall;
+
+/*	function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
+	{
+		TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, false);
+	}
+
+	function ReactToInjury(Pawn instigatedBy, Name damageType, EHitLocation hitPos)
+	{
+		if ((damageType != 'TearGas') && (damageType != 'HalonGas') && (damageType != 'Stunned'))
+			Global.ReactToInjury(instigatedBy, damageType, hitPos);
+	}*/
+
+	function SetFall()
+	{
+		StartFalling(NextState, NextLabel);
+	}
+
+	function AnimEnd(int channel)
+	{
+		pawn.PlayWaiting();
+	}
+
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		ScriptedPawn(pawn).Disable('AnimEnd');
+		ScriptedPawn(pawn).bInterruptState = false;
+		ScriptedPawn(pawn).BlockReactions();
+		ScriptedPawn(pawn).bCanConverse = false;
+		ScriptedPawn(pawn).bStasis = false;
+		ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetDistress(true);
+		ScriptedPawn(pawn).bStunned = true;
+		ScriptedPawn(pawn).bInTransientState = true;
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+	}
+
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bInterruptState = true;
+		ScriptedPawn(pawn).ResetReactions();
+		ScriptedPawn(pawn).bCanConverse = true;
+		ScriptedPawn(pawn).bStasis = true;
+
+		// if we're dead, don't reset the flag
+		if (ScriptedPawn(pawn).Health > 0)
+			ScriptedPawn(pawn).bStunned = False;
+		ScriptedPawn(pawn).bInTransientState = false;
+	}
+
+Begin:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	ScriptedPawn(pawn).PlayStunned();
+	Sleep(Stunned_Delay);
+	if (HasNextState())
+		GotoNextState();
+	else
+		GotoState('Wandering');
+}
+
 
 // ----------------------------------------------------------------------
 // state Standing

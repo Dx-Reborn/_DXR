@@ -3029,8 +3029,25 @@ function PlayRunning()
 	}
 }
 
+function PlayStunned()
+{
+	LoopAnimPivot('Shocked');
+}
 
+function PlayRubbingEyesStart()
+{
+	PlayAnimPivot('RubEyesStart', , 0.15);
+}
 
+function PlayRubbingEyes()
+{
+	LoopAnimPivot('RubEyes');
+}
+
+function PlayRubbingEyesEnd()
+{
+	PlayAnimPivot('RubEyesStop');
+}
 
 // ----------------------------------------------------------------------
 // PlayPanicRunning()
@@ -3071,7 +3088,7 @@ function TweenToWaiting(float tweentime)
 // ----------------------------------------------------------------------
 function PlayWaiting()
 {
- if (Controller.IsInState('Paralyzed') || bSitting || bDancing)
+ if (Controller.IsInState('Paralyzed') || bSitting || bDancing || bStunned)
     return;
 
  if (Acceleration == vect(0, 0, 0))
