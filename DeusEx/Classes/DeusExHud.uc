@@ -333,6 +333,8 @@ function RenderDebugInfo(Canvas c)
 //    if(!bDebug)
 //        return;
     c.Font = font'DXFonts.EU_9';
+    c.DrawColor = WhiteColor; // Gray by default.
+
     StartTrace = PlayerOwner.pawn.Location;
     EndTrace = PlayerOwner.pawn.Location + (Vector(PlayerOwner.pawn.GetViewRotation()) * DebugTraceDist);
     StartTrace.Z += PlayerOwner.pawn.BaseEyeHeight;
@@ -345,7 +347,28 @@ function RenderDebugInfo(Canvas c)
        if (target.isA('pawn'))
        {
           if (pawn(target).controller != none)
-             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName() $ ", bAdvancedTactics?="@pawn(target).controller.bAdvancedTactics);
+             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName());
+
+          if (ScriptedPawn(target) != none)
+          {
+             c.SetPos(c.SizeX/3, c.CurY);
+             switch (ScriptedPawn(target).TurnDirection)
+             {
+               case TURNING_Right:
+               c.DrawText("TurnDirection = TURNING_Right");
+               break;
+
+               case TURNING_Left:
+               c.DrawText("TurnDirection = TURNING_Left");
+               break;
+
+               case TURNING_None:
+               c.DrawText("TurnDirection = TURNING_None");
+               break;
+             }
+            
+          }
+
        }
        else
        c.DrawText(target $ " in state "$target.GetStateName());

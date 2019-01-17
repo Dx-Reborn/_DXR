@@ -496,6 +496,8 @@ var name NextLabel; //for queueing states
 var() bool bSpawnDust;
 var DXRAIController DController;
 
+var bool bAdvancedTactics;
+
 
 function float LastRendered()
 {
@@ -599,26 +601,16 @@ simulated function Destroyed()
 	player = DeusExPlayer(GetPlayerPawn());
 
 	if ((player != None) && (player.conPlay != None))
-		player.conPlay.ActorDestroyed(Self);
+      player.conPlay.ActorDestroyed(Self);
 
 	Super.Destroyed();
 }
 
 
-function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce);
-/*{
-	if (bForce || IsValidEnemy(newEnemy))
-	{
-		if (newEnemy != Enemy)
-			EnemyTimer = 0;
-		Enemy         = newEnemy;
-		EnemyLastSeen = newSeenTime;
-
-		return True;
-	}
-	else
-		return False;
-}*/
+function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
+{
+   return controller.SetEnemy(newEnemy, newSeenTime, bForce);
+}
 
 
 function HitWall(vector HitLocation, Actor hitActor)
@@ -659,7 +651,7 @@ function HitWall(vector HitLocation, Actor hitActor)
 			if (TurnDirection == TURNING_None)
 			{
 				ActorAvoiding = None;
-				controller.bAdvancedTactics = false;
+				bAdvancedTactics = false;
 				controller.MoveTimer -= 4.0;
 				ObstacleTimer = 0;
 			}
@@ -1514,7 +1506,7 @@ function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, EHitLoca
 		else if (bFearThisInjury && IsFearful())
 		{
 			SetDistressTimer();
-			Controller.SetEnemy(instigatedBy, , true);
+			SetEnemy(instigatedBy, , true);
 			Controller.SetNextState('Fleeing');
 		}
 		else
@@ -1550,8 +1542,7 @@ function TakeHit(EHitLocation hitPos)
 // ----------------------------------------------------------------------
 // ComputeFallDirection()
 // ----------------------------------------------------------------------
-function ComputeFallDirection(float totalTime, int numFrames,
-                              out vector moveDir, out float stopTime)
+function ComputeFallDirection(float totalTime, int numFrames, out vector moveDir, out float stopTime)
 {
 	// Determine direction, and how long to slide
 	if (GetAnimSequence() == 'DeathFront')
@@ -3736,7 +3727,7 @@ function Tick(float deltaTime)
 		Destroy();
 		return;
 	}
-
+//
 	if (AvoidWallTimer > 0)
 	{
 		AvoidWallTimer -= deltaTime;
@@ -3757,12 +3748,12 @@ function Tick(float deltaTime)
 		if (ObstacleTimer < 0)
 			ObstacleTimer = 0;
 	}
-
-	if (controller.bAdvancedTactics)
+//
+	if (bAdvancedTactics)
 	{
 		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
 		{
-			controller.bAdvancedTactics = false;
+			bAdvancedTactics = false;
 			if (TurnDirection != TURNING_None)
 				controller.MoveTimer -= 4.0;
 
@@ -3938,6 +3929,16 @@ singular function BaseChange()
 // ----------------------------------------------------------------------
 function SetMovementPhysics()
 {
+	if (Physics == PHYS_Falling)
+		return;
+	if ( PhysicsVolume.bWaterVolume )
+		SetPhysics(PHYS_Swimming);
+	else
+		SetPhysics(PHYS_Walking); 
+}
+
+/*function SetMovementPhysics()
+{
 	// re-implement SetMovementPhysics() in subclass for flying and swimming creatures
 	if (Physics == PHYS_Falling)
 		return;
@@ -3948,7 +3949,7 @@ function SetMovementPhysics()
 		SetPhysics(PHYS_Walking);
 	else
 		SetPhysics(Default.Physics);
-}
+}*/
 /*
 function SetMovementPhysics()
 {
@@ -4305,7 +4306,6 @@ function LoopBaseConvoAnim()
 
 function PlayDancing()
 {
-//	ClientMessage("PlayDancing()");
 	if (PhysicsVolume.bWaterVolume)
 		LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
 	else
@@ -4314,19 +4314,16 @@ function PlayDancing()
 
 function PlaySittingDown()
 {
-//	ClientMessage("PlaySittingDown()");
 	PlayAnimPivot('SitBegin', , 0.15);
 }
 
 function PlaySitting()
 {
-//	ClientMessage("PlaySitting()");
 	LoopAnimPivot('SitBreathe', , 0.15);
 }
 
 function PlayStandingUp()
 {
-//	ClientMessage("PlayStandingUp()");
 	PlayAnimPivot('SitStand', , 0.15);
 }
 
@@ -4339,8 +4336,8 @@ function PlayStandingUp()
 // ----------------------------------------------------------------------
 function BackOff()
 {
-	DXRAIController(controller).SetNextState(DXRAIController(controller).GetStateName(), 'ContinueFromDoor');  // MASSIVE hackage
-	DXRAIController(controller).SetState('BackingOff');
+	controller.SetNextState(controller.GetStateName(), 'ContinueFromDoor');  // MASSIVE hackage
+	controller.SetState('BackingOff');
 }
 
 
@@ -4515,8 +4512,7 @@ function Bump(actor Other)
       bClearedObstacle = false;
 
 		// Enable AlterDestination()
-			controller.bAdvancedTactics = true;
-			AlterDestination();
+			bAdvancedTactics = true;
 
       avoidPawn = ScriptedPawn(ActorAvoiding);
 
@@ -4656,13 +4652,14 @@ function AlterDestination()
 	{
 		NextDirection    = TURNING_None;
 		ActorAvoiding    = None;
-		controller.bAdvancedTactics = false;
+		bAdvancedTactics = false;
 		ObstacleTimer    = 0;
 		bClearedObstacle = true;
 
 		if (oldTurnDir != TURNING_None)
 			controller.MoveTimer -= 4.0;
 	}
+	log("Avoid actor="$ActorAvoiding $", New location="$controller.destination);
 }
 
 /*singular*/ event Falling()

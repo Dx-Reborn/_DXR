@@ -39,7 +39,8 @@ function bool StartPatrolling()
 	{
 		foreach AllActors (class'ScriptedPawn', P, Event)
 		{
-			P.SetOrders(Orders, ordersTag, True);
+			P.SetOrders(Orders, ordersTag, true);
+			log("SetOrders from trigger: "$Orders$", ordersTag="$ordersTag);
 		}
   }
 	return True;
