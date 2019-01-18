@@ -9,3 +9,5 @@ native final static iterator function TraceTexture(Actor Actor, Class<Actor> Bas
 native static function bool IsOverlapping(Actor ActorA, Actor ActorB);
 
 native static function bool IsBasedOn(Actor ActorA, Actor ActorB);
+
+native static function int GetActorIndex(Level Level, Actor Actor);
