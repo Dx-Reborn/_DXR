@@ -3292,7 +3292,6 @@ simulated event PlayDying(class<DamageType> DamageType, vector HitLoc)
 	{
 		bStunned = False;
 		PlayDyingSound();
-//		GoToState('Dying'); //
 	}
 }
 
@@ -4914,6 +4913,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 			}
 		}
 	}
+	GoToState('Dying');
 }
 
 
