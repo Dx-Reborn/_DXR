@@ -1,0 +1,1 @@
+class AnimalController extends DXRAiController;

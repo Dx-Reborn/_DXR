@@ -285,15 +285,40 @@ exec function getres(int bits)
 }
 
 
-exec function randRot()
+// Индекс актора
+exec function ActorIdx()
 {
-   local DXRAiController DXR;
+  local pawn can;
+  local int CycleIndex;
+  local DXRAiController cn;
 
-   foreach AllActors(class'DXRAiController', DXR)
-   {
-     DXR.LookInRandomDirection();
-   }
+  foreach AllActors(class'DXRAiController', cn)
+  break;
+
+  foreach cn.CycleActors(class'Pawn', can, CycleIndex)
+  {
+     log("Actor="$can$", Index="$CycleIndex);
+  }
+  
+
+//   ClientMessage("Player's actor Index="$class'ActorManager'.static.GetActorIndex(XLevel, self));
 }
+
+exec function rbr(int yd, int pd)
+{
+   local rotator r;
+   local int i;
+
+
+   for (i=0; i<100; i++)
+   {
+   r = class'DxUtil'.static.randomBiasedRotation(GetViewRotation().Yaw, yd, GetViewRotation().Pitch, pd); //(int centralYaw, float yawDistribution,int centralPitch, float pitchDistribution);
+   log(r);
+   }
+
+   ClientMessage("View rotation (pitch, yaw, roll) = "$GetViewRotation()$",randombiasedRotation (pitch, yaw, roll) = "$r);
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

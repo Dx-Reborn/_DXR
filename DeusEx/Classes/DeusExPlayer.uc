@@ -3521,6 +3521,53 @@ function UpdateInHand()
 	UpdateCarcassEvent();
 }
 
+
+
+
+// ----------------------------------------------------------------------
+// MakePlayerIgnored()
+// ----------------------------------------------------------------------
+function MakePlayerIgnored(bool bNewIgnore)
+{
+	bIgnore = bNewIgnore;
+	// to restore original behavior, uncomment the next line
+	//bDetectable = !bNewIgnore;
+}
+
+
+// ----------------------------------------------------------------------
+// CalculatePlayerVisibility()
+// ----------------------------------------------------------------------
+function float CalculatePlayerVisibility(ScriptedPawn P)
+{
+	local float vis;
+
+	vis = 1.0;
+	if ((P != None) && (AugmentationSystem != None))
+	{
+		if (P.IsA('Robot'))
+		{
+			// if the aug is on, give the player full invisibility
+			if (AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
+				vis = 0.0;
+		}
+		else
+		{
+			// if the aug is on, give the player full invisibility
+			if (AugmentationSystem.GetAugLevelValue(class'AugCloak') != -1.0)
+				vis = 0.0;
+		}
+		// go through the actor list looking for owned AdaptiveArmor
+		// since they aren't in the inventory anymore after they are used
+      if (UsingChargedPickup(class'AdaptiveArmorInv'))
+			{
+				vis = 0.0;
+			}
+	}
+	return vis;
+}
+
+
 // ----------------------------------------------------------------------
 // UpdateCarcassEvent()
 // Small hack for sending carcass events
@@ -5701,4 +5748,5 @@ defaultproperties
     Alliance=Player
 
     currentBeltNum=0
+    bLOSHearing=false// true
 }

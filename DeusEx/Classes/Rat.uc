@@ -54,8 +54,8 @@ defaultproperties
      Health=5
      UnderWaterTime=20.000000
      //  AttitudeToPlayer=ATTITUDE_Fear
-     //  HitSound1=Sound'DeusExSounds.Animal.RatSqueak1'
-     //  HitSound2=Sound'DeusExSounds.Animal.RatSqueak3'
+     HitSound1=Sound'DeusExSounds.Animal.RatSqueak1'
+     HitSound2=Sound'DeusExSounds.Animal.RatSqueak3'
      die=Sound'DeusExSounds.Animal.RatDie'
      Mesh=mesh'DeusExCharacters.Rat'
      CollisionRadius=16.000000

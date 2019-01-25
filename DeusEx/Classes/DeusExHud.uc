@@ -4,7 +4,7 @@
 
 class DeusExHUD extends MouseHUD;
 
-const DebugTraceDist = 256;
+const DebugTraceDist = 512; //256;
 
 var localized string strMeters;
 var bool bUseCameraTrick; // Как бы ЭТО назвать...
@@ -326,14 +326,11 @@ simulated function DisplayMessages(Canvas C)
 
 function RenderDebugInfo(Canvas c)
 {
-//    local float YL, ypos;
     local Actor target;
     local vector StartTrace, EndTrace, HitLoc, HitNormal;
 
-//    if(!bDebug)
-//        return;
     c.Font = font'DXFonts.EU_9';
-    c.DrawColor = WhiteColor; // Gray by default.
+    c.DrawColor = GoldColor; 
 
     StartTrace = PlayerOwner.pawn.Location;
     EndTrace = PlayerOwner.pawn.Location + (Vector(PlayerOwner.pawn.GetViewRotation()) * DebugTraceDist);
@@ -347,7 +344,12 @@ function RenderDebugInfo(Canvas c)
        if (target.isA('pawn'))
        {
           if (pawn(target).controller != none)
-             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName());
+          {
+             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName()$", ");
+             c.SetPos(c.SizeX/3, c.CurY);
+             c.DrawText("HasNextState()? "$DXRAiController(pawn(target).controller).HasNextState()$" bInterruptState? "$ScriptedPawn(target).bInterruptState);
+             c.DrawColor = WhiteColor;
+          }
 
           if (ScriptedPawn(target) != none)
           {
@@ -373,8 +375,7 @@ function RenderDebugInfo(Canvas c)
        else
        c.DrawText(target $ " in state "$target.GetStateName());
     }
-    c.SetPos(c.SizeX/3, c.CurY);
-    c.DrawText("GameSpeed:"$Level.Game.GameSpeed);
+    c.DrawColor = WhiteColor;
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText("CrouchHeight:"$PlayerOwner.pawn.CrouchHeight);
     c.SetPos(c.SizeX/3, c.CurY);

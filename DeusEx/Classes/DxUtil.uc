@@ -561,6 +561,17 @@ simulated final static function Vector VDiskRand2D(float DiskRadius)
    return Point;
 }
 
+static function rotator RandomBiasedRotation(int centralYaw, float yawDistribution,int centralPitch, float pitchDistribution)
+{
+  local rotator rezultat;
+
+  rezultat = rotRand(true);
+  rezultat.Yaw = 0;
+
+  return rezultat;
+}
+
+
 static function array<byte> GetFileAsArray(string path)
 {
   local array<byte> bt;

@@ -51,7 +51,7 @@ function Explode()
 		sphere.size = explosionRadius / 32.0;
 
 	// spawn a mark
-	s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
+	s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation-rot(16384,0,0)); //+
 	if (s != None)
 	{
 		s.SetDrawScale(drawScale * FClamp(explosionDamage/28, 0.1, 3.0)); //*=
@@ -73,6 +73,9 @@ function Explode()
 				}
        }
 	HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
+
+	if (PawnShadow != none)
+	    PawnShadow.Destroy(); // Destroy the shadow projector, otherwise bad things will happen.
 }
 
 

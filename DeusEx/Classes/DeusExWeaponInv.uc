@@ -1360,9 +1360,9 @@ function GetWeaponRanges(out float wMinRange,out float wMaxAccurateRange,out flo
 	dxProjectileClass = Class<DeusExProjectile>(ProjectileClass);
 	if (dxProjectileClass != None)
 	{
-		wMinRange         = dxProjectileClass.Default.blastRadius;
-		wMaxAccurateRange = dxProjectileClass.Default.AccurateRange;
-		wMaxRange         = dxProjectileClass.Default.MaxRange;
+		wMinRange         = dxProjectileClass.default.blastRadius;
+		wMaxAccurateRange = dxProjectileClass.default.AccurateRange;
+		wMaxRange         = dxProjectileClass.default.MaxRange;
 	}
 	else
 	{
@@ -1383,8 +1383,8 @@ function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
 	if (bInstantHit)
 		Start = Owner.Location + Pawn(Owner).BaseEyeHeight * vect(0,0,1);
 	else
-    return Instigator.Location + Instigator.EyePosition() + X*ProjSpawnOffset.X + Y*ProjSpawnOffset.Y + Z*ProjSpawnOffset.Z;
-//		Start = Owner.Location + CalcDrawOffset() + ProjSpawnOffset.X * X + ProjSpawnOffset.Y * Y + ProjSpawnOffset.Z * Z;
+    //return Instigator.Location + Instigator.EyePosition() + X*ProjSpawnOffset.X + Y*ProjSpawnOffset.Y + Z*ProjSpawnOffset.Z;
+		Start = Owner.Location + CalcDrawOffset() + ProjSpawnOffset.X * X + ProjSpawnOffset.Y * Y + ProjSpawnOffset.Z * Z;
 
 	return Start;
 }
@@ -1436,9 +1436,9 @@ function GetAIVolume(out float volume, out float radius)
 //
 function Projectile ProjectileFire(class<projectile> ProjClass, optional float ProjSpeed)
 {
-	local Vector StartProj, /*StartTrace,*/ X, Y, Z;
-//  local Vector HitLocation, HitNormal;
-//  local Actor Other;
+	local Vector StartProj, StartTrace, X, Y, Z;
+  local Vector HitLocation, HitNormal;
+  local Actor Other;
 	local float mult;
 	local DeusExProjectile proj;
 	local float volume, radius;
@@ -1476,20 +1476,20 @@ function Projectile ProjectileFire(class<projectile> ProjClass, optional float P
 	else
 		numProj = 1;
 
-	GetAxes(Pawn(owner).GetViewRotation(),X,Y,Z);
-	StartProj = ComputeProjectileStart(X, Y, Z);
-/*    GetViewAxes(X,Y,Z);
+//	GetAxes(Pawn(owner).GetViewRotation(),X,Y,Z);
+//	StartProj = ComputeProjectileStart(X, Y, Z);
+    GetViewAxes(X,Y,Z);
 
     StartTrace = Instigator.Location + Instigator.EyePosition();
     StartProj = StartTrace + X*ProjSpawnOffset.X;
-    if (!WeaponCentered())
+    //if (!WeaponCentered())
 	    StartProj = StartProj + Hand * Y*ProjSpawnOffset.Y + Z*ProjSpawnOffset.Z;
 
     Other = Trace(HitLocation, HitNormal, StartProj, StartTrace, false);
     if (Other != None)
     {
         StartProj = HitLocation;
-    }*/
+    }
 
 	for (i=0; i<numProj; i++)
 	{

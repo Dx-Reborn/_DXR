@@ -7,7 +7,7 @@ auto state Flying
 {
 	function HitWall(vector HitNormal, actor Wall)
 	{
-		spawn(class'BloodSplat',,, Location, Rotator(HitNormal));
+		spawn(class'BloodSplat',,, Location, Rotator(-HitNormal));
 		Destroy();
 	}
 	function BeginState()
@@ -18,7 +18,7 @@ auto state Flying
 		SetRotation(Rotator(Velocity));
 
 		// Gore check
-		if (Level.Game.bLowGore) // || Level.Game.bVeryLowGore)
+		if (Level.Game.bLowGore)
 		{
 			Destroy();
 			return;
@@ -30,11 +30,11 @@ function Tick(float deltaTime)
 {
 	if (Velocity == vect(0,0,0))
 	{
-		spawn(class'BloodSplat',,, Location, rot(16384,0,0));
+		spawn(class'BloodSplat',,, Location, rot(-16384,0,0));
 		Destroy();
 	}
 	else
-		SetRotation(Rotator(Velocity));
+		SetRotation(Rotator(-Velocity));
 }
 
 

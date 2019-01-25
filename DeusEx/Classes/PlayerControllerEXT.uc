@@ -248,8 +248,8 @@ function HighlightCenterObject()
     // ScriptedPawns always have precedence, though
     foreach TraceActors(class'Actor', mytarget, HitLoc, HitNormal, EndTrace, StartTrace)
     {
-    if 	(mytarget.IsA('StaticMeshActor')) // исключить StaticMesh
-    return;
+//    if 	(mytarget.IsA('StaticMeshActor')) // исключить StaticMesh
+//    return;
 
       if (IsFrobbable(mytarget) && (mytarget != Human(pawn).CarriedDecoration))
       {

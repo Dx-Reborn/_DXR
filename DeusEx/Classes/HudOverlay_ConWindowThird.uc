@@ -96,8 +96,8 @@ function KeyEvent(Interactions.EInputKey Key)
 function DrawCinematic(Canvas u)
 {
     local float x,y;
-    local float w,h;
-    local ConChoice choice;
+    local float /*w,*/h;
+//    local ConChoice choice;
     local int line;
 
 

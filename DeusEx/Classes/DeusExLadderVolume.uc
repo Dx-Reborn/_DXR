@@ -7,10 +7,11 @@
 //
 
 
-Class DeusExLadderVolume extends LadderVolume;
+Class DeusExLadderVolume extends LadderVolume
+                         hideCategories(Actor,Advanced,Brush,Collision,Display,Force,Karma,LightColor,Lighting,Movement,Trailer,VolumeFog);
 
-var() bool bIsWoodLadder; // Признак замены звука на "деревянный". Условие учитывается через DeusExPlayer/Controller.
-var() bool bHideInHand;
+var(LadderVolume) bool bIsWoodLadder; // Признак замены звука на "деревянный". Условие учитывается через DeusExPlayer/Controller.
+var(LadderVolume) bool bHideInHand;
 var private Inventory SavedInHand;
 
 simulated event PawnEnteredVolume(Pawn P)

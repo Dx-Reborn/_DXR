@@ -1,0 +1,1 @@
+class BirdController extends AnimalController;

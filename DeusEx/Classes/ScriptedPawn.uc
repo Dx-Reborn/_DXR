@@ -496,7 +496,7 @@ var name NextLabel; //for queueing states
 var() bool bSpawnDust;
 var DXRAIController DController;
 
-var bool bAdvancedTactics;
+//var bool bAdvancedTactics;
 
 
 function float LastRendered()
@@ -505,7 +505,6 @@ function float LastRendered()
 }
 
 final function bool IsValidEnemy(Pawn TestEnemy, optional bool bCheckAlliance);
-final function EAllianceType GetAllianceType(Name AllianceName);
 final function bool HaveSeenCarcass(Name CarcassName);
 final function AddCarcass(Name CarcassName);
 function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
@@ -515,9 +514,23 @@ function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
 	// often pick opposite to current direction (relative to shooter axis)
 }
 
+final function EAllianceType GetAllianceType(Name AllianceName)
+{
+
+}
+
 final function EAllianceType GetPawnAllianceType(Pawn QueryPawn)
 {
 	return ALLIANCE_Friendly;
+}
+
+
+function Touch(actor toucher)
+{
+   super.Touch(toucher);
+
+   if (DXRAIController(controller) != none)
+      DXRAIController(controller).NotifyTouch(toucher);
 }
 
 
@@ -651,7 +664,8 @@ function HitWall(vector HitLocation, Actor hitActor)
 			if (TurnDirection == TURNING_None)
 			{
 				ActorAvoiding = None;
-				bAdvancedTactics = false;
+				//bAdvancedTactics = false;
+//				controller.bPreparingMove = false;
 				controller.MoveTimer -= 4.0;
 				ObstacleTimer = 0;
 			}
@@ -725,9 +739,6 @@ function SetDistress(bool bDistress)
 		class'EventManager'.static.AIEndEvent(self,'Distress', EAITYPE_Visual);
 }
 
-
-
-
 // ----------------------------------------------------------------------
 // SetDistressTimer()
 // ----------------------------------------------------------------------
@@ -735,9 +746,6 @@ function SetDistressTimer()
 {
 	DistressTimer = 0;
 }
-
-
-
 
 // ----------------------------------------------------------------------
 // SetSeekLocation()
@@ -756,11 +764,11 @@ function SetDistressTimer()
 // ----------------------------------------------------------------------
 function ReactToFutz()
 {
-/*	if (bLookingForFutz && bReactFutz && (FutzTimer <= 0) && !bDistressed)
+	if (bLookingForFutz && bReactFutz && (FutzTimer <= 0) && !bDistressed)
 	{
-		FutzTimer = 2.0;*/
+		FutzTimer = 2.0;
 		PlayFutzSound();
-//	}
+	}
 }
 
 
@@ -780,7 +788,16 @@ function ReactToFutz()
 // ----------------------------------------------------------------------
 // EnableShadow()
 // ----------------------------------------------------------------------
-
+function EnableShadow(bool bEnable)
+{
+	if (Shadow != None)
+	{
+		if (bEnable)
+			PawnShadow.AttachProjector(0.5);//AttachDecal(32,vect(0.1,0.1,0));
+		else
+			PawnShadow.AbandonProjector(0.5); //DetachProjector(true);//DetachDecal();
+	}
+}
 
 
 // ----------------------------------------------------------------------
@@ -804,13 +821,20 @@ function CreateShadow()
 // ----------------------------------------------------------------------
 // KillShadow()
 // ----------------------------------------------------------------------
+function KillShadow()
+{
+	if (PawnShadow != None)
+	{
+		PawnShadow.Destroy();
+		PawnShadow = None;
+	}
+}
 
 
 
 // ----------------------------------------------------------------------
 // EnterWorld()
 // ----------------------------------------------------------------------
-
 function EnterWorld()
 {
   PutInWorld(true);
@@ -820,7 +844,6 @@ function EnterWorld()
 // ----------------------------------------------------------------------
 // LeaveWorld()
 // ----------------------------------------------------------------------
-
 function LeaveWorld()
 {
   PutInWorld(false);
@@ -835,7 +858,7 @@ function PutInWorld(bool bEnter)
   if (bInWorld && !bEnter)
   {
     bInWorld            = false;
-//    GotoState('Idle');
+    Controller.GotoState('Idle');
     bHidden             = true;
     bDetectable         = false;
 //            bCanCommunicate     = false;  
@@ -847,7 +870,7 @@ function PutInWorld(bool bEnter)
     bCollideWorld       = false;
     SetPhysics(PHYS_None);
 
-//    KillShadow();
+    KillShadow();
     SetLocation(Location+vect(0,0,20000));  // move it out of the way
   }
   else if (!bInWorld && bEnter)
@@ -860,8 +883,8 @@ function PutInWorld(bool bEnter)
     SetCollision(bWorldCollideActors, bWorldBlockActors, bWorldBlockPlayers);
     bCollideWorld = Default.bCollideWorld;
     SetMovementPhysics();
-//    CreateShadow();
-//    FollowOrders();
+    CreateShadow();
+    FollowOrders();
   }
 }
 
@@ -897,7 +920,7 @@ function MakePawnIgnored(bool bNewIgnore)
 // ----------------------------------------------------------------------
 function EnableCollision(bool bSet)
 {
-//  EnableShadow(bSet);
+  EnableShadow(bSet);
 
   if (bSet)
     SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
@@ -1371,11 +1394,10 @@ function SetWeapon(Weapon newWeapon)
 
 function IncreaseFear(Actor actorInstigator, float addedFearLevel, optional float newFearTimer)
 {
-//	local DeusExPlayer player;
-	local DXRPawn instigator;
+	local DXRPawn inst;
 
-	instigator = InstigatorToPawn(actorInstigator);
-	if (instigator != None)
+	inst = InstigatorToPawn(actorInstigator);
+	if (inst != None)
 	{
 		if (FearTimer < (FearSustainTime-newFearTimer))
 			FearTimer = FearSustainTime-newFearTimer;
@@ -1393,11 +1415,11 @@ function IncreaseFear(Actor actorInstigator, float addedFearLevel, optional floa
 
 function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
-	local DXRPawn  instigator;
-	local float minLevel;
+	local DXRPawn inst;
+//	local float minLevel;
 
-	instigator = InstigatorToPawn(actorInstigator);
-	if (instigator != None)
+	inst = InstigatorToPawn(actorInstigator);
+	if (inst != None)
 	{
 		AgitationTimer = AgitationSustainTime;
 		if (AgitationCheckTimer <= 0)
@@ -1413,7 +1435,7 @@ function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 			{
 				bAlliancesChanged    = True;
 				bNoNegativeAlliances = False;
-				AgitateAlliance(instigator.Alliance, AgitationLevel);
+				AgitateAlliance(inst.Alliance, AgitationLevel);
 			}
 		}
 	}
@@ -1421,9 +1443,9 @@ function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 
 function DecreaseAgitation(Actor actorInstigator, float AgitationLevel)
 {
-	local float        newLevel;
+//	local float        newLevel;
 	local DeusExPlayer player;
-	local DXRPawn      instigator;
+	local DXRPawn      inst;
 
 	player = DeusExPlayer(GetPlayerPawn());
 
@@ -1444,13 +1466,9 @@ function DecreaseAgitation(Actor actorInstigator, float AgitationLevel)
 	{
 		bAlliancesChanged    = True;
 		bNoNegativeAlliances = False;
-		AgitateAlliance(instigator.Alliance, -AgitationLevel);
+		AgitateAlliance(inst.Alliance, -AgitationLevel);
 	}
-
 }
-
-
-
 
 function DXRPawn InstigatorToPawn(Actor eventActor)
 {
@@ -1601,7 +1619,7 @@ function bool IsOverlapping(Actor CheckActor)
 // ----------------------------------------------------------------------
 function StandUp(optional bool bInstant)
 {
-  local vector placeToStand;
+//  local vector placeToStand;
 
   if (bSitting)
   {
@@ -2246,27 +2264,78 @@ function bool HasTwoHandedWeapon()
 // ----------------------------------------------------------------------
 // GetStyleTexture()
 // ----------------------------------------------------------------------
+function material GetStyleTexture(ERenderStyle newStyle, material oldTex, optional material newTex)
+{
+	local material defaultTex;
 
+	if  (newStyle == STY_Translucent)
+		defaultTex = Texture'BlackMaskTex';
+	else if (newStyle == STY_Modulated)
+		defaultTex = Texture'GrayMaskTex';
+	else if (newStyle == STY_Masked)
+		defaultTex = Texture'PinkMaskTex';
+	else
+		defaultTex = Texture'BlackMaskTex';
 
+	if (oldTex == None)
+		return defaultTex;
+	else if (oldTex == Texture'BlackMaskTex')
+		return Texture'BlackMaskTex';  // hack
+	else if (oldTex == Texture'GrayMaskTex')
+		return defaultTex;
+	else if (oldTex == Texture'PinkMaskTex')
+		return defaultTex;
+	else if (newTex != None)
+		return newTex;
+	else
+		return oldTex;
+
+}
 
 // ----------------------------------------------------------------------
 // SetSkinStyle()
 // ----------------------------------------------------------------------
+function SetSkinStyle(ERenderStyle newStyle, optional material newTex, optional float newScaleGlow)
+{
+	local int      i;
+	local material curSkin;
+//	local texture oldSkin;
 
+	if (newScaleGlow == 0)
+		newScaleGlow = ScaleGlow;
 
+//	oldSkin = Skin;
+	for (i=0; i<skins.length; i++)
+	{
+		curSkin = skins[i]; //GetMeshTexture(i);
+		Skins[i] = GetStyleTexture(newStyle, curSkin, newTex);
+	}
+//	Skin      = GetStyleTexture(newStyle, Skin, newTex);
+	ScaleGlow = newScaleGlow;
+	Style     = newStyle;
+}
 
 // ----------------------------------------------------------------------
 // ResetSkinStyle()
 // ----------------------------------------------------------------------
+function ResetSkinStyle()
+{
+	local int i;
 
-
+	for (i=0; i<skins.length; i++)
+		Skins[i] = default.Skins[i];
+//	Skin      = default.Skin;
+	ScaleGlow = default.ScaleGlow;
+	Style     = default.Style;
+}
 
 // ----------------------------------------------------------------------
 // EnableCloak()
+// beware! called from C++
 // ----------------------------------------------------------------------
 function EnableCloak(bool bEnable)
 {
-/*	if (!bHasCloak || (CloakEMPTimer > 0) || (Health <= 0) || bOnFire)
+	if (!bHasCloak || (CloakEMPTimer > 0) || (Health <= 0) || bOnFire)
 		bEnable = false;
 
 	if (bEnable && !bCloakOn)
@@ -2280,7 +2349,7 @@ function EnableCloak(bool bEnable)
 		ResetSkinStyle();
 		CreateShadow();
 		bCloakOn = bEnable;
-	}*/
+	}
 }
 
 
@@ -3327,8 +3396,8 @@ function UpdateFire()
 function bool CanConverse()
 {
 	// Return True if this NPC is in a conversable state
-//	return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Flying)));
-	return true; // for now
+	return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Flying)));
+//	return true; // for now
 }
 
 // ----------------------------------------------------------------------
@@ -3600,6 +3669,39 @@ function AgitateAlliance(Name newEnemy, float agitation)
 // ----------------------------------------------------------------------
 // GetWeaponBestRange()
 // ----------------------------------------------------------------------
+function GetWeaponBestRange(DeusExWeaponInv dxWeapon, out float bestRangeMin, out float bestRangeMax)
+{
+	local float temp;
+	local float minRange,   maxRange;
+	local float AIMinRange, AIMaxRange;
+
+	if (dxWeapon != None)
+	{
+		dxWeapon.GetWeaponRanges(minRange, maxRange, temp);
+		if (IsThrownWeapon(dxWeapon))  // hack
+			minRange = 0;
+		AIMinRange = dxWeapon.AIMinRange;
+		AIMaxRange = dxWeapon.AIMaxRange;
+
+		if ((AIMinRange > 0) && (AIMinRange >= minRange) && (AIMinRange <= maxRange))
+			bestRangeMin = AIMinRange;
+		else
+			bestRangeMin = minRange;
+		if ((AIMaxRange > 0) && (AIMaxRange >= minRange) && (AIMaxRange <= maxRange))
+			bestRangeMax = AIMaxRange;
+		else
+			bestRangeMax = maxRange;
+
+		if (bestRangeMin > bestRangeMax)
+			bestRangeMin = bestRangeMax;
+	}
+	else
+	{
+		bestRangeMin = 0;
+		bestRangeMax = 0;
+	}
+}
+
 
 
 
@@ -3676,6 +3778,24 @@ function bool ShouldDropWeapon()
 // ----------------------------------------------------------------------
 // IsThrownWeapon()
 // ----------------------------------------------------------------------
+function bool IsThrownWeapon(DeusExWeaponInv testWeapon)
+{
+	local Class<ThrownProjectile> throwClass;
+	local bool                    bIsThrown;
+
+	bIsThrown = false;
+	if (testWeapon != None)
+	{
+		if (!testWeapon.bInstantHit)
+		{
+			throwClass = class<ThrownProjectile>(testWeapon.ProjectileClass);
+			if (throwClass != None)
+				bIsThrown = true;
+		}
+	}
+	return bIsThrown;
+}
+
 
 
 
@@ -3728,6 +3848,7 @@ function Tick(float deltaTime)
 		return;
 	}
 //
+// AlterDestination();//
 	if (AvoidWallTimer > 0)
 	{
 		AvoidWallTimer -= deltaTime;
@@ -3749,11 +3870,12 @@ function Tick(float deltaTime)
 			ObstacleTimer = 0;
 	}
 //
-	if (bAdvancedTactics)
+	if (controller.bAdvancedTactics)
 	{
 		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
 		{
-			bAdvancedTactics = false;
+			//bAdvancedTactics = false;
+//			controller.bPreparingMove = false;
 			if (TurnDirection != TURNING_None)
 				controller.MoveTimer -= 4.0;
 
@@ -3890,6 +4012,42 @@ function StopStanding()
 // ----------------------------------------------------------------------
 // ZoneChange()
 // ----------------------------------------------------------------------
+function PhysicsVolumeChange(PhysicsVolume newZone)
+{
+	local vector jumpDir;
+
+	if (!bInWorld)
+		return;
+
+	if (newZone.bWaterVolume)
+	{
+		EnableShadow(false);
+		if (!bCanSwim)
+			Controller.MoveTimer = -1.0;
+		else if (Physics != PHYS_Swimming)
+		{
+			if (bOnFire)
+				ExtinguishFire();
+
+			PlaySwimming();
+			setPhysics(PHYS_Swimming);
+		}
+		swimBubbleTimer = 0;
+	}
+	else if (Physics == PHYS_Swimming)
+	{
+		EnableShadow(true);
+		if (bCanFly)
+			 SetPhysics(PHYS_Flying); 
+		else
+		{ 
+			SetPhysics(PHYS_Falling);
+			if (bCanWalk && (Abs(Acceleration.X) + Abs(Acceleration.Y) > 0) && CheckWaterJump(jumpDir))
+				JumpOutOfWater(jumpDir);
+		}
+	}
+}
+
 
 
 
@@ -3898,8 +4056,6 @@ function StopStanding()
 // ----------------------------------------------------------------------
 singular function BaseChange()
 {
-  Controller.BaseChange();
-
 	Super.BaseChange();
 
 	if (bSitting && !IsSeatValid(SeatActor))
@@ -3908,6 +4064,7 @@ singular function BaseChange()
 		if (Controller.GetStateName() == 'Sitting')
 			Controller.GotoState('Sitting', 'Begin');
 	}
+  Controller.BaseChange();
 } 
 
 
@@ -3984,11 +4141,11 @@ function SetMovementPhysics()
 // ----------------------------------------------------------------------
 function bool SwitchToBestWeapon()
 {
-/*	local Inventory    inv;
-	local DeusExWeapon curWeapon;
+	local Inventory    inv;
+	local DeusExWeaponInv curWeapon;
 	local float        score;
-	local DeusExWeapon dxWeapon;
-	local DeusExWeapon bestWeapon;
+	local DeusExWeaponInv dxWeapon;
+	local DeusExWeaponInv bestWeapon;
 	local float        bestScore;
 	local int          fallbackLevel;
 	local int          curFallbackLevel;
@@ -4015,7 +4172,7 @@ function bool SwitchToBestWeapon()
 	}
 
 	bBlockSpecial = false;
-	dxWeapon = DeusExWeapon(Weapon);
+	dxWeapon = DeusExWeaponInv(Weapon);
 	if (dxWeapon != None)
 	{
 		if (dxWeapon.AITimeLimit > 0)
@@ -4040,16 +4197,18 @@ function bool SwitchToBestWeapon()
 	enemyRadius = 0;
 	enemyPawn   = None;
 	enemyRobot  = None;
-	if (Enemy != None)
+	if (Controller.Enemy != None)
 	{
 		bEnemySet   = true;
-		enemyRange  = VSize(Enemy.Location - Location);
-		enemyRadius = Enemy.CollisionRadius;
-		if (DeusExWeapon(Enemy.Weapon) != None)
-			DeusExWeapon(Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
-		enemyPawn   = ScriptedPawn(Enemy);
-		enemyRobot  = Robot(Enemy);
-		enemyPlayer = DeusExPlayer(Enemy);
+		enemyRange  = VSize(Controller.Enemy.Location - Location);
+		enemyRadius = Controller.Enemy.CollisionRadius;
+
+		if (DeusExWeaponInv(Controller.Enemy.Weapon) != None)
+			DeusExWeaponInv(Controller.Enemy.Weapon).GetWeaponRanges(minEnemy, accEnemy, maxEnemy);
+
+		enemyPawn   = ScriptedPawn(Controller.Enemy);
+		enemyRobot  = Robot(Controller.Enemy);
+		enemyPlayer = DeusExPlayer(Controller.Enemy);
 	}
 
 	loopCount = 0;
@@ -4072,7 +4231,7 @@ function bool SwitchToBestWeapon()
 			}
 		}
 
-		curWeapon = DeusExWeapon(inv);
+		curWeapon = DeusExWeaponInv(inv);
 		if (curWeapon != None)
 		{
 			bValid = true;
@@ -4088,9 +4247,8 @@ function bool SwitchToBestWeapon()
 			if (bValid)
 			{
 				// lifted from DeusExWeapon...
-				if ((curWeapon.EnviroEffective == ENVEFF_Air) || (curWeapon.EnviroEffective == ENVEFF_Vacuum) ||
-				    (curWeapon.EnviroEffective == ENVEFF_AirVacuum))
-					if (curWeapon.Region.Zone.bWaterZone)
+				if ((curWeapon.EnviroEffective == ENVEFF_Air) || (curWeapon.EnviroEffective == ENVEFF_Vacuum) || (curWeapon.EnviroEffective == ENVEFF_AirVacuum))
+					if (curWeapon.PhysicsVolume.bWaterVolume)
 						bValid = false;
 			}
 
@@ -4127,12 +4285,12 @@ function bool SwitchToBestWeapon()
 
 				switch (curWeapon.WeaponDamageType())
 				{
-					case 'Exploded':
+					case class'DM_Exploded':
 						// Massive explosions are always good
 						score -= 0.2;
 						break;
 
-					case 'Stunned':
+					case class'DM_Stunned':
 						if (enemyPawn != None)
 						{
 							if (enemyPawn.bStunned)
@@ -4144,7 +4302,7 @@ function bool SwitchToBestWeapon()
 							score += 10;
 						break;
 
-					case 'TearGas':
+					case class'DM_TearGas':
 						if (enemyPawn != None)
 						{
 							if (enemyPawn.bStunned)
@@ -4158,7 +4316,7 @@ function bool SwitchToBestWeapon()
 							bValid = false;
 						break;
 
-					case 'HalonGas':
+					case class'DM_HalonGas':
 						if (enemyPawn != None)
 						{
 							if (enemyPawn.bStunned)
@@ -4175,29 +4333,29 @@ function bool SwitchToBestWeapon()
 							bValid = false;
 						break;
 
-					case 'PoisonGas':
-					case 'Poison':
-					case 'PoisonEffect':
-					case 'Radiation':
+					case class'DM_PoisonGas':
+					case class'DM_Poison':
+					case class'DM_PoisonEffect':
+					case class'DM_Radiation':
 						if (enemyRobot != None)
 							//score += 10000;
 							bValid = false;
 						break;
 
-					case 'Burned':
-					case 'Flamed':
-					case 'Shot':
+					case class'DM_Burned':
+					case class'DM_Flamed':
+					case class'DM_Shot':
 						if (enemyRobot != None)
 							score += 0.5;
 						break;
 
-					case 'Sabot':
+					case class'DM_Sabot':
 						if (enemyRobot != None)
 							score -= 0.5;
 						break;
 
-					case 'EMP':
-					case 'NanoVirus':
+					case class'DM_EMP':
+					case class'DM_NanoVirus':
 						if (enemyRobot != None)
 							score -= 5.0;
 						else if (enemyPlayer != None)
@@ -4207,7 +4365,7 @@ function bool SwitchToBestWeapon()
 							bValid = false;
 						break;
 
-					case 'Drowned':
+					case class'DM_Drowned':
 					default:
 						break;
 				}
@@ -4272,7 +4430,7 @@ function bool SwitchToBestWeapon()
 	}
 
 	SetWeapon(bestWeapon);
-  */
+
 	return false;
 }
 
@@ -4325,6 +4483,12 @@ function PlaySitting()
 function PlayStandingUp()
 {
 	PlayAnimPivot('SitStand', , 0.15);
+}
+
+
+function PlaySwimming()
+{
+	LoopAnimPivot('Tread', , , , GetSwimPivot());
 }
 
 
@@ -4512,7 +4676,9 @@ function Bump(actor Other)
       bClearedObstacle = false;
 
 		// Enable AlterDestination()
-			bAdvancedTactics = true;
+			//Controller.bAdvancedTactics = true;
+//			Controller.bPreparingMove = true;
+//			AlterDestination();
 
       avoidPawn = ScriptedPawn(ActorAvoiding);
 
@@ -4553,6 +4719,8 @@ function AlterDestination()
 	local bool     bAround;
 	local vector   tempVect;
 	local ETurning oldTurnDir;
+
+//	log("AlterDestination called !!!");
 
 	oldTurnDir = TurnDirection;
 
@@ -4629,6 +4797,7 @@ function AlterDestination()
 					moveYaw = avoidYaw - 16384;
 				else
 					moveYaw = avoidYaw + 16384;
+
 				controller.Destination = Location + Vector(rot(0,1,0)*moveYaw)*400;
 			}
 			else  // cleared the actor -- move on
@@ -4652,14 +4821,15 @@ function AlterDestination()
 	{
 		NextDirection    = TURNING_None;
 		ActorAvoiding    = None;
-		bAdvancedTactics = false;
+		//bAdvancedTactics = false;
+//		Controller.bPreparingMove = false;
 		ObstacleTimer    = 0;
 		bClearedObstacle = true;
 
 		if (oldTurnDir != TURNING_None)
 			controller.MoveTimer -= 4.0;
 	}
-	log("Avoid actor="$ActorAvoiding $", New location="$controller.destination);
+//	log("Avoid actor="$ActorAvoiding $", New location="$controller.destination);
 }
 
 /*singular*/ event Falling()
@@ -4747,17 +4917,17 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 }
 
 
-function SetInitialState()
+/*function SetInitialState()
 {
   Super.SetInitialState();
   InitializePawn();
-}
+}*/
 
 function InitializePawn()
 {
 	if (!bInitialized)
 	{
-//		InitializeInventory();
+		InitializeInventory();
 		InitializeAlliances();
 		InitializeHomeBase();
 
@@ -4814,6 +4984,65 @@ function InitializeHomeBase()
 		HomeRot *= 100;
 	}
 }
+
+function InitializeInventory()
+{
+	local int                i, j;
+	local Inventory          inv;
+	local DeusExWeaponInv    weapons[8];
+	local int                weaponCount;
+	local DeusExWeaponInv    firstWeapon;
+
+	// Add initial inventory items
+	weaponCount = 0;
+	for (i=0; i<8; i++)
+	{
+		if ((InitialInventory[i].Inventory != None) && (InitialInventory[i].Count > 0))
+		{
+			firstWeapon = None;
+			for (j=0; j<InitialInventory[i].Count; j++)
+			{
+				inv = None;
+				if (Class<Ammunition>(InitialInventory[i].Inventory) != None)
+				{
+					inv = FindInventoryType(InitialInventory[i].Inventory);
+					if (inv != None)
+						Ammunition(inv).AmmoAmount += class<Ammunition>(InitialInventory[i].Inventory).default.AmmoAmount;
+				}
+				if (inv == None)
+				{
+					inv = spawn(InitialInventory[i].Inventory, self);
+					if (inv != None)
+					{
+						inv.InitialState='Idle2';
+						inv.GiveTo(Self);
+						inv.SetBase(Self);
+						if ((firstWeapon == None) && (Weapon(inv) != None))
+							firstWeapon = DeusExWeaponInv(inv);
+					}
+				}
+			}
+			if (firstWeapon != None)
+				weapons[WeaponCount++] = firstWeapon;
+		}
+	}
+	for (i=0; i<weaponCount; i++)
+	{
+		if ((weapons[i].AmmoType == None) && (weapons[i].AmmoName != None) && (weapons[i].AmmoName != class'AmmoNoneInv'))
+		{
+			weapons[i].AmmoType = Ammunition(FindInventoryType(weapons[i].AmmoName));
+			if (weapons[i].AmmoType == None)
+			{
+				weapons[i].AmmoType = spawn(weapons[i].AmmoName);
+				weapons[i].AmmoType.InitialState='Idle2';
+				weapons[i].AmmoType.GiveTo(Self);
+				weapons[i].AmmoType.SetBase(Self);
+			}
+		}
+	}
+	SetupWeapon(false);
+}
+
 
 
 

@@ -1,5 +1,7 @@
 /*
   Base AI Controller for ScriptedPawn
+  Дочерние классы соответветственно для подклассов, при условии что есть различия в состояниях.
+  Контроллер ссылается на ScriptedPawn, которым он управляет.
 */
 
 class DXRAiController extends DXRNativeAiController;
@@ -7,6 +9,7 @@ class DXRAiController extends DXRNativeAiController;
 const Stunned_Delay = 15;
 const RubbingEyes_Delay = 15;
 
+// Из Unreal, для постановки состояния в очередь.
 var name NextState;
 var name NextLabel;
 
@@ -19,18 +22,16 @@ var name ConvOrders,ConvOrderTag;
 var vector PrevLookVector;
 var Actor PrevLookActor;
 
-var bool bInterruptState, bConvEndState;
+//var bool bInterruptState, bConvEndState;
 
-var Actor destPoint;
+//var Actor destPoint;
 
 var actor LastMoveTarget;
 
 /** Utilities ********************************************************************************************************************************************************************/
 
-event PrepareForMove(NavigationPoint Goal, ReachSpec Path)
-{
-   log("***** PrepareForMove called!");
-}
+function NotifyTouch(actor toucher);
+function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos);
 
 event LongFall() // called when latent function WaitForLanding() doesn't return after 4 seconds
 {
@@ -162,7 +163,7 @@ function GotoNextState()
 }
 
 
-function bool GetNextVector(Actor destination, out vector outVect)
+function bool GetNextVector(Actor dest, out vector outVect)
 {
 	local bool    bValid;
 	local rotator rot;
@@ -170,14 +171,18 @@ function bool GetNextVector(Actor destination, out vector outVect)
 	local float   maxDist;
 
 	bValid = true;
-	if (destination != None)
+
+	log("GetNextVector().dest = " $ dest);
+
+	if (dest != None)
 	{
 		maxDist = 64;
-		rot     = Rotator(destination.Location - Location);
-		dist    = VSize(destination.Location - Location);
+		rot     = Rotator(dest.Location - pawn.Location);
+		dist    = VSize(dest.Location - pawn.Location);
+
 		if (dist < maxDist)
-			outVect = destination.Location;
-		else if (!AIDirectionReachable(Location, rot.Yaw, rot.Pitch, 0, maxDist, outVect))
+			outVect = dest.Location;
+		else if (!AIDirectionReachable(pawn.Location, rot.Yaw, rot.Pitch, 0, maxDist, outVect))
 			bValid = false;
 	}
 	else
@@ -305,16 +310,20 @@ function RestoreFocus()
    FocalPoint = PrevLookVector;
 }
 
-function Actor GetNextWaypoint(Actor destination)
+function Actor GetNextWaypoint(Actor dest)
 {
 	local Actor rMoveTarget;
 
-	if (destination == None)
+	if (dest == None)
 		rMoveTarget = None;
-	else if (ActorReachable(destination))
-		rMoveTarget = destination;
+	else if (ActorReachable(dest))
+		rMoveTarget = dest;
 	else
-		rMoveTarget = FindPathToward(destination, true);
+	{
+//	  log(dest$" is not reachable, now try FindPathToward()");
+		rMoveTarget = FindPathToward(dest, true);//, true); // true = найти путь в обход?
+//		log("rMoveTarget = "$rMoveTarget);
+	}
 
 	return rMoveTarget;
 }
@@ -360,7 +369,7 @@ function bool TestDirection(vector dir, out vector pick, float MinDist, float Ma
 	pick = dir * (MinDist + 2 * MinDist * FRand());
 
 	// Я могу только предполагать, что там было...
-	HitActor = Trace(HitLocation, HitNormal, Pawn.Location + pick + 1.5 * Pawn.CollisionRadius * dir , Pawn.Location, false);
+	HitActor = Trace(HitLocation, HitNormal, Pawn.Location + pick + 1.5 * Pawn.CollisionRadius * dir , Pawn.Location, true);// false);
 	if (HitActor != None)
 	{
 		pick = HitLocation + (HitNormal - dir) * 2 * (Pawn.CollisionRadius + MaxDist); // Наверное так?
@@ -421,12 +430,19 @@ function LookInRandomDirection()
 
 
 /* Нужно реализовывать через C++ (walkMove, flyMove...) */
-function bool AIDirectionReachable(vector focus, int yaw, int pitch, float minDist, float maxDist, out vector bestDest);
-/*{
-  local vector v;
-
-  return pointReachable(bestDest); //return TestDirection(focus, bestDest, minDist, maxDist);
-}*/
+function bool AIDirectionReachable(vector focus, int yaw, int pitch, float minDist, float maxDist, out vector bestDest)
+{
+   if (pointReachable(focus))// * maxDist))
+   {
+      bestDest = focus;// * maxDist;
+      return true;
+   }
+   else
+   log("Point is not reachable!");
+   return false;
+// bool pointReachable(vector aPoint);
+// bool actorReachable(actor anActor);
+}
 
 function bool AIPickRandomDestination(float minDist, float maxDist,
                                       int centralYaw, float yawDistribution, int centralPitch, float pitchDistribution,int tries, float multiplier,out vector dest)
@@ -450,11 +466,12 @@ function bool AIPickRandomDestination(float minDist, float maxDist,
 		   if (!success)
 		       success = TestDirection(-1 * pickdir, dest, minDist, maxDist);
 
-		   if (success)
-			     Destination = dest;
-		   else
-           LookAtVector(pawn.Location + 20 * VRand());
+//		   if (success)
+//			     Destination = dest;
+//		   else
+//           LookAtVector(pawn.Location + 20 * VRand());
   }
+
   return true;//???
 }
 
@@ -481,8 +498,9 @@ auto state StartUp
     scriptedPawn(pawn).bCanConverse = false;
 
     scriptedPawn(pawn).SetMovementPhysics(); 
-    //if (pawn.Physics == PHYS_Walking)
-      //pawn.SetPhysics(PHYS_Falling);
+
+    if (pawn.Physics == PHYS_Walking)
+      pawn.SetPhysics(PHYS_Falling);
       
     scriptedPawn(pawn).bStasis = false;
     ScriptedPawn(pawn).SetDistress(false);
@@ -510,7 +528,7 @@ auto state StartUp
   }
 
 Begin:
-//  InitializePawn();
+  scriptedPawn(pawn).InitializePawn();
 
   Sleep(FRand()+0.2);
   WaitForLanding();
@@ -559,7 +577,7 @@ Begin:
 
 state Paralyzed
 {
-	ignores bump, frob/*, reacttoinjury*/;
+	ignores bump, frob;//, reacttoinjury;
 	function BeginState()
 	{
 		ScriptedPawn(pawn).StandUp();
@@ -659,16 +677,16 @@ State Patrolling
 
 	function PickDestination()
 	{
-		if (PatrolPoint(destPoint) != None)
+		if (PatrolPoint(ScriptedPawn(pawn).destPoint) != None)
 		{
-			destPoint = PatrolPoint(destPoint).NextPatrolPoint;
+			ScriptedPawn(pawn).destPoint = PatrolPoint(ScriptedPawn(pawn).destPoint).NextPatrolPoint;
 //			log(pawn@self$" patrolPoint = "$destPoint);
 		}
 		else
 		{
-			destPoint = PickStartPoint();
+			ScriptedPawn(pawn).destPoint = PickStartPoint();
 		}
-		if (destPoint == None)  // can't go anywhere...
+		if (ScriptedPawn(pawn).destPoint == None)  // can't go anywhere...
 		{
   		log(pawn@self$" No patrolPoint found, fallback to Standing, OrderTag ="@ScriptedPawn(pawn).OrderTag);
 			GotoState('Standing');
@@ -680,7 +698,7 @@ State Patrolling
 		ScriptedPawn(pawn).StandUp();
 		SetEnemy(None, ScriptedPawn(pawn).EnemyLastSeen, true);
 		Disable('AnimEnd');
-//		ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetupWeapon(false);
 		ScriptedPawn(pawn).SetDistress(false);
 		ScriptedPawn(pawn).bStasis = false;
 		SeekPawn = None;
@@ -695,7 +713,7 @@ State Patrolling
 	}
 
 Begin:
-	destPoint = None;
+	ScriptedPawn(pawn).destPoint = None;
 
 Patrol:
 	//Disable('Bump');
@@ -704,12 +722,12 @@ Patrol:
 
 Moving:
 	// Move from pathnode to pathnode until we get where we're going
-	if (destPoint != None)
+	if (ScriptedPawn(pawn).destPoint != None)
 	{
-		if (!IsPointInCylinder(self, destPoint.Location, 16-CollisionRadius))
+		if (!IsPointInCylinder(self, ScriptedPawn(pawn).destPoint.Location, 16-CollisionRadius))
 		{
 			scriptedPawn(pawn).EnableCheckDestLoc(true);
-			MoveTarget = FindPathToward(destPoint, true);
+			MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint, true);
 			while (MoveTarget != None)
 			{
 				if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
@@ -721,10 +739,10 @@ Moving:
 
 				scriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
 
-				if (MoveTarget == destPoint)
+				if (MoveTarget == ScriptedPawn(pawn).destPoint)
 					break;
 
-				MoveTarget = FindPathToward(destPoint, true);
+				MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint, true);
 			}
 			scriptedPawn(pawn).EnableCheckDestLoc(false);
 		}
@@ -739,18 +757,18 @@ Pausing:
 
 
 	// Turn in the direction dictated by the WanderPoint, or a random direction
-	if (PatrolPoint(destPoint) != None)
+	if (PatrolPoint(ScriptedPawn(pawn).destPoint) != None)
 	{
-		if ((PatrolPoint(destPoint).pausetime > 0) || (PatrolPoint(destPoint).NextPatrolPoint == None))
+		if ((PatrolPoint(ScriptedPawn(pawn).destPoint).pausetime > 0) || (PatrolPoint(ScriptedPawn(pawn).destPoint).NextPatrolPoint == None))
 		{
-			if (scriptedPawn(pawn).ShouldPlayTurn(pawn.Location + PatrolPoint(destPoint).lookdir))
+			if (scriptedPawn(pawn).ShouldPlayTurn(pawn.Location + PatrolPoint(ScriptedPawn(pawn).destPoint).lookdir))
 				scriptedPawn(pawn).PlayTurning();
-			/*TurnTo*/ LookAtVector(pawn.Location + PatrolPoint(destPoint).location + PatrolPoint(destPoint).lookdir /*.lookdir*/);
+			/*TurnTo*/ LookAtVector(pawn.Location + PatrolPoint(ScriptedPawn(pawn).destPoint).location + PatrolPoint(ScriptedPawn(pawn).destPoint).lookdir /*.lookdir*/);
 			Enable('AnimEnd');
 			scriptedPawn(pawn).TweenToWaiting(0.2);
 			scriptedPawn(pawn).PlayScanningSound();
 			//Enable('Bump');
-			sleepTime = PatrolPoint(destPoint).pausetime * ((-0.9*scriptedPawn(pawn).restlessness) + 1);
+			sleepTime = PatrolPoint(ScriptedPawn(pawn).destPoint).pausetime * ((-0.9*scriptedPawn(pawn).restlessness) + 1);
 			Sleep(sleepTime);
 			Disable('AnimEnd');
 			//Disable('Bump');
@@ -882,7 +900,6 @@ state Sitting
 	function bool IsIntersectingSeat()
 	{
 		local bool   bIntersect;
-		local vector testVector;
 
 		bIntersect = false;
 		if (scriptedPawn(pawn).SeatActor != None)
@@ -929,7 +946,7 @@ state Sitting
 		local float bestDist;
 		local int   curSlot;
 		local int   bestSlot;
-		local bool  bTry;
+//		local bool  bTry;
 
 		if (scriptedPawn(pawn).bUseFirstSeatOnly && scriptedPawn(pawn).bSeatHackUsed)
 		{
@@ -1037,7 +1054,7 @@ state Sitting
 
 		scriptedPawn(pawn).bStasis = false;
 
-		//scriptedPawn(pawn).SetupWeapon(false);
+		scriptedPawn(pawn).SetupWeapon(false);
 		scriptedPawn(pawn).SetDistress(false);
 		scriptedPawn(pawn).SeekPawn = None;
 		scriptedPawn(pawn).EnableCheckDestLoc(true);
@@ -1154,7 +1171,6 @@ ContinueSitting:
 	pawn.SetCollision(pawn.default.bCollideActors, pawn.default.bBlockActors, pawn.default.bBlockPlayers);
 	scriptedPawn(pawn).PlaySitting();
 	scriptedPawn(pawn).bStasis = true;
-//	FinishRotation();
 	// nil
 }
 
@@ -1194,13 +1210,13 @@ state BackingOff
 		StartFalling('BackingOff', 'ContinueRun');
 	}
 
-/*	function HitWall(vector HitNormal, actor Wall)
+	event bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
-		if (Physics == PHYS_Falling)
-			return;
-		Global.HitWall(HitNormal, Wall);
-		CheckOpenDoor(HitNormal, Wall);
-	}*/
+		if (pawn.Physics == PHYS_Falling)
+			return true;
+		//Global.HitWall(HitNormal, Wall);
+		//CheckOpenDoor(HitNormal, Wall);
+	}
 
 	function bool PickDestination2()
 	{
@@ -1275,7 +1291,7 @@ ContinueFromDoor:
 
 state FallingState 
 {
-	ignores NotifyBump, NotifyHitwall;//, WarnTarget, ReactToInjury;
+//	ignores NotifyBump, NotifyHitwall;//, WarnTarget, ReactToInjury;
 
   event bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
 	{
@@ -1299,7 +1315,7 @@ state FallingState
 		{
 			pawn.Velocity = FullVel;
 			pawn.Velocity.Z = velZ;
-			pawn.Velocity = EAdjustJump(0,pawn.GroundSpeed);
+			pawn.Velocity = EAdjustJump(Pawn.Velocity.Z,pawn.GroundSpeed);
 			pawn.Velocity.Z = 0;
 			if (VSize(pawn.Velocity) < 0.9 * pawn.GroundSpeed)
 			{
@@ -1310,7 +1326,7 @@ state FallingState
 
 		ScriptedPawn(pawn).Velocity = FullVel;
 		ScriptedPawn(pawn).Velocity.Z = ScriptedPawn(pawn).JumpZ + velZ;
-		ScriptedPawn(pawn).Velocity = EAdjustJump(0,pawn.GroundSpeed);
+		ScriptedPawn(pawn).Velocity = EAdjustJump(Pawn.Velocity.Z,pawn.GroundSpeed);
 	}
 
 	singular function BaseChange()
@@ -1568,7 +1584,7 @@ state FirstPersonConversation
 		dxPlayer = DeusExPlayer(GetPlayerPawn());
 		bBlock = false;
 
-		bInterruptState = True;
+		ScriptedPawn(pawn).bInterruptState = True;
 		if (bBlock)
 		{
 			ScriptedPawn(pawn).bCanConverse = false;
@@ -1600,17 +1616,17 @@ state FirstPersonConversation
    {
 		local DeusExPlayer player;
 
-		bConvEndState = true;
+		ScriptedPawn(pawn).bConvEndState = true;
 		if (ScriptedPawn(pawn).bConversationEndedNormally != true)
 		{
 			player = DeusExPlayer(GetPlayerPawn());
 			player.AbortConversation();
 		}
-		bConvEndState = false;
+		ScriptedPawn(pawn).bConvEndState = false;
 		ScriptedPawn(pawn).ResetConvOrders();
 
 		StopBlendAnims();
-		bInterruptState = true;
+		ScriptedPawn(pawn).bInterruptState = true;
 		ScriptedPawn(pawn).bCanConverse    = true;
 		ScriptedPawn(pawn).MakePawnIgnored(false);
 		ScriptedPawn(pawn).ResetReactions();
@@ -1630,7 +1646,7 @@ Begin:
 
 state Idle
 {
-	ignores bump, frob;//, reacttoinjury;
+	ignores Notifybump, frob, reacttoinjury;
 
 	function BeginState()
 	{
@@ -1658,7 +1674,7 @@ Idle:
 //------------------------------------------//
 state TakingHit
 {
-	ignores seeplayer, hearnoise, bump, hitwall;//, reacttoinjury;
+	ignores seeplayer, hearnoise, Notifybump, Notifyhitwall;//, reacttoinjury;
 
 /*	function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<damageType> damageType)
 	{
@@ -1723,7 +1739,7 @@ Begin:
 
 state RubbingEyes
 {
-	ignores seeplayer, hearnoise, bump, hitwall;
+	ignores seeplayer, hearnoise, notifybump, notifyhitwall;
 
 /*	function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
 	{
@@ -1801,7 +1817,7 @@ RubEyes:
 // ----------------------------------------------------------------------
 state Stunned
 {
-	ignores seeplayer, hearnoise, bump, hitwall;
+	ignores seeplayer, hearnoise, Notifybump, Notifyhitwall;
 
 /*	function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
 	{
@@ -1885,13 +1901,13 @@ state Standing
 		pawn.PlayWaiting();
 	}
 
-/*	function bool NotifyHitWall(vector HitNormal, actor Wall)
+	function bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
-		if (Physics == PHYS_Falling)
+		if (pawn.Physics == PHYS_Falling)
 			return false;
-		Global.HitWall(HitNormal, Wall);
+		//Global.HitWall(HitNormal, Wall);
 		//CheckOpenDoor(HitNormal, Wall);
-	}*/
+	}
 
 	function Tick(float deltaSeconds)
 	{
@@ -2063,7 +2079,7 @@ state Wandering
 		if (ScriptedPawn(pawn).bUseHome && !ScriptedPawn(pawn).IsNearHome(pawn.Location))
 		{
 			ScriptedPawn(pawn).destLoc = ScriptedPawn(pawn).HomeLoc;
-			destPoint = None;
+			ScriptedPawn(pawn).destPoint = None;
 			if (PointReachable(ScriptedPawn(pawn).destLoc))
 				return true;
 			else
@@ -2081,49 +2097,7 @@ state Wandering
 
 	function PickDestination()
 	{
-		local vector pick, pickdir;
-		local bool success;
-		local float XY;
-		//Favor XY alignment
-		XY = FRand();
-		if (XY < 0.3)
-		{
-			pickdir.X = 1;
-			pickdir.Y = 0;
-		}
-		else if (XY < 0.6)
-		{
-			pickdir.X = 0;
-			pickdir.Y = 1;
-		}
-		else
-		{
-			pickdir.X = 2 * FRand() - 1;
-			pickdir.Y = 2 * FRand() - 1;
-		}
-		if (pawn.Physics != PHYS_Walking)
-		{
-			pickdir.Z = 2 * FRand() - 1;
-			pickdir = Normal(pickdir);
-		}
-		else
-		{
-			pickdir.Z = 0;
-			if (XY >= 0.6)
-				pickdir = Normal(pickdir);
-		}	
-
-		success = TestDirection(pickdir, pick, 100, 200);
-		if (!success)
-			success = TestDirection(-1 * pickdir, pick, 100, 200);
-		
-		if (success)
-			Destination = pick;
-		else
-      LookAtVector(pawn.Location + 20 * VRand());
-			//GotoState('Wandering', 'Turn');
-
-/*		local WanderCandidates candidates[5];
+		local ScriptedPawn.WanderCandidates candidates[5];
 		local int              candidateCount;
 		local int              maxCandidates;
 		local int              maxLastPoints;
@@ -2148,15 +2122,15 @@ state Wandering
 		candidateCount = 0;
 
 		// A certain percentage of the time, we want to angle off to a random direction...
-		if ((RandomWandering < 1) && (FRand() > RandomWandering))
+		if ((ScriptedPawn(pawn).RandomWandering < 1) && (FRand() > ScriptedPawn(pawn).RandomWandering))
 		{
 			// Fill the candidate table
-			foreach RadiusActors(Class'WanderPoint', curPoint, 3000*wanderlust+1000)  // 1000-4000
+			foreach pawn.RadiusActors(Class'WanderPoint', curPoint, 3000*ScriptedPawn(pawn).wanderlust+1000)  // 1000-4000
 			{
 				// Make sure we haven't been here recently
 				for (i=0; i<maxLastPoints; i++)
 				{
-					if (lastPoints[i] == curPoint)
+					if (ScriptedPawn(pawn).lastPoints[i] == curPoint)
 						break;
 				}
 
@@ -2165,7 +2139,7 @@ state Wandering
 					// Can we get there from here?
 					wayPoint = GetNextWaypoint(curPoint);
 
-					if ((wayPoint != None) && !IsNearHome(curPoint.Location))
+					if ((wayPoint != None) && !ScriptedPawn(pawn).IsNearHome(curPoint.Location))
 						wayPoint = None;
 
 					// Yep
@@ -2173,7 +2147,7 @@ state Wandering
 					{
 						// Find an empty slot for this candidate
 						openSlot = -1;
-						dist     = VSize(curPoint.location - location);
+						dist     = VSize(curPoint.location - pawn.location);
 						maxDist  = dist;
 
 						// This candidate will only replace more distant candidates...
@@ -2202,8 +2176,8 @@ state Wandering
 
 		// Shift our list of recently visited points
 		for (i=maxLastPoints-1; i>0; i--)
-			lastPoints[i] = lastPoints[i-1];
-		lastPoints[0] = None;
+			ScriptedPawn(pawn).lastPoints[i] = ScriptedPawn(pawn).lastPoints[i-1];
+		ScriptedPawn(pawn).lastPoints[0] = None;
 
 		// Do we have a list of candidates?
 		if (candidateCount > 0)
@@ -2212,38 +2186,36 @@ state Wandering
 			i = Rand(candidateCount);
 			curPoint = candidates[i].point;
 			wayPoint = candidates[i].waypoint;
-			lastPoints[0] = curPoint;
+			ScriptedPawn(pawn).lastPoints[0] = curPoint;
 			MoveTarget    = wayPoint;
-			destPoint     = curPoint;
+			ScriptedPawn(pawn).destPoint     = curPoint;
 		}
 
 		// No candidates -- find a random place to go
 		else
 		{
 			MoveTarget = None;
-			destPoint  = None;
+			ScriptedPawn(pawn).destPoint  = None;
 			iterations = 6;  // try up to 6 different directions
 			while (iterations > 0)
 			{
 				// How far will we go?
-				magnitude = (wanderlust*400+200) * (FRand()*0.2+0.9); // 200-600, +/-10%
+				magnitude = (ScriptedPawn(pawn).wanderlust*400+200) * (FRand()*0.2+0.9); // 200-600, +/-10%
 
 				// Choose our destination, based on whether we have a home base
-				if (!bUseHome)
-					bSuccess = AIPickRandomDestination(100, magnitude, 0, 0, 0, 0, 1,
-					                                   FRand()*0.4+0.35, destLoc);
+				if (!ScriptedPawn(pawn).bUseHome)
+					bSuccess = AIPickRandomDestination(100, magnitude, 0, 0, 0, 0, 1, FRand()*0.4+0.35, ScriptedPawn(pawn).destLoc);
 				else
 				{
-					if (magnitude > HomeExtent)
-						magnitude = HomeExtent*(FRand()*0.2+0.9);
-					rot = Rotator(HomeLoc-Location);
-					bSuccess = AIPickRandomDestination(50, magnitude, rot.Yaw, 0.25, rot.Pitch, 0.25, 1,
-					                                   FRand()*0.4+0.35, destLoc);
+					if (magnitude > ScriptedPawn(pawn).HomeExtent)
+						magnitude = ScriptedPawn(pawn).HomeExtent*(FRand()*0.2+0.9);
+					rot = Rotator(ScriptedPawn(pawn).HomeLoc-pawn.Location);
+					bSuccess = AIPickRandomDestination(50, magnitude, rot.Yaw, 0.25, rot.Pitch, 0.25, 1, FRand()*0.4+0.35, ScriptedPawn(pawn).destLoc);
 				}
 
 				// Success?  Break out of the iteration loop
 				if (bSuccess)
-					if (IsNearHome(destLoc))
+					if (ScriptedPawn(pawn).IsNearHome(ScriptedPawn(pawn).destLoc))
 						break;
 
 				// We failed -- try again
@@ -2252,8 +2224,8 @@ state Wandering
 
 			// If we got a destination, go there
 			if (iterations <= 0)
-				destLoc = Location;
-		}*/
+				ScriptedPawn(pawn).destLoc =  /*pawn.Location+(VRand()*200);*/ ScriptedPawn(pawn).Location;
+		}
 	}
 
 	function AnimEnd(int channel)
@@ -2289,7 +2261,7 @@ state Wandering
 	}
 
 Begin:
-	destPoint = None;
+	ScriptedPawn(pawn).destPoint = None;
 
 GoHome:
 	ScriptedPawn(pawn).bAcceptBump = false;
@@ -2334,14 +2306,14 @@ WanderInternal:
 Moving:
 	// Move from pathnode to pathnode until we get where we're going
 	// (ooooold code -- no longer used)
-/*if (destPoint != None)
+if (ScriptedPawn(pawn).destPoint != None)
 	{
 		if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
 			  ScriptedPawn(pawn).PlayWalking();
 		MoveToward(MoveTarget,,0,false, true);// GetWalkingSpeed());
 		while ((MoveTarget != None) && (MoveTarget != ScriptedPawn(pawn).destPoint))
 		{
-			MoveTarget = FindPathToward(destPoint);
+			MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint);
 			if (MoveTarget != None)
 			{
 				if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
@@ -2357,22 +2329,22 @@ Moving:
 		MoveTo(ScriptedPawn(pawn).destLoc,,true);// GetWalkingSpeed());
 	}
 	else
-		Sleep(0.5);*/
+		Sleep(0.5);
 
 Pausing:
 	pawn.Acceleration = vect(0, 0, 0);
 
 	// Turn in the direction dictated by the WanderPoint, if there is one
 	sleepTime = 6.0;
-	if (WanderPoint(destPoint) != None)
+	if (WanderPoint(ScriptedPawn(pawn).destPoint) != None)
 	{
-		if (WanderPoint(destPoint).gazeItem != None)
+		if (WanderPoint(ScriptedPawn(pawn).destPoint).gazeItem != None)
 		{
-			LookAtActor(WanderPoint(destPoint).gazeItem);
-			sleepTime = WanderPoint(destPoint).gazeDuration;
+			LookAtActor(WanderPoint(ScriptedPawn(pawn).destPoint).gazeItem);
+			sleepTime = WanderPoint(ScriptedPawn(pawn).destPoint).gazeDuration;
 		}
-		else if (WanderPoint(destPoint).gazeDirection != vect(0, 0, 0))
-			LookAtVector(pawn.Location + WanderPoint(destPoint).gazeDirection);
+		else if (WanderPoint(ScriptedPawn(pawn).destPoint).gazeDirection != vect(0, 0, 0))
+			LookAtVector(pawn.Location + WanderPoint(ScriptedPawn(pawn).destPoint).gazeDirection);
 	}
 	Enable('AnimEnd');
 	ScriptedPawn(pawn).TweenToWaiting(0.2);
@@ -2554,24 +2526,23 @@ state RunningTo
 	{
     // If we hit the guy we're going to, end the state
 		if (bumper == ScriptedPawn(pawn).OrderActor)
+		{
 			GotoState('RunningTo', 'Done');
-
-
       return false;
-
+		}
 		// Handle conversations, if need be
 		//Global.Bump(bumper);
 	}
 
-/*	function Touch(actor toucher)
+	function NotifyTouch(actor toucher)
 	{
 		// If we hit the guy we're going to, end the state
-		if (toucher == OrderActor)
+		if (toucher == ScriptedPawn(pawn).OrderActor)
 			GotoState('RunningTo', 'Done');
 
 		// Handle conversations, if need be
-		Global.Touch(toucher);
-	}*/
+		//Global.Touch(toucher);
+	}
 
 	function BeginState()
 	{
@@ -2593,12 +2564,13 @@ state RunningTo
 
 Begin:
 //  WaitForLanding();
-  log("RunningTo" @ ScriptedPawn(pawn).orderActor);
+  log("Begin: RunningTo" @ ScriptedPawn(pawn).orderActor);
 	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
 	if (ScriptedPawn(pawn).orderActor == None)
 		Goto('Done');
 
 Follow:
+  log("Follow: RunningTo");
 	if (IsOverlapping(ScriptedPawn(pawn).orderActor))
 		Goto('Done');
 	MoveTarget = GetNextWaypoint(ScriptedPawn(pawn).orderActor);
@@ -2630,6 +2602,7 @@ Follow:
 	}
 
 Pause:
+  log("Pause: RunningTo");
 	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
 	LookAtActor(ScriptedPawn(pawn).orderActor); //TurnToward(orderActor);
 	ScriptedPawn(pawn).PlayWaiting();
@@ -2637,8 +2610,11 @@ Pause:
 	Goto('Follow');
 
 Done:
+  log("Done: RunningTo");
 	if (ScriptedPawn(pawn).orderActor.IsA('PatrolPoint'))
 		TurnTo(ScriptedPawn(pawn).Location + PatrolPoint(ScriptedPawn(pawn).orderActor).lookdir);
+
+		LookAtActor(none);
 	GotoState('Standing');
 
 ContinueRun:
@@ -2660,33 +2636,35 @@ state GoingTo
 		StartFalling('GoingTo', 'ContinueGo');
 	}
 
-/*	function HitWall(vector HitNormal, actor Wall)
+	event bool NotifyHitWall(vector HitNormal, actor Wall)
 	{
-		if (Physics == PHYS_Falling)
-			return;
-		Global.HitWall(HitNormal, Wall);
-		CheckOpenDoor(HitNormal, Wall);
-	}*/
+		if (pawn.Physics == PHYS_Falling)
+			return false;
+		//Global.HitWall(HitNormal, Wall);
+		//CheckOpenDoor(HitNormal, Wall);
+	}
 
-/*	function Bump(actor bumper)
+	event bool NotifyBump(actor bumper)
 	{
 		// If we hit the guy we're going to, end the state
-		if (bumper == OrderActor)
+		if (bumper == ScriptedPawn(pawn).OrderActor)
+			GotoState('GoingTo', 'Done');
+
+			return false;
+
+		// Handle conversations, if need be
+		//Global.Bump(bumper);
+	}
+
+	function NotifyTouch(actor toucher)
+	{
+		// If we hit the guy we're going to, end the state
+		if (toucher == ScriptedPawn(pawn).OrderActor)
 			GotoState('GoingTo', 'Done');
 
 		// Handle conversations, if need be
-		Global.Bump(bumper);
-	}*/
-/*
-	function Touch(actor toucher)
-	{
-		// If we hit the guy we're going to, end the state
-		if (toucher == OrderActor)
-			GotoState('GoingTo', 'Done');
-
-		// Handle conversations, if need be
-		Global.Touch(toucher);
-	}*/
+	//	Global.Touch(toucher);
+	}
 
 	function BeginState()
 	{
@@ -2723,6 +2701,7 @@ Follow:
 			{
 				if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).useLoc))
 					ScriptedPawn(pawn).PlayWalking();
+
             MoveTo(ScriptedPawn(pawn).useLoc, , true); //MoveTo(useLoc, GetWalkingSpeed());
 				ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).useLoc);
 			}
@@ -2733,6 +2712,7 @@ Follow:
 		{
 			if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
 				ScriptedPawn(pawn).PlayWalking();
+
         MoveToward(MoveTarget,, 0, false, true);			//MoveToward(MoveTarget, GetWalkingSpeed());
 			ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
 		}
@@ -2752,6 +2732,9 @@ Pause:
 Done:
 	if (ScriptedPawn(pawn).orderActor.IsA('PatrolPoint'))
 		TurnTo(pawn.Location + PatrolPoint(ScriptedPawn(pawn).orderActor).lookdir);
+
+		LookAtActor(none);
+
 	GotoState('Standing');
 
 ContinueGo:
@@ -2770,6 +2753,7 @@ defaultproperties
   bIsPlayer=false
   bStasis=false
 
+  bAdjustFromWalls=false
 
    bAdvancedTactics=true
    RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)

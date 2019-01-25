@@ -14,7 +14,7 @@ var() bool 				bOneWay;				// this door can only be opened from one side
 var() bool 				bLocked;				// this door is locked
 var() bool 				bPickable;				// this lock can be picked
 var() float 			lockStrength;			// "toughness" of the lock on this door - 0.0 is easy, 1.0 is hard
-var() float          initiallockStrength; // for resetting lock, initial lock strength of door.
+//var() float          initiallockStrength; // for resetting lock, initial lock strength of door.
 //var() bool           bInitialLocked;      // for resetting lock
 var() bool 				bBreakable;				// this door can be destroyed
 var() float				doorStrength;			// "toughness" of this door - 0.0 is weak, 1.0 is strong
@@ -52,6 +52,8 @@ var() float          TimeSinceReset;   // how long since we relocked it
 var() float          TimeToReset;      // how long between relocks
 
 var() bool 				bUseDXCollision; // Использовать отключение коллизии пока Mover движется?
+var		  Pawn			WaitingPawn;
+
 
 var localized string	msgKeyLocked;			// message when key locked door
 var localized string	msgKeyUnlocked;			// message when key unlocked door
@@ -61,6 +63,122 @@ var localized string	msgLocked;				// message when the door is locked
 var localized string	msgPicking;				// message when the door is being picked
 var localized string	msgAlreadyUnlocked;		// message when the door is already unlocked
 var localized string	msgNoNanoKey;			// message when the player doesn't have the right nanokey
+
+// Empty for now. Note to self: Here is how that BoundingBox should look like:
+// http://www.imagocentre.com/image/31024/1547980970/
+final function bool GetBoundingBox(out vector MinVect, out vector MaxVect,optional bool bExact,optional vector testLocation,optional rotator testRotation)
+{
+   return false;
+}
+
+function ComputeMovementArea(out vector center, out vector area)
+{
+	local int     i, j;
+	local float   mult;
+	local int     count;
+	local vector  box1, box2;
+	local vector  minVect;
+	local vector  maxVect;
+	local vector  newLocation;
+	local rotator newRotation;
+
+	if (NumKeys > 0)  // better safe than silly
+	{
+		// Initialize our bounding box
+		GetBoundingBox(box1, box2, false, KeyPos[0]+BasePos, KeyRot[0]+BaseRot);
+
+		// Compute the total area of our bounding box
+		for (i=1; i<NumKeys; i++)
+		{
+			if (KeyRot[i] == KeyRot[i-1])
+				count = 1;
+			else
+				count = 3;
+			for (j=0; j<count; j++)
+			{
+				mult = float(j+1)/count;
+				newLocation = BasePos + (KeyPos[i]-KeyPos[i-1])*mult + KeyPos[i-1];
+				newRotation = BaseRot + (KeyRot[i]-KeyRot[i-1])*mult + KeyRot[i-1];
+				if (GetBoundingBox(minVect, maxVect, false, newLocation, newRotation))
+				{
+					// Expand the bounding box
+					box1.X = FMin(FMin(box1.X, maxVect.X), minVect.X);
+					box1.Y = FMin(FMin(box1.Y, maxVect.Y), minVect.Y);
+					box1.Z = FMin(FMin(box1.Z, maxVect.Z), minVect.Z);
+					box2.X = FMax(FMax(box2.X, maxVect.X), minVect.X);
+					box2.Y = FMax(FMax(box2.Y, maxVect.Y), minVect.Y);
+					box2.Z = FMax(FMax(box2.Z, maxVect.Z), minVect.Z);
+				}
+			}
+		}
+	}
+
+	// Fallback
+	else
+	{
+		box1 = vect(0,0,0);
+		box2 = vect(0,0,0);
+	}
+
+	// Compute center/area of the bounding box and return
+	center = (box1+box2)/2;
+	area = box2 - center;
+
+}
+
+//
+// FinishNotify() - overridden from Mover; called when mover has finished moving
+//
+function FinishNotify()
+{
+	local Pawn   curPawn;
+	local vector box1, box2;
+	local vector center, area;
+	local float  distX, distY, distZ;
+	local float  maxX, maxY, maxZ;
+//	local float  dist;
+	local float  maxDist;
+	local vector tempVect;
+	local bool   bNotify;
+
+	Super.FinishNotify();
+
+	if ((NumKeys > 0) && (MoverEncroachType == ME_IgnoreWhenEncroach))
+	{
+		GetBoundingBox(box1, box2, false, KeyPos[KeyNum]+BasePos, KeyRot[KeyNum]+BaseRot);
+		center  = (box1+box2)/2;
+		area    = box2 - center;
+		maxDist = VSize(area)+200;
+		foreach RadiusActors(Class'Pawn', curPawn, maxDist)
+		{
+			bNotify = false;
+			distZ = Abs(center.Z - curPawn.Location.Z);
+			maxZ  = area.Z + curPawn.CollisionHeight;
+			if (distZ < maxZ)
+			{
+				distX = Abs(center.X - curPawn.Location.X);
+				distY = Abs(center.Y - curPawn.Location.Y);
+				maxX  = area.X + curPawn.CollisionRadius;
+				maxY  = area.Y + curPawn.CollisionRadius;
+				if ((distX < maxX) && (distY < maxY))
+				{
+					if ((distX >= area.X) && (distY >= area.Y))
+					{
+						tempVect.X = distX-area.X;
+						tempVect.Y = distY-area.Y;
+						tempVect.Z = 0;
+						if (VSize(tempVect) < CollisionRadius)
+							bNotify = true;
+					}
+					else
+						bNotify = true;
+				}
+			}
+			if (bNotify)
+				curPawn.EncroachedByMover(self);
+		}
+	}
+}
 
 
 function PostBeginPlay()
@@ -97,8 +215,7 @@ function DropThings()
 
 //
 // "Destroy" the mover
-//native final function SetDrawScale(float NewScale);
-//native final function SetDrawScale3D(vector NewScale3D);
+//
 
 function BlowItUp(Pawn instigatedBy)
 {
@@ -635,6 +752,6 @@ defaultproperties
      InitialState=TriggerToggle
      bDirectional=True
 
-		 bUseDynamicLights=true // —в®Ўл Ў®«ҐҐ-¬Ґ­ҐҐ ®бўҐй «Ёбм ®в AugLight
-		 maxLights=4 // в®-¦Ґ
+		 bUseDynamicLights=true // Чтобы более-менее освещались от AugLight
+		 maxLights=4 // То-же
 }

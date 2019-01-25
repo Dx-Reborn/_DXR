@@ -160,11 +160,9 @@ function ReactToInjury(Pawn instigatedBy, class<damageType> damageType, EHitLoca
 				PlayNewTargetSound();
 			instigatedBy = Enemy;
 		}*/
-//		Super.ReactToInjury(instigatedBy, damageType, hitPos);
+		Super.ReactToInjury(instigatedBy, damageType, hitPos);
 	}
 }
-
-
 
 function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 {
@@ -493,15 +491,8 @@ function PlayDisabled()
 	TweenAnimPivot('Still', 0.2);
 }
 
-function PlayWeaponSwitch(Weapon newWeapon)
-{
-}
-
-function PlayIdleSound()
-{
-}
-
-
+function PlayWeaponSwitch(Weapon newWeapon);
+function PlayIdleSound();
 
 
 function PlayScanningSound()
@@ -541,7 +532,23 @@ function PlayAreaSecureSound()
 	PlaySound(SpeechAreaSecure, SLOT_None,,, 2048);
 }
 
+function bool IsImmobile()
+{
+   local bool bHasReactions;
+   local bool bHasFears;
+   local bool bHasHates;
 
+   if (Orders != 'Standing')
+      return false;
+
+   bHasReactions = bReactFutz || bReactPresence || bReactLoudNoise || bReactAlarm || bReactShot || bReactCarcass || bReactDistress || bReactProjectiles;
+
+   bHasFears = bFearHacking || bFearWeapon || bFearShot || bFearInjury || bFearIndirectInjury || bFearCarcass || bFearDistress || bFearAlarm || bFearProjectiles;
+
+   bHasHates = bHateHacking || bHateWeapon || bHateShot || bHateInjury || bHateIndirectInjury || bHateCarcass || bHateDistress;
+
+   return (!bHasReactions && !bHasFears && !bHasHates);
+}
 
 defaultproperties
 {
@@ -578,5 +585,5 @@ defaultproperties
      HitSound2=Sound'DeusExSounds.Generic.Spark1'
      die=Sound'DeusExSounds.Generic.Spark1'
      Texture=Texture'Engine.S_Pawn'
-//		 ControllerClass=class'RobotController'
+		 ControllerClass=class'RobotController'
 }

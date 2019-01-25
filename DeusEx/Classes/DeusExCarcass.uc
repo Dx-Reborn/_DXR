@@ -107,7 +107,7 @@ function ChunkUp(int Damage)
 // ----------------------------------------------------------------------
 function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
 {
-	local int i;
+//	local int i;
 
 	if (bInvincible)
 		return;

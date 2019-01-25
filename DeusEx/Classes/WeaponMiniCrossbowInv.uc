@@ -72,7 +72,7 @@ defaultproperties
      PickupAmmoCount=4
      //FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
 
-     ProjSpawnOffset=(X=-15.00,Y=8.00,Z=-5.00) // (X=-25.000000,Y=8.000000,Z=14.000000)
+     ProjSpawnOffset=(X=25.000000,Y=8.000000,Z=-14.000000) //(X=-15.00,Y=8.00,Z=-5.00) // (X=-25.000000,Y=8.000000,Z=14.000000)
      ProjectileClass=Class'DeusEx.DartPoison'
      FireSound=Sound'DeusExSounds.Weapons.MiniCrossbowFire'
      ReloadEndSound=Sound'DeusExSounds.Weapons.MiniCrossbowReloadEnd'
