@@ -603,7 +603,7 @@ event PostLoadSavedGame()
     CreateShadow();
 }
 
-simulated function Destroyed()
+event Destroyed()
 {
 	local DeusExPlayer player;
 
@@ -615,6 +615,9 @@ simulated function Destroyed()
 
 	if ((player != None) && (player.conPlay != None))
       player.conPlay.ActorDestroyed(Self);
+
+  if (PawnShadow != none)
+      PawnShadow.Destroy();
 
 	Super.Destroyed();
 }
@@ -3842,12 +3845,13 @@ function Tick(float deltaTime)
 
 	if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
 	{
+	 if (Controller != none)
 	  Controller.Destroy();
+
 		Destroy();
 		return;
 	}
-//
-// AlterDestination();//
+
 	if (AvoidWallTimer > 0)
 	{
 		AvoidWallTimer -= deltaTime;
@@ -3869,7 +3873,7 @@ function Tick(float deltaTime)
 			ObstacleTimer = 0;
 	}
 //
-	if (controller.bAdvancedTactics)
+	if ((Controller != none) && (controller.bAdvancedTactics))
 	{
 		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
 		{
@@ -3888,14 +3892,18 @@ function Tick(float deltaTime)
 
 
 
+
 	if (bStandInterpolation)
 		UpdateStanding(deltaTime);
 
 	// this is UGLY!
 	if (bOnFire && (health > 0))
 	{
+	 if (Controller != none)
 		stateName = controller.GetStateName();
+
 		if ((stateName != 'Burning') && (stateName != 'TakingHit') && (stateName != 'RubbingEyes'))
+     if (Controller != none)
 			controller.GotoState('Burning');
 	}
 	else
@@ -3903,6 +3911,7 @@ function Tick(float deltaTime)
 		if (bDoLowPriority)
 		{
 			// Don't allow radius-based convos to interupt other conversations!
+		if (Controller != none)
 			if ((player != None) && (controller.GetStateName() != 'Conversation') && (controller.GetStateName() != 'FirstPersonConversation'))
 				player.StartConversation(Self, IM_Radius);
 		}
@@ -5145,11 +5154,11 @@ state idle
 // ----------------------------------------------------------------------
 state Dying
 {
-//	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, ZoneChange, Falling, WarnTarget, /*Died,*/ Timer/*, TakeDamage*/;
+	ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, /*Died,*/ Timer, TakeDamage;
 
 	event Landed(vector HitNormal)
 	{
-		SetPhysics(PHYS_Falling);//Walking);
+		SetPhysics(PHYS_Walking);
 	}
 
 	function Tick(float deltaSeconds)
@@ -5210,9 +5219,6 @@ state Dying
 		bStasis = False;
 		SetDistress(true);
 		DeathTimer = 0;
-
-		Controller.Destroy();
-    Controller = none;
 	}
 
 	function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
@@ -5222,12 +5228,7 @@ state Dying
 
 
 Begin:
-//  DXRAiController(Controller).ClearNextState();
-	Controller.WaitForLanding();
-	Controller.UnPossess();
-	Controller.Destroy();
-  Controller = none;
-
+  Sleep(0.1);
 	MoveFallingBody();
 
 	DesiredRotation.Pitch = 0;
@@ -5237,20 +5238,21 @@ Begin:
 	if ((Health > -100) && !IsA('Robot'))
 		FinishAnim();
 
-//	SetWeapon(None);
+	SetWeapon(None);
 
 	bHidden = true;
 
 	Acceleration = vect(0,0,0);
+	Controller.Destroy();
 	SpawnCarcass();
 	Destroy();
 }
 
 
-event Landed(vector HitNormal)
+/*event Landed(vector HitNormal)
 {
     super.Landed(HitNormal);
-}
+} */
 
 function JumpOffPawn()
 {
