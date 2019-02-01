@@ -504,9 +504,49 @@ function float LastRendered()
    return LastRenderTime; //Level.TimeSeconds;
 }
 
-final function bool IsValidEnemy(Pawn TestEnemy, optional bool bCheckAlliance);
-final function bool HaveSeenCarcass(Name CarcassName);
-final function AddCarcass(Name CarcassName);
+final function bool IsValidEnemy(DXRPawn TestEnemy, optional bool bCheckAlliance)
+{
+  if (TestEnemy != none)
+  {
+     if (bCheckAlliance)
+     {
+         if (TestEnemy.Health > 0)
+         {
+            if ((GetPawnAllianceType(TestEnemy)) == ALLIANCE_Hostile)
+            return true;
+
+            else 
+            return false;
+         }
+     }
+     else
+     if (TestEnemy.Health > 0)
+     return true;
+  }
+  return false;
+}
+
+final function bool HaveSeenCarcass(Name CarcassName)
+{
+  local int i;
+
+  if (NumCarcasses > 0)
+      for (i=0; i<ArrayCount(Carcasses); i++)
+      {
+         if (Carcasses[i] == CarcassName)
+         return true;
+      }
+  return false;
+}
+
+
+final function AddCarcass(Name CarcassName)
+{
+  if ((NumCarcasses < 4) && (!HaveSeenCarcass(CarcassName)))
+     Carcasses[NumCarcasses++] = CarcassName;
+}
+
+
 function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
 {
 	// AI controlled creatures may duck
@@ -514,14 +554,44 @@ function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
 	// often pick opposite to current direction (relative to shooter axis)
 }
 
+//	var Name  AllianceName;
+//	var float AllianceLevel;
+//	var float AgitationLevel;
+//	var bool  bPermanent;
+
+// ??
 final function EAllianceType GetAllianceType(Name AllianceName)
 {
+  local int i;
 
+  for (i=0; i<ArrayCount(AlliancesEx); i++)
+  {
+     if (AlliancesEx[i].AllianceName == AllianceName)
+     {
+       switch (AlliancesEx[i].AllianceLevel)
+       {
+         case -1:
+            return ALLIANCE_Hostile;
+         break;
+         case 0:
+            return ALLIANCE_Neutral;
+         break;
+         case 1:
+            return ALLIANCE_Friendly;
+         break;
+       }
+     }
+  }
 }
 
-final function EAllianceType GetPawnAllianceType(Pawn QueryPawn)
+// ??
+final function EAllianceType GetPawnAllianceType(DXRPawn QueryPawn)
 {
-	return ALLIANCE_Friendly;
+  if (QueryPawn != none)
+  {
+     return GetAllianceType(QueryPawn.Alliance);
+  }
+  // call GetAllianceType() ??
 }
 
 
@@ -561,17 +631,6 @@ function PreBeginPlay()
 
   // Set up callbacks
 //  UpdateReactionCallbacks();
-}
-
-final function bool AIPickRandomDestination(float minDist, float maxDist,int centralYaw, float yawDistribution,
-                                            int centralPitch, float pitchDistribution,int tries, float multiplier,out vector dest)
-{
-return false;
-}
-
-final function bool pointReachable(vector aPoint)
-{
-	return controller.pointReachable(aPoint);
 }
 
 // ----------------------------------------------------------------------
@@ -622,12 +681,10 @@ event Destroyed()
 	Super.Destroyed();
 }
 
-
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
 {
    return controller.SetEnemy(newEnemy, newSeenTime, bForce);
 }
-
 
 function HitWall(vector HitLocation, Actor hitActor)
 {
@@ -793,13 +850,13 @@ function ReactToFutz()
 // ----------------------------------------------------------------------
 function EnableShadow(bool bEnable)
 {
-	if (Shadow != None)
+/*	if (PawnShadow != None)
 	{
 		if (bEnable)
 			PawnShadow.AttachProjector(0.5);//AttachDecal(32,vect(0.1,0.1,0));
 		else
-			PawnShadow.AbandonProjector(0.5); //DetachProjector(true);//DetachDecal();
-	}
+			PawnShadow.DetachProjector(true);//DetachDecal();
+	}*/ // Should I disable shadow or destroy it?
 }
 
 
@@ -862,6 +919,7 @@ function PutInWorld(bool bEnter)
   {
     bInWorld            = false;
     Controller.GotoState('Idle');
+//       log("Not in world, controller state = "$Controller.GetStateName());
     bHidden             = true;
     bDetectable         = false;
 //            bCanCommunicate     = false;  
@@ -1370,6 +1428,7 @@ function SetWeapon(Weapon newWeapon)
 		{
 			if (Weapon.IsInState('DownWeapon'))
 				Weapon.BringUp();
+				  Weapon.AttachToPawn(self); // Attach to bone
 			Weapon.SetDefaultDisplayProperties();
 		}
 //		if (Inventory != None)
@@ -1386,6 +1445,7 @@ function SetWeapon(Weapon newWeapon)
 	}
 
 	Weapon = newWeapon;
+
 //	if (Inventory != None)
 //		Inventory.ChangedWeapon();
 //	if (Weapon != None)
@@ -1785,8 +1845,8 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation, V
 	actualDamage = Level.Game.ReduceDamage(actualDamage, self, instigatedBy, HitLocation, Momentum, DamageType);
 //								 Level.Game.ReduceDamage(actualDamage, DamageType, self, instigatedBy);
 
-//	if (bInvincible) //ReducedDamageType == 'All') //God mode
-//		actualDamage = 0;
+	if (bInvincible) //ReducedDamageType == 'All') //God mode
+		actualDamage = 0;
 //	else if (Inventory != None) //then check if carrying armor
 //		actualDamage = Inventory.ReduceDamage(actualDamage, DamageType, HitLocation);
 
@@ -1806,9 +1866,6 @@ function float ShieldDamage(class <damageType> damageType)
 {
 	return 1.0;
 }
-
-
-
 
 // ----------------------------------------------------------------------
 // ImpartMomentum()
@@ -2195,13 +2252,6 @@ function bool IsNearHome(vector position)
 // ----------------------------------------------------------------------
 // FrobDoor()
 // ----------------------------------------------------------------------
-
-
-
-// ----------------------------------------------------------------------
-// GotoDisabledState()
-// ----------------------------------------------------------------------
-
 
 
 // ----------------------------------------------------------------------
@@ -2727,8 +2777,6 @@ function name GetFloorMaterial()
 
 	return texGroup;
 }
-
-
 
 // ----------------------------------------------------------------------
 // PlayFootStep()
@@ -3674,25 +3722,25 @@ function AgitateAlliance(Name newEnemy, float agitation)
 function GetWeaponBestRange(DeusExWeaponInv dxWeapon, out float bestRangeMin, out float bestRangeMax)
 {
 	local float temp;
-	local float minRange,   maxRange;
+	local float minRangeA,   maxRangeA;
 	local float AIMinRange, AIMaxRange;
 
 	if (dxWeapon != None)
 	{
-		dxWeapon.GetWeaponRanges(minRange, maxRange, temp);
+		dxWeapon.GetWeaponRanges(minRangeA, maxRangeA, temp);
 		if (IsThrownWeapon(dxWeapon))  // hack
 			minRange = 0;
 		AIMinRange = dxWeapon.AIMinRange;
 		AIMaxRange = dxWeapon.AIMaxRange;
 
-		if ((AIMinRange > 0) && (AIMinRange >= minRange) && (AIMinRange <= maxRange))
+		if ((AIMinRange > 0) && (AIMinRange >= minRangeA) && (AIMinRange <= maxRangeA))
 			bestRangeMin = AIMinRange;
 		else
 			bestRangeMin = minRange;
-		if ((AIMaxRange > 0) && (AIMaxRange >= minRange) && (AIMaxRange <= maxRange))
+		if ((AIMaxRange > 0) && (AIMaxRange >= minRangeA) && (AIMaxRange <= maxRangeA))
 			bestRangeMax = AIMaxRange;
 		else
-			bestRangeMax = maxRange;
+			bestRangeMax = maxRangeA;
 
 		if (bestRangeMin > bestRangeMax)
 			bestRangeMin = bestRangeMax;
@@ -3963,7 +4011,7 @@ function SpurtBlood()
 // ----------------------------------------------------------------------
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
 {
-  controller.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+  controller.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType); // Send to controller?
 
 	TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
 }
@@ -4072,6 +4120,7 @@ singular function BaseChange()
 		if (Controller.GetStateName() == 'Sitting')
 			Controller.GotoState('Sitting', 'Begin');
 	}
+	if (Controller != none)
   Controller.BaseChange();
 } 
 
@@ -4086,6 +4135,34 @@ singular function BaseChange()
 // ----------------------------------------------------------------------
 // CheckWaterJump()
 // ----------------------------------------------------------------------
+function bool CheckWaterJump(out vector WallNormal)
+{
+	local actor HitActor;
+	local vector HitLocation, HitNormal, checkpoint, start, checkNorm, Extent;
+
+//	if (CarriedDecoration != None)
+//		return false;
+	checkpoint = vector(Rotation);
+	checkpoint.Z = 0.0;
+	checkNorm = Normal(checkpoint);
+	checkPoint = Location + CollisionRadius * checkNorm;
+	Extent = CollisionRadius * vect(1,1,0);
+	Extent.Z = CollisionHeight;
+	HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, false, Extent);
+	if ( (HitActor != None) && (Pawn(HitActor) == None) )
+	{
+		WallNormal = -1 * HitNormal;
+		start = Location;
+		start.Z += 1.1 * MaxStepHeight + CollisionHeight;
+		checkPoint = start + 2 * CollisionRadius * checkNorm;
+		HitActor = Trace(HitLocation, HitNormal, checkpoint, start, true, Extent);
+		if (HitActor == None)
+			return true;
+	}
+
+	return false;
+}
+
 
 
 
@@ -4160,7 +4237,7 @@ function bool SwitchToBestWeapon()
 	local bool         bBlockSpecial;
 	local bool         bValid;
 	local bool         bWinner;
-	local float        minRange, accRange;
+	local float        minRangeA, accRange;
 	local float        range, centerRange;
 	local float        cutoffRange;
 	local float        enemyRange;
@@ -4262,17 +4339,17 @@ function bool SwitchToBestWeapon()
 
 			if (bValid)
 			{
-				GetWeaponBestRange(curWeapon, minRange, accRange);
-				cutoffRange = minRange+(CollisionRadius+enemyRadius);
-				range = (accRange - minRange) * 0.5;
-				centerRange = minRange + range;
+				GetWeaponBestRange(curWeapon, minRangeA, accRange);
+				cutoffRange = minRangeA+(CollisionRadius+enemyRadius);
+				range = (accRange - minRangeA) * 0.5;
+				centerRange = minRangeA + range;
 				if (range < 50)
 					range = 50;
 				if (enemyRange < centerRange)
 					score = (centerRange - enemyRange)/range;
 				else
 					score = (enemyRange - centerRange)/range;
-				if ((minRange >= minEnemy) && (accRange <= accEnemy))
+				if ((minRangeA >= minEnemy) && (accRange <= accEnemy))
 					score += 0.5;  // arbitrary
 				if ((cutoffRange >= enemyRange-CollisionRadius) && (cutoffRange >= 256)) // do not use long-range weapons on short-range targets
 					score += 10000;
@@ -4554,10 +4631,6 @@ function CheckDestLoc(vector newDestLoc, optional bool bPathnode)
 		BackOff();
 }
 
-
-
-
-
 // ----------------------------------------------------------------------
 // HandleTurn()
 // ----------------------------------------------------------------------
@@ -4684,9 +4757,7 @@ function Bump(actor Other)
       bClearedObstacle = false;
 
 		// Enable AlterDestination()
-			//Controller.bAdvancedTactics = true;
-//			Controller.bPreparingMove = true;
-//			AlterDestination();
+			Controller.bAdvancedTactics = true;
 
       avoidPawn = ScriptedPawn(ActorAvoiding);
 
