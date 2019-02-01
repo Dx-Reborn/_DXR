@@ -341,7 +341,7 @@ function RenderDebugInfo(Canvas c)
     foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
        c.SetPos(c.SizeX/3, c.CurY);
-       if (target.isA('pawn'))
+       if ((target != none) && (target.isA('pawn')))
        {
           if (pawn(target).controller != none)
           {

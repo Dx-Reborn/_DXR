@@ -27,6 +27,9 @@
 
 class DeusExBasicHUD extends HUD;
 
+// Used in DrawTargetAugmentation().
+const TRACE_LOS_DIST = 8000;
+
 struct sToolBeltSelectedItem
 {
   var() int positionX;
@@ -75,7 +78,8 @@ var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
   var() color AIBarksFrame;
 //};
 
-  var color colAmmoLowText, colAmmoText;
+var color colAmmoLowText, colAmmoText;
+var Color crossColor;
 
 var transient DxCanvas dxc;
 
@@ -135,7 +139,6 @@ var localized string strUses;
 
 
 var(ChargedPickups) float HI_BorderX, HI_BorderY, HI_IconX, HI_IconY, HI_Back_X, HI_Back_Y;
-
 
 // Default Colors
 //var Color colBackground;
@@ -308,16 +311,18 @@ function DrawTargetAugmentation(Canvas C)
 	local int i, j, k, r;
 	local DeusExWeaponInv weapon;
 	local bool bUseOldTarget;
-	local Color crossColor;
+//	local Color crossColor;
 	local array<string> Lines;
 
 	crossColor.R = 255;
 	crossColor.G = 255;
 	crossColor.B = 255;
+  crossColor.A = 255;
+
 	C.Font = LoadProgressFont();
 
 	// check 500 feet in front of the player
-	target = TraceLOS(8000);
+	target = TraceLOS(TRACE_LOS_DIST/* 8000*/);
 
 	// draw targetting reticle information based on the weapon's accuracy
 	// reticle size is based on accuracy - larger box = higher (worse) accuracy value
@@ -327,7 +332,7 @@ function DrawTargetAugmentation(Canvas C)
 		// get friend/foe color info
 		if (target.IsA('ScriptedPawn'))
 		{
-			if (ScriptedPawn(target).GetPawnAllianceType(Playerowner.pawn) == ALLIANCE_Hostile)
+			if (ScriptedPawn(target).GetPawnAllianceType(DXRPawn(Playerowner.pawn)) == ALLIANCE_Hostile)
 			{
 				crossColor.R = 255;
 				crossColor.G = 0;
@@ -1449,7 +1454,8 @@ function RenderCrosshair(Canvas C)
   if (DeusExPlayer(PlayerOwner.pawn).bCrosshairVisible)
   {
      C.SetPos(X,Y);
-     C.SetDrawColor(255,255,255); // TODO: Добавить IFF
+     //C.SetDrawColor(255,255,255); // TODO: Добавить IFF
+     c.DrawColor = crossColor;
      C.DrawIcon(T, 1);
   }
 
