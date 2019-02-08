@@ -17,7 +17,7 @@ function PostBeginPlay()
 
 function StandStill()
 {
-	GotoState('Idle', 'Idle');
+	Controller.GotoState('Idle', 'Idle');
 	Acceleration=Vect(0, 0, 0);
 }
 
