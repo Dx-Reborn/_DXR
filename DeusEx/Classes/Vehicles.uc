@@ -21,18 +21,34 @@ function PostBeginPlay()
 		LeaveWorld();
 	}
 }
-/*
+
+function StartInterpolation()
+{
+  	SetCollision(false, false, false);
+		bCollideWorld = False;
+		SetPhysics(PHYS_Interpolating);
+		bInterpolating = True;
+		bStasis = false;
+		GotoState('Interpolating');
+
+}
+
+
 state Interpolating
 {
+//  function Tick(float deltaTime)
+//  {
+//  }
 	// check to see if we are done interpolating, if so, then destroy us
-	event InterpolateEnd(Actor Other)
+	function FinishedInterpolation()// (Actor Other)
 	{
-		Super.InterpolateEnd(Other);
+	    Super.FinishedInterpolation();
+//		Super.InterpolateEnd(Other);
 
-		if (InterpolationPoint(Other).bEndOfPath)
+//		if (InterpolationPoint(Other).bEndOfPath)
 			Destroy();
 	}
-}*/
+}
 
 // ----------------------------------------------------------------------
 // EnterWorld()
@@ -77,7 +93,7 @@ function PutInWorld(bool bEnter)
 		bHidden     = Default.bHidden;
 		bDetectable = Default.bDetectable;
 		SetLocation(WorldPosition);
-		SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
+		SetCollision(default.bCollideActors, default.bBlockActors, default.bBlockPlayers);
 		bCollideWorld = Default.bCollideWorld;
 		SetPhysics(Default.Physics);
 	}
