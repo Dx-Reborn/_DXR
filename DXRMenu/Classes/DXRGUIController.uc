@@ -55,8 +55,8 @@ defaultproperties
     FONT_NUM=12
 //	FONT_NUM=11
 
-//    MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
-//    ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
+    MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
+    ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
     EditSound			=none //sound'DeusExSounds.UserInterface.Menu_Slider'
     UpSound=none		//		=sound'DeusExSounds.UserInterface.'
     DownSound=none //			=sound'DeusExSounds.UserInterface.Menu_Activate'
