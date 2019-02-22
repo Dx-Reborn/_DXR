@@ -425,13 +425,6 @@ var Bool bConversationEndedNormally;
 var Bool bInConversation;
 var Actor ConversationActor;						// Actor currently speaking to or speaking to us
 
-var(Sounds) sound WalkSound;
-var(Sounds)	sound	Die;
-var(Sounds) sound HitSound1;
-var(Sounds) sound HitSound2;
-var(Sounds) sound Land;
-
-
 var float swimBubbleTimer;
 var bool  bSpawnBubbles;
 
@@ -493,11 +486,7 @@ var transient ShadowProjector PawnShadow;
 var name NextState; //for queueing states
 var name NextLabel; //for queueing states
 
-var() bool bSpawnDust;
 var DXRAIController DController;
-
-//var bool bAdvancedTactics;
-
 
 function float LastRendered()
 {
@@ -620,7 +609,6 @@ function PreBeginPlay()
   //
   // This must be fixed after ECTS.
 
-
   Super.PreBeginPlay();
 
   // DXR: Fix walking speed by just one line of code :)
@@ -631,6 +619,7 @@ function PreBeginPlay()
 
   // Set up callbacks
 //  UpdateReactionCallbacks();
+
 }
 
 // ----------------------------------------------------------------------
@@ -638,6 +627,10 @@ function PreBeginPlay()
 // ----------------------------------------------------------------------
 event PostBeginPlay()
 {
+  local float defHeight;
+
+  defHeight = collisionHeight;
+
 	Super.PostBeginPlay();
 
 	if ((ControllerClass != None) && (Controller == None))
@@ -654,6 +647,14 @@ event PostBeginPlay()
 		//SetOrders(orders);
 	}
 	CreateShadow();
+
+/*		if (CollisionHeight > 9)
+		{
+      class'ActorManager'.static.SetDefaultCollisionSize(self, CollisionRadius, defHeight - 4.5);
+//      log("Default collision Radius/Height ="@default.CollisionRadius @ default.CollisionHeight);
+    }
+		else
+      class'ActorManager'.static.SetDefaultCollisionSize(self, CollisionRadius, defHeight * 0.5);*/
 }
 
 event PostLoadSavedGame()
@@ -1314,8 +1315,17 @@ function StopPoison()
 // ----------------------------------------------------------------------
 // ComputeActorVisibility()
 // ----------------------------------------------------------------------
+function float ComputeActorVisibility(actor seeActor)
+{
+	local float visibility;
 
+	if (seeActor.IsA('DeusExPlayer'))
+		visibility = DeusExPlayer(seeActor).CalculatePlayerVisibility(self);
+	else
+		visibility = 1.0;
 
+	return (visibility);
+}
 
 // ----------------------------------------------------------------------
 // UpdateReactionLevel() [internal use only]
@@ -2908,17 +2918,19 @@ function PlayFootStep()
 	massFactor  = Mass/150.0;
 	radius      = 768.0;
 	maxRadius   = 2048.0;
-//	volume      = (speedFactor+0.2)*massFactor;
+//	volume      = (speedFactor+0.2)*massFactor;//
 //	volume      = (speedFactor+0.7)*massFactor;
 	volume      = massFactor*1.5;
 	range       = radius * volume;
 	pitch       = (volume+0.5);
-	volume      = 1.0;
+	volume      = 1.0; // DXR: I hear these sounds almost everywhere! 
+//	log(self@"FootStep sound volume = "$volume$" within range(Radius) ="$range/6);
 	range       = FClamp(range, 0.01, maxRadius);
 	pitch       = FClamp(pitch, 1.0, 1.5);
 
 	// play the sound and send an AI event
-	PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
+  PlaySound(stepSound, SLOT_Interact, volume, , range/6, pitch);
+
 	class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
 
 	// Shake the camera when heavy things tread
@@ -3764,12 +3776,110 @@ function GetWeaponBestRange(DeusExWeaponInv dxWeapon, out float bestRangeMin, ou
 // ----------------------------------------------------------------------
 // CheckEnemyParams()  [internal use only]
 // ----------------------------------------------------------------------
+function CheckEnemyParams(Pawn checkPawn,out Pawn bestPawn, out int bestThreatLevel, out float bestDist)
+{
+	local ScriptedPawn sPawn;
+	local bool         bReplace;
+	local float        dist;
+	local int          threatLevel;
+	local bool         bValid;
 
+	bValid = IsValidEnemy(DXRPawn(checkPawn));
+	if (bValid && (Controller.Enemy != checkPawn))
+	{
+		// Honor cloaking, radar transparency, and other augs if this guy isn't our current enemy
+		if (ComputeActorVisibility(checkPawn) < 0.1)
+			bValid = false;
+	}
 
+	if (bValid)
+	{
+		sPawn = ScriptedPawn(checkPawn);
+
+		dist = VSize(checkPawn.Location - Location);
+		if (checkPawn.IsA('Robot'))
+			dist *= 0.5;  // arbitrary
+		if (Controller.Enemy == checkPawn)
+			dist *= 0.75;  // arbitrary
+
+		if (sPawn != None)
+		{
+			if (sPawn.bAttacking)
+			{
+				if (sPawn.Controller.Enemy == self)
+					threatLevel = 2;
+				else
+					threatLevel = 1;
+			}
+			else if (sPawn.Controller.GetStateName() == 'Alerting')
+				threatLevel = 3;
+			else if ((sPawn.Controller.GetStateName() == 'Fleeing') || (sPawn.Controller.GetStateName() == 'Burning'))
+				threatLevel = 0;
+			else if (sPawn.Weapon != None)
+				threatLevel = 1;
+			else
+				threatLevel = 0;
+		}
+		else  // player
+		{
+			if (checkPawn.Weapon != None)
+				threatLevel = 2;
+			else
+				threatLevel = 1;
+		}
+
+		bReplace = false;
+		if (bestPawn == None)
+			bReplace = true;
+		else if (bestThreatLevel < threatLevel)
+			bReplace = true;
+		else if (bestDist > dist)
+			bReplace = true;
+
+		if (bReplace)
+		{
+			if ((Controller.Enemy == checkPawn)) //|| (AICanSee(checkPawn, , false, false, true, true) > 0))
+			{
+				bestPawn        = checkPawn;
+				bestThreatLevel = threatLevel;
+				bestDist        = dist;
+			}
+		}
+	}
+
+}
 
 // ----------------------------------------------------------------------
 // FindBestEnemy()
 // ----------------------------------------------------------------------
+function FindBestEnemy(bool bIgnoreCurrentEnemy)
+{
+	local Pawn  nextPawn;
+	local Pawn  bestPawn;
+	local float bestDist;
+	local int   bestThreatLevel;
+	local float newSeenTime;
+
+	bestPawn        = None;
+	bestDist        = 0;
+	bestThreatLevel = 0;
+
+	if (!bIgnoreCurrentEnemy && (Controller.Enemy != None))
+		CheckEnemyParams(Controller.Enemy, bestPawn, bestThreatLevel, bestDist);
+	foreach RadiusActors(class'Pawn', nextPawn, 2000)  // arbitrary
+		if (Controller.enemy != nextPawn)
+			CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
+
+	if (bestPawn != Controller.Enemy)
+		newSeenTime = 0;
+	else
+		newSeenTime = EnemyLastSeen;
+
+	SetEnemy(bestPawn, newSeenTime, true);
+
+	EnemyTimer = 0;
+}
+
 
 
 
@@ -3852,7 +3962,12 @@ function bool IsThrownWeapon(DeusExWeaponInv testWeapon)
 
 function bool InStasis()
 {
-   return bStasis;
+   if ((DistanceFromPlayer() > 1200.0) && (LastRenderTime > 5.0))
+   return true;
+   else return false;
+
+
+//   return bStasis;
 }
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -3921,7 +4036,7 @@ function Tick(float deltaTime)
 			ObstacleTimer = 0;
 	}
 //
-	if ((Controller != none) && (controller.bAdvancedTactics))
+	if /*(*/(Controller != none) //&& (controller.bAdvancedTactics))
 	{
 		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
 		{
@@ -3937,8 +4052,6 @@ function Tick(float deltaTime)
 			ObstacleTimer    = 0;
 		}
 	}
-
-
 
 
 	if (bStandInterpolation)
@@ -4178,35 +4291,6 @@ function SetMovementPhysics()
 	else
 		SetPhysics(PHYS_Walking); 
 }
-
-/*function SetMovementPhysics()
-{
-	// re-implement SetMovementPhysics() in subclass for flying and swimming creatures
-	if (Physics == PHYS_Falling)
-		return;
-
-	if (PhysicsVolume.bWaterVolume && bCanSwim)
-		SetPhysics(PHYS_Swimming);
-	else if (Default.Physics == PHYS_None)
-		SetPhysics(PHYS_Walking);
-	else
-		SetPhysics(Default.Physics);
-}*/
-/*
-function SetMovementPhysics()
-{
-	if (Physics == PHYS_Falling)
-		return;
-	if ( PhysicsVolume.bWaterVolume )
-		SetPhysics(PHYS_Swimming);
-	else
-		SetPhysics(PHYS_Walking);
-} */
-
-
-
-
-
 
 
 // ----------------------------------------------------------------------
@@ -4698,6 +4782,8 @@ function Bump(actor Other)
   local DeusExPlayer dxPlayer;
   local bool         bTurn;
 
+  log(self@"Bumped by "$Other);
+
   // Handle futzing and projectiles
   if (Other.Physics == PHYS_Falling)
   {
@@ -4757,7 +4843,7 @@ function Bump(actor Other)
       bClearedObstacle = false;
 
 		// Enable AlterDestination()
-			Controller.bAdvancedTactics = true;
+			//Controller.bAdvancedTactics = true;
 
       avoidPawn = ScriptedPawn(ActorAvoiding);
 
@@ -4911,7 +4997,7 @@ function AlterDestination()
 //	log("Avoid actor="$ActorAvoiding $", New location="$controller.destination);
 }
 
-/*singular*/ event Falling()
+singular event Falling()
 {
 	if (bCanFly)
 	{
@@ -4997,11 +5083,13 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 }
 
 
-/*function SetInitialState()
+function SetInitialState()
 {
   Super.SetInitialState();
-  InitializePawn();
-}*/
+
+  Controller.SetFall();
+  //InitializePawn();
+}
 
 function InitializePawn()
 {
@@ -5130,60 +5218,8 @@ function InitializeInventory()
 
 
 // ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
-// STATES
-// ----------------------------------------------------------------------
 
-// ----------------------------------------------------------------------
-// state StartUp
-//
-// Initial state
-// ----------------------------------------------------------------------
-/*auto state StartUp
-{
-  function BeginState()
-  {
-    bInterruptState = true;
-    bCanConverse = false;
 
-    SetMovementPhysics(); 
-    if (Physics == PHYS_Walking)
-      SetPhysics(PHYS_Falling);
-
-    bStasis = False;
-//    SetDistress(false);
-//    BlockReactions();
-    ResetDestLoc();
-  }
-
-  function EndState()
-  {
-    bCanConverse = true;
-    bStasis = True;
-//    ResetReactions();
-  }
-
-  function Tick(float deltaSeconds)
-  {
-    if (LastRendered() <= 1.0)
-    {
-      Global.Tick(deltaSeconds);
-      PlayWaiting();
-//      InitializePawn();
-      if (DXRAIController(Controller) != none)
-          DXRAIController(Controller).FollowOrders();
-    }
-  }
-
-Begin:
-//  InitializePawn();
-
-  Sleep(FRand()+0.2);
-  Controller.WaitForLanding();
-
-Start:
-  DXRAIController(Controller).FollowOrders();
-}*/
 
 // ----------------------------------------------------------------------
 // EnterConversationState()
@@ -5213,10 +5249,14 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 	}
 }
 
+// ----------------------------------------------------------------------
+// STATES
+// ----------------------------------------------------------------------
+
+
 state idle
 {
 }
-
 
 // ----------------------------------------------------------------------
 // state Dying
@@ -5325,17 +5365,16 @@ Begin:
     super.Landed(HitNormal);
 } */
 
+/*
 function JumpOffPawn()
 {
-	/*
 	Velocity += (60 + CollisionRadius) * VRand();
 	Velocity.Z = 180 + CollisionHeight;
 	SetPhysics(PHYS_Falling);
 	bJumpOffPawn = true;
 	SetFall();
-	*/
-	//log("ERROR - JumpOffPawn should not be called!");
-}
+  //log("ERROR - JumpOffPawn should not be called!");
+}*/
 
 
 
@@ -5384,10 +5423,7 @@ function pawn GetPlayerPawn()
 {
   if (level.GetLocalPlayerController().pawn != none)
   return level.GetLocalPlayerController().pawn;
-
-
 }
-
 
 // ----------------------------------------------------------------------
 function string GetBindName()
@@ -5520,12 +5556,9 @@ defaultproperties
 			bStopAtLedges=false		// if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
 		  bCanClimbLadders=true
 
-		  bSpawnDust=true
-
 		  bSpecialCalcView=true
-    RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
+      RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
 
-			ConstantAcceleration=(X=0.00,Y=0.00,Z=-120.00)
 			physics=phys_falling//none
 
 			bPhysicsAnimUpdate=false
@@ -5534,4 +5567,8 @@ defaultproperties
 			bActorShadows=true
 
       bIgnoreOutOfWorld=true // Don't destroy if fell out of world
+
+      bShouldBaseAtStartup=false //true
+
+      SoundOcclusion=OCCLUSION_BSP
 }

@@ -14,4 +14,6 @@ defaultproperties
      CollisionHeight=0.550000
      Mass=2.000000
      Buoyancy=3.000000
+
+     		 InventoryType=class'CreditsInv'
 }

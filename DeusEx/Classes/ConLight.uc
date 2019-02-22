@@ -68,7 +68,8 @@ defaultproperties
     bNoDelete=False
     bMovable=True
     LightType=LT_None
-    LightEffect=LE_QuadraticNonIncidence
+    LightEffect=LE_NonIncidence
+    LightBrightness=255
     LightRadius=3
     LightCone=32
     bDynamicLight=true
