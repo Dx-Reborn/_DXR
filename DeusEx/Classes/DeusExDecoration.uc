@@ -376,7 +376,15 @@ simulated function Tick(float deltaTime)
 	local rotator      rot;
 	local DeusExPlayer player;
 
+	if (GetStateName() == 'Interpolating')
+	return;
+
 	Super.Tick(deltaTime);
+
+
+	// + 3-4 FPS, instead of rendering on HUD.
+   if (self.IsA('AutoTurretGun') || (self.IsA('AutoTurret') || (self.IsA('SecurityCamera')/* || (self.IsA('AlarmLight'))*/)))
+       LastRenderTime = Level.TimeSeconds;
 
 	if (bFloating)
 	{
@@ -420,19 +428,18 @@ simulated function Tick(float deltaTime)
 // ZoneChange()
 // this decoration will now float with cool bobbing if it is
 // buoyant enough
-// В UnrealEngine2 больше нет водных зон, есть аналогичные объемы (Volumes)
-// WaterVolume позволяют создавать локальные лужи и водоемы любой формы.
+// Note: PhysicsVolumeChange replaces old ZoneChange().
 // ----------------------------------------------------------------------
 simulated function PhysicsVolumeChange(PhysicsVolume Volume)
 {
-Super.PhysicsVolumeChange(Volume);
+//Super.PhysicsVolumeChange(Volume);
 
   if (bFloating && !Volume.bWaterVolume)
-    {
-			bFloating = False;
-			SetRotation(origRot);
-			return;
-		}
+  {
+		bFloating = False;
+		SetRotation(origRot);
+		return;
+	}
 
 	if (Volume.bWaterVolume)
 		ExtinguishFire();
