@@ -32,6 +32,19 @@ var Actor PrevLookActor;
 function NotifyTouch(actor toucher);
 function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos);
 
+event SetupSpecialPathAbilities()
+{
+   //log(pawn@"SetupSpecialPathAbilities ?");
+   ScriptedPawn(pawn).AlterDestination();
+}
+
+
+simulated event SetInitialState()
+{
+		GotoState('Auto');
+}
+
+
 final function float AICanSee(actor other, optional float visibility,
                                           optional bool bCheckVisibility, optional bool bCheckDir,
                                           optional bool bCheckCylinder, optional bool bCheckLOS)
@@ -532,13 +545,14 @@ auto state StartUp
 
 Begin:
   scriptedPawn(pawn).InitializePawn();
-
   Sleep(FRand()+0.2);
   WaitForLanding();
 
 Start:
-        if (scriptedPawn(pawn).bInWorld == true) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
-  FollowOrders();
+   if (scriptedPawn(pawn).bInWorld == true) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
+   {
+      FollowOrders();
+   }
 }
 
 // ----------------------------------------------------------------------
@@ -556,7 +570,8 @@ Begin:
 state Attacking
 {
 Begin:
-    log(pawn @ self@"Attacking");
+	ScriptedPawn(pawn).Acceleration = vect(0,0,0);
+  log(pawn @ self@"Attacking");
 }
 
 state Fleeing
@@ -2321,7 +2336,7 @@ WanderInternal:
 
 Moving:
 	// Move from pathnode to pathnode until we get where we're going
-	// (ooooold code -- no longer used)
+	WaitForLanding();
 if (ScriptedPawn(pawn).destPoint != None)
 	{
 		if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
