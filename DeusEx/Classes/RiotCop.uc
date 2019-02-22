@@ -22,5 +22,6 @@ defaultproperties
      skins(6)=Texture'DeusExCharacters.Skins.RiotCopTex3'
      skins(7)=TexEnvMap'DeusExStaticMeshes.Glass.EM1'
      CollisionRadius=20.000000
-     CollisionHeight=47.500000
+     CollisionHeight=43.000000
+//     CollisionHeight=47.500000
 }

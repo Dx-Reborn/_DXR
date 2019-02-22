@@ -20,4 +20,5 @@ defaultproperties
      bFragmentTranslucent=True
      ExplodeSound1=Sound'DeusExSounds.Generic.GlassBreakSmall'
      ExplodeSound2=Sound'DeusExSounds.Generic.GlassBreakLarge'
+     bPathColliding=true
 }

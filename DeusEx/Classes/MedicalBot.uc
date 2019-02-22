@@ -139,6 +139,7 @@ defaultproperties
      SoundRadius=16
      SoundVolume=128
      CollisionRadius=25.000000
-     CollisionHeight=36.310001
+     CollisionHeight=31.85
+     //CollisionHeight=36.310001
      Buoyancy=97.000000
 }

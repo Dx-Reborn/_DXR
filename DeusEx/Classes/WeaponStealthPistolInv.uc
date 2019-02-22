@@ -3,6 +3,8 @@
 //=============================================================================
 class WeaponStealthPistolInv extends DeusExWeaponInv;
 
+// кость 124
+
 defaultproperties
 {
 		 PickupClass=class'WeaponStealthPistol'

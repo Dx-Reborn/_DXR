@@ -54,13 +54,14 @@ defaultproperties
      AmmoName=Class'DeusEx.AmmoRocketInv'
      ReloadCount=1
      PickupAmmoCount=4
-     projSpawnOffset=(X=-46.000000,Y=22.000000,Z=-10.000000)
+
+     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
      ProjectileClass=Class'DeusEx.Rocket'
 
      InventoryGroup=17
      ItemName="Guided Explosive Projectile (GEP) Gun"
-     PlayerViewOffset=(X=35.000000,Y=17.000000,Z=-12.000000)
-     CenteredOffsetY=0
+//     PlayerViewOffset=(X=35.000000,Y=17.000000,Z=-12.000000)
+     PlayerViewOffset=(X=46.000000,Y=30.000000,Z=-10.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconGEPGun'
      CollisionRadius=27.000000

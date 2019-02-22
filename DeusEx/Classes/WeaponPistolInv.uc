@@ -7,22 +7,26 @@ var() rotator smokeBoneRotator;
 var EM_PistolSmoke extrapuff;
 var int amountOfShots;
 
+const FirstThreshold = 10;
+const SecondThreshold = 20;
+
 // Called from AnimNotify_script (bone 166)
 // 163 STR_assualt_muzzleflash
 function WeaponPistolSmoke()
 {
   amountOfShots++;
 
-  if (amountOfShots > 10)
+  if (amountOfShots > FirstThreshold)
   {
     extrapuff = Spawn(class'EM_PistolSmoke');
     extrapuff.Emitters[0].opacity = 0.1;
   }
 
-  if (amountOfShots > 20)
+  if (amountOfShots > SecondThreshold)
   {
     extrapuff = Spawn(class'EM_PistolSmoke');
     extrapuff.Emitters[0].opacity = 0.3;
+    BoneRefresh();
   }
 }
 

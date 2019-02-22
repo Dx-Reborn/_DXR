@@ -31,5 +31,6 @@ defaultproperties
      skins(2)=Texture'DeusExCharacters.Skins.MJ12CommandoTex0'
      skins(3)=Texture'DeusExCharacters.Skins.MJ12CommandoTex1'
      CollisionRadius=28.000000
-     CollisionHeight=49.880001
+     CollisionHeight=45.38
+//     CollisionHeight=49.880001
 }

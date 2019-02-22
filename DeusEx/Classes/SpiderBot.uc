@@ -24,7 +24,8 @@ defaultproperties
      //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SpiderBot'
      CollisionRadius=111.930000
-     CollisionHeight=50.790001
+     CollisionHeight=46.290000
+     //CollisionHeight=50.790001
      Mass=1000.000000
      Buoyancy=100.000000
 }

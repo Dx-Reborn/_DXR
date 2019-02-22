@@ -145,21 +145,21 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
 function ReactToInjury(Pawn instigatedBy, class<damageType> damageType, EHitLocation hitPos)
 {
-//	local Pawn oldEnemy;
+	local Pawn oldEnemy;
 
 	if (IgnoreDamageType(damageType))
 		return;
 
 	if (EMPHitPoints > 0)
 	{
-		/*if (damageType == 'DM_NanoVirus')
+		if (damageType == class'DM_NanoVirus')
 		{
-			oldEnemy = Enemy;
+			oldEnemy = Controller.Enemy;
 			FindBestEnemy(false);
-			if (oldEnemy != Enemy)
+			if (oldEnemy != Controller.Enemy)
 				PlayNewTargetSound();
-			instigatedBy = Enemy;
-		}*/
+			instigatedBy = Controller.Enemy;
+		}
 		Super.ReactToInjury(instigatedBy, damageType, hitPos);
 	}
 }

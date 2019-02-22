@@ -1,10 +1,43 @@
 //=============================================================================
 // Human.
-// Все функции перенесены в DeusExPlayer, этот класс пустой и оставлен для 
-// совместимости.
 //=============================================================================
 class Human extends DeusExPlayer
 	abstract;
+
+function PlayDyingSound()
+{
+	if (PhysicsVolume.bWaterVolume)
+		PlaySound(sound'MaleWaterDeath', SLOT_Pain,,,, RandomPitch());
+	else
+		PlaySound(die, SLOT_Pain,,,, RandomPitch());
+}
+
+event PlayDying(class<DamageType> DamageType, vector HitLoc)
+{
+	local Vector X, Y, Z;
+	local float dotp;
+
+//	ClientMessage("PlayDying()");
+	GetAxes(GetViewRotation(), X, Y, Z);
+	dotp = (Location - HitLoc) dot X;
+
+	if (PhysicsVolume.bWaterVolume)
+	{
+		PlayAnim('WaterDeath',,0.1);
+	}
+	else
+	{
+		// die from the correct side
+		if (dotp < 0.0)		// shot from the front, fall back
+			PlayAnim('DeathBack',,0.1);
+		else				// shot from the back, fall front
+			PlayAnim('DeathFront',,0.1);
+	}
+	PlayDyingSound();
+}
+
+
+
 
 exec function spd() // то есть SavePlayerData()
 {

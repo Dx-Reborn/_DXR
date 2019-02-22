@@ -18,5 +18,6 @@ defaultproperties
      skins(1)=Texture'DeusExCharacters.Skins.ScubasuitTex0'
      skins(2)=Texture'DeusExCharacters.Skins.ScubasuitTex1'
      CollisionRadius=20.000000
-     CollisionHeight=47.500000
+     CollisionHeight=43.000000
+//     CollisionHeight=47.500000
 }

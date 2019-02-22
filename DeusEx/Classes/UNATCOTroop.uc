@@ -25,5 +25,6 @@ defaultproperties
      skins(6)=Texture'DeusExCharacters.Skins.UNATCOTroopTex3'
      skins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
      CollisionRadius=20.000000
-     CollisionHeight=47.500000
+     CollisionHeight=43.000000
+     //CollisionHeight=47.500000
 }

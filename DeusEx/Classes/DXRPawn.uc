@@ -50,6 +50,12 @@ var bool bLipsyncHackActive;
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
 
+var(Sounds) sound WalkSound;
+var(Sounds)	sound	Die;
+var(Sounds) sound HitSound1;
+var(Sounds) sound HitSound2;
+var(Sounds) sound Land;
+
 function DeusExGameInfo getFlagBase()
 {
     if(flagBase == none)

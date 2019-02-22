@@ -28,20 +28,174 @@ function Tick(float deltaTime)
 	Super.Tick(deltaTime);
 }
 
+function ComputeFallDirection(float totalTime, int numFrames, out vector moveDir, out float stopTime)
+{
+	// Determine direction, and how long to slide
+	if (GetAnimSequence() == 'DeathFront')
+	{
+		moveDir = Vector(DesiredRotation) * Default.CollisionRadius*2.0;
+		stopTime = totalTime*0.7;
+	}
+	else if (GetAnimSequence() == 'DeathBack')
+	{
+		moveDir = -Vector(DesiredRotation) * Default.CollisionRadius*1.8;
+		stopTime = totalTime*0.65;
+	}
+}
 
+function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation, Vector offset, class<DamageType> damageType)
+{
+	// Grays aren't affected by radiation or fire or gas
+	if ((damageType == class'DM_Radiation') || (damageType == class'DM_Flamed') || (damageType == class'DM_Burned'))
+		return false;
+	else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas') || (damageType == class'DM_PoisonGas'))
+		return false;
+	else
+		return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+}
 
+function TweenToAttack(float tweentime)
+{
+	if (PhysicsVolume.bWaterVolume)
+		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+	else
+		TweenAnimPivot('Attack', tweentime);
+}
 
+function PlayAttack()
+{
+	if ((Weapon != None) && Weapon.IsA('WeaponGraySpit'))
+		PlayAnimPivot('Shoot');
+	else
+		PlayAnimPivot('Attack');
+}
 
+function PlayPanicRunning()
+{
+	PlayRunning();
+}
 
+function PlayTurning()
+{
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,, GetSwimPivot());
+	else
+		LoopAnimPivot('Walk', 0.1);
+}
 
+function TweenToWalking(float tweentime)
+{
+	if (PhysicsVolume.bWaterVolume)
+		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+	else
+		TweenAnimPivot('Walk', tweentime);
+}
 
+function PlayWalking()
+{
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,, GetSwimPivot());
+	else
+		LoopAnimPivot('Walk', , 0.15);
+}
 
+function TweenToRunning(float tweentime)
+{
+	if (PhysicsVolume.bWaterVolume)
+		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+	else
+		LoopAnimPivot('Run',, tweentime);
+}
 
+function PlayRunning()
+{
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,, GetSwimPivot());
+	else
+		LoopAnimPivot('Run');
+}
+function TweenToWaiting(float tweentime)
+{
+	if (PhysicsVolume.bWaterVolume)
+		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+	else
+		TweenAnimPivot('BreatheLight', tweentime);
+}
+function PlayWaiting()
+{
+	if (PhysicsVolume.bWaterVolume)
+		LoopAnimPivot('Tread',,,, GetSwimPivot());
+	else
+		LoopAnimPivot('BreatheLight', , 0.3);
+}
 
+function PlayTakingHit(EHitLocation hitPos)
+{
+	local vector pivot;
+	local name   animName;
 
+	animName = '';
+	if (!PhysicsVolume.bWaterVolume)
+	{
+		switch (hitPos)
+		{
+			case HITLOC_HeadFront:
+			case HITLOC_TorsoFront:
+			case HITLOC_LeftArmFront:
+			case HITLOC_RightArmFront:
+			case HITLOC_LeftLegFront:
+			case HITLOC_RightLegFront:
+				animName = 'HitFront';
+				break;
 
+			case HITLOC_HeadBack:
+			case HITLOC_TorsoBack:
+			case HITLOC_LeftArmBack:
+			case HITLOC_RightArmBack:
+			case HITLOC_LeftLegBack:
+			case HITLOC_RightLegBack:
+				animName = 'HitBack';
+				break;
+		}
+		pivot = vect(0,0,0);
+	}
 
+	if (animName != '')
+		PlayAnimPivot(animName, , 0.1, pivot);
+}
+
+//
 // sound functions
+//
+
+function PlayIdleSound()
+{
+	if (FRand() < 0.5)
+		PlaySound(sound'GrayIdle', SLOT_None);
+	else
+		PlaySound(sound'GrayIdle2', SLOT_None);
+}
+
+function PlayScanningSound()
+{
+	if (FRand() < 0.3)
+	{
+		if (FRand() < 0.5)
+			PlaySound(sound'GrayIdle', SLOT_None);
+		else
+			PlaySound(sound'GrayIdle2', SLOT_None);
+	}
+}
+
+function PlayTargetAcquiredSound()
+{
+	PlaySound(sound'GrayAlert', SLOT_None);
+}
+
+function PlayCriticalDamageSound()
+{
+	PlaySound(sound'GrayFlee', SLOT_None);
+}
 
 defaultproperties
 {
@@ -73,8 +227,8 @@ defaultproperties
      // ReducedDamagePct=1.000000
      UnderWaterTime=20.000000
      //  AttitudeToPlayer=ATTITUDE_Ignore
-     //  HitSound1=Sound'DeusExSounds.Animal.GrayPainSmall'
-     //  HitSound2=Sound'DeusExSounds.Animal.GrayPainLarge'
+     HitSound1=Sound'DeusExSounds.Animal.GrayPainSmall'
+     HitSound2=Sound'DeusExSounds.Animal.GrayPainLarge'
      die=Sound'DeusExSounds.Animal.GrayDeath'
      AmbientSound=Sound'Ambient.Ambient.GeigerLoop'
      Mesh=mesh'DeusExCharacters.Gray'
@@ -82,7 +236,8 @@ defaultproperties
      SoundRadius=14
      SoundVolume=255
      CollisionRadius=28.540001
-     CollisionHeight=36.000000
+     CollisionHeight=24.04
+//     CollisionHeight=36.000000
      LightType=LT_Steady
      LightBrightness=32
      LightHue=96
@@ -90,4 +245,5 @@ defaultproperties
      LightRadius=5
      Mass=120.000000
      Buoyancy=97.000000
+     ControllerClass=class'GrayController'
 }

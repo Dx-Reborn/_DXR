@@ -151,6 +151,7 @@ defaultproperties
      skins(6)=Texture'DeusExItems.Skins.BlackMaskTex'
      skins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
      CollisionRadius=24.200001
-     CollisionHeight=55.660000
+     CollisionHeight=51.16
+//     CollisionHeight=55.660000
      ControllerClass=class'GuntherHermannController'
 }

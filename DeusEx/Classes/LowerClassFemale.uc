@@ -25,5 +25,6 @@ defaultproperties
      skins(6)=Texture'DeusExCharacters.Skins.PantsTex6'
      skins(7)=Texture'DeusExCharacters.Skins.LowerClassFemaleTex1'
      CollisionRadius=20.000000
-     CollisionHeight=43.000000
+     CollisionHeight=38.50
+//     CollisionHeight=43.000000
 }

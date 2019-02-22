@@ -299,26 +299,7 @@ exec function ActorIdx()
   {
      log("Actor="$can$", Index="$CycleIndex);
   }
-  
-
-//   ClientMessage("Player's actor Index="$class'ActorManager'.static.GetActorIndex(XLevel, self));
 }
-
-exec function rbr(int yd, int pd)
-{
-   local rotator r;
-   local int i;
-
-
-   for (i=0; i<100; i++)
-   {
-   r = class'DxUtil'.static.randomBiasedRotation(GetViewRotation().Yaw, yd, GetViewRotation().Pitch, pd); //(int centralYaw, float yawDistribution,int centralPitch, float pitchDistribution);
-   log(r);
-   }
-
-   ClientMessage("View rotation (pitch, yaw, roll) = "$GetViewRotation()$",randombiasedRotation (pitch, yaw, roll) = "$r);
-}
-
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -326,12 +307,11 @@ exec function rbr(int yd, int pd)
 defaultproperties
 {
 		 CarcassType=Class'DeusEx.JCDentonMaleCarcass'
-     //  JumpSound=Sound'DeusExSounds.Player.MaleJump'
-     //  HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
-     //  HitSound2=Sound'DeusExSounds.Player.MalePainMedium'
-     //  Land=Sound'DeusExSounds.Player.MaleLand'
-//     die=Sound'DeusExSounds.Player.MaleDeath'
-//     Mesh=VertMesh'DeusExCharacters.GM_Trench'
+     JumpSound=Sound'DeusExSounds.Player.MaleJump'
+     HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
+     HitSound2=Sound'DeusExSounds.Player.MalePainMedium'
+     Land=Sound'DeusExSounds.Player.MaleLand'
+     die=Sound'DeusExSounds.Player.MaleDeath'
      Mesh=Mesh'DeusExCharacters.GM_Trench'
      skins(0)=Texture'DeusExCharacters.Skins.JCDentonTex0'
      skins(1)=Texture'DeusExCharacters.Skins.JCDentonTex2'

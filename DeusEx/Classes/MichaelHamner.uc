@@ -21,11 +21,8 @@ defaultproperties
      skins(4)=Texture'DeusExCharacters.Skins.MichaelHamnerTex1'
      skins(5)=Material'DeusExCharacters.Skins.SH_FramesTex1'
      skins(6)=Material'DeusExCharacters.Skins.FB_LensesTex2'
-
-//     skins(5)=Texture'DeusExCharacters.Skins.FramesTex1'
-//     skins(6)=Texture'DeusExCharacters.Skins.LensesTex2'
-
      skins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
      CollisionRadius=20.000000
-     CollisionHeight=47.500000
+     CollisionHeight=43.000000
+//     CollisionHeight=47.500000
 }

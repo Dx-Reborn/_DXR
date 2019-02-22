@@ -50,7 +50,8 @@ defaultproperties
      SoundRadius=16
      SoundVolume=128
      CollisionRadius=25.350000
-     CollisionHeight=28.500000
+     CollisionHeight=24.00
+     //CollisionHeight=28.500000
      Mass=1000.000000
      Buoyancy=100.000000
 //     PrePivot=(X=0,Y=0,Z=-28.5)

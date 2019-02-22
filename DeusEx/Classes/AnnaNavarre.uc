@@ -117,6 +117,7 @@ defaultproperties
      skins(5)=Texture'DeusExCharacters.Skins.AnnaNavarreTex0'
      skins(6)=Texture'DeusExCharacters.Skins.PantsTex9'
      skins(7)=Texture'DeusExCharacters.Skins.AnnaNavarreTex1'
-     CollisionHeight=47.299999
+     //CollisionHeight=47.299999
+     CollisionHeight=42.799999
      CollisionRadius=22.0
 }

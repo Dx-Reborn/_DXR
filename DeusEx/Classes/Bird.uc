@@ -12,7 +12,7 @@ var     float        hitTimer;
 var     float        fright;
 var     float        initialRate;
 
-function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
 {
 	if ((DamageType == class'DM_EMP') || (DamageType == class'DM_NanoVirus'))
 		return;
@@ -30,17 +30,18 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 	if (Health > 0)
 	{
 		MakeFrightened();
-		GotoState('Flying');
+		Controller.GotoState('Flying');
 		//PlayHit(actualDamage, hitLocation, damageType, momentum.z);
 	}
 	else
 	{
-		DXRAiController(controller).ClearNextState();
+		Controller.ClearNextState();
 		//PlayDeathHit(actualDamage, hitLocation, damageType);
 		Controller.Enemy = instigatedBy;
-		Died(instigatedBy.controller, damageType, HitLocation);
+		Died(instigatedBy.Controller, damageType, HitLocation);
 	}
 }
+
 
 function TweenToWaiting(float tweentime)
 {
@@ -53,6 +54,7 @@ function TweenToWaiting(float tweentime)
 
 function PlayWaiting()
 {
+ if (Vsize(Acceleration) < 0.1)
 	LoopAnim(WaitAnim);
 }
 
@@ -62,33 +64,36 @@ function PlayFlying()
 	initialRate = GetAnimRate();
 }
 
+function BeginPlay()
+{
+	Super.BeginPlay();
+//	AIClearEventCallback('WeaponFire');
+}
+
 function MakeFrightened()
 {
 	fright = (cowardice*99)+1;
 }
 
-/*function FleeFromPawn(Pawn fleePawn)
+function FleeFromPawn(Pawn fleePawn)
 {
 	MakeFrightened();
-	if (GetStateName() != 'Flying')
-		GotoState('Flying');
-}*/
+	if (Controller.GetStateName() != 'Flying')
+		Controller.GotoState('Flying');
+}
 
+function Tick(float deltaSeconds)
+{
+	Super.Tick(deltaSeconds);
 
+	if (fright > 0)
+	{
+		fright -= deltaSeconds;
+		if (fright < 0)
+			fright = 0;
+	}
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Kind of a hack, but...
 
 defaultproperties
 {
@@ -100,4 +105,7 @@ defaultproperties
      Cowardice=0.200000
      bCanFly=True
      // MaxStepHeight=2.000000
+     controllerClass=class'BirdController'
+
+     orders=Flying
 }

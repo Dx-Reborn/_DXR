@@ -48,10 +48,11 @@ var() sound				ExplodeSound2;			// large explosion sound
 var() bool				bDrawExplosion;			// should we draw an explosion?
 var() bool				bIsDoor;				// is this mover an actual door?
 
-var() float          TimeSinceReset;   // how long since we relocked it
-var() float          TimeToReset;      // how long between relocks
+//var() float          TimeSinceReset;   // how long since we relocked it
+//var() float          TimeToReset;      // how long between relocks
 
 var() bool 				bUseDXCollision; // Использовать отключение коллизии пока Mover движется?
+var() edfindable  DoorAreaVolume AreaVolume;
 var		  Pawn			WaitingPawn;
 
 
@@ -724,6 +725,7 @@ state() TriggerPound
 defaultproperties
 {
 		 bUseDXCollision=true // on by default
+		 bPathColliding=false // Don't block paths
      bBlockSight=True
      bPickable=True
      lockStrength=0.200000
@@ -738,7 +740,6 @@ defaultproperties
      FragmentClass=Class'DeusEx.WoodFragment'
      ExplodeSound1=Sound'DeusExSounds.Generic.WoodBreakSmall'
      ExplodeSound2=Sound'DeusExSounds.Generic.WoodBreakLarge'
-     TimeToReset=28.000000
      msgKeyLocked="Your NanoKey Ring locked it"
      msgKeyUnlocked="Your NanoKey Ring unlocked it"
      msgLockpickSuccess="You picked the lock"

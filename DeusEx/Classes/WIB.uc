@@ -39,10 +39,7 @@ defaultproperties
      skins(5)=Texture'DeusExCharacters.Skins.WIBTex1'
      skins(6)=Material'DeusExCharacters.Skins.SH_FramesTex2'
      skins(7)=Material'DeusExCharacters.Skins.FB_LensesTex3'
-
-//     skins(6)=Texture'DeusExCharacters.Skins.FramesTex2'
-//     skins(7)=Texture'DeusExCharacters.Skins.LensesTex3'
-
-     CollisionHeight=47.299999
-			CollisionRadius=22.0
+     //CollisionHeight=47.299999
+     CollisionHeight=42.799999
+     CollisionRadius=22.0
 }

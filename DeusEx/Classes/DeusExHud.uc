@@ -83,7 +83,7 @@ simulated event PostRender(canvas C)
 	if (PlayerOwner.pawn == none)
 	    return;
 
-	TrackActors(C);
+//	TrackActors(C);
 
 	if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
 	RenderDebugInfo(C);
@@ -107,13 +107,15 @@ function TrackActors(Canvas C)
 		{
 		 if (TDeco != none)
 		 {
-      if ((Tdeco.bStatic == false) &&
-      (Tdeco.IsA('AutoTurretGun')) || (Tdeco.IsA('AutoTurret'))
-   || (Tdeco.IsA('SecurityCamera') || (Tdeco.IsA('AlarmLight'))))
+		    if ((AutoTurretGun(TDeco) != none) || (AutoTurret(TDeco) != none) || (SecurityCamera(TDeco) != none) || (AlarmLight(TDeco) != none))
+//		       TDeco.LastRenderTime = Level.TimeSeconds;
+//      if ((Tdeco.bStatic == false) && (Level.TimeSeconds - tDeco.LastRenderTime > 4) ||
+//      (Tdeco.IsA('AutoTurretGun')) || (Tdeco.IsA('AutoTurret'))
+//   || (Tdeco.IsA('SecurityCamera') || (Tdeco.IsA('AlarmLight'))))
 //   || (tDeco.IsA('conplay'))))
       {
        //C.DrawActor(Tdeco, false, false, 0);
-              C.DrawActor(Tdeco, true, false, 0);
+              C.DrawActor(Tdeco, true, true, 0);
       }                        /*wireframe, clearZ, angle*/
 		 }
 		}

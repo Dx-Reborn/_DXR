@@ -25,8 +25,8 @@ function CalcTrace(float deltaTime)
 	HitActor = None;
 
 	// trace the path of the reflected beam and draw points at each hit
-	for (i=0; i<ArrayCount(spot); i++)
-	{
+//	for (i=0; i<ArrayCount(spot); i++)
+//	{
 //    foreach TraceActors(class'Actor', target, HitLocation, HitNormal, EndTrace, StartTrace)
    	foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, StartTrace, HitNormal, EndTrace)
 		{
@@ -34,7 +34,7 @@ function CalcTrace(float deltaTime)
 			{
 				// do nothing - keep on tracing
 			}
-			else if ((target == Level) || target.IsA('Mover') || target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
+			else if ((target == Level) || target.IsA('Mover'))// || target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
 			{
 				break;
 			}
@@ -46,38 +46,41 @@ function CalcTrace(float deltaTime)
 		}
 
 		// draw first beam
-		if (i == 0)
-		{
+//		if (i == 0)
+//		{
 //			if (LaserIterator != None)
 //				LaserIterator.AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
-          BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(Location - HitLocation);
-          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(Location - HitLocation);
-		}
-		else
-		{
+  //        BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(Location - HitActor.Location);
+//          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(Location - HitActor.Location);
+//            DeusExHUD(level.GetLocalPlayerController().MyHUD).DebugConString2=string(VSize(Location - HitLocation));
+//             EndTrace = HitActor.Location;
+//		}
+//		else
+//		{
 //			if (LaserIterator != None)
 //				LaserIterator.AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
-          BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(StartTrace - HitLocation - HitNormal);
-          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(StartTrace - HitLocation - HitNormal);
-		}
+//          BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(StartTrace - HitLocation - HitNormal);
+//          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(StartTrace - HitLocation - HitNormal);
+//                      DeusExHUD(level.GetLocalPlayerController().MyHUD).DebugConString2=string(VSize(Location - HitLocation));
+//		}
 
-		if (spot[i] == None)
+/*		if (spot[i] == None)
 		{
 			spot[i] = Spawn(class'LaserSpot', Self, , HitLocation, Rotator(HitNormal));
 			if (bBlueBeam && (spot[i] != None))
-				spot[i].Texture = Texture'LaserSpot2'; /*Skins[0]*/
+				spot[i].Texture = Texture'LaserSpot2';
 		}
 		else
 		{
 			spot[i].SetLocation(HitLocation);
 			spot[i].SetRotation(Rotator(HitNormal));
-		}
+		}*/
 
 		// Отражение вроде как работает, но выглядит странно, возможно нужно "сгибать" луч или создавать несколько эмиттеров...
 		// don't reflect any more if we don't hit a mirror
 		// 0x08000000 is the PF_Mirrored flag from UnObj.h
-		if ((texFlags & /*0x08000000*/0x20000000) == 0)
-		{
+//		if ((texFlags & /*0x08000000*/0x20000000) == 0)
+/*		{
 			// kill all of the other spots after this one
 			if (i < ArrayCount(spot)-1)
 			{
@@ -94,11 +97,11 @@ function CalcTrace(float deltaTime)
 				} until (i>=ArrayCount(spot)-1);
 			}
 			return;
-		}
-		Reflection = MirrorVectorByNormal(Normal(HitLocation - StartTrace), HitNormal);
-		StartTrace = HitLocation + HitNormal;
-		EndTrace = Reflection * 10000;
-	}
+		}*/
+//		Reflection = MirrorVectorByNormal(Normal(HitLocation - StartTrace), HitNormal);
+//		StartTrace = HitLocation + HitNormal;
+//		EndTrace = Reflection * 10000;
+//	}
 }
 
 function TurnOn()

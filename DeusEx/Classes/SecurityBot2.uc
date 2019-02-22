@@ -75,7 +75,8 @@ defaultproperties
      //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SecurityBot2'
      CollisionRadius=62.000000
-     CollisionHeight=58.279999
+     CollisionHeight=53.78
+     //CollisionHeight=58.279999
      Mass=800.000000
      Buoyancy=100.000000
 

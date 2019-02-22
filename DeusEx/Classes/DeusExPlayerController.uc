@@ -224,7 +224,7 @@ exec function SpawnMass(Name ClassName, optional int TotalCount)
 	direction = Pawn.GetViewRotation();
 	direction.pitch = 0;
 	direction.roll  = 0;
-	center = pawn.Location + Vector(direction)*(maxRange+SpawnClass.Default.CollisionRadius+CollisionRadius+20);
+	center = pawn.Location + Vector(direction)*(maxRange+SpawnClass.default.CollisionRadius+pawn.CollisionRadius+20);
 	while ((count < totalCount) && (numTries < maxTries))
 	{
 		angle = FRand()*3.14159265359*2;
@@ -232,7 +232,7 @@ exec function SpawnMass(Name ClassName, optional int TotalCount)
 		spawnPos.X = sin(angle)*range;
 		spawnPos.Y = cos(angle)*range;
 		spawnPos.Z = 0;
-		spawnee = spawn(SpawnClass,,,center+spawnPos, Rotation);
+		spawnee = spawn(SpawnClass,,,center+spawnPos, GetViewRotation());
 		if (spawnee != None)
 			count++;
 		numTries++;

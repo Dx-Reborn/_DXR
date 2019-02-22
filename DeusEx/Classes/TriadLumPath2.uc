@@ -29,6 +29,7 @@ defaultproperties
      skins(6)=Texture'DeusExItems.Skins.BlackMaskTex'
      skins(7)=Texture'DeusExCharacters.Skins.PonytailTex1'
      CollisionRadius=16.799999
-     CollisionHeight=48.830002
+     //CollisionHeight=48.830002
+     CollisionHeight=44.33
      Buoyancy=97.000000
 }

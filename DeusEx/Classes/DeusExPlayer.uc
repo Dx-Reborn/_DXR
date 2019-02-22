@@ -2551,7 +2551,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 // Какой контроллер вызвал смерть, это должен быть контроллер ИИ, но можно указать None
 		Died(None, damageType, HitLocation);
 		bHidden=true;
-		goToState('Dying');
+		GoToState('Dying');
 //		Died( None, class'DamTypeMutant', Location);
 		return;
 	}
@@ -2856,7 +2856,7 @@ function PlayHit(float Damage, Pawn InstigatedBy, vector HitLocation, class<Dama
 			else 
 				DeusExPlayerController(controller).ClientFlash(rnd * 0.002, vect(50,0,0));
 
-			DeusExPlayerController(controller).DamageShake(damage * 10);
+//			DeusExPlayerController(controller).DamageShake(damage * 10);
 		}
 	}
 }
@@ -5587,44 +5587,6 @@ function RemoveItemDuringConversation(Inventory item)
 /* ----------------------------------------------------------------- */
 defaultproperties
 {
-/*    MovementAnims(0)=Run
-    MovementAnims(1)=Run
-    MovementAnims(2)=Run
-    MovementAnims(3)=Run
-    WalkAnims(0)=Walk
-    WalkAnims(1)=Walk
-    WalkAnims(2)=Walk
-    WalkAnims(3)=Walk
-    SwimAnims(0)=tread
-    SwimAnims(1)=tread
-    SwimAnims(2)=tread
-    SwimAnims(3)=tread
-    LandAnims(0)=Land
-    LandAnims(1)=Land
-    LandAnims(2)=Land
-    LandAnims(3)=Land
-    CrouchAnims(0)=Crouch
-    CrouchAnims(1)=Crouch
-    CrouchAnims(2)=Crouch
-    CrouchAnims(3)=Crouch
-    AirAnims[0]=Tread
-    AirAnims[1]=Tread
-    AirAnims[2]=Tread
-    AirAnims[3]=Tread
-
-    AirStillAnim=panic
-
-    TurnRightAnim=HeadRight
-    TurnLeftAnim=HeadLeft
-    CrouchTurnRightAnim=CrouchWalk
-    CrouchTurnLeftAnim=CrouchWalk
-    IdleRestAnim=BreatheLight
-    IdleCrouchAnim=Crouch
-    IdleSwimAnim=Tread
-    IdleWeaponAnim=BreatheLight
-    IdleChatAnim=BreatheLight*/
-//-------------------------------------------
-//		bPlayOwnFootSteps=false
 		bCanWalkOffLedges=true
 		bAvoidLedges=false		// don't get too close to ledges
 		bStopAtLedges=false		// if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all

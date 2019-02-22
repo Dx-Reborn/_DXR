@@ -23,5 +23,6 @@ defaultproperties
      skins(6)=Texture'DeusExItems.Skins.GrayMaskTex'
      skins(7)=Texture'DeusExItems.Skins.BlackMaskTex'
      CollisionRadius=20.000000
-     CollisionHeight=47.500000
+     CollisionHeight=43.000000
+//     CollisionHeight=47.500000
 }

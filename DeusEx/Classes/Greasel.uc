@@ -52,11 +52,12 @@ defaultproperties
      Health=100
      UnderWaterTime=99999.000000
      //  AttitudeToPlayer=ATTITUDE_Ignore
-     //  HitSound1=Sound'DeusExSounds.Animal.GreaselPainSmall'
-     //  HitSound2=Sound'DeusExSounds.Animal.GreaselPainLarge'
+     HitSound1=Sound'DeusExSounds.Animal.GreaselPainSmall'
+     HitSound2=Sound'DeusExSounds.Animal.GreaselPainLarge'
      die=Sound'DeusExSounds.Animal.GreaselDeath'
      Mesh=mesh'DeusExCharacters.Greasel'
-     CollisionHeight=17.879999
+     //CollisionHeight=17.879999
+     CollisionHeight=13.37
      Mass=40.000000
      Buoyancy=40.000000
 }

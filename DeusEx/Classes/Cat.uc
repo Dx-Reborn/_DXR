@@ -75,7 +75,8 @@ defaultproperties
      die=Sound'DeusExSounds.Animal.CatDie'
      Mesh=mesh'DeusExCharacters.Cat'
      CollisionRadius=17.000000
-     CollisionHeight=11.300000
+     CollisionHeight=6.8
+     //CollisionHeight=11.300000
      bBlockActors=False
      Mass=10.000000
      Buoyancy=97.000000

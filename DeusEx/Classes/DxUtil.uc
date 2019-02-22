@@ -561,16 +561,8 @@ simulated final static function Vector VDiskRand2D(float DiskRadius)
    return Point;
 }
 
-static function rotator RandomBiasedRotation(int centralYaw, float yawDistribution,int centralPitch, float pitchDistribution)
-{
-  local rotator rezultat;
-
-  rezultat = rotRand(true);
-  rezultat.Yaw = 0;
-
-  return rezultat;
-}
-
+// Sth strange?
+static function rotator RandomBiasedRotation(INT centralYaw, FLOAT yawDistribution, INT centralPitch, FLOAT pitchDistribution);
 
 static function array<byte> GetFileAsArray(string path)
 {

@@ -127,7 +127,6 @@ function Tick(float deltaTime)
 {
 	local float ang;
 	local Rotator rot;
-//   local DeusExPlayer curplayer;
 
    Super.Tick(deltaTime);
 
