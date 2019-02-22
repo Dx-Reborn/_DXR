@@ -45,7 +45,6 @@ var Name			CarcassName;		// original name of carcass
 var int				MaxDamage;			// maximum amount of cumulative damage
 var bool			bNotDead;			// this body is just unconscious
 var() bool			bEmitCarcass;		// make other NPCs aware of this body
-//var bool		    bQueuedDestroy;	// For multiplayer, semaphore so you can't doublefrob bodies (since destroy is latent)
 
 var bool			bInit;
 
@@ -107,7 +106,7 @@ function ChunkUp(int Damage)
 // ----------------------------------------------------------------------
 function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
 {
-//	local int i;
+	local int i;
 
 	if (bInvincible)
 		return;
@@ -118,10 +117,10 @@ function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vecto
 	{
 		if ((damageType != class'DM_Munch') && (damageType != class'DM_Tantalus'))
 		{
-/*			spawn(class'xEffects.BloodSpurt',,,HitLocation);
-			spawn(class'xEffects.BloodJet',,, HitLocation);
-			for (i=0; i<Damage; i+=10)
-				spawn(class'xEffects.BloodExplosion',,, HitLocation);*/
+        spawn(class'BloodSpurt',,,HitLocation);
+        spawn(class'BloodDrop',,, HitLocation);
+           for (i=0; i<Damage; i+=10)
+             spawn(class'BloodDrop',,, HitLocation);
 		}
 
 		// this section copied from Carcass::TakeDamage() and modified a little
@@ -792,7 +791,9 @@ Begin:
 function Landed(vector HitNormal)
 {
   super.Landed(HitNormal);
-  PlaySound(sound'pl_jumpland1');
+
+  if (!PhysicsVolume.bWaterVolume)
+      PlaySound(sound'pl_jumpland1');
 }
 
 
