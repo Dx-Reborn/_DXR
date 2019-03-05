@@ -3,6 +3,16 @@
 //=============================================================================
 class BarrelFire extends Containers;
 
+enum EBarrelFireType
+{
+	BFT_Always, // Spawn extra flame emitter
+	BFT_Random, // Same as first, but randomly
+	BFT_Off, // No flame emitter, just regular BarrelFire
+	BFT_NoFlame // No flame at all
+};
+
+var() EBarrelFireType TypeOfFire;
+var EM_TorchFire flame;
 var float lastDamageTime;
 
 function DamageOther(Actor Other)
@@ -18,28 +28,49 @@ function DamageOther(Actor Other)
 	}
 }
 
+function SpawnFlame()
+{
+  if (TypeOfFire == BFT_Always)
+   flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+  else if ((TypeOfFire == BFT_Random) && (FRand() > 0.5))
+   flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+  else if (TypeOfFire == BFT_Off)
+   return; // Do nothing
+  else if (TypeOfFire == BFT_NoFlame)
+  {
+    bUnlit = false;
+    LightRadius = 0;
+    LightType = LT_None;
+    Skins[2] = texture'PinkMaskTex';
+    Mass = 60.00;
+    return;
+  }
+
+	if (flame != None)
+	{
+		flame.SetBase(self);
+	}
+}
+
 function beginPlay()
 {
-	Local EM_TorchFire flame;
-
 		Super.BeginPlay();
-
-		flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
-		if (flame != None)
-		{
-			flame.SetBase(self);
-		}
+		SpawnFlame();
 }
 
 singular function SupportActor(Actor Other)
 {
-	DamageOther(Other);
+  if (TypeOfFire != BFT_NoFlame)
+	    DamageOther(Other);
+
 	Super.SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
-	DamageOther(Other);
+  if (TypeOfFire != BFT_NoFlame)
+	    DamageOther(Other);
+
 	Super.Bump(Other);
 }
 
@@ -61,7 +92,6 @@ defaultproperties
      CollisionHeight=29.000000
     LightEffect=LE_None
     LightType=LT_SubtlePulse
-//    texture=Texture'Effects_EX.Fire.fire_pal_loop'
     LightPeriod=2
      LightBrightness=128
      LightHue=32
@@ -74,4 +104,5 @@ defaultproperties
      skins[2]=Shader'Effects_EX.Fire.flameJ_SH'
 
      bDynamicLight=true
+     TypeOfFire=BFT_Random
 }
