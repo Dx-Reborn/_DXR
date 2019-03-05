@@ -12,18 +12,18 @@ var int i;                // Internal counter.
 //
 // When RoundRobin is triggered...
 //
-function Trigger( actor Other, pawn EventInstigator )
+function Trigger(actor Other, pawn EventInstigator)
 {
 	local actor A;
-	if( OutEvents[i] != '' )
+	if (OutEvents[i] != '')
 	{
-		foreach AllActors( class 'Actor', A, OutEvents[i] )		
+		foreach AllActors(class'Actor', A, OutEvents[i])
 		{
 			A.Trigger( Self, EventInstigator );
 		}
-		if( ++i>=ArrayCount(OutEvents) || OutEvents[i]=='' )
+		if (++i>=ArrayCount(OutEvents) || OutEvents[i]=='')
 		{
-			if( bLoop ) i=0;
+			if (bLoop) i=0;
 			else
 				SetCollision(false,false,false);
 		}
@@ -32,4 +32,5 @@ function Trigger( actor Other, pawn EventInstigator )
 
 defaultproperties
 {
+  Texture=SubActionTrigger // DXR: Better sprite
 }
