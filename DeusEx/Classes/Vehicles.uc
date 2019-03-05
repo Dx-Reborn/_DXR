@@ -30,23 +30,16 @@ function StartInterpolation()
 		bInterpolating = True;
 		bStasis = false;
 		GotoState('Interpolating');
-
 }
 
 
 state Interpolating
 {
-//  function Tick(float deltaTime)
-//  {
-//  }
 	// check to see if we are done interpolating, if so, then destroy us
 	function FinishedInterpolation()// (Actor Other)
 	{
 	    Super.FinishedInterpolation();
-//		Super.InterpolateEnd(Other);
-
-//		if (InterpolationPoint(Other).bEndOfPath)
-			Destroy();
+//			Destroy();
 	}
 }
 
@@ -90,12 +83,12 @@ function PutInWorld(bool bEnter)
 	else if (!bInWorld && bEnter)
 	{
 		bInWorld    = true;
-		bHidden     = Default.bHidden;
-		bDetectable = Default.bDetectable;
+		bHidden     = default.bHidden;
+		bDetectable = default.bDetectable;
 		SetLocation(WorldPosition);
 		SetCollision(default.bCollideActors, default.bBlockActors, default.bBlockPlayers);
-		bCollideWorld = Default.bCollideWorld;
-		SetPhysics(Default.Physics);
+		bCollideWorld = default.bCollideWorld;
+		SetPhysics(default.Physics);
 	}
 }
 
