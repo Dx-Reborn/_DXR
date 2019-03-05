@@ -129,5 +129,3 @@ class ImportTextures extends Object;
 #exec Texture Import File=Textures\DXR_PersonaButtonA.tga Name=DXR_PersonaButtonA Mips=Off Alpha=true Masked=true LODSET=LODSET_Interface // UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
 
 #exec Texture Import File=Textures\DXR_MenuMainBackground.bmp Name=DXR_MenuMainBackground Mips=Off Masked=true LODSET=LODSET_Interface
-
-

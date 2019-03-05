@@ -21,6 +21,8 @@ Class ImportCustomIcons extends Object
 #exec Texture Import File=Textures\S_Military.pcx Name=S_Military Mips=Off MASKED=1
 #exec Texture Import File=Textures\S_Patrol.bmp Name=S_Patrol Mips=Off MASKED=1
 #exec Texture Import File=Textures\S_Weapon.bmp Name=S_Weapon Mips=Off MASKED=1
+// Новые спрайты
+#exec Texture Import File=textures\HomeBase.tga Name=HomeBase Misp=Off ALPHA=true
 
 // Из Extension.u
 
@@ -35,3 +37,4 @@ Class ImportCustomIcons extends Object
 
 
 #exec Texture Import File=Textures\CrossSquare.pcx Name=CrossSquare Mips=off MASKED=1
+
