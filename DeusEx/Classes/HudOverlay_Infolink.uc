@@ -79,7 +79,7 @@ function Render(canvas c)
 		if (bDrawEffects)
         c.DrawTile(TexPanner'DeusExControls.Controls.scrolling',64,64,0,0,64,64);
 
-   c.Font = Font'DxFonts.Inf_9';//FontFixedWidthSmall_DS';
+   c.Font = Font'DxFonts.Inf_9';//font'FontFixedWidthSmall_DS';
    c.SetOrigin(199,37);
    c.SetPos(0,0);
    c.SetClip(291,c.SizeY);

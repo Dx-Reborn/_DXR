@@ -35,7 +35,7 @@ function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, Scripted
 event SetupSpecialPathAbilities()
 {
    //log(pawn@"SetupSpecialPathAbilities ?");
-   ScriptedPawn(pawn).AlterDestination();
+//   ScriptedPawn(pawn).AlterDestination();
 }
 
 
@@ -330,6 +330,18 @@ function RestoreFocus()
    FocalPoint = PrevLookVector;
 }
 
+
+function StopAcc()
+{
+	if(pawn.Physics == PHYS_WALKING)
+	{
+		// Don't set Z values
+		pawn.Acceleration = vect(0,0,0);
+		pawn.Velocity = vect(0, 0, 0);
+	}
+}
+
+
 function Actor GetNextWaypoint(Actor dest)
 {
 	local Actor rMoveTarget;
@@ -495,6 +507,19 @@ function bool AIPickRandomDestination(float minDist, float maxDist,
   return true;//???
 }
 
+function actor FindPathToward2(Actor A, bool bAllowDetour)
+{
+  local actor act;
+
+	if (ActorReachable(A))
+		return A;
+	else
+		return FindPathToward(A,bAllowDetour);
+
+//		if ( bSoaking && (Physics != PHYS_Falling) )
+//			SoakStop("COULDN'T FIND BEST PATH TO "$A);
+}
+
 function EnableCheckDestLoc(bool bEnable)
 {
   ScriptedPawn(Pawn).EnableCheckDestLoc(bEnable);
@@ -620,7 +645,7 @@ state Paralyzed
 	function EndState()
 	{
 		ScriptedPawn(pawn).ResetReactions();
-		ScriptedPawn(pawn).bCanConverse = True;
+		ScriptedPawn(pawn).bCanConverse = true;
 	}
 
 Begin:
@@ -758,7 +783,11 @@ Moving:
 		if (!IsPointInCylinder(pawn, ScriptedPawn(pawn).destPoint.Location, 16-pawn.CollisionRadius)) // self?
 		{
 			scriptedPawn(pawn).EnableCheckDestLoc(true);
-			MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint, true);
+			MoveTarget = FindPathToward2(ScriptedPawn(pawn).destPoint, false);
+
+			if (pawn.name == 'Soldier0')
+          log(pawn$" movetarget = "$moveTarget);
+
 			while (MoveTarget != None)
 			{
 				if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
@@ -773,7 +802,8 @@ Moving:
 				if (MoveTarget == ScriptedPawn(pawn).destPoint)
 					break;
 
-				MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint, /*true*/ false);
+				MoveTarget = FindPathToward2(ScriptedPawn(pawn).destPoint, false);
+
 			}
 			scriptedPawn(pawn).EnableCheckDestLoc(false);
 		}
@@ -1322,7 +1352,7 @@ ContinueFromDoor:
 
 state FallingState 
 {
-//	ignores NotifyBump, NotifyHitwall;//, WarnTarget, ReactToInjury;
+	ignores NotifyBump, NotifyHitwall;//, WarnTarget, ReactToInjury;
 
   event bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
 	{
@@ -1461,7 +1491,7 @@ LongFall:
 		else
 			pawn.Velocity = pawn.groundspeed * VRand();
 
-		Velocity.Z = FMax(ScriptedPawn(pawn).JumpZ, 250);
+		  pawn.Velocity.Z = FMax(ScriptedPawn(pawn).JumpZ, 250);
 	}
 	Goto('LongFall');
 
