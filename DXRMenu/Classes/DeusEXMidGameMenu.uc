@@ -42,29 +42,17 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 	return false;
 }
 
+/*
+Back to Game
+Settings
+Save Game
+Load Game
+Exit current Game
+Exit
+*/
+
 function CreateMControls()
 {
-  bQuit = new(none) class'GUIButton';
-  bQuit.OnClick=InternalOnClick;
-  bQuit.RenderWeight = 1.0;
-  bQuit.StyleName="STY_DXR_DeusExRectButton";
-  bQuit.Caption = strQuit;
-  bQuit.WinHeight = 32;
-  bQuit.WinWidth = 243;
-  bQuit.WinLeft = 16;
-  bQuit.WinTop = 33;
-	AppendComponent(bQuit, true);
-
-  bExitCurrent = new(none) class'GUIButton';
-  bExitCurrent.OnClick=InternalOnClick;
-  bExitCurrent.StyleName="STY_DXR_DeusExRectButton";
-  bExitCurrent.Caption = strExitcurrent;
-  bExitCurrent.WinHeight = 32;
-  bExitCurrent.WinWidth = 243;
-  bExitCurrent.WinLeft = 16;
-  bExitCurrent.WinTop = 70;
-	AppendComponent(bExitCurrent, true);
-
   bContinue = new(none) class'GUIButton';
   bContinue.OnClick=InternalOnClick;
   bContinue.StyleName="STY_DXR_DeusExRectButton";
@@ -72,7 +60,7 @@ function CreateMControls()
   bContinue.WinHeight = 32;
   bContinue.WinWidth = 243;
   bContinue.WinLeft = 16;
-  bContinue.WinTop = 105;
+  bContinue.WinTop = 33;
 	AppendComponent(bContinue, true);
 
   bSettings = new(none) class'GUIButton';
@@ -82,7 +70,7 @@ function CreateMControls()
   bSettings.WinHeight = 32;
   bSettings.WinWidth = 243;
   bSettings.WinLeft = 16;
-  bSettings.WinTop = 142;
+  bSettings.WinTop = 70;
 	AppendComponent(bSettings, true);
 
   bSaveGame = new(none) class'GUIButton';
@@ -92,7 +80,7 @@ function CreateMControls()
   bSaveGame.WinHeight = 32;
   bSaveGame.WinWidth = 243;
   bSaveGame.WinLeft = 16;
-  bSaveGame.WinTop = 177;
+  bSaveGame.WinTop = 105;
 	AppendComponent(bSaveGame, true);
 
   bLoadGame = new(none) class'GUIButton';
@@ -102,8 +90,29 @@ function CreateMControls()
   bLoadGame.WinHeight = 32;
   bLoadGame.WinWidth = 243;
   bLoadGame.WinLeft = 16;
-  bLoadGame.WinTop = 214;
+  bLoadGame.WinTop = 142;
 	AppendComponent(bLoadGame, true);
+
+  bExitCurrent = new(none) class'GUIButton';
+  bExitCurrent.OnClick=InternalOnClick;
+  bExitCurrent.StyleName="STY_DXR_DeusExRectButton";
+  bExitCurrent.Caption = strExitcurrent;
+  bExitCurrent.WinHeight = 32;
+  bExitCurrent.WinWidth = 243;
+  bExitCurrent.WinLeft = 16;
+  bExitCurrent.WinTop = 177;
+	AppendComponent(bExitCurrent, true);
+
+  bQuit = new(none) class'GUIButton';
+  bQuit.OnClick=InternalOnClick;
+  bQuit.RenderWeight = 1.0;
+  bQuit.StyleName="STY_DXR_DeusExRectButton";
+  bQuit.Caption = strQuit;
+  bQuit.WinHeight = 32;
+  bQuit.WinWidth = 243;
+  bQuit.WinLeft = 16;
+  bQuit.WinTop = 214;
+	AppendComponent(bQuit, true);
 }
 
 event Opened(GUIComponent Sender)
