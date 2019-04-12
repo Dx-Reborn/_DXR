@@ -71,6 +71,13 @@ var() travel int HealthArmRight;
 var name NextState; //for queueing states
 var name NextLabel; //for queueing states
 
+// Moved from DxrNativeAiController.uc
+native final iterator function TraceActorsExt(class<Actor> BaseClass, out Actor OutActor, out vector HitLoc, out vector HitNorm, vector End, optional vector Start, optional vector Extent, optional int TraceFlags);
+
+native final function bool WalkReachable(Vector Dest, int ReachFlags, Actor GoalActor);
+native final function bool FlyReachable(Vector Dest, int ReachFlags, Actor GoalActor);
+native final function bool SwimReachable(Vector Dest, int ReachFlags, Actor GoalActor);
+
 function array<Object> GetConList()
 {
    return conList;

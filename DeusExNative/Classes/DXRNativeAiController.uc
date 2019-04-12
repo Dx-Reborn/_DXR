@@ -1,12 +1,20 @@
-class DXRNativeAiController extends AIController
-                                    native;
+class DxrNativeAiController extends AIController abstract native;
 
 
-native final iterator function CycleActors(class<actor> BaseClass, out Actor OutActor, out int OutIndex);
+var() bool bUseAlterDest;
 
-// replaces TraceVisibleActors()
-native final iterator function TraceActorsExt(class<actor> BaseClass, out actor OutActor, out vector HitLoc, out vector HitNorm, vector End, optional vector Start, optional vector Extent, optional int Trace_Flags);
+cpptext
+{
+	virtual UBOOL UseAlterDest() {
+		return bUseAlterDest;
+	}
 
-//var bool bUseAlterDest;
+	void SetUseAlterDest(UBOOL bUseAlterDest) {
+		this->bUseAlterDest = bUseAlterDest;
+	}
+}
 
-//event AlterDest();
+native final iterator function CycleActors(class<Actor> BaseClass, out Actor OutActor, out int OutIndex);
+
+event AlterDest();
+
