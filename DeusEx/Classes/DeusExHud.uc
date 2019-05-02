@@ -133,7 +133,7 @@ simulated function DisplayMessages(Canvas C)
 //	local DxCanvas dxc;
 //	local int x;
 
-  if ((cubeMapMode) || (PlayerOwner.pawn == none))
+  if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
   return;
 
 	    for(i = 0; i<ConsoleMessageCount; i++)

@@ -54,8 +54,10 @@ function ApplyTheme()
       i_FrameBG.ImageColor = class'DXR_Menu'.static.GetMenuBackground(gl.MenuThemeIndex);
 
   if (DeusExPlayer(PlayerOwner().pawn).bMenusTranslucent)
+  {
      if (i_FrameBG != none)
          i_FrameBG.ImageRenderStyle = MSTY_Translucent;
+  }
   else
      if (i_FrameBG != none)
          i_FrameBG.ImageRenderStyle = MSTY_Alpha;

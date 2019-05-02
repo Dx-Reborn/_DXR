@@ -262,16 +262,16 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
 	if ((!bForcePlay) && (!con.bDataLinkCon) && (!con.CheckActors(false))) // true для вывода списка в лог.
 	{
-		log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
-		return False;
+//		log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
+		return false;
 	}
 
 	// Now check to make sure that all the actors are a reasonable distance
 	// from one another (excluding the player)
 	if ((!bForcePlay) && (!con.CheckActorDistances(player)))
 	{
-		log(self$" forcePlay=false, "$con$"CheckActorDistances("$player$") false");
-		return False;
+//		log(self$" forcePlay=false, "$con$"CheckActorDistances("$player$") false");
+		return false;
 	}
 
 	// Save the mission number and location

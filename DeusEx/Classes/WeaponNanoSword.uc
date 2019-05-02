@@ -20,7 +20,7 @@ defaultproperties
      LightRadius=4
      bDynamicLight=true
      Mass=20.000000
-     prePivot=(X=-8,Y=18)
+//     prePivot=(X=-8,Y=18)
      Skins(0)=Texture'DeusExItems.Skins.NanoSword3rdTex1'
      Skins(1)=Shader'DeusExItemsEX.ExSkins.NanoSwordEx2'
      Skins(2)=Texture'DeusExItems.Skins.NanoSword3rdTex1'

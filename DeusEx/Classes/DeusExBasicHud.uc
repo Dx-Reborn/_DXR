@@ -332,7 +332,7 @@ function DrawTargetAugmentation(Canvas C)
 		// get friend/foe color info
 		if (target.IsA('ScriptedPawn'))
 		{
-			if (ScriptedPawn(target).GetPawnAllianceType(DXRPawn(Playerowner.pawn)) == ALLIANCE_Hostile)
+			if (ScriptedPawn(target).GetPawnAllianceType(DeusExPawn(Playerowner.pawn)) == ALLIANCE_Hostile)
 			{
 				crossColor.R = 255;
 				crossColor.G = 0;

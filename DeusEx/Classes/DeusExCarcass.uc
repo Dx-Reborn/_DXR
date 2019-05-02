@@ -254,7 +254,7 @@ function InitFor(Actor Other)
 		if (Other.Instigator != None)
 		{
 			KillerBindName = Other.Instigator.GetBindName();
-			KillerAlliance = DXRPawn(Other.Instigator).Alliance;
+			KillerAlliance = DeusExPawn(Other.Instigator).Alliance;
 		}
 		else
 		{
@@ -262,7 +262,7 @@ function InitFor(Actor Other)
 			KillerAlliance = '';
 		}
 		Tag = Other.Tag;
-		Alliance = DXRPawn(Other).Alliance;
+		Alliance = DeusExPawn(Other).Alliance;
 		CarcassName = Other.Name;
 	}
 }

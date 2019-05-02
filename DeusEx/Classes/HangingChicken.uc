@@ -30,7 +30,7 @@ defaultproperties
      FragType=Class'DeusEx.FleshFragment'
      ItemName="Slaughtered Chicken"
      mesh=mesh'DeusExDeco.HangingChicken'
-     PrePivot=(Z=31.680000)
+//     PrePivot=(Z=31.680000)
      CollisionRadius=15.000000
      CollisionHeight=31.680000
      Mass=60.000000

@@ -30,7 +30,7 @@ defaultproperties
      FragType=Class'DeusEx.PaperFragment'
      ItemName="Paper Lantern"
      mesh=mesh'DeusExDeco.HKHangingLantern2'
-     PrePivot=(Z=11.000000)
+//     PrePivot=(Z=11.000000)
      CollisionRadius=7.000000
      CollisionHeight=11.000000
      Mass=20.000000

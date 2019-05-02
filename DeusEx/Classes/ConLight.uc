@@ -67,7 +67,7 @@ defaultproperties
     bStatic=False
     bNoDelete=False
     bMovable=True
-    LightType=LT_None
+    LightType=LT_Steady
     LightEffect=LE_NonIncidence
     LightBrightness=255
     LightRadius=3

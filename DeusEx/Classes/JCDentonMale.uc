@@ -301,6 +301,17 @@ exec function ActorIdx()
   }
 }
 
+exec function reachspec()
+{
+   local reachspec rs;
+
+   foreach AllObjects(class'ReachSpec', rs)
+   {
+      if (rs.CollisionHeight == 44)
+      rs.CollisionHeight = 51;
+   }
+}
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 

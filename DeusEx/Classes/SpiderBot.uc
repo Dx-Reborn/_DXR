@@ -23,8 +23,11 @@ defaultproperties
      UnderWaterTime=20.000000
      //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SpiderBot'
-     CollisionRadius=111.930000
-     CollisionHeight=46.290000
+
+     // Wider than 72 can't use green paths!
+     CollisionRadius=72.00
+//     CollisionRadius=111.930000
+     CollisionHeight=46.29
      //CollisionHeight=50.790001
      Mass=1000.000000
      Buoyancy=100.000000

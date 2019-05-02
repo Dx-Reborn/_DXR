@@ -62,7 +62,7 @@ function SetInitialState()
 
 function Tick(float deltaTime)
 {
-	local DXRPawn pawn;
+	local DeusExPawn pawn;
 	local ScriptedPawn sp;
 	local DeusExDecoration deco;
 	local float near;
@@ -107,7 +107,7 @@ function Tick(float deltaTime)
 			// Attack allies and neutrals
 			if (bTrackPlayersOnly || (!bTrackPlayersOnly && !bTrackPawnsOnly))
 			{
-				foreach gun.VisibleActors(class'DXRPawn', pawn, maxRange, gun.Location)
+				foreach gun.VisibleActors(class'DeusExPawn', pawn, maxRange, gun.Location)
 				{
 					if (pawn.bDetectable && !pawn.bIgnore)
 					{
@@ -120,7 +120,7 @@ function Tick(float deltaTime)
 								break;
 							}
 						}
-						else if (pawn.IsA('ScriptedPawn') && (ScriptedPawn(pawn).GetPawnAllianceType(DXRPawn(GetPlayerPawn())) != ALLIANCE_Hostile))
+						else if (pawn.IsA('ScriptedPawn') && (ScriptedPawn(pawn).GetPawnAllianceType(DeusExPawn(GetPlayerPawn())) != ALLIANCE_Hostile))
 						{
 							curTarget = pawn;
 							break;
@@ -147,7 +147,7 @@ function Tick(float deltaTime)
 				// Attack enemies
 				foreach gun.VisibleActors(class'ScriptedPawn', sp, maxRange, gun.Location)
 				{
-					if (sp.bDetectable && !sp.bIgnore && (sp.GetPawnAllianceType(DXRPawn(GetPlayerPawn())) == ALLIANCE_Hostile))
+					if (sp.bDetectable && !sp.bIgnore && (sp.GetPawnAllianceType(DeusExPawn(GetPlayerPawn())) == ALLIANCE_Hostile))
 					{
 						curTarget = sp;
 						break;

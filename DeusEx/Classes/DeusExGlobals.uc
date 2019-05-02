@@ -412,10 +412,10 @@ function ResetGoals()
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 function AssignEvents(Actor LinkedActors[10], Actor invokeActor, levelInfo level, conDialogue con)
 {
-	local DXRPawn pawn;
+	local DeusExPawn pawn;
 	local DeusExDecoration deco;
 
-	foreach level.DynamicActors(class'DXRPawn',pawn)
+	foreach level.DynamicActors(class'DeusExPawn',pawn)
           AssignEventsToActor(LinkedActors, invokeActor, pawn, con);
 
 	foreach level.DynamicActors(class'DeusExDecoration',deco)

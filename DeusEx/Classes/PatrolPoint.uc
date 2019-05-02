@@ -1,7 +1,7 @@
 //=============================================================================
 // PatrolPoint.
 //=============================================================================
-class PatrolPoint extends SmallNavigationPoint
+class PatrolPoint extends /*SmallNavigationPoint*/ PathNode
                           placeable;
 
 var() name Nextpatrol; //next point to go to
@@ -14,25 +14,6 @@ var int	AnimCount;
 var PatrolPoint NextPatrolPoint;
 var int LoopTimes;
 
-function touch(actor act)
-{
-  log(self$" touched by "$act);
-}
-
-
-/*DEUS_EX STM -- fixed a bug involving NextPatrolPoint
-function PreBeginPlay()
-{
-	if (pausetime > 0.0)
-		lookdir = 200 * vector(Rotation);
-
-	//find the patrol point with the tag specified by Nextpatrol
-	foreach AllActors(class 'PatrolPoint', NextPatrolPoint, Nextpatrol)
-		break; 
-	
-	Super.PreBeginPlay();
-}
-*/
 function PreBeginPlay()
 {
 	local PatrolPoint CurPoint;
@@ -56,15 +37,11 @@ function PreBeginPlay()
 	
 	Super.PreBeginPlay();
 }
-// DEUS_EX STM -- end changes
-
 
 defaultproperties
 {
     bDirectional=True
     Texture=Texture'S_Patrol'
     SoundVolume=128
-//        CollisionRadius=12.00
-//    CollisionHeight=15.00
-     bHidden=false
+//    bHidden=false
 }

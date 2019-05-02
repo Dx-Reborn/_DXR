@@ -236,7 +236,7 @@ defaultproperties
      SoundRadius=14
      SoundVolume=255
      CollisionRadius=28.540001
-     CollisionHeight=24.04
+     CollisionHeight=32.04
 //     CollisionHeight=36.000000
      LightType=LT_Steady
      LightBrightness=32

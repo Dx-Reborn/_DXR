@@ -9,7 +9,7 @@ defaultproperties
      FragType=Class'DeusEx.GlassFragment'
      ItemName="Chandelier"
      mesh=mesh'DeusExDeco.Chandelier'
-     PrePivot=(Z=20.480000)
+//     PrePivot=(Z=20.480000)
      CollisionRadius=17.500000
      CollisionHeight=20.480000
      Mass=30.000000

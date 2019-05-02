@@ -1,11 +1,12 @@
-//
-// Base PlayerPawn class. Controlled by PlayerController.
-//
+/*
 
-class PlayerPawn extends DXRPawn config;
+*/
 
-enum EMusicMode
-{
+class PlayerPawn extends DeusExPlayerPawn
+                         config (DXRConfig);
+
+
+enum EMusicMode {
 	MUS_Ambient,
 	MUS_Combat,
 	MUS_Conversation,
@@ -18,8 +19,6 @@ var float savedSongPos;
 var float musicCheckTimer;
 var float musicChangeTimer;
 
-
-/* !!!EVEN DON NOT TRY TO EDIT THIS ARRAY!!!  */
 var(Flags) editconst travel array<byte> RawByteFlags;
 
 var localized String InventoryFull;
@@ -47,16 +46,45 @@ var travel bool bCrouchOn;				// used by toggle crouch // travel
 var travel bool bWasCrouchOn;			// used by toggle crouch
 var travel byte lastbDuck;				// used by toggle crouch
 
-var transient cameraeffect ce;    // Óêàçàòåëü íà ýôôåêò êàìåðû
+var transient cameraeffect ce;    // “ª § â¥«ì ­  íää¥ªâ ª ¬¥àë
 var bool bMblurActive;
 
-//=============================================================================
-// FindCameraEffect
-//
-// Looks for an existing CameraEffect object in the CameraEffects array first.
-// Only if it doesn't find one, it takes one from the ObjectPool.
-// That CameraEffect will be returned.
-//=============================================================================
+var DeusExGameInfo flagBase;
+var DeusExLevelInfo dxLevel;
+
+function DeusExGameInfo getFlagBase()
+{
+    if(flagBase == none)
+    {
+        flagBase = DeusExGameInfo(Level.Game);
+    }
+    return flagBase;
+}
+
+// ----------------------------------------------------------------------
+// GetLevelInfo()
+// ----------------------------------------------------------------------
+function DeusExLevelInfo GetLevelInfo()
+{
+	local DeusExLevelInfo info;
+
+	foreach AllActors(class'DeusExLevelInfo', info)
+		break;
+
+		if (info != none)
+		    DxLevel = info;
+
+	return info;
+}
+
+
+/*
+ FindCameraEffect
+
+ Looks for an existing CameraEffect object in the CameraEffects array first.
+ Only if it doesn't find one, it takes one from the ObjectPool.
+ That CameraEffect will be returned.
+*/
 simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, optional byte mBlurStrength)
 {
   local PlayerController PlayerControllerLocal;
@@ -64,19 +92,19 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
   local int i;
  
   PlayerControllerLocal = Level.GetLocalPlayerController();
-  if ( PlayerControllerLocal != None )
+  if (PlayerControllerLocal != None)
   {
     for (i = 0; i <PlayerControllerLocal.CameraEffects.Length; i++)
       if ( PlayerControllerLocal.CameraEffects[i].Class == CameraEffectClass)
       {
         CameraEffectFound = PlayerControllerLocal.CameraEffects[i];
-        log("Found"@CameraEffectFound@"in CammeraEffects array");
+        //log("Found"@CameraEffectFound@"in CammeraEffects array");
         break;
       }
     if ( CameraEffectFound == None )
     {
       CameraEffectFound = CameraEffect(Level.ObjectPool.AllocateObject(CameraEffectClass));
-      log("Got"@CameraEffectFound@"from ObjectPool");
+      //log("Got"@CameraEffectFound@"from ObjectPool");
     }
     if ( CameraEffectFound != None )
     {
@@ -90,14 +118,14 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
   return CameraEffectFound;
 }
 
-//=============================================================================
-// RemoveCameraEffect
-//
-// Removes one reference to the CameraEffect from the CameraEffects array. If
-// there are any more references to the same CameraEffect object, they remain
-// there. The CameraEffect will be put back in the ObjectPool if no other
-// references to it are left in the CameraEffects array.
-//=============================================================================
+/*
+ RemoveCameraEffect
+
+ Removes one reference to the CameraEffect from the CameraEffects array. If
+ there are any more references to the same CameraEffect object, they remain
+ there. The CameraEffect will be put back in the ObjectPool if no other
+ references to it are left in the CameraEffects array.
+*/
 simulated function RemoveCameraEffect(CameraEffect CameraEffect)
 {
   local PlayerController PlayerControllerLocal;

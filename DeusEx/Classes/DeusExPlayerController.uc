@@ -16,8 +16,8 @@ function SoakPause(Pawn P)
 	SetPause(true);
 	bBehindView = true;
 	myHud.bShowDebugInfo = true;
-	if (ScriptedPawn(P) != None )
-		ScriptedPawn(P).bSoakDebug = true;
+//	if (ScriptedPawn(P) != None )
+//		ScriptedPawn(P).bSoakDebug = true;
 }
 
 

@@ -29,17 +29,22 @@ function StartInterpolation()
 		SetPhysics(PHYS_Interpolating);
 		bInterpolating = True;
 		bStasis = false;
+		bFloating = false;//
 		GotoState('Interpolating');
 }
 
 
 state Interpolating
 {
+  event Tick(float dt)
+  {
+    //
+  }
 	// check to see if we are done interpolating, if so, then destroy us
-	function FinishedInterpolation()// (Actor Other)
+	function FinishedInterpolation()
 	{
 	    Super.FinishedInterpolation();
-//			Destroy();
+			Destroy();
 	}
 }
 
@@ -97,5 +102,5 @@ defaultproperties
     bInWorld=True
     bInvincible=True
     bPushable=False
-    Physics=0
+    Physics=PHYS_None
 }

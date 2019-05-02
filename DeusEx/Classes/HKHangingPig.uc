@@ -30,7 +30,7 @@ defaultproperties
      FragType=Class'DeusEx.FleshFragment'
      ItemName="Slaughtered Pig"
      mesh=mesh'DeusExDeco.HKHangingPig'
-     PrePivot=(Z=47.000000)
+//     PrePivot=(Z=47.000000)
      CollisionRadius=10.000000
      CollisionHeight=47.000000
      Mass=100.000000

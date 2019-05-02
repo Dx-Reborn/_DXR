@@ -487,8 +487,8 @@ function StartSpeakingAnimation()
 
 	if (speakingActor != None)
 	{
-		DXRPawn(speakingActor).bIsSpeaking = true;
-		DXRPawn(speakingActor).bWasSpeaking = true;
+		DeusExPawn(speakingActor).bIsSpeaking = true;
+		DeusExPawn(speakingActor).bWasSpeaking = true;
 	}
 }
 
@@ -501,7 +501,7 @@ function StopSpeakingAnimation()
 {
 	if ( Pawn(speakingActor) != None )
 	{
-		DXRPawn(speakingActor).bIsSpeaking = false;
+		DeusExPawn(speakingActor).bIsSpeaking = false;
 		speakingActor = None;
 	}
 }

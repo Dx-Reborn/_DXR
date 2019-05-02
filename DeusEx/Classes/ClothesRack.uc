@@ -32,7 +32,7 @@ defaultproperties
      FragType=Class'DeusEx.PaperFragment'
      ItemName="Hanging Clothes"
      mesh=mesh'DeusExDeco.ClothesRack'
-     PrePivot=(Z=24.750000)
+//     PrePivot=(Z=24.750000)
      CollisionRadius=13.000000
      CollisionHeight=24.750000
      Mass=60.000000

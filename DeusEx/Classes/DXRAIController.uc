@@ -13,7 +13,7 @@
   This will cause the latent function to "return". 
 */
 
-class DXRAiController extends DXRNativeAiController;
+class DXRAiController extends DeusExAiController;
 
 const Stunned_Delay = 15;
 const RubbingEyes_Delay = 15;
@@ -260,7 +260,7 @@ function FollowOrders(optional bool bDefer)
 function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImmediate)
 {
 	local bool bHostile;
-	local DXRPawn orderEnemy;
+	local DeusExPawn orderEnemy;
 
 	log("SetOrders from Controller: Name="$orderName$" OrderTag="$newOrderTag$" bImmediate="$bImmediate);
 
@@ -289,7 +289,7 @@ function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImm
 	else
 	{
 		ScriptedPawn(pawn).ReactionLevel = 1.0;
-		orderEnemy = DXRPawn(ScriptedPawn(pawn).FindTaggedActor(newOrderTag, false, Class'Pawn'));
+		orderEnemy = DeusExPawn(ScriptedPawn(pawn).FindTaggedActor(newOrderTag, false, Class'Pawn'));
 		if (orderEnemy != None)
 		{
 			ScriptedPawn(pawn).ChangeAlly(orderEnemy.Alliance, -1, true);

@@ -22,7 +22,7 @@ class DeusExPlayer extends PlayerPawn
 
 
 const maxAmountOfFire = 4;
-const DefaultStartMap = "01_NYC_UNATCOIsland";
+var const string DefaultStartMap;
 
 // When player management menu (Inventory or Augmentations for example) is opened...
 var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
@@ -66,15 +66,13 @@ var globalconfig bool bMenusTranslucent;
 var() travel int itemFovCorrection;
 
 var() editconst Actor FrobTarget;
-var float MaxFrobDistance;
+//var float MaxFrobDistance;
 var float FrobTime;
 
 var class<carcass> CarcassType;
 var transient bool bJustPickupCorpse;
 
 var float humanAnimRate;
-var name NextState; //for queueing states
-var name NextLabel; //for queueing states
 var() float ReducedDamagePct;
 
 // shake variables
@@ -146,14 +144,6 @@ var() array<SDeusExGoal> Goals;
 var() array<string> logMessages; // Сообщения (ClientMessage)
 /* -- !Сохраняемые данные ------------------------------------------------------------------------ */
 
-// hit extents for Deus Ex - DEUS_EX CNN
-var() travel int HealthHead;
-var() travel int HealthTorso;
-var() travel int HealthLegLeft;
-var() travel int HealthLegRight;
-var() travel int HealthArmLeft;
-var() travel int HealthArmRight;
-
 var int fireDamage;
 
 // Inventory System Vars
@@ -199,12 +189,6 @@ var float swimSoundTimer;
 // map that we're about to travel to after we finish interpolating
 var String NextMap;
 var bool bSpawndust; // Создавать пыль под ногами или нет? Конечно нет! После этого все дико тормозит :(
-
-//
-// misc. stuff for Deus Ex - DEUS_EX CNN
-//
-var bool bOnFire;
-var float burnTimer;
 
 var bool bStartingNewGame;							// Set to True when we're starting a new game. 
 var bool bSavingSkillsAugs;
@@ -1710,6 +1694,7 @@ function Landed(vector HitNormal)
 	else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
 		MakeNoise(0.1 * Level.Game.GameDifficulty);
     bJustLanded = true;
+
 }
 
 
@@ -1904,19 +1889,20 @@ function float GetCurrentGroundSpeed()
 	return speed;
 }
 
-event StartCrouch(float HeightAdjust)
+/*event StartCrouch(float HeightAdjust)
 {
   super.StartCrouch(HeightAdjust);
+  SetBasedPawnSize(Default.CollisionRadius, 15);
 }
 
 event EndCrouch(float HeightAdjust)
 {
   super.EndCrouch(HeightAdjust);
-}
+}*/
 
 function ShouldCrouch(bool Crouch)
 {
-    bWantsToCrouch = (Crouch || bToggleCrouch);
+   bWantsToCrouch = (Crouch || bToggleCrouch);
 } 
 
 exec function ToggleCrouch()
@@ -1970,9 +1956,6 @@ event Bump(Actor other)
 
 function bool DoJump(bool bUpdating)
 {
-//	local DeusExWeapon w;
-//	local float scaleFactor, augLevel;
-
 	if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
 		return false;
 	else if (bForceDuck || IsLeaning())
@@ -1987,11 +1970,12 @@ function bool DoJump(bool bUpdating)
 		Velocity.Z = JumpZ;
 
 		// reduce the jump velocity if you are crouching
-		if (bIsCrouched) // (bIsCrouching)
+		if (bIsCrouched)
 			Velocity.Z *= 0.9;
 
-		if ( Base != Level )
+		if (Base != Level)
 			Velocity.Z += Base.Velocity.Z;
+
 		SetPhysics(PHYS_Falling);
 		SetBasedPawnSize(default.CollisionRadius, 16);
 		if ( bCountJumps && (Role == ROLE_Authority) )
@@ -5581,8 +5565,7 @@ function RemoveItemDuringConversation(Inventory item)
 			conPlay.SetInHand(None);
 	}
 }
-
-		
+	
 
 /* ----------------------------------------------------------------- */
 defaultproperties
@@ -5620,7 +5603,7 @@ defaultproperties
      DodgeSpeedZ=210.000000
      AirControl=0.050000
 
-     MaxFrobDistance=112.0
+//     MaxFrobDistance=112.0
 
     CollisionRadius=20.00
     CollisionHeight=47.0
@@ -5711,4 +5694,6 @@ defaultproperties
 
     currentBeltNum=0
     bLOSHearing=false// true
+
+    DefaultStartMap="01_NYC_UNATCOIsland"
 }

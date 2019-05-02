@@ -3,11 +3,12 @@
 // 02/12/2017: добавлено state PlayerMousing (из примеров с UDN)
 //
 
-class PlayerControllerEXT extends DeusExNativePlayerController // playercontroller
-                                  config (DeusExNativePlayerController);
+class PlayerControllerEXT extends DeusExPlayerControllerExt
+                                  config (DXRConfig);
 
 #exec OBJ LOAD FILE=DeusExSounds
 
+var private editconst float savedMusicVolume, savedSpeechVolume, savedSoundVolume;
 var config  bool bIsAmericanWeek; // влияет только на первый день недели.
 var config int MenuThemeIndex;
 var config int HUDThemeIndex;
@@ -1243,6 +1244,30 @@ function ShowMidGameMenu(bool bPause)
 function DeusExGameInfo getFlagBase()
 {
   return DeusExGameInfo(Level.Game);
+}
+
+
+// Перемещено из DxrNativePlayerController
+function SetInstantMusicVolume(float vol)
+{
+  savedMusicVolume = float(ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"));
+  ConsoleCommand("set ini:Engine.Engine.AudioDevice MusicVolume"@vol);
+}
+
+function RestoreMusicVolume()
+{
+  ConsoleCommand("set ini:Engine.Engine.AudioDevice MusicVolume"@savedMusicVolume);
+}
+/*----------------------------------------------------------------------------------------*/
+function SetInstantSoundVolume(float vol)
+{
+  savedSoundVolume = float(ConsoleCommand("get ini:Engine.Engine.AudioDevice SoundVolume"));
+  ConsoleCommand("set ini:Engine.Engine.AudioDevice SoundVolume"@vol);
+}
+
+function RestoreSoundVolume()
+{
+  ConsoleCommand("set ini:Engine.Engine.AudioDevice SoundVolume"@savedSoundVolume);
 }
 
 defaultproperties
