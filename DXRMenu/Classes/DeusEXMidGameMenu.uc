@@ -2,7 +2,7 @@
   Меню "Пауза"
 --------------------------------------------------------------------*/
 
-class DeusExMidGameMenu extends DxWindowTemplate;//floatingwindow;
+class DeusExMidGameMenu extends DxWindowTemplate;
 
 #EXEC OBJ LOAD FILE=GuiContent.utx
 #EXEC OBJ LOAD FILE=2K4Menus.utx

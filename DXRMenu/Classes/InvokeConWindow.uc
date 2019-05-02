@@ -107,7 +107,7 @@ function CreateMyControls()
   btnEditFlags = new(none) class'GUIButton';
   btnEditFlags.FontScale = FNS_Small;
   btnEditFlags.Caption = "Edit Flags";
-  btnEditFlags.Hint = "Open Editor of game flags, where you can change values of flags. Can be also opened using ''ListFlags'' console command.";
+  btnEditFlags.Hint = "Open list of game flags, where you can change values of flags. Can be also opened using ''ListFlags'' console command.";
   btnEditFlags.StyleName="STY_DXR_MediumButton";
   btnEditFlags.OnClick = ButtonActivated;
   btnEditFlags.WinHeight = 21;

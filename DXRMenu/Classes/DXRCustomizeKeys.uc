@@ -7,7 +7,7 @@ class DXRCustomizeKeys extends DxWindowTemplate;
 struct S_KeyDisplayItem
 {
 	var() Interactions.EInputKey inputKey;
-	var() String DisplayName;
+	var() localized String DisplayName;
 };
 
 const AmountOfFunctions = 46;
@@ -32,7 +32,7 @@ var localized string InputHelpText;
 var localized string ReassignedFromLabel;
 
 var localized string strOK, strCancel, strDefault;
-var GUIButton btnDefault, btnOK, btnCancel;
+var GUIButton btnDefault, btnOK, btnCancel, btnSpecial;
 var GUIButton hdrKey, hdrAction;
 var GUILabel winHelp;
 
@@ -51,6 +51,7 @@ function CreateMyControls()
   lstKeys.WinHeight = 390;
   lstKeys.WinLeft = 17;
   lstKeys.WinTop = 41;
+  lstKeys.StyleName = "STY_DXR_Listbox";
   lstKeys.bScaleToParent = true;
   lstKeys.bBoundToParent = true;
 	AppendComponent(lstKeys, true);
@@ -105,6 +106,18 @@ function CreateMyControls()
   btnCancel.WinLeft = 316;
   btnCancel.WinTop = 529;
 	AppendComponent(btnCancel, true);
+
+	btnSpecial = new class'GUIButton';
+  btnSpecial.OnClick=InternalOnClick;
+  btnSpecial.fontScale = FNS_Small;
+  btnSpecial.StyleName="STY_DXR_MediumButton";
+  btnSpecial.Caption = strSpecial;
+  btnSpecial.Hint = "Does nothing for now";
+  btnSpecial.WinHeight = 21;
+  btnSpecial.WinWidth = 100;
+  btnSpecial.WinLeft = 216;
+  btnSpecial.WinTop = 529;
+	AppendComponent(btnSpecial, true);
 
 // Заголовки списка (список обычный, не multiColumn)
 
@@ -490,7 +503,6 @@ function ResetToDefaults()
 function ListChanged(GUIComponent Sender)
 {
   Selection = lstKeys.list.index;
-//  log(Sender$" selection = "$Selection);
 }
 
 function bool lstKeyEvent(out byte NewKey, out byte State, float delta)
@@ -532,6 +544,7 @@ function bool InternalOnClick(GUIComponent sender)
    if (sender == btnOK)
    {
        ProcessPending();
+       Controller.CloseMenu();
    }
    else if (sender == btnDefault)
    {
