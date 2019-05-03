@@ -1,6 +1,12 @@
-/*-----------------------------------------
-  Map Loading screen
------------------------------------------*/
+/*-----------------------------------------------
+  Map Loading screen. Each map has can have a description.
+
+  For example:
+  sML(3)=(sMapName="00_TrainingFinal",sMapCaption="Training - final")
+
+  Due to engine bug, length of array must be fixed,
+  for proper .int file generation.
+------------------------------------------------*/
 
 class DeusExLoading extends UT2K4ServerLoading;
 
@@ -10,7 +16,6 @@ struct sMapLocalized
 	var localized string sMapCaption;
 };
 
-//var() array<sMapLocalized> sML;
 var() sMapLocalized sML[100]; // Для локализации это подходит лучше.
 
 simulated event Init()
@@ -27,7 +32,6 @@ function string getMapDesc()
 
   TheMap = StripMap(MapName);
 
-//  for(z=0; z<sML.length; z++)
   for(z=0; z<ArrayCount(sML); z++)
   {
     if (sML[z].sMapName ~= TheMap)
@@ -39,8 +43,8 @@ function string getMapDesc()
 defaultproperties
 {
 /* Training */
-   sML(0)=(sMapName="00_Intro",sMapCaption="Intro")
-   sML(1)=(sMapName="00_Training",sMapCaption="Training - beginning")
+   sML(0)=(sMapName="00_Intro",sMapCaption="Вступление")
+   sML(1)=(sMapName="00_Training",sMapCaption="Тренировка - начало")
    sML(2)=(sMapName="00_TrainingCombat",sMapCaption="Training - combat")
    sML(3)=(sMapName="00_TrainingFinal",sMapCaption="Training - final")
 /*  */
@@ -80,29 +84,29 @@ defaultproperties
    sML(33)=(sMapName="05_NYC_UNATCOHQ",sMapCaption="NYC, UNATCOHQ")
    sML(34)=(sMapName="05_NYC_UNATCOIsland",sMapCaption="NYC, Liberty Island")
 
-   sML(35)=(sMapName="06_HongKong_Helibase",sMapCaption="short")
-   sML(36)=(sMapName="06_HongKong_MJ12lab",sMapCaption="short")
-   sML(37)=(sMapName="06_HongKong_Storage",sMapCaption="short")
-   sML(38)=(sMapName="06_HongKong_TongBase",sMapCaption="short")
-   sML(39)=(sMapName="06_HongKong_VersaLife",sMapCaption="short")
-   sML(40)=(sMapName="06_HongKong_WanChai_Canal",sMapCaption="short")
-   sML(41)=(sMapName="06_HongKong_WanChai_Garage",sMapCaption="short")
-   sML(42)=(sMapName="06_HongKong_WanChai_Market",sMapCaption="short")
-   sML(43)=(sMapName="06_HongKong_WanChai_Street",sMapCaption="short")
-   sML(44)=(sMapName="06_HongKong_WanChai_Underworld",sMapCaption="short")
+   sML(35)=(sMapName="06_HongKong_Helibase",sMapCaption="HongKong, Helibase")
+   sML(36)=(sMapName="06_HongKong_MJ12lab",sMapCaption="HongKong, Majestic 12 Laboratories")
+   sML(37)=(sMapName="06_HongKong_Storage",sMapCaption="HongKong, Universal Constructor")
+   sML(38)=(sMapName="06_HongKong_TongBase",sMapCaption="Убежище Трейсера Тонга")
+   sML(39)=(sMapName="06_HongKong_VersaLife",sMapCaption="Гонконг, корпорация Версалайф")
+   sML(40)=(sMapName="06_HongKong_WanChai_Canal",sMapCaption="Канал ВанЧай")
+   sML(41)=(sMapName="06_HongKong_WanChai_Garage",sMapCaption="ВанЧай, подземная дорога")
+   sML(42)=(sMapName="06_HongKong_WanChai_Market",sMapCaption="Район ВанЧай, рынок")
+   sML(43)=(sMapName="06_HongKong_WanChai_Street",sMapCaption="Район ВанЧай, улица")
+   sML(44)=(sMapName="06_HongKong_WanChai_Underworld",sMapCaption="Район ВанЧай, клуб LuckyMoney")
 
    sML(45)=(sMapName="08_NYC_Bar",sMapCaption="short")
-   sML(46)=(sMapName="08_NYC_FreeClinic",sMapCaption="short")
-   sML(47)=(sMapName="08_NYC_Hotel",sMapCaption="short")
-   sML(48)=(sMapName="08_NYC_Smug",sMapCaption="short")
-   sML(49)=(sMapName="08_NYC_Street",sMapCaption="short")
-   sML(50)=(sMapName="08_NYC_Underground",sMapCaption="short")
+   sML(46)=(sMapName="08_NYC_FreeClinic",sMapCaption="Бесплатная клиника")
+   sML(47)=(sMapName="08_NYC_Hotel",sMapCaption="Отель Hilton")
+   sML(48)=(sMapName="08_NYC_Smug",sMapCaption="Логово Контрабандиста")
+   sML(49)=(sMapName="08_NYC_Street",sMapCaption="Нью-Йорк")
+   sML(50)=(sMapName="08_NYC_Underground",sMapCaption="Канализация")
 
    sML(51)=(sMapName="09_NYC_Dockyard",sMapCaption="short")
-   sML(52)=(sMapName="09_NYC_Graveyard",sMapCaption="short")
+   sML(52)=(sMapName="09_NYC_Graveyard",sMapCaption="Нью-Йорк, кладбище")
    sML(53)=(sMapName="09_NYC_Ship",sMapCaption="short")
-   sML(54)=(sMapName="09_NYC_ShipBelow",sMapCaption="short")
-   sML(55)=(sMapName="09_NYC_ShipFan",sMapCaption="short")
+   sML(54)=(sMapName="09_NYC_ShipBelow",sMapCaption="Нижние палубы корабля")
+   sML(55)=(sMapName="09_NYC_ShipFan",sMapCaption="Вентиляция")
 
    sML(56)=(sMapName="10_Paris_Catacombs",sMapCaption="short")
    sML(57)=(sMapName="10_Paris_Catacombs_Tunnels",sMapCaption="short")
@@ -114,20 +118,20 @@ defaultproperties
    sML(62)=(sMapName="11_Paris_Everett",sMapCaption="short")
    sML(63)=(sMapName="11_Paris_Underground",sMapCaption="short")
 
-   sML(64)=(sMapName="12_Vandenberg_Cmd",sMapCaption="short")
-   sML(65)=(sMapName="12_Vandenberg_Computer",sMapCaption="short")
-   sML(66)=(sMapName="12_Vandenberg_Gas",sMapCaption="Abandoned gas station")
-   sML(67)=(sMapName="12_Vandenberg_Tunnels",sMapCaption="Vandenberg, Tunnels")
+   sML(64)=(sMapName="12_Vandenberg_Cmd",sMapCaption="База ВВС Ванденберг")
+   sML(65)=(sMapName="12_Vandenberg_Computer",sMapCaption="Вандерберг, Командный Центр")
+   sML(66)=(sMapName="12_Vandenberg_Gas",sMapCaption="Заброшенная АЗС")
+   sML(67)=(sMapName="12_Vandenberg_Tunnels",sMapCaption="Технические тоннели")
 
    sML(68)=(sMapName="14_Oceanlab_Silo",sMapCaption="short")
    sML(69)=(sMapName="14_OceanLab_Lab",sMapCaption="Ocean laboratory")
    sML(70)=(sMapName="14_OceanLab_UC",sMapCaption="Ocean laboratory, Universal Constructor")
    sML(71)=(sMapName="14_Vandenberg_Sub",sMapCaption="")
 
-   sML(72)=(sMapName="15_Area51_Bunker",sMapCaption="Area 51, Bunker")
-   sML(73)=(sMapName="15_Area51_Entrance",sMapCaption="Area 51, Entrance")
-   sML(74)=(sMapName="15_Area51_Page",sMapCaption="Area 51") // нет идей ((((((
-   sML(75)=(sMapName="15_Area51_Final",sMapCaption="Area 51")
+   sML(72)=(sMapName="15_Area51_Bunker",sMapCaption="Зона 51, вход в бункер")
+   sML(73)=(sMapName="15_Area51_Entrance",sMapCaption="Зона 51, вход")
+   sML(74)=(sMapName="15_Area51_Page",sMapCaption="Зона 51, Сектор 4")
+   sML(75)=(sMapName="15_Area51_Final",sMapCaption="Зона 51, Сектор 3")
 
    sML(76)=(sMapName="99_Endgame4",sMapCaption="")
    sML(77)=(sMapName="99_Endgame1",sMapCaption="")
@@ -135,14 +139,7 @@ defaultproperties
    sML(79)=(sMapName="99_Endgame3",sMapCaption="")
 /* Всё что-ли ? :)*/
 
-   Backgrounds(0)=DXRLoading.loading.TP_Dust_Up //DXRLoading.loading.SH_DarkModulated
-
-/*     Backgrounds(0)=DXRLoading.Loading.1
-     Backgrounds(1)=DXRLoading.Loading.2
-     Backgrounds(2)=DXRLoading.Loading.2
-     Backgrounds(3)=DXRLoading.Loading.4
-     Backgrounds(4)=DXRLoading.Loading.5
-     Backgrounds(5)=DXRLoading.Loading.6*/
+   Backgrounds(0)=DXRLoading.loading.TP_Dust_Up
 
 	Begin Object Class=DrawOpText Name=OpLoading
 		Top=0.25
@@ -165,8 +162,7 @@ defaultproperties
 		Justification=1
 		FontName="DxFonts.fntUT2k4Large"
 		DrawColor=(R=0,G=0,B=255,A=255)
-//	Text=""
-		bWrapText=False
+		bWrapText=True
 	End Object
 	Operations(2)=OpMapname
 }

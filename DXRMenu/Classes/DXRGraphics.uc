@@ -8,7 +8,8 @@ var localized string strOk, strDefault, strCancel, strMore;
 var DXRChoiceInfo iNoDynamicLights, iProjectors, iUsePrecaching, iSuperHighDetailActors, iHighDetailActors;
 var DXRChoiceInfo iWeatherEffects, iDetailTextures, iDecoLayers, iDecals, iCoronas;
 
-var MenuChoice_NoDynamicLights mNoDynamicLights;
+//var MenuChoice_NoDynamicLights mNoDynamicLights;
+// ToDo: Replace with something different.
 var MenuChoice_Projectors mProjectors;
 var MenuChoice_UsePrecaching mUsePrecaching;
 var MenuChoice_SuperHighDetailActors mSuperHighDetailActors;
@@ -26,11 +27,11 @@ function CreateMyControls()
   SetSize(410, 400);
 
   // Information fields first, this is important, otherwise scary things will happen...
-  iNoDynamicLights = new class'DXRChoiceInfo';
+/*  iNoDynamicLights = new class'DXRChoiceInfo';
   iNoDynamicLights.WinLeft = 285;
   iNoDynamicLights.WinTop = 46;
   iNoDynamicLights.WinWidth = 99;
-  AppendComponent(iNoDynamicLights, true);
+  AppendComponent(iNoDynamicLights, true);*/
 
   iProjectors = new class'DXRChoiceInfo';
   iProjectors.WinLeft = 285;
@@ -88,14 +89,14 @@ function CreateMyControls()
 
   /*-----------------------------------------------------*/
 
-  mNoDynamicLights = new class'MenuChoice_NoDynamicLights';
+/*  mNoDynamicLights = new class'MenuChoice_NoDynamicLights';
   mNoDynamicLights.WinLeft = 15;
   mNoDynamicLights.WinTop = 46;
   mNoDynamicLights.WinWidth = 244;
   AppendComponent(mNoDynamicLights, true);
   mNoDynamicLights.info = iNoDynamicLights;
   mNoDynamicLights.LoadSetting();
-  mNoDynamicLights.UpdateInfoButton();
+  mNoDynamicLights.UpdateInfoButton();*/
 
 
   mProjectors = new class'MenuChoice_Projectors';

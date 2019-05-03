@@ -7,6 +7,9 @@
   FullscreenViewportX=1920
   FullscreenViewportY=1080
   StartupFullscreen=false
+
+  03/05/2019: Added extra page.
+  ToDo: delete "no dynamic lights" option, since it useless anyway and replace it with sth else.
 */
 
 class DXRScreenResolution extends DxWindowTemplate;
@@ -15,11 +18,11 @@ var MenuChoice_Resolution mMenuChoice_Resolution;
 var MenuChoice_ResolutionW mMenuChoice_ResolutionW;
 var MenuChoice_StartupFullScreen mMenuChoice_StartupFullScreen;
 var DXRChoiceInfo cResolution, cResolutionW, cFullScreen;
-var localized string strOK, strCancel, strDefault, strGraphicsA, strGraphicsB;
+var localized string strOK, strCancel, strDefault, strGraphicsA, strGraphicsB, strGraphicsE;
 var localized string strGamma, strGraphics, strPhysics;
-var localized string hGamma, hGraphics, hPhysics, hGraphicsA, hGraphicsB;
+var localized string hGamma, hGraphics, hPhysics, hGraphicsA, hGraphicsB, hGraphicsE;
 var GUIButton btnDefault, btnOK, btnCancel;
-var GuiButton btnGamma, btnGraphics, btnGraphicsA, btnGraphicsB, btnPhysics;
+var GuiButton btnGamma, btnGraphics, btnGraphicsA, btnGraphicsB, btnGraphicsE, btnPhysics;
 
 function CreateMyControls()
 {
@@ -131,6 +134,8 @@ function CreateMyControls()
 	AppendComponent(btnPhysics, true);
 
 
+	/*------------------------------------------------------------*/
+	// Performance (page X)
   btnGraphics = new class'GUIButton';
   btnGraphics.OnClick=InternalOnClick;
   btnGraphics.fontScale = FNS_Small;
@@ -139,8 +144,8 @@ function CreateMyControls()
   btnGraphics.Hint = hGraphics;
   btnGraphics.WinHeight = 21;
   btnGraphics.WinWidth = 166;
-  btnGraphics.WinLeft = 360;
-  btnGraphics.WinTop = 152;
+  btnGraphics.WinLeft = 374;
+  btnGraphics.WinTop = 46;
 	AppendComponent(btnGraphics, true);
 
 	btnGraphicsA = new class'GUIButton';
@@ -151,8 +156,8 @@ function CreateMyControls()
   btnGraphicsA.Hint = hGraphicsA;
   btnGraphicsA.WinHeight = 21;
   btnGraphicsA.WinWidth = 166;
-  btnGraphicsA.WinLeft = 360;
-  btnGraphicsA.WinTop = 177;
+  btnGraphicsA.WinLeft = 374;
+  btnGraphicsA.WinTop = 82;
 	AppendComponent(btnGraphicsA, true);
 
 	btnGraphicsB = new class'GUIButton';
@@ -163,9 +168,21 @@ function CreateMyControls()
   btnGraphicsB.Hint = hGraphicsB;
   btnGraphicsB.WinHeight = 21;
   btnGraphicsB.WinWidth = 166;
-  btnGraphicsB.WinLeft = 360;
-  btnGraphicsB.WinTop = 201;
+  btnGraphicsB.WinLeft = 374;
+  btnGraphicsB.WinTop = 118;
 	AppendComponent(btnGraphicsB, true);
+
+	btnGraphicsE = new class'GUIButton';
+  btnGraphicsE.OnClick=InternalOnClick;
+  btnGraphicsE.fontScale = FNS_Small;
+  btnGraphicsE.StyleName="STY_DXR_MediumButton";
+  btnGraphicsE.Caption = strGraphicsE;
+  btnGraphicsE.Hint = hGraphicsE;
+  btnGraphicsE.WinHeight = 21;
+  btnGraphicsE.WinWidth = 166;
+  btnGraphicsE.WinLeft = 374;
+  btnGraphicsE.WinTop = 154;
+	AppendComponent(btnGraphicsE, true);
 }
 
 function resetToDefaults()
@@ -240,6 +257,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      Controller.OpenMenu("DXRMenu.DXRGraphicsB");
    }
+   else if (Sender==btnGraphicsE)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGraphicsE");
+   }
 
   return true;
 }
@@ -258,12 +279,14 @@ defaultproperties
   strGraphics="Performance [page 1]"
   strGraphicsA="Performance [page 2]"
   strGraphicsB="Performance [page 3]"
+  strGraphicsE="Setup Shadows..."
   strPhysics="Setup Physics"
 
   hGamma="Set Gamma, Brightness and Contrast. Keep in mind that these settings only working in FullScreen mode."
   hGraphics="Set texture details, quality, and so on. Many of these settings will affect performance."
   hGraphicsA="Set texture details, quality, and so on. Many of these settings will affect performance."
   hGraphicsB="Set texture details, quality, and so on. Many of these settings will affect performance."
+  hGraphicsE="Setup shadows for pawns, details, and so on. If you disabled  projectors, these settings will be ignored."
   hPhysics="Set KARMA physics engine parameters, also affects performance"
 
 		leftEdgeCorrectorX=4

@@ -142,7 +142,7 @@ function resetToDefaults()
      if (controls[i].IsA('DXREnumButton'))
      {
         DXREnumButton(controls[i]).ResetToDefault();
-        DXREnumButton(controls[i]).UpdateInfoButton();
+        DXREnumButton(controls[i]).OnChange(controls[i]); //UpdateInfoButton();
      }
   }
 }
