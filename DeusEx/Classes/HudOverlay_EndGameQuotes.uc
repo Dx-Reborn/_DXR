@@ -50,29 +50,6 @@ function Render(Canvas u)
   u.drawText("Длина строки X,Y "$tsX@tsY);*/
 }
 
-// Адаптация из найденного примера на Java.
-// Разделить строку и найти самую длинную часть
-// в массиве.
-function int FindLongestPart(string myStr, out string long)
-{
-   local array<string> temp;
-   local int i, init, index;
-
-   split(myStr, "|", temp);
-   init = len(temp[0]);
-
-   for(i=0; i<temp.length; i++)
-   {
-     if (len(temp[i]) > init)
-     {
-        index = i;
-        init = len(temp[i]);
-     }
-   }
-   long = temp[index];
-   return (len(temp[index]));
-}
-
 function AddMessage(String str)
 {
 	if (str != "")
@@ -87,7 +64,7 @@ function AddMessage(String str)
 
 function StartMessage()
 {
-  FindLongestPart(message, longest);
+  class'DxUtil'.static.FindLongestPart(message, longest);
 	bTickEnabled = true;
 	bSpewingText = true;
 }

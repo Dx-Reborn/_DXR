@@ -316,6 +316,30 @@ static function string StripMapPath(string s)
 	return s;
 }
 
+// Адаптация из найденного примера на Java.
+// Разделить строку и найти самую длинную часть
+// в массиве.
+static function int FindLongestPart(string myStr, out string long)
+{
+   local array<string> temp;
+   local int i, init, index;
+
+   split(myStr, "|", temp);
+   init = len(temp[0]);
+
+   for(i=0; i<temp.length; i++)
+   {
+     if (len(temp[i]) > init)
+     {
+        index = i;
+        init = len(temp[i]);
+     }
+   }
+   long = temp[index];
+   return (len(temp[index]));
+}
+
+
 
 //
 // Версия из Reborn.
