@@ -116,10 +116,14 @@ function FirstFrame()
 	if (!flags.GetBool(flagName) && (dxInfo.startupMessage[0] != ""))
 	{
 		StartUp = Spawn(class'hudOverlay_StartupMessage', self);
+		StartUp.message = "";
 		DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(StartUp);
 
 		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
-			StartUp.StartUpMessage[i] = dxInfo.startupMessage[i];
+		  StartUp.message $= dxInfo.StartUpMessage[i] $"|";
+
+		  StartUp.StartMessage();
+			//StartUp.StartUpMessage[i] = dxInfo.startupMessage[i];
 			flags.SetBool(flagName, True);
 	}
 
