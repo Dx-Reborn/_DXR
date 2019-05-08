@@ -3,17 +3,29 @@
 //=============================================================================
 class MissionEndgame extends MissionScript;
 
-var byte savedSoundVolume;
+var float savedSoundVolume;
 var float endgameDelays[3];
 var float endgameTimer;
 var localized string endgameQuote[6];
-//var HUDMissionStartTextDisplay quoteDisplay;
+var /*HUDMissionStartTextDisplay*/HudOverlay_EndGameQuotes quoteDisplay;
 var bool bQuotePrinted;
 
 // ----------------------------------------------------------------------
 // InitStateMachine()
 // ----------------------------------------------------------------------
 
+function InitStateMachine()
+{
+	Super.InitStateMachine();
+
+	// Destroy all flags!
+	if (flags != None)
+		flags.DeleteAllFlags();
+
+	// Set the PlayerTraveling flag (always want it set for 
+	// the intro and endgames)
+	flags.SetBool('PlayerTraveling', True, True, 0);
+}
 
 // ----------------------------------------------------------------------
 // FirstFrame()
@@ -21,6 +33,31 @@ var bool bQuotePrinted;
 // Stuff to check at first frame
 // ----------------------------------------------------------------------
 
+function FirstFrame()
+{
+	Super.FirstFrame();
+
+	endgameTimer = 0.0;
+
+	if (Player != None)
+	{
+		// Make sure all the flags are deleted.
+		getFlagBase().ResetFlags();
+
+		// Start the conversation
+		if (localURL == "ENDGAME1")
+			Player.StartConversationByName("Endgame1", Player, False, True);
+		else if (localURL == "ENDGAME2")
+			Player.StartConversationByName("Endgame2", Player, False, True);
+		else if (localURL == "ENDGAME3")
+			Player.StartConversationByName("Endgame3", Player, False, True);
+
+		// turn down the sound so we can hear the speech
+//		savedSoundVolume = SoundVolume;
+//		SoundVolume = 32;
+//		Player.SetInstantSoundVolume(SoundVolume);
+	}
+}
 
 // ----------------------------------------------------------------------
 // PreTravel()
@@ -28,6 +65,14 @@ var bool bQuotePrinted;
 // Set flags upon exit of a certain map
 // ----------------------------------------------------------------------
 
+function PreTravel()
+{
+	// restore the sound volume
+//	SoundVolume = savedSoundVolume;
+//	Player.SetInstantSoundVolume(SoundVolume);
+
+	Super.PreTravel();
+}
 
 // ----------------------------------------------------------------------
 // Timer()
@@ -35,19 +80,60 @@ var bool bQuotePrinted;
 // Main state machine for the mission
 // ----------------------------------------------------------------------
 
+function Timer()
+{
+	Super.Timer();
+
+	if (flags.GetBool('EndgameExplosions'))
+		ExplosionEffects();
+
+	// After the conversation finishes playing, print a quote, delay a
+	// bit, then scroll the credits and then return to the DXOnly map
+	if (flags.GetBool('Endgame1_Played'))
+	{
+		if (!bQuotePrinted)
+			PrintEndgameQuote(0);
+
+		endgameTimer += checkTime;
+
+		if (endgameTimer > endgameDelays[0])
+			FinishCinematic();
+	}
+	else if (flags.GetBool('Endgame2_Played'))
+	{
+		if (!bQuotePrinted)
+			PrintEndgameQuote(1);
+
+		endgameTimer += checkTime;
+
+		if (endgameTimer > endgameDelays[1])
+			FinishCinematic();
+	}
+	else if (flags.GetBool('Endgame3_Played'))
+	{
+		if (!bQuotePrinted)
+			PrintEndgameQuote(2);
+
+		endgameTimer += checkTime;
+
+		if (endgameTimer > endgameDelays[2])
+			FinishCinematic();
+	}
+}
 
 // ----------------------------------------------------------------------
 // FinishCinematic()
 // ----------------------------------------------------------------------
+
 function FinishCinematic()
 {
 	local CameraPoint cPoint;
 
-/*	if (quoteDisplay != None)
+	if (quoteDisplay != None)
 	{
 		quoteDisplay.Destroy();
 		quoteDisplay = None;
-	}*/
+	}
 
 	// Loop through all the CameraPoints and set the "nextPoint"
 	// to None will will effectively cause them to halt.
@@ -58,18 +144,43 @@ function FinishCinematic()
 
 	flags.SetBool('EndgameExplosions', False);
 	SetTimer(0, False);
-//	Player.ShowCredits(True);
+	Player.ShowCredits(True);
 }
-
 
 // ----------------------------------------------------------------------
 // PrintEndgameQuote()
 // ----------------------------------------------------------------------
 
+function PrintEndgameQuote(int num)
+{
+	local int i;
+//	local HudOverlay_EndGameQuotes msg;
+//	local DeusExRootWindow root;
+
+	bQuotePrinted = True;
+	flags.SetBool('EndgameExplosions', False);
+
+	quoteDisplay = spawn(class'HudOverlay_EndGameQuotes'); //DeusExRootWindow(Player.rootWindow);
+	if (quoteDisplay != None)
+	{
+//		quoteDisplay = HUDMissionStartTextDisplay(root.NewChild(Class'HUDMissionStartTextDisplay', True));
+//		if (quoteDisplay != None)
+//		{
+			quoteDisplay.displayTime = endgameDelays[num];
+			//quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+
+			for (i=0; i<2; i++)
+				quoteDisplay.AddMessage(endgameQuote[2*num+i]);
+
+			quoteDisplay.StartMessage();
+		//}
+	}
+}
 
 // ----------------------------------------------------------------------
 // ExplosionEffects()
 // ----------------------------------------------------------------------
+
 function ExplosionEffects()
 {
 	local float size;
@@ -123,8 +234,6 @@ function ExplosionEffects()
 		}
 	}
 }
-
-
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

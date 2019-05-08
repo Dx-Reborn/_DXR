@@ -30,7 +30,8 @@ function SetInitialState()
 {
 	// start the script
 	SetTimer(checkTime, True);
-	CorrectWaterVolumes();
+
+//	CorrectWaterVolumes();
 }
 
 // ----------------------------------------------------------------------
@@ -182,6 +183,7 @@ function Timer()
 
 // ----------------------------------------------------------------------
 // GetPatrolPoint()
+// Y|y: Fixed to actually do something
 // ----------------------------------------------------------------------
 function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 {
@@ -189,19 +191,25 @@ function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 
 	aPoint = None;
 
-	foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
+	while(aPoint == None)
 	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
+		foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
+		{
+			if (bRandom)
+			{
+				if(FRand() < 0.5)
+					break;
+			}
+			else
+				break;
+		}
 	}
-
 	return aPoint;
 }
 
 // ----------------------------------------------------------------------
 // GetSpawnPoint()
+// Y|y: Fixed to actually do something
 // ----------------------------------------------------------------------
 function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 {
@@ -209,12 +217,18 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 
 	aPoint = None;
 
-	foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
+	while(aPoint == None)
 	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
+		foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
+		{
+			if (bRandom)
+			{
+				if(FRand() < 0.5)
+					break;
+			}
+			else
+				break;
+		}
 	}
 	return aPoint;
 }
