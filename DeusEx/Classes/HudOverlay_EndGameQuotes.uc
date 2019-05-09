@@ -117,7 +117,7 @@ defaultproperties
 {
    CharDelay=0.05
    displayTime=5.0
-   message="Test message|Test message 2|Test Message3_LongMessage_ReallyLong_Msg_text"
+   message=""
    msgFont=font'DxFonts.ZR_18'
    TextColor=(R=255,G=255,B=255,A=255)
 }

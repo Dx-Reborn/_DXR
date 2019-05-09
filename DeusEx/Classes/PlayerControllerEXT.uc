@@ -397,6 +397,8 @@ ignores SeePlayer, HearNoise, Bump;
 				local bool bCanLean;
 				local SpyDrone aDrone;
 
+				Human(pawn).H_ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
+
         if (Human(pawn).bToggleWalk)
 				{
 				  bRun = 0;
@@ -462,7 +464,7 @@ ignores SeePlayer, HearNoise, Bump;
 				// make sure the collision height is fudged for the floor problem - CNN
 					if (!Human(pawn).IsLeaning())
 					{
-						Human(pawn).ResetBasedPawnSize();
+						//Human(pawn).ResetBasedPawnSize();
 					}
 				}
 
@@ -528,7 +530,7 @@ ignores SeePlayer, HearNoise, Bump;
 				// if we are moving really slow, force us to walking
 				if ((newSpeed <= defSpeed / 3) && !Human(pawn).bForceDuck)
 				{
-					Human(pawn).bIsWalking = True;
+					Human(pawn).SetWalking(true); // bIsWalking = True;
 					newSpeed = defSpeed;
 				}
 
@@ -931,7 +933,7 @@ ignores SeePlayer, HearNoise, Bump;
 				SavedBRun=bRun;
 
 				// set us to be two feet high
-				Human(pawn).SetBasedPawnSize(Default.CollisionRadius, 16);
+				Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
 
 				// get our skill info
 				mult = Human(pawn).SkillSystem.GetSkillLevelValue(class'SkillSwimming');

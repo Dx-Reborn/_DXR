@@ -1,15 +1,9 @@
 /*-----------------------------------------------------------------------------
-  DeusExPlayer: персонаж, управляемый через DeusExPlayerController.
-  Это сборник функций и базовых свойств. 
-  JCDentonMale это финальный вид игрока.
-  06 июля 2017: Контроллер значительно похудел, функции перемещены с этот
-  класс.
+  DeusExPlayer: a Pawn, controlled by DeusExPlayerController.
 
-  Кости правой руки: "0", "2"
-  Root bone: DXR_ROOT
-  Основан на коде из японской и демо-версии Deus Ex. Некоторые части из
-  проекта Reborn.
-  Используются некоторые особенности из мода GMDX (с разрешения автора)
+  Uses code from the following mods:
+  GMDX
+  Vanilla Matters
 -----------------------------------------------------------------------------*/
 
 #exec obj load file=DeusExStaticMeshes
@@ -86,7 +80,6 @@ var(ToolBelt) travel int currentBeltNum;
 var travel String	TruePlayerName;
 var() travel int    PlayerSkin;
 
-var() editconst	travel DeusExDecoration	carriedDecoration;
 var() transient bool bTPA_OnlyOnce;
 
 // Combat Difficulty, set only at new game time
@@ -188,7 +181,6 @@ var float swimSoundTimer;
 
 // map that we're about to travel to after we finish interpolating
 var String NextMap;
-var bool bSpawndust; // Создавать пыль под ногами или нет? Конечно нет! После этого все дико тормозит :(
 
 var bool bStartingNewGame;							// Set to True when we're starting a new game. 
 var bool bSavingSkillsAugs;
@@ -313,10 +305,6 @@ function RemoveChargedDisplay(ChargedPickupInv item)
 function SetLogTimeout(float newLogTimeout)
 {
 	logTimeout = newLogTimeout;
-
-	// Update the HUD Log Display
-/*	if (DeusExRootWindow(rootWindow).hud != None)
-		DeusExRootWindow(rootWindow).hud.msgLog.SetLogTimeout(newLogTimeout);*/
 }
 
 // ----------------------------------------------------------------------
@@ -335,10 +323,6 @@ function float GetLogTimeout()
 function SetMaxLogLines(byte newLogLines)
 {
 	maxLogLines = newLogLines;
-
-	// Update the HUD Log Display
-/*	if (DeusExRootWindow(rootWindow).hud != None)
-		DeusExRootWindow(rootWindow).hud.msgLog.SetMaxLogLines(newLogLines);*/
 }
 
 // ----------------------------------------------------------------------
@@ -349,10 +333,6 @@ function byte GetMaxLogLines()
 {
 	return maxLogLines;
 }
-
-
-
-
 
 
 // ================================================================
@@ -1802,7 +1782,7 @@ Begin:
 
 function bool SetBasedPawnSize(float newRadius, float newHeight)
 {
-	local float  oldRadius, oldHeight;
+/*	local float  oldRadius, oldHeight;
 	local bool   bSuccess;
 	local vector centerDelta, lookDir, upDir;
 	local float  deltaEyeHeight;
@@ -1813,11 +1793,11 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
 	if (newHeight < 0)
 		newHeight = 0;
 
-	oldRadius = CollisionRadius;
-	oldHeight = CollisionHeight;
+	oldRadius = DefaultPlayerRadius;
+	oldHeight = DefaultPlayerHeight;
 
-	if ((oldRadius == newRadius) && (oldHeight == newHeight))
-		return true;
+  if ((oldRadius == newRadius) && (oldHeight == newHeight))
+			return true;
 
 	centerDelta    = vect(0, 0, 1)*(newHeight-oldHeight);
 	deltaEyeHeight = GetDefaultCollisionHeight() - Default.BaseEyeHeight;
@@ -1826,19 +1806,19 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
 		savedDeco = CarriedDecoration;
 
 	bSuccess = false;
-	if ((newHeight <= CollisionHeight) && (newRadius <= CollisionRadius))  // shrink
+	if ((newHeight <= DefaultPlayerHeight) && (newRadius <= DefaultPlayerHeight))  // shrink
 	{
-		SetCollisionSize(newRadius, newHeight);
+		SetDefaultCollisionSize(newRadius, newHeight);
 		if (Move(centerDelta))
 			bSuccess = true;
 		else
-			SetCollisionSize(oldRadius, oldHeight);
+			SetDefaultCollisionSize(oldRadius, oldHeight);
 	}
 	else
 	{
 		if (Move(centerDelta))
 		{
-			SetCollisionSize(newRadius, newHeight);
+			SetDefaultCollisionSize(newRadius, newHeight);
 			bSuccess = true;
 		}
 	}
@@ -1859,22 +1839,44 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
 			upDir.Z = CollisionHeight / 2;		// put it up near eye level
 			savedDeco.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir);
 		}
-//    PrePivot        -= centerDelta;
-//		BaseEyeHeight   = newHeight - deltaEyeHeight;
-//		EyeHeight		-= centerDelta.Z;
-	}
-	return (bSuccess);
+
+//		PrePivotOffset  = vect(0, 0, 1)*(GetDefaultCollisionHeight()-newHeight);
+		PrePivot        -= centerDelta;
+//		DesiredPrePivot -= centerDelta;
+		BaseEyeHeight   = newHeight - deltaEyeHeight;
+
+		log(PrePivot);
+
+			//EyeHeight		-= centerDelta.Z;
+	}*/
+	return true;//(bSuccess);
 }
 
 function bool ResetBasedPawnSize()
 {
-	return SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight());
+	return SetBasedPawnSize(DefaultPlayerRadius, GetDefaultCollisionHeight());
 }
 
 function float GetDefaultCollisionHeight()
 {
-	return (Default.CollisionHeight-4.5);
+	return (DefaultPlayerHeight);
 }
+
+event EndCrouch(float HeightAdjust)
+{
+//if (controller.bDuck != 1)
+  SetDefaultCollisionSize(CrouchRadius, DefaultPlayerHeight);
+
+  Super.EndCrouch(HeightAdjust);
+}
+
+event StartCrouch(float HeightAdjust)
+{
+  SetDefaultCollisionSize(CrouchRadius, CrouchHeight);
+
+  Super.StartCrouch(HeightAdjust);
+}
+
 
 function float GetCurrentGroundSpeed()
 {
@@ -1888,17 +1890,6 @@ function float GetCurrentGroundSpeed()
 
 	return speed;
 }
-
-/*event StartCrouch(float HeightAdjust)
-{
-  super.StartCrouch(HeightAdjust);
-  SetBasedPawnSize(Default.CollisionRadius, 15);
-}
-
-event EndCrouch(float HeightAdjust)
-{
-  super.EndCrouch(HeightAdjust);
-}*/
 
 function ShouldCrouch(bool Crouch)
 {
@@ -1915,44 +1906,13 @@ function float GetCrouchHeight()
 {
   return (Default.CollisionHeight*0.65);
 }
-
+/*
 event Bump(Actor other)
 {
   super.Bump(other);
 }
+  */
 
-/*function bool DoJump( bool bUpdating )
-{
- if (((Physics == PHYS_Walking) || (Physics == PHYS_Ladder) || (Physics == PHYS_Spider)) )
-	{
-	if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
-		return false;
-	else if (bForceDuck || IsLeaning())
-		return false;
-
-//	if (Physics == PHYS_Walking)
-//	{
-		if (Role == ROLE_Authority)
-			PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand());
-		if ( (Level.Game != None) && (Level.Game.GameDifficulty > 0))
-			MakeNoise(0.1 * Level.Game.GameDifficulty);
-		PlayInAir();
-		Velocity.Z = JumpZ;
-
-		// reduce the jump velocity if you are crouching
-		if (bIsCrouching)
-			Velocity.Z *= 0.9;
-
-//		if ( Base != Level )
-    if ((Base != None) && !Base.bWorldGeometry)
-			Velocity.Z += Base.Velocity.Z; 
-			SetPhysics(PHYS_Falling);
-		if (bCountJumps && (Inventory != None))
-      Inventory.OwnerEvent('Jumped');
-//   }
- }
- return true;
-}*/
 
 function bool DoJump(bool bUpdating)
 {
@@ -1963,7 +1923,11 @@ function bool DoJump(bool bUpdating)
 
 	if ((Physics == PHYS_Walking) || (Physics == PHYS_Ladder))
 	{
-		if (fRand() < 0.55) // как в GMDX
+
+	if (controller.bDuck == 1)
+	  StartCrouch(16);
+
+		if (fRand() > 0.55) // как в GMDX
 			PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand() );
 		PlayInAir();
 
@@ -1977,8 +1941,8 @@ function bool DoJump(bool bUpdating)
 			Velocity.Z += Base.Velocity.Z;
 
 		SetPhysics(PHYS_Falling);
-		SetBasedPawnSize(default.CollisionRadius, 16);
-		if ( bCountJumps && (Role == ROLE_Authority) )
+
+		if (bCountJumps && (Role == ROLE_Authority))
 			Inventory.OwnerEvent('Jumped');
 	}
 	return true;
@@ -1991,60 +1955,6 @@ function PlayInAir()
 	if (!bIsCrouched && (GetAnimSequence() != 'Jump'))
 		PlayAnim('Jump',3.0,0.1);
 }
-
-
-/*	if ( !bIsCrouched && !bWantsToCrouch && ((Physics == PHYS_Walking) || (Physics == PHYS_Ladder) || (Physics == PHYS_Spider)) )
-	{
-		if ( Role == ROLE_Authority )
-		{
-			if ( (Level.Game != None) && (Level.Game.GameDifficulty > 2) )
-				MakeNoise(0.1 * Level.Game.GameDifficulty);
-			if ( bCountJumps && (Inventory != None) )
-				Inventory.OwnerEvent('Jumped');
-		}
-		if ( Physics == PHYS_Spider )
-			Velocity = JumpZ * Floor;
-		else if ( Physics == PHYS_Ladder )
-			Velocity.Z = 0;
-		else if ( bIsWalking )
-			Velocity.Z = Default.JumpZ;
-		else
-			Velocity.Z = JumpZ;
-		if ( (Base != None) && !Base.bWorldGeometry )
-			Velocity.Z += Base.Velocity.Z;
-		SetPhysics(PHYS_Falling);
-        return true;
-	}*/
-
-
-/*  if ( (Physics == PHYS_Walking) || (Physics == PHYS_Ladder) || (Physics == PHYS_Spider))
-  {
-    if ( Role == ROLE_Authority )
-    {
-      if ( (Level.Game != None) && (Level.Game.GameDifficulty > 2) )
-        MakeNoise(0.1 * Level.Game.GameDifficulty);
-      if ( bCountJumps && (Inventory != None) )
-        Inventory.OwnerEvent('Jumped');
-    }
-    if ( Physics == PHYS_Spider )
-      Velocity = JumpZ * Floor;
-    else if ( Physics == PHYS_Ladder )
-      Velocity.Z = 0;
-    else if ( bIsWalking )
-      Velocity.Z = Default.JumpZ;
-    else
-      Velocity.Z = JumpZ;
-    if ( (Base != None) && !Base.bWorldGeometry )
-      Velocity.Z += Base.Velocity.Z; 
-    SetPhysics(PHYS_Falling);
-        return true;
-     if (bIsCrouching)
-      Velocity.Z *= 0.9;
-
-  }
-    return false;*/
-
-
 
 // ----------------------------------------------------------------------
 // PlayPickupAnim()
@@ -2626,8 +2536,8 @@ function Timer()
 //----------------------
 // АЙ! ОЙ!
 
-function PlayTakeHitSound(int Damage, class damageType, int Mult)
-{
+function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult);
+/*{
 	local float rnd;
 
 	if ( Level.TimeSeconds - LastPainSound < FRand() + 0.5)
@@ -2663,7 +2573,7 @@ function PlayTakeHitSound(int Damage, class damageType, int Mult)
 		}
 		class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, FMax(Mult * TransientSoundVolume, Mult * 2.0));
 	}
-}
+}*/
 
 function RestoreAllHealth()
 {
@@ -3227,7 +3137,7 @@ function PutCarriedDecorationInHand()
 		  
 		if ( CarriedDecoration.SetLocation(Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir) )
 		{
-//      CarriedDecoration.bHardAttach = true;
+      CarriedDecoration.bHardAttach = true;
 
 			CarriedDecoration.SetPhysics(PHYS_None);
 			CarriedDecoration.SetBase(self);
@@ -5603,24 +5513,19 @@ defaultproperties
      DodgeSpeedZ=210.000000
      AirControl=0.050000
 
-//     MaxFrobDistance=112.0
+    CrouchRadius=20.00
+    CrouchHeight=16.0
 
     CollisionRadius=20.00
     CollisionHeight=47.0
-
-    CrouchHeight=15.0//10.00
-    CrouchRadius=20.0
-//    MaxDesiredSpeed=1.000000
 
     bUseCylinderCollision=true
     bCanPickupInventory=true
     bCanStrafe=True
 	  DrawScale=1.0
-	  bPhysicsAnimUpdate=false//true
+	  bPhysicsAnimUpdate=false
     bCanSwim=true
-	  bCanCrouch=true
 	  bActorShadows=true
-//	  bPlayerShadows=true
 	  bCanClimbLadders=true
 	  LadderSpeed=80.0
 
@@ -5685,7 +5590,6 @@ defaultproperties
     maxInvRows=6
     maxInvCols=5
 
-		bSpawndust=false
     bUseCompressedPosition=false
     bAutoActivate=false
 

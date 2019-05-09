@@ -49,8 +49,11 @@ final function float AICanSee(actor other, optional float visibility,
                                           optional bool bCheckVisibility, optional bool bCheckDir,
                                           optional bool bCheckCylinder, optional bool bCheckLOS)
 {
-   if (LineOfSightTo(other))
+//   if (LineOfSightTo(other))
+     if (CanSee(pawn(other)))
       return 1.0;
+
+      else return 0;
 }
 
 event LongFall() // called when latent function WaitForLanding() doesn't return after 4 seconds
@@ -353,7 +356,7 @@ function Actor GetNextWaypoint(Actor dest)
 	else
 	{
 //	  log(dest$" is not reachable, now try FindPathToward()");
-		rMoveTarget = FindPathToward(dest, true);//, true); // true = найти путь в обход?
+		rMoveTarget = FindPathToward2(dest, true);//, true); // true = найти путь в обход?
 //		log("rMoveTarget = "$rMoveTarget);
 	}
 
@@ -604,6 +607,128 @@ state Fleeing
 Begin:
     log(pawn @ self@"Fleeing");
 }
+
+// ----------------------------------------------------------------------
+// state WaitingFor
+//
+// Wait for a pawn to become visible, then move to it
+// ----------------------------------------------------------------------
+state WaitingFor
+{
+	function SetFall()
+	{
+		StartFalling('WaitingFor', 'ContinueFollow');
+	}
+
+	function bool NotifyHitWall(vector HitNormal, actor Wall)
+	{
+/*		if (pawn.Physics == PHYS_Falling)
+			return false;
+ else
+			return true;*/
+		//Global.HitWall(HitNormal, Wall);
+		//CheckOpenDoor(HitNormal, Wall);
+	}
+
+	function bool NotiftBump(actor bumper)
+	{
+		// If we hit the guy we're going to, end the state
+/*		if (bumper == ScriptedPawn(pawn).OrderActor)
+		{
+			GotoState('WaitingFor', 'Done');
+			return false;
+		}
+			else return true;*/
+
+		// Handle conversations, if need be
+		//Global.Bump(bumper);
+	}
+
+	function NotifyTouch(actor toucher)
+	{
+		// If we hit the guy we're going to, end the state
+		if (toucher == ScriptedPawn(pawn).OrderActor)
+			GotoState('WaitingFor', 'Done');
+
+		// Handle conversations, if need be
+//		Global.Touch(toucher);
+	}
+
+	function BeginState()
+	{
+		ScriptedPawn(pawn).StandUp();
+		ScriptedPawn(pawn).SetupWeapon(false);
+		ScriptedPawn(pawn).SetDistress(false);
+		ScriptedPawn(pawn).bStasis = true;
+		ScriptedPawn(pawn).SeekPawn = None;
+		ScriptedPawn(pawn).EnableCheckDestLoc(true);
+	}
+	function EndState()
+	{
+		ScriptedPawn(pawn).EnableCheckDestLoc(false);
+		ScriptedPawn(pawn).bStasis = true;
+	}
+
+Begin:
+	ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
+	if (ScriptedPawn(pawn).orderActor == None)
+		GotoState('Idle');
+	ScriptedPawn(pawn).PlayWaiting();
+
+Wait:
+	Sleep(1.0);
+	if (AICanSee(ScriptedPawn(pawn).orderActor, 1.0, false, true, false, true) <= 0)
+		Goto('Wait');
+	pawn.bStasis = false;
+
+Follow:
+	if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+		Goto('Done');
+	MoveTarget = GetNextWaypoint(ScriptedPawn(pawn).orderActor);
+	if ((MoveTarget != None) && (!MoveTarget.PhysicsVolume.bWaterVolume) && (MoveTarget.Physics != PHYS_Falling))
+	{
+		if ((MoveTarget == ScriptedPawn(pawn).orderActor) && MoveTarget.IsA('Pawn'))
+		{
+			if (GetNextVector(ScriptedPawn(pawn).orderActor, ScriptedPawn(pawn).useLoc))
+			{
+				if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).useLoc))
+					ScriptedPawn(pawn).PlayRunning();
+				MoveTo(ScriptedPawn(pawn).useLoc,, false);//, MaxDesiredSpeed);
+				ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).useLoc);
+			}
+			else
+				Goto('Pause');
+		}
+		else
+		{
+			if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
+				ScriptedPawn(pawn).PlayRunning();
+			MoveToward(MoveTarget,,0,false,false);//, MaxDesiredSpeed);
+			ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
+		}
+		if (IsOverlapping(ScriptedPawn(pawn).orderActor))
+			Goto('Done');
+		else
+			Goto('Follow');
+	}
+
+Pause:
+	pawn.Acceleration = vect(0, 0, 0);
+	//TurnToward(orderActor);
+	LookAtActor(ScriptedPawn(pawn).orderActor);
+	ScriptedPawn(pawn).PlayWaiting();
+	Sleep(1.0);
+	Goto('Follow');
+
+Done:
+	GotoState('Standing');
+
+ContinueFollow:
+ContinueFromDoor:
+	ScriptedPawn(pawn).PlayRunning();
+	Goto('Follow');
+}
+
 
 // ----------------------------------------------------------------------
 // Just like Patrolling, but make the pawn transient.
@@ -1146,7 +1271,7 @@ Begin:
 	else
 	{
 		//TurnTo(Vector(SeatActor.Rotation+Rot(0, -16384, 0))*100+Location);
-		LookAtVector(Vector(scriptedPawn(pawn).SeatActor.Rotation+Rot(0, -16384, 0))*100+pawn.Location);
+		LookAtVector(Vector(scriptedPawn(pawn).SeatActor.Rotation+Rot(0, -16384, 0))* 1000  + pawn.Location); //100
 		Goto('ContinueSitting');
 	}
 
@@ -1214,7 +1339,7 @@ Sit:
 	scriptedPawn(pawn).remainingSitTime = 0.8;
 	scriptedPawn(pawn).PlaySittingDown();
 	scriptedPawn(pawn).SetBasedPawnSize(scriptedPawn(pawn).CollisionRadius, scriptedPawn(pawn).GetSitHeight());
-  scriptedPawn(pawn).SetPhysics(PHYS_Spider); // PHYS_None / PHYS_Flying
+  scriptedPawn(pawn).SetPhysics(PHYS_Flying); // PHYS_None /  PHYS_Spider
 	scriptedPawn(pawn).StopStanding();
 	scriptedPawn(pawn).bSitInterpolation = true;
 	while (scriptedPawn(pawn).bSitInterpolation)

@@ -20,9 +20,39 @@ event TravelPostAccept()
 	}
 }
 
+// ----------------------------------------------------------------------
+// Dumps the inventory grid to the log file.  Useful for debugging only.
+// ----------------------------------------------------------------------
+exec function DumpInventoryGrid()
+{
+	local int slotsCol;
+	local int slotsRow;
+	local String gridRow;
+
+	log("DumpInventoryGrid()");
+	log("_____________________________________________________________");
+	
+	log("        1 2 3 4 5");
+	log("-----------------");
 
 
-function AddDXInventory(){}
+	for(slotsRow=0; slotsRow < maxInvRows; slotsRow++)
+	{
+		gridRow = "Row #" $ slotsRow $ ": ";
+
+		for (slotsCol=0; slotsCol < maxInvCols; slotsCol++)
+		{
+			if ( invSlots[(slotsRow * maxInvCols) + slotsCol] == 1)
+				gridRow = gridRow $ "X ";
+			else
+				gridRow = gridRow $ "  ";
+		}
+		
+		log(gridRow);
+	}
+	log("_____________________________________________________________");
+}
+
 
 exec function Quick()
 {
@@ -285,7 +315,7 @@ exec function getres(int bits)
 }
 
 
-// €­¤ҐЄб  Єв®а 
+// Индекс актора
 exec function ActorIdx()
 {
   local pawn can;
@@ -307,10 +337,40 @@ exec function reachspec()
 
    foreach AllObjects(class'ReachSpec', rs)
    {
-      if (rs.CollisionHeight == 44)
-      rs.CollisionHeight = 51;
+    // Ну и как это назвать?
+    // Нужно предусмотреть случай для Гюнтера, поскольку он высокий и больше 44.
+      rs.CollisionHeight = 100;
+      rs.CollisionRadius = 100;
    }
 }
+
+exec function defColl()
+{
+   SetDefaultCollisionSize(16, 20);
+}
+
+exec function testQ()
+{
+  local HudOverlay_EndGameQuotes test;
+
+  test = spawn(class'HudOverlay_EndGameQuotes');
+	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(test);
+	test.message = "Проверка сообщения|Checking message|Message test|Testing messages|Checking the area, possible contact";
+  test.StartMessage();
+}
+
+
+exec function spd() // в® Ґбвм SavePlayerData()
+{
+  DeusExGameInfo(Level.game).SavePlayerData();
+}
+
+exec function rpd() // RestorePlayerData
+{
+  DeusExGameInfo(Level.game).RestorePlayerData("..\\Saves");
+}
+
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
