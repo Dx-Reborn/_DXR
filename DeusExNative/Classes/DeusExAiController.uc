@@ -1,13 +1,7 @@
 class DeusExAiController extends AIController native;
 
-
-var() bool bUseAlterDest;
-
-event AlterDest();
-
-
-native final iterator function CycleActors(class<Actor> BaseClass, out Actor OutActor, out int OutIndex);
-
+var bool bUseAlterDest;
+var bool bSmoothMovement;
 
 cpptext
 {
@@ -19,3 +13,6 @@ cpptext
 		this->bUseAlterDest = bUseAlterDest;
 	}
 }
+
+event AlterDest();
+native final iterator function CycleActors(class<Actor> BaseClass, out Actor OutActor, out int OutIndex);

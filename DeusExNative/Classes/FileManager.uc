@@ -16,8 +16,14 @@ native static function bool CopyFile(string Path, string DestPath, bool bReplace
 native static function bool MoveFile(string Path, string DestPath, bool bReplace, bool bReplaceReadOnly);
 native static function bool DeleteFile(string Path, bool bFailIfNotExist, bool bDeleteReadOnly);
 
+// Find files and directories. Mask (*, ?) can be used only after last double slash.
+// Example: myArray = class'FileManager'.static.FindFiles("U:\\DXR\\*.tmp", true, false);
 native static function Array<string> FindFiles(string Path, bool bListFiles, bool bListDirs);
+
+// Can be used to check file existence. Returns -1 if file does not exists.
 native static function int FileSize(string Path);
+
+// Get file date and time. See Times.uc for details.
 native static final function bool FileTime(string Path, out Times.FileTime UtcFileTime);
 
 // See DeusEx\DxUtil.uc GetFileAsArray() for examples.

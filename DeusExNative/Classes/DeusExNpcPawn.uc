@@ -88,10 +88,10 @@ var ESeekType   SeekType;
 var Pawn        SeekPawn;
 var float       CarcassTimer;
 var float       CarcassHateTimer;  // OBSOLETE
-var float       CarcassCheckTimer;
+var float       CarcassCheckTimer; // C++
 var name        PotentialEnemyAlliance;
-var float       PotentialEnemyTimer;
-var float       BeamCheckTimer;
+var float       PotentialEnemyTimer; // C++
+var float       BeamCheckTimer; // C++
 var bool        bSeekPostCombat;
 var bool        bSeekLocation;
 var bool        bInterruptSeek;
@@ -104,7 +104,7 @@ var bool        bStandInterpolation;
 var float       remainingSitTime;
 var float       remainingStandTime;
 var vector      StandRate;
-var float       ReloadTimer;
+var float       ReloadTimer; // C++
 var bool        bReadyToReload;
 
 // Advanced AI attributes.
@@ -122,14 +122,13 @@ var         float WalkingSpeed;   // 0-1
 var(Combat)	float ProjectileSpeed;
 var         name  LastPainAnim;
 
-var         vector DesiredPrePivot;
-var         float  PrePivotTime;
-var         vector PrePivotOffset;
+var         vector DesiredPrePivot; // C++
+var         float  PrePivotTime;    // C++
 
-var     bool        bCanBleed;      // true if an NPC can bleed
-var     float       BleedRate;      // how profusely the NPC is bleeding; 0-1
-var     float       DropCounter;    // internal; used in tick()
-var()   float       ClotPeriod;     // seconds it takes bleedRate to go from 1 to 0
+var     bool        bCanBleed;      // true if an NPC can bleed // C++
+var     float       BleedRate;      // how profusely the NPC is bleeding; 0-1 // C++
+var     float       DropCounter;    // internal; used in tick() // C++
+var()   float       ClotPeriod;     // seconds it takes bleedRate to go from 1 to 0 // C++
 
 var     bool        bAcceptBump;    // ugly hack
 var     bool        bCanFire;       // true if pawn is capable of shooting asynchronously
@@ -223,7 +222,7 @@ var     float       AgitationSustainTime;
 var     float       AgitationDecayRate;
 var     float       AgitationTimer;
 var     float       AgitationCheckTimer;
-var     float       PlayerAgitationTimer;  // hack
+var     float       PlayerAgitationTimer; // C++  // hack
 
 var     float       FearSustainTime;
 var     float       FearDecayRate;
@@ -240,16 +239,16 @@ var     float       CycleCumulative;
 var     Pawn        CycleCandidate;
 var     float       CycleDistance;
 
-var     float       AlarmTimer;
-var     float       WeaponTimer;
-var     float       FireTimer;
-var     float       SpecialTimer;
-var     float       CrouchTimer;
-var     float       BackpedalTimer;
+var     float       AlarmTimer; // C++
+var     float       WeaponTimer; // C++
+var     float       FireTimer;  // C++
+var     float       SpecialTimer; //C++
+var     float       CrouchTimer; //C++
+var     float       BackpedalTimer; //??
 
 var     bool        bHasShadow;
 var     float       ShadowScale;
-var     bool        bDisappear;
+var     bool        bDisappear; // C++
 
 var(Alliances) InitialAllianceInfo InitialAlliances[8];
 var            AllianceInfoEx      AlliancesEx[16];
@@ -276,7 +275,7 @@ var       bool      bCrouching;
 
 var       bool      bCanTurnHead;
 
-var(AI)   bool      bTickVisibleOnly;   // Temporary?
+var(AI)   bool      bTickVisibleOnly; // C++  // Temporary?
 var()     bool      bInWorld;
 var       vector    WorldPosition;
 var       bool      bWorldCollideActors;
@@ -304,32 +303,30 @@ var      bool     bEnableCheckDest;
 var      ETurning TurnDirection;
 var      ETurning NextDirection;
 var      Actor    ActorAvoiding;
-var      float    AvoidWallTimer;
-var      float    AvoidBumpTimer;
-var      float    ObstacleTimer;
+var      float    AvoidWallTimer; // C++
+var      float    AvoidBumpTimer; // C++
+var      float    ObstacleTimer;  // C++
 var      vector   LastDestLoc;
 var      vector   LastDestPoint;
 var      int      DestAttempts;
 
 var      float    DeathTimer;
 var      float    EnemyTimer;
-var      float    TakeHitTimer;
+var      float    TakeHitTimer; // C++
 
 var      name     ConvOrders;
 var      name     ConvOrderTag;
 
-var      float    BurnPeriod;
+var      float    FutzTimer; // C++
 
-var      float    FutzTimer;
-
-var      float    DistressTimer;
+var      float    DistressTimer; // C++
 
 var      bool     bBurnedToDeath;
 
-var      bool     bHasCloak;
+var      bool     bHasCloak; // C++
 var      bool     bCloakOn;
 var      int      CloakThreshold;
-var      float    CloakEMPTimer;
+var      float    CloakEMPTimer; // C++
 
 var      float    poisonTimer;      // time remaining before next poison TakeDamage
 var      int      poisonCounter;    // number of poison TakeDamages remaining
@@ -341,6 +338,11 @@ var      int      NumCarcasses;     // number of carcasses seen
 
 var      float    walkAnimMult;
 var      float    runAnimMult;
+
+// Были задействованы в AiVisibility
+var float VisUpdateTime;
+var float CurrentVisibility;
+var float LastVisibility;
 
 
 // #endif // #ifdef REFACTOR_ME
