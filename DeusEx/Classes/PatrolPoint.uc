@@ -43,5 +43,4 @@ defaultproperties
     bDirectional=True
     Texture=Texture'S_Patrol'
     SoundVolume=128
-//    bHidden=false
 }

@@ -225,6 +225,7 @@ defaultproperties
         Texture=FireTexture'Effects.Laser.LaserBeam1'
         LifetimeRange=(Min=0.020000,Max=0.020000)
         StartVelocityRange=(X=(Min=1.000000,Max=1.000000))
+        TriggerDisabled=true // false ??
     End Object
     Emitters(0)=BeamEmitter'BeamEmitter2'
 }

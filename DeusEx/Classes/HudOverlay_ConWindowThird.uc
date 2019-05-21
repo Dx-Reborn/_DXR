@@ -18,6 +18,9 @@ var DeusExHUD dxhud;
 
 var ConPlay conPlay;
 
+var Interactions.EInputKey CurrentKey;
+var Interactions.EInputAction InputAction;
+
 
 function SetInitialState()
 {
@@ -86,18 +89,19 @@ function Render(canvas u)
 }
 
 // Sent from DeusExInteraction
-function KeyEvent(Interactions.EInputKey Key)
+function KeyEvent(Interactions.EInputKey Key, Interactions.EInputAction iAction)
 {
+   currentKey = key;
+   InputAction = iAction;
+
    if (Key == IK_ESCAPE)
-       Close(); //
+       Close();
 }
 
 
 function DrawCinematic(Canvas u)
 {
-    local float x,y;
-    local float /*w,*/h;
-//    local ConChoice choice;
+    local float x,y, h;
     local int line;
 
 
@@ -111,6 +115,23 @@ function DrawCinematic(Canvas u)
 
     u.SetPos(0,u.ClipY*0.8);
     u.DrawRect(texture'Engine.BlackTexture',u.ClipX,u.ClipY*0.2);
+
+    u.SetDrawColor(255,255,255);
+    u.SetPos(5,u.ClipY*0.8+8);
+    u.Font=Font'DxFonts.FontConversationBold';
+
+    speakerName = string(GetEnum(enum'EInputKey', CurrentKey));// Для проверки
+    speech = default.speech@string(GetEnum(enum'EInputAction', InputAction));// Для проверки
+
+    u.DrawText(speakerName$": ");
+    u.TextSize(speakerName,x,y);
+
+    u.SetDrawColor(0,255,255);
+    u.SetPos(15+x,u.ClipY*0.8+10);
+
+    u.Font=Font'DxFonts.HR_10';
+    u.DrawText(speech);
+
 
 /*    if(speech != "")
     {
@@ -163,6 +184,12 @@ function Close()
 
 event Destroyed()
 {
-  super.Destroyed();
   gl.conWindow = none;
+  super.Destroyed();
+}
+
+
+defaultproperties
+{
+  speech="Проверка Текста. speakerName = string(GetEnum(enum'EInputKey', CurrentKey)). u.DrawText(speakerName ); u.TextSize(speakerName,x,y); u.SetDrawColor(0,255,255);"
 }

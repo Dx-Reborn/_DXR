@@ -30,14 +30,42 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 }
 
 
+// UT2K4Mod.ini native function GetModList(out array<string> ModDirs, out array<string> ModTitles);
+// native static function Array<string> FindFiles(string Path, bool bListFiles, bool bListDirs);
+// native static function string GetSystemDirectory();
+// native function string GetModValue(string ModDir, string ModKey);
+function GetModListExt(out array<string> ModDirs, out array<string> ModTitles)
+{
+  local int i, k;//, n;
+  local array<string> TempDirs, TempTitles;
+
+  TempDirs = class'FileManager'.static.FindFiles("..\\MODS\\*.*",false, true); // Найти каталоги
+
+  for(i=0;i<TempDirs.Length;i++)
+  {
+    if (class'FileManager'.static.FileSize("..\\MODS\\"$TempDirs[i]$"\\UT2K4Mod.ini") != -1)
+    {
+      k = TempTitles.Length;
+      TempTitles.Length = k + i; // добавить 1 к длине массива
+      TempTitles[k] = GetModValue("MODS\\" $TempDirs[i] ,"ModTitle");
+    }
+//    log("Found UT2K4Mod.ini in "$TempDirs[i]);
+  }
+
+  ModDirs = TempDirs;
+  ModTitles = TempTitles;
+}
+
+
 function LoadUserMods()
 {
 	local array<string> ModDirs, ModTitles;
 	local int i;
 
-	GetModList(ModDirs, ModTitles);
+	GetModListExt(ModDirs, ModTitles);
+
 	for (i=0;i<ModDirs.Length;i++)
-	  	lb_ModList.List.Add(ModTitles[i],,ModDirs[i]);
+       lb_ModList.list.Add(ModTitles[i],,"MODS\\"$ModDirs[i]);
 }
 
 function CreateAControls()
@@ -47,7 +75,7 @@ function CreateAControls()
   lb_ModList.MyScrollBar.WinWidth = 16;
   lb_ModList.SelectedStyleName="STY_DXR_ListSelection";
   lb_ModList.StyleName = "STY_DXR_Listbox";
-  lb_ModList.OnChange=ModListChange;
+  lb_ModList.OnChange = ModListChange;
   lb_ModList.WinHeight = 225;
   lb_ModList.WinWidth = 512;
   lb_ModList.WinLeft = 268;
@@ -184,15 +212,21 @@ function bool CloseClick(GUIComponent Sender)
 function bool LaunchClick(GUIComponent Sender)
 {
 	local string CmdLine;
+	local String Fstr, LeftStr, RightStr;
+
 
 	if (lb_ModList.List.Index<0)
 		return true;
 
-	CmdLine = GetModValue( lb_ModList.List.GetExtra(), "ModCmdLine" );
+	Fstr = lb_ModList.List.GetExtra();
+	Divide(Fstr, "MODS\\", LeftStr, RightStr);
+//	log(RightStr);
+
+	CmdLine = GetModValue(lb_ModList.List.GetExtra(), "ModCmdLine");
     if (CmdLine!="")
-		Console(Controller.Master.Console).DelayedConsoleCommand("relaunch"@CmdLine@"-mod="$lb_ModList.List.GetExtra()@"-newwindow");
+		Console(Controller.Master.Console).DelayedConsoleCommand("relaunch"@CmdLine@"-mod="$/*lb_ModList.List.GetExtra()*/ RightStr@"-newwindow");
 	else
-		Console(Controller.Master.Console).DelayedConsoleCommand("relaunch -mod="$lb_ModList.List.GetExtra()@"-newwindow");
+		Console(Controller.Master.Console).DelayedConsoleCommand("relaunch -mod="$/*lb_ModList.List.GetExtra()*/ RightStr@"-newwindow");
 
     return true;
 }
@@ -247,18 +281,6 @@ function bool AlignFrame(Canvas C)
 	return bInit;
 }
 
-function PaintOnHeader(Canvas C)
-{
-  local texture icon;//, bubble;
-
-  icon = texture'DeusExSmallIcon';
-  C.SetPos(t_WindowTitle.ActualLeft() + 8, t_WindowTitle.ActualTop() + 3);
-  C.SetDrawColor(255,255,255);
-  C.DrawIcon(icon, 1);
-}
-
-
-
 defaultproperties
 {
     strMods="Installed mods:"
@@ -292,7 +314,7 @@ defaultproperties
 		bCaptureMouse=true
     bAcceptsInput=true
 
-    WinTitle="Load mod"
+    WinTitle="Mod loader"
   /* Фон окошка */
 	Begin Object Class=FloatingImage Name=FloatingFrameBackground
 		Image=Material'DeusExControls.Background.DX_WinBack_BW'
@@ -307,29 +329,9 @@ defaultproperties
 		RenderWeight=0.000003
 		bBoundToParent=True
 		bScaleToParent=True
+		OnRendered=PaintOnBG
 	End Object
 	i_FrameBG=FloatingFrameBackground
-  /* Заголовок */
-	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.8
-		WinHeight=128
-		WinLeft=-2
-		WinTop=-3
-		RenderWeight=0.1
-		FontScale=FNS_Small
-		bUseTextHeight=false
-		bAcceptsInput=True
-		bNeverFocus=true //False
-		bBoundToParent=true
-		bScaleToParent=true
-		OnMousePressed=FloatingMousePressed
-		OnMouseRelease=FloatingMouseRelease
-    OnRendered=PaintOnHeader
-		ScalingType=SCALE_ALL
-    StyleName="STY_DXR_DXWinHeader";
-    Justification=TXTA_Left
-
-	End Object
-	t_WindowTitle=TitleBar
-
 }
+
+

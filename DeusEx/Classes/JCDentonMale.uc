@@ -370,6 +370,48 @@ exec function rpd() // RestorePlayerData
   DeusExGameInfo(Level.game).RestorePlayerData("..\\Saves");
 }
 
+// Отображает информацию без переключения на этот актор
+exec function DebugPawn(name ActorName)
+{
+	local Actor A;
+
+	ForEach AllActors(class'Actor', A)
+		if (A.Name == ActorName)
+		{
+			PlayerController(Controller).SetViewTarget(A);
+			PlayerController(Controller).myHUD.bShowDebugInfo = true;
+			PlayerController(Controller).bBehindView = false;
+			return;
+		}
+}
+
+exec function DxMover()
+{
+   local DeusExMover mv;
+   local vector MinV, MaxV;
+//   local vector extLoc;
+//   local rotator extRot;
+
+   foreach AllActors(class'DeusExMover', mv)
+   break;
+
+//   extLoc = mv.KeyPos[0]+mv.BasePos;
+//   extRot = mv.KeyRot[0]+mv.BaseRot;
+
+   mv.GetBoundingBox(MinV, MaxV);//,optional bool bExact,optional vector testLocation,optional rotator testRotation)
+   log("Only first 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+   log(mv.location);
+   log(MinV);
+   log(MaxV);
+
+/*   mv.GetBoundingBox(MinV, MaxV, false, extLoc, extRot);
+   log("All  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+   log(mv.location);
+   log(MinV);
+   log(MaxV);
+*/
+}
+
 
 
 // ----------------------------------------------------------------------

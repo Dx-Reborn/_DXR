@@ -12,6 +12,7 @@ enum ESkinColor
 };
 
 var() ESkinColor SkinColor;
+var() bool bUpdateAtStartup;
 var() bool bIsOn;
 
 
@@ -46,6 +47,9 @@ function SetLightColor(ESkinColor color)
 function BeginPlay()
 {
 	Super.BeginPlay();
+
+	if (bUpdateAtStartup)
+      bLightChanged = true;
 
 	SetLightColor(SkinColor);
 
@@ -108,5 +112,5 @@ defaultproperties
      Buoyancy=15.000000
      RotationRate=(Yaw=98304)
 		 Skins(0)=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH'
-		 bDynamicLight=true
+		 bDynamicLight=false 
 }

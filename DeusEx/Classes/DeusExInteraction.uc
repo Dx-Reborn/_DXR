@@ -34,8 +34,7 @@ function bool KeyEvent(EInputKey Key, EInputAction Action, float Delta)
 
       if (ConWindow != none)
       {
-          ConWindow.KeyEvent(Key); // Send KeyEvent to our HUD Overlay.
+          ConWindow.KeyEvent(Key, Action); // Send KeyEvent to our HUD Overlay.
           return true;
       }
-
 }

@@ -154,7 +154,7 @@ var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( No
 var bool bToggleWalk;
 
 // used by lots of stuff
-var name FloorMaterial; // TODO: Добавить поддержку групп текстур, такая возможность есть.
+var name FloorMaterial;
 var name WallMaterial;
 var Vector WallNormal;
 
@@ -301,7 +301,6 @@ function RemoveChargedDisplay(ChargedPickupInv item)
 // ----------------------------------------------------------------------
 // SetLogTimeout()
 // ----------------------------------------------------------------------
-
 function SetLogTimeout(float newLogTimeout)
 {
 	logTimeout = newLogTimeout;
@@ -310,7 +309,6 @@ function SetLogTimeout(float newLogTimeout)
 // ----------------------------------------------------------------------
 // GetLogTimeout()
 // ----------------------------------------------------------------------
-
 function float GetLogTimeout()
 {
 	return logTimeout;
@@ -319,7 +317,6 @@ function float GetLogTimeout()
 // ----------------------------------------------------------------------
 // SetMaxLogLines()
 // ----------------------------------------------------------------------
-
 function SetMaxLogLines(byte newLogLines)
 {
 	maxLogLines = newLogLines;
@@ -333,42 +330,6 @@ function byte GetMaxLogLines()
 {
 	return maxLogLines;
 }
-
-
-// ================================================================
-//  Анимация игрока.
-// ================================================================
-// Called whenever a player changes their movement type.
-simulated function PlayMoving()
-{
-	if (Physics == PHYS_Flying)
-		loopAnim('Tread');//AnimateFlying();
-	else
-	if ((Physics == PHYS_Swimming) || ((Physics == PHYS_Falling) && TouchingWaterVolume()))
-	{
-		//AnimateSwimming();
-		loopAnim('Tread');
-	}
-	else
-	{
-		if (bIsCrouched)
-		{
-			//AnimateCrouchWalking();
-			loopAnim('CrouchWalk');
-		}
-		else if (bIsWalking)
-		{
-		  loopAnim('Walk');
-//			AnimateWalking();
-		}
-		else
-		{
-		  loopAnim('Run');
-//			AnimateRunning();
-		}
-	}
-}
-
 
 // turns the scope on or off for the current weapon
 exec function ToggleScope()
@@ -396,33 +357,11 @@ exec function ToggleLaser()
 		W.LaserToggle();
 }
 
-
-
 // Called when one of the player's weapons is reloading
 function Reloading(DeusExWeaponInv weapon, float reloadTime)
 {
 //	if (!IsLeaning() && !bIsCrouching && (Physics != PHYS_Swimming) && !IsInState('Dying'))
 		PlayAnim('Reload', 1.0 / reloadTime, 0.1);
-}
-
-function PlayWeaponSwitch(Weapon newWeapon)
-{
-//	ClientMessage("PlayWeaponSwitch()");
-//	if (!bIsCrouching && !bForceDuck && !bCrouchOn && !IsLeaning())
-		PlayAnim('Reload',,0.1);
-}
-
-function PlayCrawling()
-{
-//	if (IsFiring())
-//		LoopAnim('CrouchShoot');
-//	else
-		LoopAnim('CrouchWalk');
-}
-
-function PlayRising()
-{
-	PlayAnim('Stand',,0.1);
 }
 
 simulated function bool CanThrowWeapon()
@@ -1617,15 +1556,6 @@ function UpdatePlayerSkin()
 		jc.SetSkin(Self);
 }
 
-
-function PlayLanded(float impactVel)
-{
-	FootStepping(0);
-	if ( !bPhysicsAnimUpdate )
-		PlayLandingAnimation(impactvel);
-}
-
-
 // ----------------------------------------------------------------------
 // Landed()
 //
@@ -1684,7 +1614,6 @@ function Landed(vector HitNormal)
 // copied from Engine.PlayerPawn
 // modified to let carcasses have inventories
 // ----------------------------------------------------------------------
-
 function Carcass SpawnCarcass()
 {
 	local DeusExCarcass carc;
@@ -1927,7 +1856,7 @@ function bool DoJump(bool bUpdating)
 	if (controller.bDuck == 1)
 	  StartCrouch(16);
 
-		if (fRand() > 0.55) // как в GMDX
+		if (fRand() > 0.65) // как в GMDX
 			PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand() );
 		PlayInAir();
 
@@ -1948,34 +1877,17 @@ function bool DoJump(bool bUpdating)
 	return true;
 }
 
-
-function PlayInAir()
-{
-//	ClientMessage("PlayInAir()");
-	if (!bIsCrouched && (GetAnimSequence() != 'Jump'))
-		PlayAnim('Jump',3.0,0.1);
-}
+function PlayInAir();
 
 // ----------------------------------------------------------------------
 // PlayPickupAnim()
 // ----------------------------------------------------------------------
-
 function PlayPickupAnim(Vector locPickup)
 {
 	if (Location.Z - locPickup.Z < 16)
 		PlayAnim('PushButton',,0.1);
 	else
 		PlayAnim('Pickup',,0.1);
-}
-
-function Gasp()
-{
-	self.PlaySound(sound'MaleGasp', SLOT_Pain,,,, RandomPitch());
-}
-
-function float RandomPitch()
-{
-	return (1.1 - 0.2*FRand());
 }
 
 // ----------------------------------------------------------------------
@@ -5507,17 +5419,16 @@ defaultproperties
     UnderWaterTime=20.000000
     Mass=150.000000
     Buoyancy=155.000000
-//    RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
 
-     DodgeSpeedFactor=1.500000
-     DodgeSpeedZ=210.000000
-     AirControl=0.050000
+    DodgeSpeedFactor=1.500000
+    DodgeSpeedZ=210.000000
+    AirControl=0.050000
 
     CrouchRadius=20.00
     CrouchHeight=16.0
 
     CollisionRadius=20.00
-    CollisionHeight=47.0
+    CollisionHeight=43.5
 
     bUseCylinderCollision=true
     bCanPickupInventory=true
@@ -5556,8 +5467,6 @@ defaultproperties
 	  Energy=100.00
 	  EnergyMax=100.00
     CombatDifficulty=1.00
-    humanAnimRate=1.000000
-    //  bIsHuman=True
     SoundVolume=64
 
     InventoryFull="You don't have enough room in your inventory to pick up the %s"

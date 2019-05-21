@@ -99,7 +99,7 @@ defaultproperties
   Hint="Change the video resolution for FullScreen mode"
   actionText="FullScreen Resolution"
 
-	EnumText(0)="800x600"
+/*	EnumText(0)="800x600"
 	EnumText(1)="1024x768"
 	EnumText(2)="1152x864"
 	EnumText(3)="1280x720"
@@ -113,5 +113,5 @@ defaultproperties
 	EnumText(11)="1440x900"
 	EnumText(12)="1600x900"
 	EnumText(13)="1680x1050"
-	EnumText(14)="1920x1080"
+	EnumText(14)="1920x1080"*/
 }

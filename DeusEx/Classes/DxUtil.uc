@@ -123,7 +123,9 @@ static final function string GetDayOfWeekRus(int dayofWeek)
 	return "";
 }
 
-/* Прочитать JPG файл и передать его как текстуру */
+/*-------------------------------------------------------------
+  Прочитать JPG файл и передать его как текстуру
+-------------------------------------------------------------*/
 static function texture Jpg2Tex(string file)
 {
   local bool temp;
@@ -153,10 +155,10 @@ static function bool LoadSoundFromFile(string Path, out Sound Sound, optional Ob
 }
 
 
-/* ----------------------------------------------------------------------
+/*-------------------------------------------------------------
   ConvertSpaces()
   Преобразовать пробелы в подчеркивание (_)
----------------------------------------------------------------------- */
+-------------------------------------------------------------*/
 static function String ConvertSpaces(coerce String inString)
 {
 	local int index;
@@ -175,10 +177,10 @@ static function String ConvertSpaces(coerce String inString)
 	return outString;
 }
 
-/* ----------------------------------------------------------------------
-   Получить дату и время файла. При необходимости можно определить
-   день недели, или убрать ненужное.
----------------------------------------------------------------------- */
+/*-------------------------------------------------------------
+  Получить дату и время файла. При необходимости можно
+  определить день недели, или убрать ненужное.
+-------------------------------------------------------------*/
 static function string GetFileTime(string file)
 {
   local Times.SystemTime st;
@@ -219,9 +221,10 @@ static function String TrimSpaces(String trimString)
 }
 
 
-//
-// Преобразовать секунды в часы:минуты:секунды (секунды опционально). Из Unreal2
-//
+/*-------------------------------------------------------------
+  Преобразовать секунды в часы:минуты:секунды (секунды
+  опционально). Из Unreal2
+-------------------------------------------------------------*/
 static final function string SecondsToTime(float TimeSeconds, optional bool bNoSeconds)
 {
 	local int Hours, Minutes, Seconds;
@@ -316,9 +319,11 @@ static function string StripMapPath(string s)
 	return s;
 }
 
-// Адаптация из найденного примера на Java.
-// Разделить строку и найти самую длинную часть
-// в массиве.
+/*-------------------------------------------------------------
+  Адаптация из найденного примера на Java.
+  Разделить строку и найти самую длинную часть
+  в массиве.
+-------------------------------------------------------------*/
 static function int FindLongestPart(string myStr, out string long)
 {
    local array<string> temp;
@@ -339,11 +344,6 @@ static function int FindLongestPart(string myStr, out string long)
    return (len(temp[index]));
 }
 
-
-
-//
-// Версия из Reborn.
-//
 static function Color SGetColorScaled(float percent, optional byte A)
 {
     local float mult;
@@ -389,13 +389,26 @@ static function Color SGetColorScaled(float percent, optional byte A)
    return col;
 }
 
-// Для упрощения
+/*-------------------------------------------------------------
+  Для упрощения
+-------------------------------------------------------------*/
 static function name StringToName(string newName)
 {
    return class'ObjectManager'.static.StringToName(newName);
 }
 
-// Created by Kaiser
+/*-------------------------------------------------------------
+  Created by Kaiser
+  throwing this out there incase its useful for someone, and i
+  thought its a function DX really should have had to
+  begin with, its how i extracted parts of the strings for my bot
+
+  Args: Original is the main string you want to check, leftcut
+  is where you define the left side of where to split,
+  rightcut is the same for the end of where to cut, offsets are
+  for if you need to fine tine the points of where to cut for
+  whatever reason.
+-------------------------------------------------------------*/
 static function string USplit(string Original, string LeftCut, string RightCut, optional int OffsetLeft, optional int OffsetRight)
 {
     local int leftline, rightline;
@@ -409,18 +422,14 @@ static function string USplit(string Original, string LeftCut, string RightCut, 
     return Mid(Original, leftline, rightline-leftline);
 }
 
-/*
-throwing this out there incase its useful for someone, and i thought its a function DX really should have had to
-begin with, its how i extracted parts of the strings for my bot
-
-Args: Original is the main string you want to check, leftcut is where you define the left side of where to split,
-rightcut is the same for the end of where to cut, offsets are for if you need to fine tine the points of where to
-cut for whatever reason.
-Usplit("<message>blah</message>", "<message>","</message>");
-returns blah, for example
-another helpful function, returns the Original string but with every instance of Target replaced with ReplaceWith.
-later versions of unreal engine has this, so heres a backported version for us*/
-
+/*-------------------------------------------------------------
+  Usplit("<message>blah</message>", "<message>","</message>");
+  returns blah, for example
+  another helpful function, returns the Original string but
+  with every instance of Target replaced with ReplaceWith.
+  later versions of unreal engine has this, so heres a 
+  backported version for us
+-------------------------------------------------------------*/
 static function string URepl(string Original, string Target, string ReplaceWith)
 {
 		local string TempLeft, TempRight, OutMessage;
@@ -440,6 +449,9 @@ static function String CR()
 	return Chr(13) $ Chr(10);
 }
 
+/*-------------------------------------------------------------
+
+-------------------------------------------------------------*/
 static final function String BuildPercentString(Float value)
 {
 	local string str;
@@ -453,6 +465,9 @@ static final function String BuildPercentString(Float value)
 	return ("(" $ str $ "%)");
 }
 
+/*-------------------------------------------------------------
+
+-------------------------------------------------------------*/
 static function String FormatFloatString(float value, float precision)
 {
 	local string str;
@@ -472,7 +487,9 @@ static function String FormatFloatString(float value, float precision)
 	return str;
 }
 
-// Возвращает группу текстуры
+/*-------------------------------------------------------------
+  Возвращает группу текстуры
+-------------------------------------------------------------*/
 static function name GetMaterialGroup(Material hitMaterial)
 {
     local array<string> parts;
@@ -497,7 +514,9 @@ static function name GetMaterialGroup(Material hitMaterial)
     }
 }
 
-// Возвращает имя текстуры без пакета и группы
+/*-------------------------------------------------------------
+  Возвращает имя текстуры без пакета и группы
+-------------------------------------------------------------*/
 static function name GetMaterialName(Material hitMaterial)
 {
     local array<string> parts;
@@ -522,11 +541,11 @@ static function name GetMaterialName(Material hitMaterial)
     }
 }
 
-/*
-   Подготовить скриншот для сохранения. Скриншот создается заранее,
-   чтобы избежать необходимости прятать меню и окна.
-   Параметры: указатель на Level (XLevel), и куда сохранять.
-*/
+/*-------------------------------------------------------------
+  Подготовить скриншот для сохранения. Скриншот создается заранее,
+  чтобы избежать необходимости прятать меню и окна.
+  Параметры: указатель на Level (XLevel), и куда сохранять.
+-------------------------------------------------------------*/
 static function PrepareShotForSaveGame(Level Level, string path)
 {
   local texture shot;
@@ -542,8 +561,9 @@ static function PrepareShotForSaveGame(Level Level, string path)
 	//log(shot @ gl.default.lastScreenShot, 'ScreenShot');
 }
 
-
-// Replaces any occurences of HTML coded characters with their text representations
+/*-------------------------------------------------------------
+  Replaces any occurences of HTML coded characters with their text representations
+-------------------------------------------------------------*/
 static function string HtmlStrip(string src)
 {
 	local int i;
@@ -564,13 +584,13 @@ static function string HtmlStripB(string src)
 	return src;
 }
 
-/* ----------------------------------------------------------------------
+/*-------------------------------------------------------------
   VDiskRand2D()
   Random point on Disk in xy-plane.
   http://mathworld.wolfram.com/DiskPointPicking.html
   http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=12035&start=105
   Could be optimized.
- ----------------------------------------------------------------------*/
+-------------------------------------------------------------*/
 simulated final static function Vector VDiskRand2D(float DiskRadius)
 {
    local float  Radius, Angle;
@@ -588,6 +608,9 @@ simulated final static function Vector VDiskRand2D(float DiskRadius)
 // Sth strange?
 static function rotator RandomBiasedRotation(INT centralYaw, FLOAT yawDistribution, INT centralPitch, FLOAT pitchDistribution);
 
+/*-------------------------------------------------------------
+  Return file as array of bytes.
+-------------------------------------------------------------*/
 static function array<byte> GetFileAsArray(string path)
 {
   local array<byte> bt;
@@ -617,12 +640,17 @@ static function array<byte> GetFileAsArray(string path)
   return bt;
 }
 
+/*-------------------------------------------------------------
+
+-------------------------------------------------------------*/
 static function DestroyObject(Object obj)
 {
    class'ObjectManager'.static.Destroy(obj);
 }
 
-// Returns array of screen resolutions.
+/*-------------------------------------------------------------
+  Returns array of screen resolutions.
+-------------------------------------------------------------*/
 static function array<string> GetScreenResolutions(int bits)
 {
 	local array<GraphicsManager.Resolution> resl;

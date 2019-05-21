@@ -1567,6 +1567,7 @@ function Sound GetSound(string path)
   if (bResult)
   {
       LastSound = tmp;
+      log(tmp); //
       return tmp;
   }
   return none;

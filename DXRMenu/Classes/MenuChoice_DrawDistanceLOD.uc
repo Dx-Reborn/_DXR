@@ -49,7 +49,7 @@ defaultproperties
 {
     defaultValue=1.0
 
-    Hint="Value less than 1.0 will increase distance fog, thus increasing performance. 1.0 by default, so in this case distance fog will match with level defaults."
+    Hint="Value less than 1.0 will increase distance fog, thus increasing performance. 1.0 by default, so in this case distance fog will match with level defaults.|Keep in mind that at lower values, some far objects can become invisible, since fog will hide them."
     actionText="Relative fog distance"
     configSetting="ini:Engine.Engine.ViewportManager DrawDistanceLOD"
 

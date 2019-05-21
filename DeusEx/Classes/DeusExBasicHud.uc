@@ -1662,9 +1662,15 @@ function RenderFrobTarget(Canvas C)
 				// Ограничить рамку для дверей
 				if (FrobName.IsA('DeusExMover'))
 				{
-					v1.x = FrobName.location.x;//GetRenderBoundingSphere().x;
-					v1.y = FrobName.location.y;//GetRenderBoundingSphere().y;
-					v1.z = 16;
+				  DeusExMover(FrobName).GetBoundingBox(v1, v2);
+
+ 				centerLoc = v1 + (v2 - v1) * 0.5;
+				v1.X = 16;
+				v1.Y = 16;
+				v1.Z = 16;
+				//	v1.x = FrobName.location.x;//GetRenderBoundingSphere().x;
+				//	v1.y = FrobName.location.y;//GetRenderBoundingSphere().y;
+				//	v1.z = 16;
 
 					centerLoc.X = FMin( v1.X, v2.X );
 					centerLoc.Y = FMin( v2.Y, v2.Y );
@@ -1674,10 +1680,10 @@ function RenderFrobTarget(Canvas C)
 				boxBRX = FClamp(boxBRX, moverCorrectionC, C.SizeX-moverCorrectionC);
 				boxBRY = FClamp(boxBRY, moverCorrectionD, C.SizeY-moverCorrectionD);*/
 				// Отказ от абсюлютных значений
-				boxTLX = FClamp(boxTLX, moverCorrectionA * C.SizeX, C.SizeX-moverCorrectionA * C.SizeX);
-				boxTLY = FClamp(boxTLY, moverCorrectionB * C.SizeY, C.SizeY-moverCorrectionB * C.SizeY);
-				boxBRX = FClamp(boxBRX, moverCorrectionC * C.SizeX, C.SizeX-moverCorrectionC * C.SizeX);
-				boxBRY = FClamp(boxBRY, moverCorrectionD * C.SizeY, C.SizeY-moverCorrectionD * C.SizeY);
+//				boxTLX = FClamp(boxTLX, moverCorrectionA * C.SizeX, C.SizeX-moverCorrectionA * C.SizeX);
+//				boxTLY = FClamp(boxTLY, moverCorrectionB * C.SizeY, C.SizeY-moverCorrectionB * C.SizeY);
+//				boxBRX = FClamp(boxBRX, moverCorrectionC * C.SizeX, C.SizeX-moverCorrectionC * C.SizeX);
+//				boxBRY = FClamp(boxBRY, moverCorrectionD * C.SizeY, C.SizeY-moverCorrectionD * C.SizeY);
 				}
 
 				// Не дает видимых изменений... Но пока оставлю

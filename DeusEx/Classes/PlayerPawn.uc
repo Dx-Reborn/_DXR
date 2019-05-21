@@ -5,6 +5,10 @@
 class PlayerPawn extends DeusExPlayerPawn
                          config (DXRConfig);
 
+// Это для возврата назад, поскольку .default будет заменен нативной функцией.
+const DefaultPlayerHeight = 43.5;
+const DefaultPlayerRadius = 20.0;
+const CrouchedPlayerHeight = 16.0;
 
 enum EMusicMode {
 	MUS_Ambient,
@@ -41,29 +45,160 @@ var localized String SkillPointsAward;
 var localized String QuickSaveGameTitle;
 
 // used while crouching
-var travel  bool bForceDuck;
+var travel bool bForceDuck;
 var travel bool bCrouchOn;				// used by toggle crouch // travel
 var travel bool bWasCrouchOn;			// used by toggle crouch
+var bool bIsCrouching;
 var travel byte lastbDuck;				// used by toggle crouch
 
-var transient cameraeffect ce;    // “Є § вҐ«м ­  нддҐЄв Є ¬Ґал
+var transient cameraeffect ce;    // Указатель на эффект камеры
 var bool bMblurActive;
+
+var() editconst	DeusExDecoration carriedDecoration;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
 
+/*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
+function ConDialogue FindConversationByName(string conName)
+{
+  local int y;
+
+  for (y=0; y<conList.length; y++)
+  {
+//    if (conList[y].Name == conName)
+    if (caps(conList[y].Name) == caps(conName))
+        return conList[y];
+//    break;
+//    log("found conversationByName="$conName);
+//    conv = conList[y];
+  }
+//  return conv;
+}
+
+function AddRefCount()
+{
+	local bool barkPrefix;
+	local conDialogue con;
+	local int y;
+
+	DecreaseRefCount();
+
+	for (y=0; y<conList.length; y++)
+	{
+		con = conList[y];
+		barkPrefix = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ CON_BARK_PREFIX));
+
+			if (BarkBindName != con.OwnerName || !barkPrefix)
+			{
+					if (BindName != con.OwnerName)
+						continue;
+				if (BarkBindName != "")
+				{
+					if (BarkBindName == "" || barkPrefix)
+						continue;
+				}
+			}
+//	 log("Increased refcount for "$con, 'AddRefCount');
+	 con.ownerRefCount++;
+	}
+}
+
+function DecreaseRefCount()
+{
+	local int y;
+
+	for (y=0; y<conList.length; y++)
+	{
+     conList[y].ownerRefCount--;
+	}
+}
+
+function ConBindEvents()
+{
+	local DeusExLevelInfo dxInfo;
+
+	foreach AllActors(class'DeusExLevelInfo', dxInfo)
+	{
+		if (dxInfo != none)
+			break;
+	}
+	if (dxInfo != none)
+	{
+	   RegisterConFiles(dxinfo.ConversationsPath);
+     LoadConsForMission(dxinfo.missionNumber);
+     AddRefCount();
+	}
+	else
+		log("DeusExLevelInfo not found! Failed to register conversations.");
+}
+
+// Регистрация *.con файлов
+function RegisterConFiles(string Path)
+{
+  local array<byte> bt;
+  local array<string> conFiles;
+  local int f, res;
+
+  conFiles = class'FileManager'.static.FindFiles(Path$"*.con", true, false);
+
+  if (conFiles.length == 0)
+     {
+       log("ERROR -- No *.con files found !");
+       return;
+     }
+
+  for (f=0; f<conFiles.length; f++)
+  {
+    bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
+    res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
+  }
+}
+
+function LoadConsForMission(int mission)
+{
+  local int convos, barks;
+
+  if (bindName != "")
+    convos = class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
+//    log(convos);
+
+
+  if (barkBindName != "")
+    barks = class'ConversationManager'.static.GetConversations(conList, mission, BarkbindName, "");
+//    log(barks);
+}
+
+
+function PostBeginPlay()
+{
+  super.PostBeginPlay();
+  ConBindEvents();
+}
+
+event PostLoadSavedGame()
+{
+  log(self@"PostLoadSavedGame()");
+	ConBindEvents();
+}
+
+// ToDo: Добавить экран с текстом как в оригинале?
+function ShowCredits(optional bool bLoadIntro)
+{
+   if (bLoadIntro)
+   ConsoleCommand("open DxOnly");
+
+   log("ShowCredits(bLoadIntro?) "$bLoadIntro);
+}
+
 function DeusExGameInfo getFlagBase()
 {
     if(flagBase == none)
-    {
         flagBase = DeusExGameInfo(Level.Game);
-    }
+
     return flagBase;
 }
 
-// ----------------------------------------------------------------------
-// GetLevelInfo()
-// ----------------------------------------------------------------------
 function DeusExLevelInfo GetLevelInfo()
 {
 	local DeusExLevelInfo info;
@@ -77,13 +212,17 @@ function DeusExLevelInfo GetLevelInfo()
 	return info;
 }
 
+function float RandomPitch()
+{
+	return (1.1 - 0.2*FRand());
+}
 
 /*
- FindCameraEffect
+  FindCameraEffect
 
- Looks for an existing CameraEffect object in the CameraEffects array first.
- Only if it doesn't find one, it takes one from the ObjectPool.
- That CameraEffect will be returned.
+  Looks for an existing CameraEffect object in the CameraEffects array first.
+  Only if it doesn't find one, it takes one from the ObjectPool.
+  That CameraEffect will be returned.
 */
 simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, optional byte mBlurStrength)
 {
@@ -98,17 +237,14 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
       if ( PlayerControllerLocal.CameraEffects[i].Class == CameraEffectClass)
       {
         CameraEffectFound = PlayerControllerLocal.CameraEffects[i];
-        //log("Found"@CameraEffectFound@"in CammeraEffects array");
         break;
       }
-    if ( CameraEffectFound == None )
+    if (CameraEffectFound == None)
     {
       CameraEffectFound = CameraEffect(Level.ObjectPool.AllocateObject(CameraEffectClass));
-      //log("Got"@CameraEffectFound@"from ObjectPool");
     }
-    if ( CameraEffectFound != None )
+    if (CameraEffectFound != None)
     {
-//    	log("added cameraeffect "$CameraEffectFound);
       PlayerControllerLocal.AddCameraEffect(CameraEffectFound);
 
         if (CameraEffectFound.IsA('MotionBlur'))
@@ -119,12 +255,12 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
 }
 
 /*
- RemoveCameraEffect
+  RemoveCameraEffect
 
- Removes one reference to the CameraEffect from the CameraEffects array. If
- there are any more references to the same CameraEffect object, they remain
- there. The CameraEffect will be put back in the ObjectPool if no other
- references to it are left in the CameraEffects array.
+  Removes one reference to the CameraEffect from the CameraEffects array. If
+  there are any more references to the same CameraEffect object, they remain
+  there. The CameraEffect will be put back in the ObjectPool if no other
+  references to it are left in the CameraEffects array.
 */
 simulated function RemoveCameraEffect(CameraEffect CameraEffect)
 {
@@ -147,9 +283,9 @@ simulated function RemoveCameraEffect(CameraEffect CameraEffect)
 }
 
 /*
-   Для упрощения использования Motion Blur.
-   Имеет смысл использовать значения меньше 30, если больше, то эффект
-   практически незаметен.
+  Для упрощения использования Motion Blur.
+  Имеет смысл использовать значения меньше 30, если больше, то эффект
+  практически незаметен.
 */
 exec function blur(byte howMuch)
 {
@@ -382,8 +518,6 @@ function UpdateDynamicMusic(float deltaTime)
             bCombat = False;
 
             // check a 100 foot radius around me for combat
-            // XXXDEUS_EX AMSD Slow Pawn Iterator
-            //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
             for (CurController = Level.ControllerList; CurController != None; CurController = CurController.NextController)
             {
               npc = ScriptedPawn(CurController.pawn);
@@ -439,8 +573,8 @@ function UpdateDynamicMusic(float deltaTime)
 }
 
 
-
-
 defaultproperties
 {
+   bCanCrouch=true
+   bCanFly=true
 }

@@ -7,8 +7,10 @@ var float savedSoundVolume;
 var float endgameDelays[3];
 var float endgameTimer;
 var localized string endgameQuote[6];
-var /*HUDMissionStartTextDisplay*/HudOverlay_EndGameQuotes quoteDisplay;
+var HudOverlay_EndGameQuotes quoteDisplay;
 var bool bQuotePrinted;
+
+const explosionsVolume = 0.12;
 
 // ----------------------------------------------------------------------
 // InitStateMachine()
@@ -54,8 +56,8 @@ function FirstFrame()
 
 		// turn down the sound so we can hear the speech
 //		savedSoundVolume = SoundVolume;
-//		SoundVolume = 32;
-//		Player.SetInstantSoundVolume(SoundVolume);
+//		SoundVolume = 0.32;
+		/*Player*/ //DeusExPlayerController(level.GetLocalPlayerController()).SetInstantSoundVolume(SoundVolume);
 	}
 }
 
@@ -69,7 +71,8 @@ function PreTravel()
 {
 	// restore the sound volume
 //	SoundVolume = savedSoundVolume;
-//	Player.SetInstantSoundVolume(SoundVolume);
+	//Player.SetInstantSoundVolume(SoundVolume);
+//  DeusExPlayerController(level.GetLocalPlayerController()).SetInstantSoundVolume(SoundVolume);
 
 	Super.PreTravel();
 }
@@ -154,26 +157,23 @@ function FinishCinematic()
 function PrintEndgameQuote(int num)
 {
 	local int i;
-//	local HudOverlay_EndGameQuotes msg;
-//	local DeusExRootWindow root;
 
 	bQuotePrinted = True;
 	flags.SetBool('EndgameExplosions', False);
 
-	quoteDisplay = spawn(class'HudOverlay_EndGameQuotes'); //DeusExRootWindow(Player.rootWindow);
+	quoteDisplay = spawn(class'HudOverlay_EndGameQuotes');
 	if (quoteDisplay != None)
 	{
-//		quoteDisplay = HUDMissionStartTextDisplay(root.NewChild(Class'HUDMissionStartTextDisplay', True));
-//		if (quoteDisplay != None)
-//		{
+	    QuoteDisplay.Message = ""; // ”брать тестовое сообщение.
+      DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(quoteDisplay); // ќй, его еще и в массив надо добавл€ть?? :D
+
 			quoteDisplay.displayTime = endgameDelays[num];
-			//quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
 
 			for (i=0; i<2; i++)
 				quoteDisplay.AddMessage(endgameQuote[2*num+i]);
 
 			quoteDisplay.StartMessage();
-		//}
+
 	}
 }
 
@@ -196,9 +196,9 @@ function ExplosionEffects()
 
 		// play a sound
 		if (size < 0.5)
-			Player.PlaySound(Sound'LargeExplosion1', SLOT_None, 2.0,, 16384);
+			Player.PlaySound(Sound'LargeExplosion1', SLOT_None, explosionsVolume,, 16384);
 		else
-			Player.PlaySound(Sound'LargeExplosion2', SLOT_None, 2.0,, 16384);
+			Player.PlaySound(Sound'LargeExplosion2', SLOT_None, explosionsVolume,, 16384);
 
 		// have random metal fragments fall from the ceiling
 		if (FRand() < 0.8)

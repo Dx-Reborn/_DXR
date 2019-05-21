@@ -5,7 +5,7 @@
 class DXRMenuMain extends DxWindowTemplate;
 
 #exec OBJ LOAD FILE=DeusExUI.u
-const ver="Deus Ex: Reborn alpha build";
+const ver="Deus Ex: Reborn Alpha build";
 var Automated GUIButton bNew, bLoad, bTraining, bCreators, bOptions, bMods, bIntro, bExit;
 var localized string strNew, strLoad, strTraining, strCreators, strOptions, strMods, strIntro, strExit;
 var localized string dNew, dLoad, dSave, dTraining, dCreators, dOptions, dMods, dIntro, dExit;
@@ -203,7 +203,7 @@ defaultproperties
     dTraining="Start training course"
     dCreators="Creators of DeusEx: Reborn"
     dOptions="Configure game settings: graphics, keys, mouse, etc"
-    dMods="Mods loader currently does not functioning correctly"
+    dMods="Mod loader."
     dIntro="View Game Intro"
     dExit="Leave World of Conspiracies..."
 
@@ -231,25 +231,4 @@ defaultproperties
     OnRendered=PaintDXRVersion
 	End Object
 	i_FrameBG=FloatingFrameBackground
-  /* Заголовок */
-/*	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.98
-		WinHeight=128
-		WinLeft=-2
-		WinTop=-3
-		RenderWeight=0.1
-		FontScale=FNS_Small
-		bUseTextHeight=false
-		bAcceptsInput=True
-		bNeverFocus=true //False
-		bBoundToParent=true
-		bScaleToParent=true
-		OnMousePressed=FloatingMousePressed
-		OnMouseRelease=FloatingMouseRelease
-    OnRendered=PaintOnHeader
-		ScalingType=SCALE_ALL
-    StyleName="STY_DXR_DXWinHeader";
-    Justification=TXTA_Left
-	End Object
-	t_WindowTitle=TitleBar*/
 }

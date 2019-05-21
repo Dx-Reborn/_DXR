@@ -1,13 +1,11 @@
-//=============================================================================
-// ScriptedPawn.
-//=============================================================================
+/*
+
+*/
 class ScriptedPawn extends DeusExNPCPawn
             config (DXRConfig)
             abstract;
 
 #exec obj load file=DeusExCharacters.ukx
-
-var (DebugCon) bool DebugCon;
 
 var name AlarmTag;
 
@@ -20,14 +18,6 @@ var          float        BlendAnimLast[4];        // Last frame.
 var          float        BlendAnimMinRate[4];     // Minimum rate for velocity-scaled animation.
 var			 float		  OldBlendAnimRate[4];	   // Animation rate of previous animation (= AnimRate until animation completes).
 var			 plane		  SimBlendAnim[4];		   // replicated to simulated proxies.
-
-// Additional variables for AI - DEUS_EX STM
-var			 float		  VisUpdateTime;
-var			 float		  CurrentVisibility;
-var			 float		  LastVisibility;
-
-
-// End additional variables - DEUS_EX STM
 
 // ----------------------------------------------------------------------
 // Structures
@@ -103,9 +93,121 @@ var globalconfig bool bBlobShadow;
 var transient ShadowProjector PawnShadow;
 
 var DXRAIController DController;
+var DeusExPlayer myDxPlayer;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
+
+/*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
+function ConDialogue FindConversationByName(string conName)
+{
+  local int y;
+
+  for (y=0; y<conList.length; y++)
+  {
+//    if (conList[y].Name == conName)
+    if (caps(conList[y].Name) == caps(conName))
+        return conList[y];
+//    break;
+//    log("found conversationByName="$conName);
+//    conv = conList[y];
+  }
+//  return conv;
+}
+
+function AddRefCount()
+{
+	local bool barkPrefix;
+	local conDialogue con;
+	local int y;
+
+	DecreaseRefCount();
+
+	for (y=0; y<conList.length; y++)
+	{
+		con = conList[y];
+		barkPrefix = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ CON_BARK_PREFIX));
+
+			if (BarkBindName != con.OwnerName || !barkPrefix)
+			{
+					if (BindName != con.OwnerName)
+						continue;
+				if (BarkBindName != "")
+				{
+					if (BarkBindName == "" || barkPrefix)
+						continue;
+				}
+			}
+//	 log("Increased refcount for "$con, 'AddRefCount');
+	 con.ownerRefCount++;
+	}
+}
+
+function DecreaseRefCount()
+{
+	local int y;
+
+	for (y=0; y<conList.length; y++)
+	{
+     conList[y].ownerRefCount--;
+	}
+}
+
+function ConBindEvents()
+{
+	local DeusExLevelInfo dxInfo;
+
+	foreach AllActors(class'DeusExLevelInfo', dxInfo)
+	{
+		if (dxInfo != none)
+			break;
+	}
+	if (dxInfo != none)
+	{
+	   RegisterConFiles(dxinfo.ConversationsPath);
+     LoadConsForMission(dxinfo.missionNumber);
+     AddRefCount();
+	}
+	else
+		log("DeusExLevelInfo not found! Failed to register conversations.");
+}
+
+// Регистрация *.con файлов
+function RegisterConFiles(string Path)
+{
+  local array<byte> bt;
+  local array<string> conFiles;
+  local int f, res;
+
+  conFiles = class'FileManager'.static.FindFiles(Path$"*.con", true, false);
+
+  if (conFiles.length == 0)
+     {
+       log("ERROR -- No *.con files found !");
+       return;
+     }
+
+  for (f=0; f<conFiles.length; f++)
+  {
+    bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
+    res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
+  }
+}
+
+function LoadConsForMission(int mission)
+{
+  local int convos, barks;
+
+  if (bindName != "")
+    convos = class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
+//    log(convos);
+
+
+  if (barkBindName != "")
+    barks = class'ConversationManager'.static.GetConversations(conList, mission, BarkbindName, "");
+//    log(barks);
+}
+
 
 
 function float LastRendered()
@@ -168,6 +270,8 @@ event PostBeginPlay()
 
   defHeight = collisionHeight;
 
+	ConBindEvents();
+
 	Super.PostBeginPlay();
 
 	if ((ControllerClass != None) && (Controller == None))
@@ -198,6 +302,7 @@ event PostLoadSavedGame()
 {
   if (shadow == none)
     CreateShadow();
+	ConBindEvents();
 }
 
 event Destroyed()
@@ -221,7 +326,7 @@ event Destroyed()
 
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
 {
-   return controller.SetEnemy(newEnemy, newSeenTime, bForce);
+   return DXRAiController(controller).SetEnemy(newEnemy, newSeenTime, bForce);
 }
 
 function HitWall(vector HitLocation, Actor hitActor)
@@ -374,6 +479,7 @@ function ReactToFutz()
 // ----------------------------------------------------------------------
 // ReactToProjectiles()
 // ----------------------------------------------------------------------
+function ReactToProjectiles(actor other);
 
 
 
@@ -3528,6 +3634,7 @@ function Tick(float deltaTime)
 	local bool         bCheckPlayer;
 
 	player = DeusExPlayer(GetPlayerPawn());
+	myDxPlayer = player;
 
 	Super.Tick(deltaTime);
 
@@ -4313,7 +4420,7 @@ function bool HandleTurn(actor Other)
 // Bump()
 // ----------------------------------------------------------------------
 
-function Bump(actor Other)
+/*function Bump(actor Other)
 {
   local Rotator      rot1, rot2;
   local int          yaw;
@@ -4408,7 +4515,7 @@ function Bump(actor Other)
       }
     }
   }
-}
+}    */
 
 
 function AlterDestination()
@@ -4423,8 +4530,6 @@ function AlterDestination()
 	local bool     bAround;
 	local vector   tempVect;
 	local ETurning oldTurnDir;
-
-//	log("AlterDestination called !!!");
 
 	oldTurnDir = TurnDirection;
 
@@ -4449,26 +4554,29 @@ function AlterDestination()
 		bAround = false;
 
 		// Is our destination point inside the actor we're walking around?
-		bPointInCylinder = IsPointInCylinder(ActorAvoiding, controller.Destination,CollisionRadius-8, CollisionHeight-8);
+		bPointInCylinder = IsPointInCylinder(ActorAvoiding, controller.Destination, CollisionRadius-8, CollisionHeight-8);
 		if (bPointInCylinder)
 		{
 			dist1 = VSize((Location - ActorAvoiding.Location)*vect(1,1,0));
-			dist2 = VSize((Location - controller.Destination)*vect(1,1,0));
+			dist2 = VSize((Location - Controller.Destination)*vect(1,1,0));
 
 			// Are we on the right side of the actor?
 			if (dist1 > dist2)
 			{
 				// Just make a beeline, if possible
-				tempVect = controller.Destination - ActorAvoiding.Location;
+				tempVect = Controller.Destination - ActorAvoiding.Location;
 				tempVect.Z = 0;
 				tempVect = Normal(tempVect) * (ActorAvoiding.CollisionRadius + CollisionRadius);
-
 				if (tempVect == vect(0,0,0))
+				{
+					controller./*Destination*/ focalPoint = Location;
 					controller.Destination = Location;
+				}
 				else
 				{
 					tempVect += ActorAvoiding.Location;
-					tempVect.Z = controller.Destination.Z;
+					tempVect.Z = Controller.Destination.Z;
+					controller./*Destination*/ focalPoint = tempVect;
 					controller.Destination = tempVect;
 				}
 			}
@@ -4501,7 +4609,7 @@ function AlterDestination()
 					moveYaw = avoidYaw - 16384;
 				else
 					moveYaw = avoidYaw + 16384;
-
+				controller./*Destination*/ focalPoint = Location + Vector(rot(0,1,0)*moveYaw)*400;
 				controller.Destination = Location + Vector(rot(0,1,0)*moveYaw)*400;
 			}
 			else  // cleared the actor -- move on
@@ -4525,15 +4633,13 @@ function AlterDestination()
 	{
 		NextDirection    = TURNING_None;
 		ActorAvoiding    = None;
-		//bAdvancedTactics = false;
-//		Controller.bPreparingMove = false;
+		bAdvancedTactics = false;
 		ObstacleTimer    = 0;
 		bClearedObstacle = true;
 
 		if (oldTurnDir != TURNING_None)
 			controller.MoveTimer -= 4.0;
 	}
-//	log("Avoid actor="$ActorAvoiding $", New location="$controller.destination);
 }
 
 singular event Falling()
@@ -5126,14 +5232,17 @@ defaultproperties
      HealthArmLeft=100
      HealthArmRight=100
 
+     bCanCrouch=true
+     CrouchHeight=26.0
+     CrouchRadius=20.0
+
      //  bCanOpenDoors=True
      //  bIsHuman=True
      AirSpeed=320.000000
      AccelRate=200.000000
      JumpZ=120.000000
      HearingThreshold=0.150000
-     //  Skill=2.000000
-     //  bForceStasis=True
+     
      Texture=Texture'Engine.S_Pawn'
 		 bAcceptsProjectors=true
 		 ControllerClass=class'DXRAiController'
@@ -5158,4 +5267,6 @@ defaultproperties
       bShouldBaseAtStartup=true
 
       SoundOcclusion=OCCLUSION_BSP
+
+      bCanFly=false
 }

@@ -1,6 +1,8 @@
-//=============================================================================
-// FadeViewTrigger.
-//=============================================================================
+/*
+  FadeViewTrigger.
+  ToDo: Он должен работать??
+
+*/
 class FadeViewTrigger extends DeusExTrigger;
 
 var() color fadeColor;
@@ -9,6 +11,7 @@ var() float postFadeTime;
 var() bool bFadeDown;
 var DeusExPlayer player;
 var float time;
+
 
 defaultproperties
 {

@@ -65,8 +65,12 @@ defaultproperties
      //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.MilitaryBot'
 //     CollisionRadius=80.000000
-     CollisionRadius=72.000000
+     CollisionRadius=72.0
      CollisionHeight=74.5
+
+     CrouchRadius=72.0
+     CrouchHeight=74.5
+
 //     CollisionHeight=79.000000
      Mass=2000.000000
      Buoyancy=100.000000

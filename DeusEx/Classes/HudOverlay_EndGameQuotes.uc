@@ -41,13 +41,13 @@ function Render(Canvas u)
     u.DrawText(TheMessages[i]);
   }
 
-/*  u.SetDrawColor(128, 211, 100); 
-  u.SetPos(200,100);
+  u.SetDrawColor(128, 211, 100); 
+  u.SetPos(200,300);
   u.drawText("Время (displayTime) = "$displayTime);
   u.SetPos(200,130);
   u.drawText("Длина массива (Array Length) = "$TheMessages.Length);
   u.SetPos(200,160);
-  u.drawText("Длина строки X,Y "$tsX@tsY);*/
+  u.drawText("Длина строки X,Y "$tsX@tsY);
 }
 
 function AddMessage(String str)
@@ -117,7 +117,7 @@ defaultproperties
 {
    CharDelay=0.05
    displayTime=5.0
-   message=""
+   message="test message"
    msgFont=font'DxFonts.ZR_18'
    TextColor=(R=255,G=255,B=255,A=255)
 }

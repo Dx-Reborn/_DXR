@@ -728,8 +728,8 @@ state Paralyzed
     Human(pawn).bPhysicsAnimUpdate = false;
 		ViewFlash(deltaTime);
 		// Почему я должна тебя заставлять?
-    Human(pawn).EyeHeight = 0.4;
-    Human(pawn).BaseEyeHeight = 0.4;
+    Human(pawn).EyeHeight = 0.0;//4;
+    Human(pawn).BaseEyeHeight = 0.0;//4;
 	}
 
 Begin:

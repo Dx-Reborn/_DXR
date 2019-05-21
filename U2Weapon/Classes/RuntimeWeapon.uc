@@ -930,12 +930,13 @@ State DownWeapon
 
 	simulated function bool PutDown()
 	{
+			Pawn(Owner).ChangedWeapon();//
 		return true; //just keep putting it down
 	}
 
 	simulated function AnimEnd(int Channel)
 	{
-	  Pawn(Owner).Weapon = none;
+//	  Pawn(Owner).Weapon = none;
 //		Pawn(Owner).ChangedWeapon();
 	}
 

@@ -23,6 +23,8 @@ var bool bRestrictInput;
 var bool bTickEnabled;
 var float fadealpha;
 
+var bool bCanBeClosed;
+
 var string speech;
 var bool bForcePlay;
 var bool bSafeToClose; // 
@@ -197,8 +199,6 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 {
   Super.Closed(Sender, bCancelled);
 
-// Ii iaiiiyoiie i?e?eia, ainnoaiiaeaiea AAE iai?yio? aucuaaao aueao. 
-// Iiyoiio y aiaaaeea caaa??eo a 1/2 naeoiau.
 	DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
 
   moveMode     = MM_None;
@@ -349,7 +349,7 @@ function AddSystemMenu()
 }
 
 // HEX eiau eeaaeo 
-// 0x20 -- i?iaae, 0x1B -- ESC
+// 0x20 -- пробел, 0x1B -- ESC
 function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
 	local Interactions.EInputKey iKey;
@@ -357,11 +357,25 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 	iKey = EInputKey(Key);
 
 	if (bForcePlay)
+	{
     if (Key == 0x1B && state == 1) // 1--ia?aoi
     {
 	    AbortCinematicConvo();
+	    bCanBeClosed = true;
+      log("ESC in OnKeyEvent()"); //Срабатывает...
 		  return false; //true;
     }
+  }
+  else
+  if (Key == 0x1B && state == 1) // 1--ia?aoi
+    {
+	    ConPlay.TerminateConversation();
+	    bCanBeClosed = true;
+      log("ESC in OnKeyEvent()"); //Срабатывает...
+		  return false; //true;
+    }
+
+
 	// I?iaae || eieaneei iuoe
 	if ((key == 0x20) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown))
 	{
@@ -372,13 +386,14 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
  return true; //false;
 }
 
+// Убрать ESC, оставить остальное? Или писать свой аналог через Interactions + оверлей?
 function bool OnCanClose(optional bool bCancelled)
 {
-	if (bForcePlay)
-  {
-	    AbortCinematicConvo();
+//	if (bForcePlay)
+//  {
+//	    AbortCinematicConvo();
 //	    return true;
-	}
+//	}
 
 /*     if (NumChoices == 0)// < 1)
      {
@@ -392,8 +407,10 @@ function bool OnCanClose(optional bool bCancelled)
 
    if (ConPlay == none)
        return true;*/
+       if (conPlay == none)
+       bCanBeClosed = true;
 
-  return true; // false = ignore ESC key
+  return bCanBeClosed; // false = ignore ESC key
 }
 
 

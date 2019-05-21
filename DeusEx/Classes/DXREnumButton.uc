@@ -75,7 +75,7 @@ function CyclePreviousValue()
 	SetValue(newValue);
 }
 
-function SetValue(/*int*/ float newValue)
+function SetValue(float newValue)
 {
 	currentValue = newValue;
 	UpdateInfoButton();
