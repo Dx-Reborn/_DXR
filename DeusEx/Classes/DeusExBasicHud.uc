@@ -1092,10 +1092,11 @@ function DrawLineA(Canvas c, vector point1, vector point2)
 
   tVect1 = c.WorldToScreen(point1);
   tVect2 = c.WorldToScreen(point2);
+
   fromX = tVect1.X;
   fromY = tVect1.Y;
   toX = tVect2.X;
-  toY = tVect2.X;
+  toY = tVect2.Y;
 
 //	if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
 //	{
@@ -1103,10 +1104,9 @@ function DrawLineA(Canvas c, vector point1, vector point2)
 
 		c.SetDrawColor(255, 255, 255);
 		DrawPoint(c, fromX, fromY);
-
-		c.SetDrawColor(128, 128, 128);
 		DrawPoint(c, toX, toY);
 
+		c.SetDrawColor(128, 128, 128);
 		Interpolate(c, fromX, fromY, toX, toY, 8);
 //	}
 }
@@ -1114,7 +1114,7 @@ function DrawLineA(Canvas c, vector point1, vector point2)
 function DrawPoint(Canvas c, float xPos, float yPos)
 {
 	c.SetPos(xPos, yPos);
-	c.DrawTileStretched( Texture'Solid',1, 1);
+	c.DrawTilePartialStretched(Texture'Solid',1, 1);
 }
 
 

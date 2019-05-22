@@ -14,9 +14,17 @@ var() bool bUseBinocularView;
 var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
 
+var bool bRenderMover;
+
+var DeusExMover dxMover;
+
 function SetInitialState()
 {
    LoadColorTheme();
+
+  foreach AllActors(class'DeusExMover', DxMover)
+  break;
+
    super.setInitialState();
 }
 
@@ -94,7 +102,51 @@ simulated event PostRender(canvas C)
   }
   if ((DeusExWeaponInv(PlayerOwner.pawn.Weapon) != none) && (DeusExWeaponInv(PlayerOwner.pawn.Weapon).bZoomed))
       renderScopeView(C);
+
+  if (bRenderMover)
+     RenderMover(C);
 }
+
+/*- Адаптация из ActorDisplayWindow ----------------------*/
+final function RenderMover(Canvas C)
+{
+	local int         i;
+	local vector      topCircle[8];
+	local vector      bottomCircle[8];
+	local int         numPoints;
+	local vector      center, area;
+
+  if (DxMover == none)
+  return;
+
+		dxMover.ComputeMovementArea(center, area);
+
+		topCircle[0] = center+area*vect(1,1,1);
+		topCircle[1] = center+area*vect(1,-1,1);
+		topCircle[2] = center+area*vect(-1,-1,1);
+		topCircle[3] = center+area*vect(-1,1,1);
+		bottomCircle[0] = center+area*vect(1,1,-1);
+		bottomCircle[1] = center+area*vect(1,-1,-1);
+		bottomCircle[2] = center+area*vect(-1,-1,-1);
+		bottomCircle[3] = center+area*vect(-1,1,-1);
+		numPoints = 4;
+
+	for (i=0; i<numPoints; i++)
+		DrawLineA(c, topCircle[i], bottomCircle[i]);
+	for (i=0; i<numPoints-1; i++)
+	{
+		DrawLineA(c, topCircle[i], topCircle[i+1]);
+		DrawLineA(c, bottomCircle[i], bottomCircle[i+1]);
+	}
+	DrawLineA(c, topCircle[i], topCircle[0]);
+	DrawLineA(c, bottomCircle[i], bottomCircle[0]);
+}
+
+exec function rmover()
+{
+  bRenderMover =!bRenderMover;
+}
+
 
 function TrackActors(Canvas C)
 {
