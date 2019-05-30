@@ -16,14 +16,14 @@ var transient string DebugConString, DebugConString2;
 
 var bool bRenderMover;
 
-var DeusExMover dxMover;
+//var DeusExMover dxMover;
 
 function SetInitialState()
 {
    LoadColorTheme();
 
-  foreach AllActors(class'DeusExMover', DxMover)
-  break;
+//  foreach AllActors(class'DeusExMover', DxMover)
+//  break;
 
    super.setInitialState();
 }
@@ -73,6 +73,10 @@ function LoadColorTheme()
    AIBarksText = class'DXR_HUD'.static.GetAIBarksText(index);
    AIBarksHeader = class'DXR_HUD'.static.GetAIBarksHeader(index);
    AIBarksFrame = class'DXR_HUD'.static.GetAIBarksFrame(index);
+
+   FrobBoxColor = class'DXR_HUD'.static.GetFrobBoxColor(index);
+   FrobBoxShadow = class'DXR_HUD'.static.GetFrobBoxShadow(index);
+   FrobBoxText = class'DXR_HUD'.static.GetFrobBoxText(index);
 }
 
 event PostLoadSavedGame()
@@ -83,9 +87,6 @@ event PostLoadSavedGame()
 
 simulated event PostRender(canvas C)
 {
-	//if (PlayerOwner.pawn == none)
-//	return;
-
 	super.postrender(C);
 
 	if (PlayerOwner.pawn == none)
@@ -103,12 +104,12 @@ simulated event PostRender(canvas C)
   if ((DeusExWeaponInv(PlayerOwner.pawn.Weapon) != none) && (DeusExWeaponInv(PlayerOwner.pawn.Weapon).bZoomed))
       renderScopeView(C);
 
-  if (bRenderMover)
-     RenderMover(C);
+//  if (bRenderMover)
+//     RenderMover(C);
 }
 
-/*- Адаптация из ActorDisplayWindow ----------------------*/
-final function RenderMover(Canvas C)
+/*- Converted from ActorDisplayWindow. Used to check mover bounds. ----------------------*/
+/*final function RenderMover(Canvas C)
 {
 	local int         i;
 	local vector      topCircle[8];
@@ -146,10 +147,9 @@ final function RenderMover(Canvas C)
 	}
 	DrawLineA(c, topCircle[i], topCircle[0]);
 	DrawLineA(c, bottomCircle[i], bottomCircle[0]);
-}
+}*/
 
-
-function DrawLineA(Canvas c, vector point1, vector point2)
+/*function DrawLineA(Canvas c, vector point1, vector point2)
 {
 	local float toX, toY;
 	local float fromX, fromY;
@@ -163,24 +163,21 @@ function DrawLineA(Canvas c, vector point1, vector point2)
   toX = tVect2.X;
   toY = tVect2.Y;
 
-//	if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
-//	{
     c.Style=ERenderStyle.STY_Normal;
 
-		c.SetDrawColor(255, 0, 0);
+		c.SetDrawColor(120, 250,150);
 		DrawPoint(c, fromX, fromY);
 		DrawPoint(c, toX, toY);
 
-		c.SetDrawColor(128, 0, 128);
+		c.SetDrawColor(0, 250, 250);
 		Interpolate(c, fromX, fromY, toX, toY, 8);
-//	}
 }
 
 
 exec function rmover()
 {
   bRenderMover =!bRenderMover;
-}
+} */
 
 
 function TrackActors(Canvas C)

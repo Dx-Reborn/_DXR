@@ -37,8 +37,7 @@ struct sToolBeltSelectedItem
 };
 var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
 
-//struct sHUDColor
-//{
+/*------------------------*/
   var() color MessageBG;   // ClientMessage Background
   var() color MessageText; // ClientMessage Text
   var() color MessageFrame;
@@ -76,7 +75,12 @@ var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
   var() color AIBarksText;
   var() color AIBarksHeader;
   var() color AIBarksFrame;
-//};
+
+  var() color FrobBoxColor;
+  var() color FrobBoxShadow;
+  var() color FrobBoxText;
+/*------------------------*/
+
 
 var color colAmmoLowText, colAmmoText;
 var Color crossColor;
@@ -164,8 +168,6 @@ var/*()*/ int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
 var(FrobColoredBars) float TopBarOffset, LowerBarOffSet;
 var float Health, HealthHead, HealthTorso, HealthLegLeft, HealthLegRight, HealthArmLeft, HealthArmRight;
 
-// Для уменьшения рамки выделения для дверей (не самый лучший выход, но как сделать лучше я пока не знаю)
-var /*(moverCorrection) */float moverCorrectionA, moverCorrectionB, moverCorrectionC, moverCorrectionD;
 var material INBox;
 
 var/*(Energy)*/ int bePosX,bePosY, o2PosX, o2PosY;
@@ -1208,7 +1210,7 @@ function string FormatString(float num)
 }
 
 // Based on UnrealWiki examples
-function bool ConvertVectorToCoordinates(canvas C, vector loc,out float relativeX,out float relativeY)
+/*function bool ConvertVectorToCoordinates(canvas C, vector loc,out float relativeX,out float relativeY)
 {
 	local vector EyePos, RelativeToPlayer;
 
@@ -1228,7 +1230,7 @@ function bool ConvertVectorToCoordinates(canvas C, vector loc,out float relative
   }
 //log("true");
 return true;
-}
+}*/
 
 function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
 {
@@ -1728,7 +1730,7 @@ function RenderFrobTarget(Canvas C)
 
 			// Рамка рисуется дважды: сначала белая, затем тень.
 			// В оригинале белый цвет менялся в зависимости от цветовой темы.
-		  C.SetDrawColor(0,0,0,255);
+		  C.DrawColor = FrobBoxShadow;//SetDrawColor(0,0,0,255);
 			for (i=1; i>=0; i--)
 			{
 				// Нужно переместить окно с инфрмацией в левый верхний угол + небольшое смещение, как в оригинале.
@@ -1754,7 +1756,7 @@ function RenderFrobTarget(Canvas C)
 				C.DrawRect(texture'Solid', fcorner,1);
 				C.setpos(boxBRX+i-offset, boxBRY+i-fcorner-offset);
 				C.DrawRect(texture'Solid', 1, fcorner);
-			  C.SetDrawColor(255,255,255,255);
+			  C.DrawColor = FrobBoxColor;//SetDrawColor(255,255,255,255);
 
 			}
   	 FrobStr=string(FrobName);
@@ -1790,7 +1792,7 @@ function RenderFrobTarget(Canvas C)
 								 C.TextSize(msgHackStr, nH,nW);
 								 C.setpos(boxTLX+ItemNameOffsetH + nH + 40, boxTLY+ItemNameOffsetV + 20); // отступ для индикатора взлома
 								 C.DrawTileStretched(texture'Solid', barLength*Hackabledevices(frobName).hackStrength, 15); // Рисуем индикатор (функциональный!)
-								 C.SetDrawColor(255,255,255,255); // указываем цвет для текст названия (белый)
+								 C.DrawColor = FrobBoxText;// SetDrawColor(255,255,255,255); // указываем цвет для текст названия (белый)
 
 									numTools = int((Hackabledevices(frobName).hackStrength / Human(Playerowner.pawn).SkillSystem.GetSkillLevelValue(class'SkillTech')) + 0.99);
 									if (numTools == 1)
@@ -1807,7 +1809,7 @@ function RenderFrobTarget(Canvas C)
 								 C.setpos(boxTLX+ItemNameFrameOffsetH, boxTLY+ItemNameFrameOffsetV);	// Верхний левый угол
 							   //C.DrawTileStretched(texture'ItemNameBox', tH + 24, tW + 2);
 							   C.DrawTileStretched(INBox, tH + 24, tW + 2);
-								 C.SetDrawColor(255,255,255,255);	// подготовка к рисованию текста
+								 C.DrawColor = FrobBoxText;//SetDrawColor(255,255,255,255);	// подготовка к рисованию текста
 								 C.setpos(boxTLX+ItemNameOffsetH, boxTLY+ItemNameOffsetV);	// Верхний левый угол
 			           C.DrawText(Hackabledevices(frobName).itemName $ ": " $ msgHacked);
 								}
@@ -1819,7 +1821,7 @@ function RenderFrobTarget(Canvas C)
 				   C.SetDrawColor(250,250,250,200);
 					 C.setpos(boxTLX+ItemNameFrameOffsetH, boxTLY+ItemNameFrameOffsetV);	// Верхний левый угол
 				   C.DrawTileStretched(INBox, tH + 80, tW + 22);
-					 C.SetDrawColor(255,255,255,255);	// подготовка к рисованию текста
+					 C.DrawColor = FrobBoxText;//SetDrawColor(255,255,255,255);	// подготовка к рисованию текста
 					 C.setpos(boxTLX+ItemNameOffsetH, boxTLY+ItemNameOffsetV);	// Верхний левый угол
 			     C.DrawText(Hackabledevices(frobName).itemName);
 					 C.setpos(boxTLX+ItemNameOffsetH, boxTLY+ItemNameOffsetV + 20); // отступ вниз для второй строки
@@ -1837,7 +1839,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.setpos(boxTLX+ItemNameFrameOffsetH, boxTLY+ItemNameFrameOffsetV);	// Верхний левый угол
 		   C.DrawTileStretched(INBox, tH + 24, tW + 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 			 C.setpos(boxTLX+ItemNameOffsetH, boxTLY+ItemNameOffsetV);	// Верхний левый угол
 			 C.DrawText(DeusExDecoration(frobName).itemName);
 			 }
@@ -1849,7 +1851,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX+ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;;//C.SetDrawColor(255,255,255,255);
 			 C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	   	 C.DrawText(ScriptedPawn(frobName).FamiliarName);
 	   	 }
@@ -1861,7 +1863,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 			 C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	   	 C.DrawText(DeusExPickup(frobName).itemName);
 			 	}
@@ -1873,7 +1875,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX+ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 			 C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	   	 C.DrawText(DeusExAmmo(frobName).itemName);
 			 }
@@ -1885,7 +1887,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 		   C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	   	 C.DrawText(DeusExCarcass(frobName).itemName);
 				}
@@ -1897,7 +1899,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 			 C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	   	 C.DrawText(DeusExWeapon(frobName).itemName);
 				}
@@ -1909,7 +1911,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 24, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 		   C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
     	 C.DrawText(DeusExProjectile(frobName).itemName);
 	  		}
@@ -1936,7 +1938,7 @@ function RenderFrobTarget(Canvas C)
  								C.DrawColor=GetColorScaled(DeusExMover(frobName).lockStrength);
 								C.DrawColor.A=200;
 								C.DrawTileStretched(texture'Solid', barLength*DeusExMover(frobName).lockStrength, 15); // Рисуем индикатор
-							  C.SetDrawColor(255,255,255,255); // указываем цвет для текст названия (белый)
+							  C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255); // указываем цвет для текст названия (белый)
 									// Получаем информацию...
 									numTools = int((DeusExMover(frobName).lockStrength / Human(Playerowner.pawn).SkillSystem.GetSkillLevelValue(class'SkillLockpicking')) + 0.99);
 									if (numTools == 1)
@@ -1948,6 +1950,7 @@ function RenderFrobTarget(Canvas C)
 							}
 					else
 							{
+                C.DrawColor = FrobBoxText;
 		  			    C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV + 20); // Закрыто но отмычкой не открыть
 								C.DrawText(msgLockStr $ msgInf);
 		  			    C.SetPos(boxTLX + tH + 30,boxTLY + tW + ItemNameOffsetV /* + 25*/); // расположение индикатора
@@ -1957,6 +1960,7 @@ function RenderFrobTarget(Canvas C)
 							}
 							if (DeusExMover(frobName).bBreakable) // Закрыто но можно выломать
 							{                                     //--------------------------
+  							C.DrawColor = FrobBoxText;
 	  				    C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV + 40);
 								C.DrawText(msgDoorStr $ FormatString(DeusExMover(frobName).doorStrength * 100.0) $ "%");
 		  			    C.SetPos(boxTLX + tH + 30,boxTLY + tW + ItemNameOffsetV + 20); // расположение индикатора
@@ -1968,6 +1972,7 @@ function RenderFrobTarget(Canvas C)
 							}
 					else
 							{
+  							C.DrawColor = FrobBoxText;
 		  			    C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV + 40); // Закрыто, невозможно открыть отмычкой или сломать
 								C.DrawText(msgDoorStr $ msgInf);
 		  			    C.SetPos(boxTLX + tH + 30,boxTLY + tW + ItemNameOffsetV + 20); // расположение индикатора
@@ -1982,7 +1987,7 @@ function RenderFrobTarget(Canvas C)
    			   C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
     		   //C.DrawTileStretched(texture'ItemNameBox', tH + 24, tW); // вмещаем фоновый рисунок
     		   C.DrawTileStretched(INBox, tH + 24, tW); // вмещаем фоновый рисунок
-					 C.SetDrawColor(255,255,255,255);
+					 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 	  		   C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 	  	  	 C.DrawText(msgUnLocked);
 	    		}
@@ -1996,7 +2001,7 @@ function RenderFrobTarget(Canvas C)
 		   C.SetDrawColor(250,250,250,200);
 			 C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
 		   C.DrawTileStretched(INBox, tH + 20, tW+ 2);
-			 C.SetDrawColor(255,255,255,255);
+			 C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
 		   C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
 		   C.DrawText(FrobStr);
 		  }
@@ -2795,12 +2800,6 @@ defaultproperties
     corner=9.00
     margin=70.00 // Для рамки выделения!!!
     barLength=50.00
-
-    // Насколько уменьшать рамку выделения для DeusExMover
-    moverCorrectionA=0.33
-		moverCorrectionB=0.23
-		moverCorrectionC=0.33
-		moverCorrectionD=0.23
 
 		strUses="X "
 
