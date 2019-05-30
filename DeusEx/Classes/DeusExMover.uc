@@ -65,18 +65,30 @@ var localized string	msgPicking;				// message when the door is being picked
 var localized string	msgAlreadyUnlocked;		// message when the door is already unlocked
 var localized string	msgNoNanoKey;			// message when the player doesn't have the right nanokey
 
-// Empty for now. Note to self: Here is how that BoundingBox should look like:
-// http://www.imagocentre.com/image/31024/1547980970/
-final function bool GetBoundingBox(out vector MinVect, out vector MaxVect,optional bool bExact,optional vector testLocation,optional rotator testRotation)
+final function bool GetBoundingBox(out vector MinVect, out vector MaxVect)
+{
+  local box korobka;
+
+  korobka = class'ObjectManager'.static.GetActorBoundingBox(self);
+
+  MinVect = korobka.Min + location;
+  MaxVect = korobka.Max + location;
+
+  return (korobka.IsValid > 0);
+}
+
+private final function bool GetBoundingBoxForAI(out vector MinVect, out vector MaxVect)
 {
   local box korobka;
 
   korobka = class'ObjectManager'.static.GetMoverBoundingBox(self);
+
   MinVect = korobka.Min;
   MaxVect = korobka.Max;
 
   return (korobka.IsValid > 0);
 }
+
 
 function ComputeMovementArea(out vector center, out vector area)
 {
@@ -92,7 +104,7 @@ function ComputeMovementArea(out vector center, out vector area)
 	if (NumKeys > 0)  // better safe than silly
 	{
 		// Initialize our bounding box
-		GetBoundingBox(box1, box2, false, KeyPos[0]+BasePos, KeyRot[0]+BaseRot);
+		GetBoundingBoxForAI(box1, box2);
 
 		// Compute the total area of our bounding box
 		for (i=1; i<NumKeys; i++)
@@ -106,7 +118,7 @@ function ComputeMovementArea(out vector center, out vector area)
 				mult = float(j+1)/count;
 				newLocation = BasePos + (KeyPos[i]-KeyPos[i-1])*mult + KeyPos[i-1];
 				newRotation = BaseRot + (KeyRot[i]-KeyRot[i-1])*mult + KeyRot[i-1];
-				if (GetBoundingBox(minVect, maxVect, false, newLocation, newRotation))
+				if (GetBoundingBox(minVect, maxVect))
 				{
 					// Expand the bounding box
 					box1.X = FMin(FMin(box1.X, maxVect.X), minVect.X);
@@ -130,7 +142,6 @@ function ComputeMovementArea(out vector center, out vector area)
 	// Compute center/area of the bounding box and return
 	center = (box1+box2)/2;
 	area = box2 - center;
-
 }
 
 //
@@ -152,7 +163,7 @@ function FinishNotify()
 
 	if ((NumKeys > 0) && (MoverEncroachType == ME_IgnoreWhenEncroach))
 	{
-		GetBoundingBox(box1, box2, false, KeyPos[KeyNum]+BasePos, KeyRot[KeyNum]+BaseRot);
+		GetBoundingBox(box1, box2);
 		center  = (box1+box2)/2;
 		area    = box2 - center;
 		maxDist = VSize(area)+200;
@@ -202,11 +213,6 @@ function PostBeginPlay()
 		doorStrength = 1.0;
 }
 
-
-function UsedBy(Pawn user)
-{
-	user.ClientMessage("OBSOLETE");
-}
 
 //
 // DropThings() - drops everything that is based on this mover
