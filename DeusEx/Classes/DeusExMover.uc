@@ -69,19 +69,13 @@ var localized string	msgNoNanoKey;			// message when the player doesn't have the
 // http://www.imagocentre.com/image/31024/1547980970/
 final function bool GetBoundingBox(out vector MinVect, out vector MaxVect,optional bool bExact,optional vector testLocation,optional rotator testRotation)
 {
-//   local vector Initial;
+  local box korobka;
 
-//   Initial = Location;
+  korobka = class'ObjectManager'.static.GetMoverBoundingBox(self);
+  MinVect = korobka.Min;
+  MaxVect = korobka.Max;
 
-   MinVect = Location;// + PrePivot;
-
-//   MinVect.X = -4;
-
-//   MaxVect = Initial;
-//   MaxVect.X = Initial.Y;
-//   MaxVect.Z = -Initial.Z;
-
-   return true;
+  return (korobka.IsValid > 0);
 }
 
 function ComputeMovementArea(out vector center, out vector area)

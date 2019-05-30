@@ -115,9 +115,15 @@ final function RenderMover(Canvas C)
 	local vector      bottomCircle[8];
 	local int         numPoints;
 	local vector      center, area;
+	local vector pp;
 
   if (DxMover == none)
   return;
+
+  pp = C.WorldToScreen(dxMover.Location - dxMover.PrePivot);
+  C.SetPos(pp.x, pp.y);
+  c.SetDrawColor(255,0,0);
+  C.DrawText("+");
 
 		dxMover.ComputeMovementArea(center, area);
 
@@ -141,6 +147,35 @@ final function RenderMover(Canvas C)
 	DrawLineA(c, topCircle[i], topCircle[0]);
 	DrawLineA(c, bottomCircle[i], bottomCircle[0]);
 }
+
+
+function DrawLineA(Canvas c, vector point1, vector point2)
+{
+	local float toX, toY;
+	local float fromX, fromY;
+	local vector tVect1, tVect2;
+
+  tVect1 = c.WorldToScreen(point1);
+  tVect2 = c.WorldToScreen(point2);
+
+  fromX = tVect1.X;
+  fromY = tVect1.Y;
+  toX = tVect2.X;
+  toY = tVect2.Y;
+
+//	if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
+//	{
+    c.Style=ERenderStyle.STY_Normal;
+
+		c.SetDrawColor(255, 0, 0);
+		DrawPoint(c, fromX, fromY);
+		DrawPoint(c, toX, toY);
+
+		c.SetDrawColor(128, 0, 128);
+		Interpolate(c, fromX, fromY, toX, toY, 8);
+//	}
+}
+
 
 exec function rmover()
 {
@@ -388,8 +423,8 @@ function RenderDebugInfo(Canvas c)
 
     StartTrace = PlayerOwner.pawn.Location;
     EndTrace = PlayerOwner.pawn.Location + (Vector(PlayerOwner.pawn.GetViewRotation()) * DebugTraceDist);
-    StartTrace.Z += PlayerOwner.pawn.BaseEyeHeight;
-    EndTrace.Z += PlayerOwner.pawn.BaseEyeHeight;
+    StartTrace.Z += PlayerOwner.pawn.BaseEyeHeight - 5;
+    EndTrace.Z += PlayerOwner.pawn.BaseEyeHeight - 5;
 
     c.SetPos(c.SizeX/3, c.SizeY/3);
     foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)

@@ -1591,6 +1591,7 @@ function RenderFrobTarget(Canvas C)
 		local float				boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
 		local float				fcorner;//, xF, yF;
 		local int				i, j, k, offset;
+		local DeusExMover fMover;
 
 		if (!bDrawFrobBox)
 		return;
@@ -1614,10 +1615,23 @@ function RenderFrobTarget(Canvas C)
 //			offset = (24.0 * (frobname.Level.TimeSeconds % 0.3)); // Original
  			offset = (14.0 * (frobname.Level.TimeSeconds % 0.6)); // Reborn
 
-			centerLoc = FrobName.Location;
-			v1.X = FrobName.CollisionRadius;
-			v1.Y = FrobName.CollisionRadius;
-			v1.Z = FrobName.CollisionHeight;
+ 			fMover = DeusExMover(FrobName);
+
+ 			if (fMover != none)
+ 			{
+				fMover.GetBoundingBox(v1, v2);//, False, fMover.KeyPos[M.KeyNum]+fMover.BasePos, fMover.KeyRot[M.KeyNum]+fMover.BaseRot);
+				centerLoc = v1 + (v2 - v1) * 0.5;
+				v1.X = 16;
+				v1.Y = 16;
+				v1.Z = 16;
+ 			}
+ 			else
+ 			{
+        centerLoc = FrobName.Location;
+        v1.X = FrobName.CollisionRadius;
+        v1.Y = FrobName.CollisionRadius;
+        v1.Z = FrobName.CollisionHeight;
+			}
 
 			// берется расположение цели, выдается X(горизонтальная) и Y(вертикальная)
 			sp1 = C.WorldToScreen(centerLoc);
@@ -1653,27 +1667,28 @@ function RenderFrobTarget(Canvas C)
 					}
 				}
 			}
-
+			if (!frobName.IsA('DeusExMover'))
+			{
 				boxTLX += frobName.CollisionRadius / 4.0;
 				boxTLY += frobName.CollisionHeight / 4.0;
 				boxBRX -= frobName.CollisionRadius / 4.0;
 				boxBRY -= frobName.CollisionHeight / 4.0;
-
+			}
 				// Ограничить рамку для дверей
-				if (FrobName.IsA('DeusExMover'))
+/*				if (FrobName.IsA('DeusExMover'))
 				{
 				  DeusExMover(FrobName).GetBoundingBox(v1, v2);
 
  				centerLoc = v1 + (v2 - v1) * 0.5;
 				v1.X = 16;
 				v1.Y = 16;
-				v1.Z = 16;
+				v1.Z = 16;*/
 				//	v1.x = FrobName.location.x;//GetRenderBoundingSphere().x;
 				//	v1.y = FrobName.location.y;//GetRenderBoundingSphere().y;
 				//	v1.z = 16;
 
-					centerLoc.X = FMin( v1.X, v2.X );
-					centerLoc.Y = FMin( v2.Y, v2.Y );
+//					centerLoc.X = FMin( v1.X, v2.X );
+//					centerLoc.Y = FMin( v2.Y, v2.Y );
 
 				/*boxTLX = FClamp(boxTLX, moverCorrectionA, C.SizeX-moverCorrectionA);
 				boxTLY = FClamp(boxTLY, moverCorrectionB, C.SizeY-moverCorrectionB);
@@ -1684,7 +1699,7 @@ function RenderFrobTarget(Canvas C)
 //				boxTLY = FClamp(boxTLY, moverCorrectionB * C.SizeY, C.SizeY-moverCorrectionB * C.SizeY);
 //				boxBRX = FClamp(boxBRX, moverCorrectionC * C.SizeX, C.SizeX-moverCorrectionC * C.SizeX);
 //				boxBRY = FClamp(boxBRY, moverCorrectionD * C.SizeY, C.SizeY-moverCorrectionD * C.SizeY);
-				}
+//				}
 
 				// Не дает видимых изменений... Но пока оставлю
 				boxTLX = FClamp(boxTLX, margin, C.SizeX-margin);
