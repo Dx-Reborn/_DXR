@@ -6,3 +6,6 @@ var Object GlobalObject;
 native static function GameManager GetGameManager();
 
 native static function SaveLevel(Level Level, string Path);
+
+native static function string GetGameLanguage();
+native static function SetGameLanguage(string lang);
