@@ -106,6 +106,8 @@ var travel float EnergyDrainTotal;		// total amount of energy to drain
 
 
 /* -- Сохраняемые данные ------------------------------------------------------------------------- */
+
+//!!! Есть опасность того что все это перестанет помещаться в travelInfo, что приведет в тихому вылету.!!!
 struct SNanoKeyStruct
 {
 	var() name             KeyID;
@@ -144,11 +146,12 @@ var() travel byte				invSlots[30];		// 5x6 grid of inventory slots
 var editconst int	maxInvRows;			// Maximum number of inventory rows
 var editconst int	maxInvCols;			// Maximum number of inventory columns
 
-var() travel Inventory		inHand;				// The current object in hand
-var() travel Inventory		inHandPending;		// The pending item waiting to be put in hand
-var() travel bool				bInHandTransition;	// The inHand is being swapped out
+var travel Inventory		inHand;				// The current object in hand
+var travel Inventory		inHandPending;		// The pending item waiting to be put in hand
+var travel Inventory		ClientinHandPending; // Client temporary inhand pending, for mousewheel use.
+var travel bool				bInHandTransition;	// The inHand is being swapped out
 
-var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand( None ).
+var travel Inventory VM_lastInHand;				// Last item in hand before PutInHand(None).
 
 // toggle walk
 var bool bToggleWalk;
@@ -3251,6 +3254,130 @@ function UpdateInHand()
 {
 	local bool bSwitch;
 
+	//sync up clientinhandpending.
+	if (inHandPending != inHand)
+		ClientInHandPending = inHandPending;
+
+   //DEUS_EX AMSD  Don't let clients do this.
+   if (Role < ROLE_Authority)
+      return;
+
+	if (inHand != inHandPending)
+	{
+		bInHandTransition = True;
+		bSwitch = False;
+		if (inHand != None)
+		{
+			// turn it off if it is on
+			if (inHand.IsActive())
+				inHand.Activate();
+
+			if (inHand.IsA('SkilledToolInv'))
+			{
+				if (inHand.IsInState('Idle'))
+         {
+				  SkilledToolInv(inHand).PutDown();
+         }
+				else if (inHand.IsInState('Idle2'))
+             {
+					      bSwitch = True;
+             }
+			}
+			else if (inHand.IsA('DeusExWeaponInv'))
+			{
+				if (inHand.IsInState('Idle') || inHand.IsInState('Reload'))
+					DeusExWeaponInv(inHand).PutDown();
+				else if (inHand.IsInState('DownWeapon') && (Weapon == None))
+					bSwitch = True;
+			}
+			else
+			{
+				bSwitch = True;
+			}
+		}
+		else
+		{
+			bSwitch = True;
+		}
+
+		// OK to actually switch?
+		if (bSwitch)
+		{
+			SetInHand(inHandPending);
+			SelectedItem = Powerups(inHandPending);
+
+			if (inHand != None)
+			{
+				if (inHand.IsA('SkilledToolInv'))
+					SkilledToolInv(inHand).BringUp();
+				else if (inHand.IsA('DeusExWeaponInv'))
+				{
+					//== Bad, bad code.  Doesn't let us use multiple copies of the same weapon
+					//SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+
+					//== Y|y: Because SwitchWeapon is a horrible function, we'll just do this manually
+					if (Weapon == None)
+					{
+						PendingWeapon = Weapon(inHand);
+						ChangedWeapon();
+					}
+					else if (Weapon != Weapon(inHand))
+					{
+						PendingWeapon = Weapon(inHand);
+						if (!Weapon.PutDown())
+							PendingWeapon = None;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		bInHandTransition = False;
+
+		// Added this code because it's now possible to reselect an in-hand
+		// item while we're putting it down, so we need to bring it back up...
+
+		if (inHand != None)
+		{
+			// if we put the item away, bring it back up
+			if (inHand.IsA('SkilledToolInv'))
+			{
+				if (inHand.IsInState('Idle2'))
+					SkilledToolInv(inHand).BringUp();
+			}
+			else if (inHand.IsA('DeusExWeaponInv'))
+			{
+				if (inHand.IsInState('DownWeapon') && (Weapon == None))
+				{
+					//== Bad, bad code.  Doesn't let us use multiple copies of the same weapon
+					//SwitchWeapon(DeusExWeapon(inHand).InventoryGroup);
+
+					//== Y|y: Same here.  Just do the relevant stuff from SwitchWeapon and skip the rest
+					if (Weapon == None)
+					{
+						PendingWeapon = Weapon(inHand);
+						ChangedWeapon();
+					}
+					else if (Weapon != Weapon(inHand))
+					{
+						PendingWeapon = Weapon(inHand);
+						if (!Weapon.PutDown())
+							PendingWeapon = None;
+					}
+				}
+			}
+		}
+
+	}
+
+	UpdateCarcassEvent();
+}
+
+/*function UpdateInHand()
+{
+	local bool bSwitch;
+
 	if (inHand != inHandPending)
 	{
 		bInHandTransition = True;
@@ -3325,7 +3452,7 @@ function UpdateInHand()
 		}
 	}
 	UpdateCarcassEvent();
-}
+}*/
 
 
 
@@ -4679,8 +4806,8 @@ function bool CanStartConversation()
 	if (((conPlay != None) && (conPlay.CanInterrupt() == False)) || ((conPlay != None) && (conPlay.con.bFirstPerson != True)) ||
 		 ((bForceDuck == True ) && ((HealthLegLeft > 0) ||
 		 (IsInState('Dying')) || (HealthLegRight > 0))) ||
-		 (DeusExPlayerController(controller).IsInState('PlayerSwimming')) ||
-		 (DeusExPlayerController(controller).IsInState('PlayerFlying')) 	||
+		 (controller.IsInState('PlayerSwimming')) ||
+		 (controller.IsInState('PlayerFlying')) 	||
 		 (Physics == PHYS_Falling) || (Level.bPlayersOnly))
 		 {
 //				ClientMessage("CanStartConversation FALSE");
@@ -4830,10 +4957,7 @@ function bool StartConversation(Actor invokeActor, EInvokeMethod invokeMethod, o
 
 		if ((!con.bFirstPerson) && (!bForcePlay))
 		{
-//			if 	(!DeusExPlayerController(Controller).IsInState('Conversation'))
-//			{
-				DeusExPlayerController(Controller).GotoState('Conversation');
-//			}
+				Controller.GotoState('Conversation');
 		}
 		else
 		{
@@ -4931,7 +5055,12 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 		// ConversationOwner_Bark
 
 		if (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"))
-			bAbortConversation = True;
+			bAbortConversation = true;
+
+			// Фильтр диалога
+//		if (CAPS(con.OwnerName) != CAPS(invokeActor.GetBindName())) //
+//		if (con.OwnerName != invokeActor.GetBindName()) //
+//     	bAbortConversation = true;                      //
 
 		if (!bAbortConversation)
 		{
@@ -5018,7 +5147,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 
 		if (!bAbortConversation)
 		{
-			bAbortConversation = !CheckConversationHeightDifference(invokeActor, 20);// 20);
+			bAbortConversation = !CheckConversationHeightDifference(invokeActor, 20);
 
 			// If the height check failed, look to see if the actor has a LOS view
 			// to the player in which case we'll allow the conversation to continue
@@ -5122,15 +5251,20 @@ function bool StartConversationByName(string conName,	Actor conOwner,	optional b
 // invoking actor and the conversation passed in.
 function bool CheckConversationInvokeRadius(Actor invokeActor, ConDialogue con)
 {
-	local int  radius, invRadius;
-	local int  dist;
+	local int radius, invRadius, dist;
+	local bool rt;
 
 	dist = VSize(Location - invokeActor.Location);
 	radius = con.InvokeRadius;
 
 	invRadius = Max(16, radius);
 
-	return (dist <= invRadius);
+	if (dist <= invRadius)
+	rt = true;
+	else rt = false;
+
+	return rt;// (dist <= invRadius);
+
 }
 
 // Checks to make sure the player and the invokeActor are fairly close
