@@ -203,8 +203,7 @@ function Timer()
 		// unhide Stanton Dowd
 		if (!flags.GetBool('MS_StantonUnhidden'))
 		{
-			if (flags.GetBool('M08MeetHarleyFilben_Played') ||
-				flags.GetBool('MeetThomasDieter_Played'))
+			if (flags.GetBool('M08MeetHarleyFilben_Played') || flags.GetBool('MeetThomasDieter_Played'))
 			{
 				foreach AllActors(class'ScriptedPawn', pawn, 'StantonDowd')
 					if (pawn.IsA('StantonDowd'))
@@ -219,9 +218,7 @@ function Timer()
 		{
 			if (flags.GetBool('MS_StantonUnhidden'))
 			{
-				if ((flags.GetBool('GreenKnowsAboutDowd') &&
-					!flags.GetBool('JoeGreen_Dead')) ||
-					flags.GetBool('SheaKnowsAboutDowd'))
+				if ((flags.GetBool('GreenKnowsAboutDowd') && !flags.GetBool('JoeGreen_Dead')) || flags.GetBool('SheaKnowsAboutDowd'))
 				{
 					foreach AllActors(class'ScriptedPawn', pawn, 'ShadyGuy')
 						if (pawn.IsA('ThugMale'))
@@ -260,8 +257,7 @@ function Timer()
 		}
 
 		// spawn MJ12 attack force when a flag is set
-		if (!flags.GetBool('StantonAmbush') &&
-			flags.GetBool('MJ12Converging'))
+		if (!flags.GetBool('StantonAmbush') && flags.GetBool('MJ12Converging'))
 		{
 			foreach AllActors(class'MJ12Troop', mj12, 'MJ12AttackForce')
 				mj12.EnterWorld();
@@ -282,9 +278,7 @@ function Timer()
 		}
 
 		// unhide the helicopter when its time
-		if (flags.GetBool('StantonDowd_Played') &&
-			flags.GetBool('DL_Exit_Played') &&
-			!flags.GetBool('MS_Helicopter_Unhidden'))
+		if (flags.GetBool('StantonDowd_Played') && flags.GetBool('DL_Exit_Played') && !flags.GetBool('MS_Helicopter_Unhidden'))
 		{
 			foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
 				chopper.EnterWorld();

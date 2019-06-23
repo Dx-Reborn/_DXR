@@ -3,7 +3,8 @@
 // ConWinThird
 //
 
-class ConWindowActive extends floatingwindow;
+class ConWindowActive extends floatingwindow
+                              transient;
 
 enum EMoveModes
 {
@@ -17,7 +18,7 @@ var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;										// Number of choice buttons
 var() ConChoiceWindow conChoices[10];	// Maximum of ten buttons
-var ConPlay conplay;
+var  ConPlay conplay;
 var DeusExPlayer player;
 var bool bRestrictInput;
 var bool bTickEnabled;
@@ -207,9 +208,8 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 
 event Free() // Aie?ii ono?aieou aueao ia ia?aoe? ESC.
 {
-  Super.Free();
-
   DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
+  Super.Free();
 }
 
 
@@ -466,6 +466,7 @@ function bool isVisible();
 
 function Destroy()
 {
+   bCanBeClosed = true;
    Controller.closeMenu();
 }
 
