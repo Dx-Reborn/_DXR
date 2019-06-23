@@ -67,3 +67,8 @@ function Touch(actor Other)
 			SetTimer(RepeatTriggerTime, false);
 	}
 }
+
+function DeusExGameInfo getFlagBase()
+{
+  return DeusExGameInfo(Level.Game);
+}
