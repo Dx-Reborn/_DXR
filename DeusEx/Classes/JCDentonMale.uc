@@ -393,7 +393,8 @@ exec function DxMover()
 //   local rotator extRot;
 
    foreach AllActors(class'DeusExMover', mv)
-   break;
+   {
+//   break;
 
 //   extLoc = mv.KeyPos[0]+mv.BasePos;
 //   extRot = mv.KeyRot[0]+mv.BaseRot;
@@ -403,6 +404,7 @@ exec function DxMover()
    log(mv.location);
    log(MinV);
    log(MaxV);
+   }
 
 /*   mv.GetBoundingBox(MinV, MaxV, false, extLoc, extRot);
    log("All  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -412,7 +414,64 @@ exec function DxMover()
 */
 }
 
+exec function reachPath()
+{
+  local navigationPoint np;
+  local int i;
 
+  log("NavPoints within 1000 UU ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+  foreach RadiusActors(class'NavigationPoint', np, 1000, location)
+  {
+    if (controller.actorReachable(np))
+    {
+       for (i=0; i<np.PathList.Length;i++)
+       {
+          log(np @ np.pathlist[i]$" distance = " $ np.pathlist[i].distance);
+       }
+    }
+  }
+}
+
+//ScriptLog: NavPoint and dist = Autoplay.PathNode408 251.000000 227
+//ScriptLog: NavPoint and dist = Autoplay.PathNode28 354.000000 317
+/*
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40265 distance = 227
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40264 distance = 317
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40270 distance = 359
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40271 distance = 457
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40266 distance = 575
+
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode407 01_Nyc_UnatcoIsland.ReachSpec35598 distance = 317
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode407 01_Nyc_UnatcoIsland.ReachSpec35603 distance = 342
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode407 01_Nyc_UnatcoIsland.ReachSpec35607 distance = 372
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode407 01_Nyc_UnatcoIsland.ReachSpec35604 distance = 538
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode407 01_Nyc_UnatcoIsland.ReachSpec35609 distance = 539
+
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode408 01_Nyc_UnatcoIsland.ReachSpec35583 distance = 227
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode408 01_Nyc_UnatcoIsland.ReachSpec35588 distance = 315
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode408 01_Nyc_UnatcoIsland.ReachSpec35589 distance = 452
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode408 01_Nyc_UnatcoIsland.ReachSpec35585 distance = 646
+
+ScriptLog: 01_Nyc_UnatcoIsland.MapExit0 01_Nyc_UnatcoIsland.ReachSpec23265 distance = 315
+ScriptLog: 01_Nyc_UnatcoIsland.MapExit0 01_Nyc_UnatcoIsland.ReachSpec23262 distance = 359
+ScriptLog: 01_Nyc_UnatcoIsland.MapExit0 01_Nyc_UnatcoIsland.ReachSpec23267 distance = 912
+
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode476 01_Nyc_UnatcoIsland.ReachSpec17534 distance = 240
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode476 01_Nyc_UnatcoIsland.ReachSpec17528 distance = 372
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode476 01_Nyc_UnatcoIsland.ReachSpec17530 distance = 452
+ScriptLog: 01_Nyc_UnatcoIsland.PathNode476 01_Nyc_UnatcoIsland.ReachSpec17527 distance = 457
+*/
+
+exec function m08()
+{
+   GetFlagBase().SetBool('StantonDowd_Played', true,, 9);
+   GetFlagBase().SetBool('DL_Exit_Played', true,, 9);
+}
+
+exec function m09()
+{
+   GetFlagBase().SetBool('MS_ShipBreeched', true,, 9);
+}
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
