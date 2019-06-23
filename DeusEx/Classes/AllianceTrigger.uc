@@ -59,4 +59,6 @@ defaultproperties
 {
      bTriggerOnceOnly=True
      CollisionRadius=96.000000
+     texture=S_AllianceTrigger
+     drawscale=0.5
 }
