@@ -98,17 +98,17 @@ enum EPersonaTypes
 };
 
 var DeusExHUD  	 rootWindow;		// Scott is that black stuff in the oven
-var() ConDialogue con;					// Conversation we're working with
-var() ConDialogue startCon;				// Conversation that was -initially- started
+var() transient ConDialogue con;					// Conversation we're working with
+var() transient ConDialogue startCon;				// Conversation that was -initially- started
 var DeusExPlayer player;				// Player Pawn
-var() Actor 			 invokeActor;					// Actor who invoked conversation
+var() transient Actor 			 invokeActor;					// Actor who invoked conversation
 var() transient ConEvent	 	 currentEvent;
 var() int	 	       currentEventIndex; //
 var() transient ConEvent     lastEvent;				// Last event
-var() Actor        lastActor;				// Last Speaking Actor
+var() transient Actor        lastActor;				// Last Speaking Actor
 
-var  sound playingSoundId;		// Currently playing speech
-var  sound lastSound;
+var transient sound playingSoundId;		// Currently playing speech
+var transient sound lastSound;
 
 var Int			 		 lastSpeechTextLength;
 var Int          missionNumber;
@@ -139,7 +139,7 @@ var() editconst Actor ConActorsBound[10];
 
 var() editconst int conActorCount;
 
-var DelayedMessage dMsg;
+var transient DelayedMessage dMsg;
 
 // Использовать DelayedMessage только если есть события типа AddGoal или AddNote (возможно какие-то еще?).
 function bool UseDelayedMessage()
@@ -186,6 +186,47 @@ function SetInitialRadius(int newInitialRadius)
 	initialRadius = newInitialRadius;
 }
 
+/*ScriptLog: Autoplay.MyCustomConPlay0 conactorsBound 0: Autoplay.UNATCOTroop1
+ScriptLog: Autoplay.MyCustomConPlay0 conactorsBound 1: Autoplay.AV_Player0*/
+function LogConActorsBound()
+{
+	log(self@"conactors 0: "$conActors[0]);
+	log(self@"conactors 1: "$conActors[1]);
+	log(self@"conactors 2: "$conActors[2]);
+	log(self@"conactors 3: "$conActors[3]);
+	log(self@"conactors 4: "$conActors[4]);
+	log(self@"conactors 5: "$conActors[5]);
+	log(self@"conactors 6: "$conActors[6]);
+	log(self@"conactors 7: "$conActors[7]);
+	log(self@"conactors 8: "$conActors[8]);
+	log(self@"conactors 9: "$conActors[9]);
+	log("---------------------------------------------------------------------------------");
+
+	log(self@"conactorsBound 0: "$conActorsBound[0]);
+	log(self@"conactorsBound 1: "$conActorsBound[1]);
+	log(self@"conactorsBound 2: "$conActorsBound[2]);
+	log(self@"conactorsBound 3: "$conActorsBound[3]);
+	log(self@"conactorsBound 4: "$conActorsBound[4]);
+	log(self@"conactorsBound 5: "$conActorsBound[5]);
+	log(self@"conactorsBound 6: "$conActorsBound[6]);
+	log(self@"conactorsBound 7: "$conActorsBound[7]);
+	log(self@"conactorsBound 8: "$conActorsBound[8]);
+	log(self@"conactorsBound 9: "$conActorsBound[9]);
+}
+
+function AssingArrayItems()
+{
+	local DeusExGlobals gl;
+	local int i;
+
+	gl = class'DeusExGlobals'.static.GetGlobals();
+
+	for (i=0;i<10;i++)
+	{
+    ConActorsBound[i] = gl.LinkConActorsBound[i];
+	}
+}
+
 // ----------------------------------------------------------------------
 // StartConversation()
 //
@@ -195,7 +236,6 @@ function SetInitialRadius(int newInitialRadius)
 // 2.  Gets a pointer to the first Event
 // 3.  Jumps into the 'PlayEvent' state
 // ----------------------------------------------------------------------
-
 function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
 {
 	local DeusExLevelInfo aDeusExLevelInfo;
@@ -224,21 +264,13 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
 	log(self@"---------- ConActorsBound: invokeactor is "$invokeActor);
 
-/*	log(self@"conactorsBound 0: "$conActorsBound[0]);
-	log(self@"conactorsBound 1: "$conActorsBound[1]);
-	log(self@"conactorsBound 2: "$conActorsBound[2]);
-	log(self@"conactorsBound 3: "$conActorsBound[3]);
-	log(self@"conactorsBound 4: "$conActorsBound[4]);
-	log(self@"conactorsBound 5: "$conActorsBound[5]);
-	log(self@"conactorsBound 6: "$conActorsBound[6]);
-	log(self@"conactorsBound 7: "$conActorsBound[7]);
-	log(self@"conactorsBound 8: "$conActorsBound[8]);
-	log(self@"conactorsBound 9: "$conActorsBound[9]);*/
-
-
 	// Bind the conversation events
 	// Передача параметра LevelInfo чтобы быстрее прогнать итератор от актора а не от объекта.
 	gl.AssignEvents(ConActorsBound, invokeActor, self.level, con);
+
+  AssingArrayItems();
+
+  LogConActorsBound();
 	//con.BindEvents(ConActorsBound, invokeActor, self.level);
 
 	// Check to see if the conversation has multiple owners, in which case we 
@@ -248,6 +280,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 	{
 	  log("ownerRefCount > 1 && invokeActor="$invokeactor);
 	  gl.AssignActorEvents(invokeactor, con);
+	    LogConActorsBound();
 		//con.BindActorEvents(invokeActor);
 	}
 
@@ -1543,7 +1576,7 @@ function Sound GetSound(string path)
 {
   local DeusExLevelInfo dxl;
   local string aPath;
-  local sound tmp;//, reused;
+  local sound tmp;
   local bool bResult;
 
   foreach AllActors(class'DeusExLevelInfo',dxl)
@@ -1551,23 +1584,13 @@ function Sound GetSound(string path)
 
   aPath = dxl.ConAudioPath;
 
-/*  foreach AllObjects(class'Sound', reused)
-  {
-    if (reused == LastSound)
-    break;
-  }
-
-    log("Reused USound "$reused);
-    return LastSound;
-*/
-
 //  bResult = class'DxUtil'.static.LoadSoundFromFile(aPath $ Path, tmp, none);
    bResult = class'SoundManager'.static.LoadSound(aPath $ Path, tmp, outer);
 
   if (bResult)
   {
       LastSound = tmp;
-      log(tmp); //
+//      log(tmp); //
       return tmp;
   }
   return none;
@@ -1592,8 +1615,17 @@ final function ConCamera CreateConCamera()
 
 event Destroyed()
 {
+  local ConWindowActive wa;
+
    if (dMsg != none)
       dMsg.Activate(); // DXR: Start displaying delayed messages
+
+  foreach AllObjects(class'ConWindowActive', wa)
+  {
+
+//    class'ObjectManager'.static.DestroyObject(wa);
+  }
+  
 
    Super.Destroyed();
 }
