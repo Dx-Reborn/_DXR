@@ -1,8 +1,5 @@
-//====================================
-//
-//
 
-class DataLinkTrigger extends Trigger;
+class DataLinkTrigger extends DeusExTrigger;
 
 //
 // Triggers a DataLink event when touched
@@ -126,7 +123,8 @@ function bool EvaluateFlag()
 	{
 		if ((player != None) && (player.flagBase != None))
 		{
-			if (!player.flagBase.GetBool(checkFlag))
+			//if (!player.flagBase.GetBool(checkFlag))
+			if (!GetflagBase().GetBool(checkFlag))
 				bSuccess = bCheckFalse;
 			else
 				bSuccess = !bCheckFalse;
@@ -170,10 +168,11 @@ function DatalinkFinished()
 
 
 
-
 defaultproperties
 {
      checkFlagTimer=1.000000
      bTriggerOnceOnly=True
      CollisionRadius=96.000000
+     Texture=DataLink
+     DrawScale=0.5
 }
