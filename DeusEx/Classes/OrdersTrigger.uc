@@ -51,4 +51,6 @@ defaultproperties
 {
      bTriggerOnceOnly=True
      CollisionRadius=96.000000
+     texture=S_OrdersTrigger
+     drawscale=0.5
 }
