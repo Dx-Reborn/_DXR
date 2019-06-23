@@ -1137,6 +1137,11 @@ function LoadConsForMission(int mission)
 //  class'ConversationManager'.static.LoadConversations(mission, conList);
 }
 
+function DeusExGameInfo getFlagBase()
+{
+  return DeusExGameInfo(Level.Game);
+}
+
 event PostLoadSavedGame()
 {
 	ConBindEvents();
@@ -1218,4 +1223,7 @@ defaultproperties
 
 	 	 bShouldBaseAtStartup=false
 	 	 bIgnoreOutOfWorld=true
+
+   bLightingVisibility=false
+   bDramaticLighting=true
 }
