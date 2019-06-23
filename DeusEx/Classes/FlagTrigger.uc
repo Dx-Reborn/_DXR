@@ -134,4 +134,6 @@ defaultproperties
      flagExpiration=-1
      bTriggerOnceOnly=True
      CollisionRadius=96.000000
+     texture=S_FlagTrigger
+     drawscale=0.5
 }
