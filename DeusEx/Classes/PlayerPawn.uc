@@ -23,7 +23,7 @@ var float savedSongPos;
 var float musicCheckTimer;
 var float musicChangeTimer;
 
-var(Flags) editconst travel array<byte> RawByteFlags;
+var(Flags) editconst /*travel*/ array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
 var localized String InventoryFull;
 var localized String TooMuchAmmo;
@@ -59,60 +59,8 @@ var() editconst	DeusExDecoration carriedDecoration;
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
 
+
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
-function ConDialogue FindConversationByName(string conName)
-{
-  local int y;
-
-  for (y=0; y<conList.length; y++)
-  {
-//    if (conList[y].Name == conName)
-    if (caps(conList[y].Name) == caps(conName))
-        return conList[y];
-//    break;
-//    log("found conversationByName="$conName);
-//    conv = conList[y];
-  }
-//  return conv;
-}
-
-function AddRefCount()
-{
-	local bool barkPrefix;
-	local conDialogue con;
-	local int y;
-
-	DecreaseRefCount();
-
-	for (y=0; y<conList.length; y++)
-	{
-		con = conList[y];
-		barkPrefix = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ CON_BARK_PREFIX));
-
-			if (BarkBindName != con.OwnerName || !barkPrefix)
-			{
-					if (BindName != con.OwnerName)
-						continue;
-				if (BarkBindName != "")
-				{
-					if (BarkBindName == "" || barkPrefix)
-						continue;
-				}
-			}
-//	 log("Increased refcount for "$con, 'AddRefCount');
-	 con.ownerRefCount++;
-	}
-}
-
-function DecreaseRefCount()
-{
-	local int y;
-
-	for (y=0; y<conList.length; y++)
-	{
-     conList[y].ownerRefCount--;
-	}
-}
 
 function ConBindEvents()
 {
@@ -155,24 +103,10 @@ function RegisterConFiles(string Path)
   }
 }
 
-function LoadConsForMission(int mission)
+
+function PreBeginPlay()
 {
-  local int convos, barks;
-
-  if (bindName != "")
-    convos = class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
-//    log(convos);
-
-
-  if (barkBindName != "")
-    barks = class'ConversationManager'.static.GetConversations(conList, mission, BarkbindName, "");
-//    log(barks);
-}
-
-
-function PostBeginPlay()
-{
-  super.PostBeginPlay();
+  super.PreBeginPlay();
   ConBindEvents();
 }
 
@@ -301,31 +235,6 @@ exec function unblur()
   bMblurActive = false;
 }
 
-// The player wants to switch to weapon group numer I.
-function SwitchWeapon (byte F)
-{
-	local weapon newWeapon;
-
-	if ( Inventory == None )
-		return;
-	if ( (Weapon != None) && (Weapon.Inventory != None) )
-		newWeapon = Weapon.Inventory.WeaponChange(F, false);
-	else
-		newWeapon = None;	
-	if ( newWeapon == None )
-		newWeapon = Inventory.WeaponChange(F, false);
-	if ( newWeapon == None )
-		return;
-
-	if ( Weapon == None )
-	{
-		PendingWeapon = newWeapon;
-		ChangedWeapon();
-	}
-	else if ( (Weapon != newWeapon) && Weapon.PutDown())
-		PendingWeapon = newWeapon;
-}
-
 function ChangedWeapon()
 {
 	local Weapon OldWeapon;
@@ -366,41 +275,6 @@ function ChangedWeapon()
 }
 
 function SwitchToBestWeapon();
-
-
-
-// Just changed to pendingWeapon
-/*function ChangedWeapon()
-{
-	local Weapon OldWeapon;
-
-	OldWeapon = Weapon;
-
-	if (Weapon == PendingWeapon)
-	{
-		if ( Weapon == None )
-		{
-			Controller.SwitchToBestWeapon();
-			return;
-		}
-		else if ( Weapon.IsInState('DownWeapon') ) 
-			Weapon.GotoState('Idle');
-		PendingWeapon = None;
-		ServerChangedWeapon(OldWeapon, Weapon);
-		return;
-	}
-	if ( PendingWeapon == None )
-		PendingWeapon = Weapon;
-		
-	Weapon = PendingWeapon;
-	if ( (Weapon != None) && (Level.NetMode == NM_Client) )
-		Weapon.BringUp(OldWeapon);
-	PendingWeapon = None;
-	Weapon.Instigator = self;
-	ServerChangedWeapon(OldWeapon, Weapon);
-	if ( Controller != None )
-		Controller.ChangedWeapon();
-}*/
 
 // ─ы  яЁютхЁъш ўЄю ¤Єю хёЄ№.
 exec function CheckMusic()
@@ -463,7 +337,7 @@ function UpdateDynamicMusic(float deltaTime)
     musicCheckTimer += deltaTime;
     musicChangeTimer += deltaTime;
 
-    if (controller.IsInState('Interpolating'))
+    if (/*controller.*/IsInState('Interpolating'))
     {
         // don't mess with the music on any of the intro maps
         info = GetLevelInfo();
@@ -481,7 +355,7 @@ function UpdateDynamicMusic(float deltaTime)
             }
         }
     }
-    else if (Controller.IsInState('Conversation'))
+    else if (Controller != none && Controller.IsInState('Conversation'))
     {
         if (musicMode != MUS_Conversation)
         {
