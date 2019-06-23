@@ -3,7 +3,7 @@
 // 03/02/2018: работает, но вид почему-то очень сильно трясется 0_o
 // 04/02/2018: нервный тик устранен :)
 //=============================================================================
-class CameraPoint extends Keypoint
+class CameraPoint extends InterpolationPoint // Keypoint
                          placeable;
 
 //
@@ -403,4 +403,5 @@ defaultproperties
     bStatic=False
     bDirectional=True
     Texture=Texture'S_Camera'
+    DrawScale=1.0
 }
