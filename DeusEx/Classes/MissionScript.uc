@@ -31,7 +31,7 @@ function SetInitialState()
 	// start the script
 	SetTimer(checkTime, True);
 
-//	CorrectWaterVolumes();
+//	CorrectWaterVolumes(); // ToDo: Проверить, нужно ли это теперь.
 }
 
 // ----------------------------------------------------------------------
@@ -139,6 +139,7 @@ function FirstFrame()
 		// Set this flag so we only get in here once per mission.
 		flags.SetBool(flagName, True);
 	}
+//  FixSceneManager(); // Вызвать BeginPlay() для SceneManager, поскольку длительность сцены не сохраняется (объявлена как Transient).
 }
 
 
@@ -235,6 +236,17 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 		}
 	}
 	return aPoint;
+}
+
+/*
+  Проблема: Кат-сцены работают неправильно при возвращении на карту.
+*/
+function FixSceneManager()
+{
+  local SceneManager sm;
+
+  foreach AllActors(class'SceneManager', sm)
+  sm.BeginPlay();
 }
 
 function CorrectWaterVolumes()
