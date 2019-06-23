@@ -2,7 +2,7 @@
 // ConChoiceWindow
 //
 
-class ConChoiceWindow extends GUIButton;
+class ConChoiceWindow extends GUIButton Transient;
 
 var Object userObject;
 
