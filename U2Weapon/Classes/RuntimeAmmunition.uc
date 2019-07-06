@@ -7,7 +7,9 @@ class RuntimeAmmunition extends Ammunition abstract
 
 var() class<ammunition> ParentAmmo;    // Class of ammo to be represented in inventory
 var() sound PickupSound;
+var sound LandSound;
 var localized string PickupMessage;
+
 
 function bool AddAmmo(int AmmoToAdd)
 {
