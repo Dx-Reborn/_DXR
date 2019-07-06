@@ -77,7 +77,9 @@ defaultproperties
     bActivatable=True
     Pickupclass=class'Binoculars'
     PlayerViewOffset=(X=18.00,Y=0.00,Z=-6.00)
- 		PlayerViewPivot=(Pitch=0,Roll=0,Yaw=16384)
+    PlayerViewPivot=(Pitch=0,Roll=0,Yaw=16384)
+    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
+
     binocsActive="Binoculars activated"
     binocsInactive="Binoculars DeActivated"
     Description="A pair of military binoculars."

@@ -1,8 +1,5 @@
 /*------------------------------------------------------------------------------
   Parent class for Weapon Mods.
-  A note about weapon changing: now inventory and pickup are different actors,
-  so properties should be copied from Inventory to Pickup when Inventory
-  actor was thrown by player or somehow removed and placed in other place.
 ------------------------------------------------------------------------------*/
 
 class WeaponModInv extends DeusExPickupInv
@@ -51,7 +48,7 @@ defaultproperties
     PickupViewMesh=Mesh'DeusExItems.WeaponMod'
     FirstPersonViewMesh=Mesh'DeusExItems.WeaponMod'
 
-		PlayerViewPivot=(Pitch=0,Roll=0,Yaw=0)
+    PlayerViewPivot=(Pitch=0,Roll=0,Yaw=0)
 
     CollisionRadius=3.50
     CollisionHeight=4.42

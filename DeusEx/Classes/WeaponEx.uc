@@ -215,28 +215,6 @@ function texture GetLargeIcon()
 {return largeIcon;}
 
 
-/*function Frob(Actor Frobber, Inventory FrobWith)
-{
-  pawn(Frobber).ClientMessage(PickupMessage @ ItemName);
-  GiveTo(pawn(Frobber));
-  BecomeItem();
-}
-
-function BecomeItem()
-{
-	RemoteRole    = ROLE_SimulatedProxy;
-	SetDrawType(DT_Mesh);
-//	DrawScale     = PlayerViewScale;
-	bOnlyOwnerSee = true;
-	bHidden       = true;
-	NetPriority   = 1.4;
-	SetCollision(false, false, false);
-	SetPhysics(PHYS_None);
-	AmbientGlow = 0;
-}*/
-
-
-
 defaultproperties
 {
     bReadyToFire=True

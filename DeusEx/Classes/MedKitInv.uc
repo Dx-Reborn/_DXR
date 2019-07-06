@@ -132,6 +132,8 @@ defaultproperties
     PickupViewMesh=Mesh'DeusExItems.MedKit'
     FirstPersonViewMesh=Mesh'DeusExItems.MedKit'
 
+    LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
+
     Icon=Texture'DeusExUI.Icons.BeltIconMedKit'
     largeIcon=Texture'DeusExUI.Icons.LargeIconMedKit'
     largeIconWidth=39

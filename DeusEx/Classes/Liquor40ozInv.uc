@@ -67,6 +67,8 @@ defaultproperties
     largeIconHeight=47
     PickupClass=class'Liquor40oz'
 
+    LandSound=Sound'DeusExSounds.Generic.GlassHit1'
+
     Mesh=Mesh'DeusExItems.Liquor40oz'
     PickupViewMesh=Mesh'DeusExItems.Liquor40oz'
     FirstPersonViewMesh=Mesh'DeusExItems.Liquor40oz'

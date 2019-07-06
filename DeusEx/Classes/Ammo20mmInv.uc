@@ -19,5 +19,6 @@ defaultproperties
      CollisionRadius=9.500000
      CollisionHeight=4.750000
      bCollideActors=True
-	   PickupClass=class'Ammo20mm'
+     PickupClass=class'Ammo20mm'
+     LandSound=Sound'DeusExSounds.Generic.MetalHit1'
 }

@@ -11,10 +11,12 @@ defaultproperties
 {
     skillNeeded=Class'SkillEnviro'
     LoopSound=Sound'DeusExSounds.Pickup.SuitLoop'
+    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
+
     ChargedIcon=Texture'DeusExUI.Icons.ChargedIconArmorBallistic'
     ExpireMessage="Ballistic Armor power supply used up"
     ItemName="Ballistic Armor"
-    PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00),
+    PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00)
 
     FirstPersonViewMesh=Mesh'DeusExItems.BallisticArmor'
     PickupViewMesh=Mesh'DeusExItems.BallisticArmor'

@@ -65,6 +65,8 @@ function ChargedPickupEnd(DeusExPlayer Player)
 defaultproperties
 {
     LoopSound=Sound'DeusExSounds.Pickup.TechGogglesLoop'
+    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
+
     ChargedIcon=Texture'DeusExUI.Icons.ChargedIconGoggles'
     ExpireMessage="TechGoggles power supply used up"
     ItemName="Tech Goggles"

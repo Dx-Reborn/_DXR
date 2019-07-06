@@ -89,14 +89,15 @@ defaultproperties
 
      InventoryGroup=14
      ItemName="Dragon's Tooth Sword"
-		 PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
+
+     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
      PlayerViewOffset=(X=21.000000,Y=19.000000,Z=-27.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconDragonTooth'
      CollisionRadius=32.000000
      CollisionHeight=2.400000
-  	 LightEffect=LE_None
-	   LightType=LT_SubtlePulse
+     LightEffect=LE_None
+     LightType=LT_SubtlePulse
      LightBrightness=224
      LightHue=160
      LightSaturation=64

@@ -18,5 +18,6 @@ defaultproperties
      CollisionRadius=1.440000
      CollisionHeight=3.260000
      bCollideActors=True
-	   PickupClass=class'AmmoPepper'
+     PickupClass=class'AmmoPepper'
+     LandSound=Sound'DeusExSounds.Generic.GlassHit1'
 }

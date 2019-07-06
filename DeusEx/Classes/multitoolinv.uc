@@ -5,9 +5,12 @@ class MultitoolInv extends SkilledToolInv;
 
 defaultproperties
 {
-	 AttachmentClass=class'EmptyAttachment'
+   AttachmentClass=class'EmptyAttachment'
    PickupClass=class'MultiTool'
+
    UseSound=Sound'DeusExSounds.Generic.MultitoolUse'
+   LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
+
    maxCopies=20
    PlayerViewOffset=(X=19.000000,Y=15.000000,Z=-15.000000)
    Description="A disposable electronics tool. By using electromagnetic resonance detection and frequency modulation to dynamically alter the flow of current through a circuit, skilled agents can use the multitool to manipulate code locks, cameras, autogun turrets, alarms, or other security systems."

@@ -5,7 +5,7 @@ class WeaponRifleInv extends DeusExWeaponInv;
 
 defaultproperties
 {
-		 PickupClass=class'WeaponRifle'
+     PickupClass=class'WeaponRifle'
      PickupViewMesh=VertMesh'DXRPickups.SniperRiflePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.SniperRifle'
      Mesh=VertMesh'DXRPickups.SniperRiflePickup'

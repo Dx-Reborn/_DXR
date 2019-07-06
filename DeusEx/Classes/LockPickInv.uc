@@ -8,9 +8,12 @@ class LockpickInv extends SkilledToolInv;
 
 defaultproperties
 {
-	 AttachmentClass=class'EmptyAttachment'
+   AttachmentClass=class'EmptyAttachment'
    PickupClass=class'LockPick'
- 	 UseSound=Sound'DeusExSounds.Generic.LockpickRattling'
+
+   UseSound=Sound'DeusExSounds.Generic.LockpickRattling'
+   LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
+
    maxCopies=20
    Description="A disposable lockpick. The tension wrench is steel, but appropriate needles are formed from fast congealing polymers.||<UNATCO OPS FILE NOTE AJ006-BLACK> Here's what they don't tell you: despite the product literature, you can use a standard lockpick to bypass all but the most high-class nanolocks. -- Alex Jacobson <END NOTE>"
    ItemName="Lockpick"

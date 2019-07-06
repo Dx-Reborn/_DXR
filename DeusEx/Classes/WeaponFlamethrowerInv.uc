@@ -14,42 +14,41 @@ singular function SetFlame()
 
   if (flame != None)
   {
-   r.Yaw = 32768;
-   AttachToBone(flame, '114'); // ближайшая косточка
-   SetBoneRotation('114', r, 0, 1.f); // Повернуть косточку
-   return;
-	}
+    r.Yaw = 32768;
+    AttachToBone(flame, '114'); // ближайшая косточка
+    SetBoneRotation('114', r, 0, 1.f); // Повернуть косточку
+    return;
+  }
 
   if (IsInState('reloading'))
   return;
 
-  log(self@"setting up flame...");
+//  log(self@"setting up flame...");
 
-	if (flame == none) 
-	{
+  if (flame == none) 
+  {
     flame = spawn(class'EM_FlameThrower');
     bFlameExists = true;
     flame.Emitters[0].SecondsBeforeInactive = 0.2;
-	}
+  }
 }
 
 event WeaponTick(float dt)
 {
   super.WeaponTick(dt);
 
-  if (AnimSequence == 'Shoot')
+  if (GetAnimSequence() == 'Shoot')
       SetFlame();
-      else
-      if (flame != none)
-         {
-          flame.kill();
-          bFlameExists = false;
-         }
+  else if (flame != none)
+  {
+     flame.kill();
+     bFlameExists = false;
+  }
 }
 
 defaultproperties
 {
-		 PickupClass=class'WeaponFlamethrower'
+     PickupClass=class'WeaponFlamethrower'
      PickupViewMesh=VertMesh'DXRPickups.FlamethrowerPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.Flamethrower'
      Mesh=VertMesh'DXRPickups.FlamethrowerPickup'
@@ -96,5 +95,5 @@ defaultproperties
      CollisionRadius=20.500000
      CollisionHeight=4.400000
      Mass=40.000000
-     bFullVolume=true
+     bFullVolume=false
 }

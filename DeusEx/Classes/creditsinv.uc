@@ -38,6 +38,8 @@ defaultproperties
      PickupViewMesh=Mesh'DeusExItems.Credits'
      FirstPersonViewMesh=Mesh'DeusExItems.Credits'
 
+     LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
+
      CollisionRadius=7.000000
      CollisionHeight=0.550000
      Mass=2.000000

@@ -5,7 +5,7 @@ class WeaponAssaultShotgunInv extends DeusExWeaponInv;
 
 defaultproperties
 {
-		 PickupClass=class'WeaponAssaultShotgun'
+     PickupClass=class'WeaponAssaultShotgun'
      PickupViewMesh=VertMesh'DXRPickups.AssaultShotgunPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.AssaultShotgun'
      Mesh=VertMesh'DXRPickups.AssaultShotgunPickup'

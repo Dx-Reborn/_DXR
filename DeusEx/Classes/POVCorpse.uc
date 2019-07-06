@@ -27,4 +27,5 @@ defaultproperties
     Buoyancy=30.000000
     PickupClass=class'DummyCorpsePickup'
     bActivatable=false // Even don't try to activate it ))
+    LandSound=Sound'DeusExSounds.Generic.FleshHit1'
 }

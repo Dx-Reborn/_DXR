@@ -5,7 +5,7 @@ class WeaponAssaultGunInv extends DeusExWeaponInv;
 
 defaultproperties
 {
-		 PickupClass=class'WeaponAssaultGun'
+     PickupClass=class'WeaponAssaultGun'
      PickupViewMesh=VertMesh'DXRPickups.AssaultGunPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.AssaultGun'
      Mesh=VertMesh'DXRPickups.AssaultGunPickup'
@@ -28,9 +28,12 @@ defaultproperties
      BaseAccuracy=0.700000
      bCanHaveLaser=True
      bCanHaveSilencer=True
+
      AmmoNames(0)=Class'DeusEx.Ammo762mmInv'
      AmmoNames(1)=Class'DeusEx.Ammo20mmInv'
      ProjectileNames(1)=Class'DeusEx.HECannister20mm'
+     AmmoName=class'DeusEx.Ammo762mmInv'
+
      recoilStrength=0.500000
      MinWeaponAcc=0.200000
      bCanHaveModBaseAccuracy=True
@@ -38,7 +41,6 @@ defaultproperties
      bCanHaveModAccurateRange=True
      bCanHaveModReloadTime=True
      bCanHaveModRecoilStrength=True
-     AmmoName=Class'DeusEx.Ammo762mmInv'
      ReloadCount=30
      PickupAmmoCount=30
      bInstantHit=True

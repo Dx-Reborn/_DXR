@@ -7,9 +7,9 @@ class WeaponLAWInv extends DeusExWeaponInv;
 
 defaultproperties
 {
-		 PickupClass=class'WeaponLAW'
+     PickupClass=class'WeaponLAW'
      PickupViewMesh=VertMesh'DXRPickups.LAWPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.LAW'
+     FirstPersonViewMesh=Mesh'DeusExItems.LAW'
      Mesh=VertMesh'DXRPickups.LAWPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconLAW'
@@ -34,8 +34,11 @@ defaultproperties
      ReloadCount=0
      FireOffset=(X=28.000000,Y=12.000000,Z=4.000000)
      ProjectileClass=Class'DeusEx.RocketLAW'
+
      FireSound=Sound'DeusExSounds.Weapons.LAWFire'
      SelectSound=Sound'DeusExSounds.Weapons.LAWSelect'
+     LandSound=Sound'DeusExSounds.Generic.DropLargeWeapon'
+
      InventoryGroup=16
      ItemName="Light Anti-Tank Weapon (LAW)"
      PlayerViewOffset=(X=12.000000,Y=15.000000,Z=-12.000000)

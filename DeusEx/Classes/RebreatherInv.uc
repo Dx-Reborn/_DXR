@@ -1,4 +1,3 @@
-/**/
 class RebreatherInv extends chargedpickupInv;
 
 function ChargedPickupUpdate(DeusExPlayer Player)
@@ -11,7 +10,10 @@ function ChargedPickupUpdate(DeusExPlayer Player)
 defaultproperties
 {
     skillNeeded=Class'SkillEnviro'
+
     LoopSound=Sound'DeusExSounds.Pickup.RebreatherLoop'
+    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
+
     ChargedIcon=Texture'DeusExUI.Icons.ChargedIconRebreather'
     ExpireMessage="Rebreather power supply used up"
     ItemName="Rebreather"

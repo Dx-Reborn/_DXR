@@ -46,6 +46,8 @@ defaultproperties
     largeIconWidth=20
     largeIconHeight=48
 
+    LandSound=Sound'DeusExSounds.Generic.GlassHit1'
+
     Mesh=Mesh'DeusExItems.LiquorBottle'
     PickupViewMesh=Mesh'DeusExItems.LiquorBottle'
     FirstPersonViewMesh=Mesh'DeusExItems.LiquorBottle'

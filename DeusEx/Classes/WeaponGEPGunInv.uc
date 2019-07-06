@@ -5,13 +5,23 @@ class WeaponGEPGunInv extends DeusExWeaponInv;
 
 var localized String shortName;
 
+function PostBeginPlay()
+{
+	Super.PostBeginPlay();
+
+	// don't let NPC geps lock on to targets
+	if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
+		bCanTrack = False;
+}
+
+
 defaultproperties
 {
-		 PickupClass=class'WeaponGEPGun'
-		 AttachmentClass=class'WeaponGEPGunAtt'
+     PickupClass=class'WeaponGEPGun'
+     AttachmentClass=class'WeaponGEPGunAtt'
 
      PickupViewMesh=VertMesh'DXRPickups.GEPGunPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.GEPGun'
+     FirstPersonViewMesh=Mesh'DeusExItems.GEPGun'
      Mesh=VertMesh'DXRPickups.GEPGunPickup'
 
      ShortName="GEP Gun"
@@ -55,7 +65,8 @@ defaultproperties
      ReloadCount=1
      PickupAmmoCount=4
 
-     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
+     projSpawnOffset=(X=-46.000000,Y=22.000000,Z=10.000000)
+//     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
      ProjectileClass=Class'DeusEx.Rocket'
 
      InventoryGroup=17

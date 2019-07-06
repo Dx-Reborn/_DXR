@@ -7,10 +7,10 @@ class WeaponCrowbarInv extends coldarmsInv;
 defaultproperties
 {
      DrawScale=1.0
- 	   PickupClass=class'WeaponCrowbar'
- 	   AttachmentClass=class'WeaponCrowbarAtt'
+     PickupClass=class'WeaponCrowbar'
+     AttachmentClass=class'WeaponCrowbarAtt'
      PickupViewMesh=VertMesh'DXRPickups.CrowbarPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.Crowbar'
+     FirstPersonViewMesh=Mesh'DeusExItems.Crowbar'
      Mesh=VertMesh'DXRPickups.CrowbarPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconCrowbar'
@@ -33,7 +33,7 @@ defaultproperties
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
      AmmoName=Class'DeusEx.AmmoNoneInv'
-//     skins(0)=texture'DeusExItems.WeaponHandsTex'
+
      ReloadCount=0
      PickupAmmoCount=0
      bInstantHit=True
@@ -48,7 +48,8 @@ defaultproperties
 
      InventoryGroup=10
      ItemName="Crowbar"
-		 PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
+
+     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
      PlayerViewOffset=(X=40.000000,Y=15.000000,Z=-8.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconCrowbar'

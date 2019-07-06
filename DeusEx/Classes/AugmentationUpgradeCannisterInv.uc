@@ -23,6 +23,7 @@ function bool UpdateInfo(Object winInfo)
 defaultproperties
 {
      PickupClass=class'AugmentationUpgradeCannister'
+     LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
      MustBeUsedOn="Must be used on Augmentations Screen."
      Description="An augmentation upgrade canister contains highly specific nanomechanisms that, when combined with a previously programmed module, can increase the efficiency of an installed augmentation. Because no programming is required, upgrade canisters may be used by trained agents in the field with minimal risk."
      ItemName="Augmentation Upgrade Canister"

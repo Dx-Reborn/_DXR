@@ -75,6 +75,8 @@ defaultproperties
     largeIconHeight=49
     PickupClass=class'FireExtinguisher'
 
+    LandSound=Sound'DeusExSounds.Generic.GlassDrop'
+
     Mesh=Mesh'DeusExItems.FireExtinguisher'
     PickupViewMesh=Mesh'DeusExItems.FireExtinguisher'
     FirstPersonViewMesh=Mesh'DeusExItems.FireExtinguisher'

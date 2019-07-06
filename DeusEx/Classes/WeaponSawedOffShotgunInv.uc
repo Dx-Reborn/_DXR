@@ -14,10 +14,10 @@ simulated function SawedOffCockSound()
 
 defaultproperties
 {
-		 PickupClass=class'WeaponSawedOffShotgun'
-		 AttachmentClass=class'WeaponSawedOffShotgunAtt'
+     PickupClass=class'WeaponSawedOffShotgun'
+     AttachmentClass=class'WeaponSawedOffShotgunAtt'
      PickupViewMesh=VertMesh'DXRPickups.ShotgunPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.Shotgun'
+     FirstPersonViewMesh=Mesh'DeusExItems.Shotgun'
      Mesh=VertMesh'DXRPickups.ShotgunPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconShotgun'

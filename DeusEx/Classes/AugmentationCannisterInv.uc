@@ -94,6 +94,7 @@ defaultproperties
      largeIconWidth=19
      largeIconHeight=49
      PickupClass=class'AugmentationCannister'
+     LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
      PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00)
      AugsAvailable="Can Add:"
      MustBeUsedOn="Can only be installed with the help of a MedBot."

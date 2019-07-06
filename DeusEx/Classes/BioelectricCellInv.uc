@@ -77,6 +77,8 @@ defaultproperties
     ItemName="Bioelectric Cell"
     beltDescription="BIOCELL"
 
+    LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
+
     Mesh=Mesh'DeusExItems.BioCell'
     PickupViewMesh=Mesh'DeusExItems.BioCell'
     FirstPersonViewMesh=Mesh'DeusExItems.BioCell'
