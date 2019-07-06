@@ -10,7 +10,7 @@ struct S_KeyDisplayItem
 	var() localized String DisplayName;
 };
 
-const AmountOfFunctions = 46;
+const AmountOfFunctions = 50;//46;
 const SetupCommand = "SET Input ";
 
 var localized string	FunctionText[AmountOfFunctions];
@@ -609,6 +609,12 @@ defaultproperties
     FunctionText(43)="Toggle Augmentation Display"
     FunctionText(44)="Toggle Object Belt"
     FunctionText(45)="Toggle Ammo Display"
+//  commands for fly/ghost/walk
+    FunctionText(46)="DEV: Ghost"
+    FunctionText(47)="DEV: Fly"
+    FunctionText(48)="DEV: Walk"
+    FunctionText(49)="DEV: Custom Debug info on HUD"
+
     AliasNames(0)="ParseLeftClick|Fire"
     AliasNames(1)="ParseRightClick"
     AliasNames(2)="DropItem"
@@ -655,6 +661,12 @@ defaultproperties
     AliasNames(43)="ToggleAugDisplay"
     AliasNames(44)="ToggleObjectBelt"
     AliasNames(45)="ToggleAmmoDisplay"
+
+    AliasNames(46)="Ghost"
+    AliasNames(47)="Fly"
+    AliasNames(48)="Walk"
+    AliasNames(49)="ExtraHUDDebugInfo"
+
      keyDisplayNames(0)=(inputKey=IK_LeftMouse,displayName="Left Mouse Button")
      keyDisplayNames(1)=(inputKey=IK_RightMouse,displayName="Right Mouse Button")
      keyDisplayNames(2)=(inputKey=IK_MiddleMouse,displayName="Middle Mouse Button")
@@ -692,13 +704,11 @@ defaultproperties
      keyDisplayNames(34)=(inputKey=IK_JoyR,displayName="Joystick R")
      keyDisplayNames(35)=(inputKey=IK_JoyU,displayName="Joystick U")
      keyDisplayNames(36)=(inputKey=IK_JoyV,displayName="Joystick V")
-
-      // There is no such keys in this version of engine, or they are named differently?
-/*     keyDisplayNames(37)=(inputKey=IK_JoyPovUp,displayName="Joystick Pov Up")
+      /* There is no such keys in this version of engine, or they are named differently?
+     keyDisplayNames(37)=(inputKey=IK_JoyPovUp,displayName="Joystick Pov Up")
      keyDisplayNames(38)=(inputKey=IK_JoyPovDown,displayName="Joystick Pov Down")
      keyDisplayNames(39)=(inputKey=IK_JoyPovLeft,displayName="Joystick Pov Left")
      keyDisplayNames(40)=(inputKey=IK_JoyPovRight,displayName="Joystick Pov Right")*/
-
      keyDisplayNames(41)=(inputKey=IK_Ctrl,displayName="Control")
      keyDisplayNames(42)=(inputKey=IK_Left,displayName="Left Arrow")
      keyDisplayNames(43)=(inputKey=IK_Right,displayName="Right Arrow")
