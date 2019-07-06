@@ -9,6 +9,8 @@ var GUIEditBox eFlagName;
 var GUIButton bSetTrue, bSetFalse, bExtra, bClose, bSave, bLoad, bDelete;
 var array<String> FlagsArray;
 
+
+
 function CreateMyControls()
 {
   flagList = new(none) class'GUIListBox'; 
@@ -32,7 +34,9 @@ function CreateMyControls()
   eFlagName.WinWidth = 212;
   eFlagName.WinLeft = 327;
   eFlagName.WinTop = 370;
+	eFlagName.OnChange = editBoxChanged;
 	AppendComponent(eFlagName, true);
+	eFlagName.AllowedCharSet = "0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 	/* -- Кнопки ------------------------------------------------------- */
 	bSetTrue = new(none) class'GUIButton';
@@ -44,6 +48,7 @@ function CreateMyControls()
   bSetTrue.WinLeft = 12;
   bSetTrue.WinTop = 395;
   bSetTrue.caption="Set True";
+  bSetTrue.Hint = "Set value of selected flag to TRUE";
 	AppendComponent(bSetTrue, true);
 
 	bSetFalse = new(none) class'GUIButton';
@@ -55,6 +60,7 @@ function CreateMyControls()
   bSetFalse.WinLeft = 12;
   bSetFalse.WinTop = 370;
   bSetFalse.caption="Set False";
+  bSetFalse.Hint = "Set value of selected flag to FALSE";
 	AppendComponent(bSetFalse, true);
 
 	bExtra = new(none) class'GUIButton';
@@ -66,6 +72,7 @@ function CreateMyControls()
   bExtra.WinLeft = 170;
   bExtra.WinTop = 370;
   bExtra.caption="Add flag";
+  bExtra.Hint = "Type flagName and click this button to add it. Value of the flag is TRUE by default";
 	AppendComponent(bExtra, true);
 	/* ---------------------------------------------------------------------- */
 	bClose = new(none) class'GUIButton';
@@ -98,7 +105,8 @@ function CreateMyControls()
   bLoad.WinWidth = 150;
   bLoad.WinLeft = 6;
   bLoad.WinTop = 421;
-  bLoad.caption="LoadFromPlayer";
+  bLoad.caption="Reload List";
+  bLoad.Hint = "Update list of flags, in case if MissionScripts or other events changed some of them";
 	AppendComponent(bLoad, true);
 	/* ---------------------------------------------------------------------- */
 	bDelete = new(none) class'GUIButton';
@@ -113,6 +121,7 @@ function CreateMyControls()
 	AppendComponent(bDelete, true);
 
 	fillList();
+  editBoxChanged(eFlagName);
 }
 
 function fillList()
@@ -183,17 +192,42 @@ function bool InternalOnClick(GUIComponent Sender)
             valueStr = "я@TRUE";
 
      flaglist.list.Replace(flaglist.list.Index, flagStr$"| = "$valueStr$", expires at "$flag.ExpireLevel);
-//     fillList();
   }
+  // Add flag
   if (Sender == bExtra)
   {
-
+      AddFlag();
+  }
+  if (Sender == bLoad)
+  {
+      FillList();
   }
   if (Sender == bClose)
   {
      Controller.CloseMenu();
   }
   return false;
+}
+
+function AddFlag()
+{
+  local GameFlags.Flag Flag;
+
+  Flag.Id = class'DxUtil'.static.TrimSpaces(eFlagName.GetText());
+  Flag.Value = 1;
+//	Flag.ExpireLevel = expiration;
+
+  class'GameFlags'.static.SetFlag(Flag);
+
+  fillList();
+}
+
+function editBoxChanged(GUIComponent Sender)
+{
+  if (class'DxUtil'.static.TrimSpaces(eFlagName.GetText()) != "")
+   bExtra.EnableMe();
+   else
+      bExtra.DisableMe();
 }
 
 defaultproperties

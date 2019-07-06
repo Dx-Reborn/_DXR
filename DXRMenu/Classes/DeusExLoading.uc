@@ -126,7 +126,7 @@ defaultproperties
    sML(68)=(sMapName="14_Oceanlab_Silo",sMapCaption="short")
    sML(69)=(sMapName="14_OceanLab_Lab",sMapCaption="Ocean laboratory")
    sML(70)=(sMapName="14_OceanLab_UC",sMapCaption="Ocean laboratory, Universal Constructor")
-   sML(71)=(sMapName="14_Vandenberg_Sub",sMapCaption="")
+   sML(71)=(sMapName="14_Vandenberg_Sub",sMapCaption="name")
 
    sML(72)=(sMapName="15_Area51_Bunker",sMapCaption="Зона 51, вход в бункер")
    sML(73)=(sMapName="15_Area51_Entrance",sMapCaption="Зона 51, вход")

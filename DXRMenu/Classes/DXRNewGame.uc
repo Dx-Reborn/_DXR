@@ -518,8 +518,22 @@ function DestroyLocalSkills()
 
 	while(localSkills[skillIndex] != None)
 	{
+//		localSkills[skillIndex].ResetSkill();
 		localSkills[skillIndex].Destroy();
 		localSkills[skillIndex] = None;
+		skillIndex++;
+	}
+}
+
+function ResetLocalSkills()
+{
+	local int skillIndex;
+
+	skillIndex = 0;
+
+	while(localSkills[skillIndex] != None)
+	{
+		localSkills[skillIndex].ResetSkill();
 		skillIndex++;
 	}
 }
@@ -539,6 +553,7 @@ function ResetToDefaults()
 	portraitIndex = 0;
 	iPortrait.Image = texPortraits[portraitIndex];
 
+//  ResetLocalSkills();//
 	CopySkills();
 	PopulateSkillsList();
 	UpdateSkillPoints();
