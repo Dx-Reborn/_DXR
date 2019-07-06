@@ -20,7 +20,7 @@ singular function SetFlame()
     return;
   }
 
-  if (IsInState('reloading'))
+  if (IsInState('reload'))
   return;
 
 //  log(self@"setting up flame...");
