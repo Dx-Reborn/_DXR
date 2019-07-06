@@ -68,12 +68,6 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
  }
 }
 
-function SetInitialState()
-{
-	Super.SetInitialState();
-	Log(Self$" InitialState()");
-}
-
 // Стандартная функция UT 2004
 /*exec function Use()
 {
@@ -858,7 +852,7 @@ event object OpenMenuEx(string Menu, optional bool bDisconnect,optional string M
 
 defaultproperties
 {
-	MidGameMenuClass="DXRMenu.DeusExMidGameMenu"
+  MidGameMenuClass="DXRMenu.DeusExMidGameMenu"
   PawnClass=class'DeusEx.JCDentonMale'
   ScreenFlashScaling=1.0
   deltaStep=0.5
