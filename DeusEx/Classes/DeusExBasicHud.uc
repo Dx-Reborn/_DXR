@@ -313,7 +313,7 @@ function DrawTargetAugmentation(Canvas C)
 	local int i, j, k, r;
 	local DeusExWeaponInv weapon;
 	local bool bUseOldTarget;
-//	local Color crossColor;
+	local vector AimLocation;
 	local array<string> Lines;
 
 	crossColor.R = 255;
@@ -324,7 +324,7 @@ function DrawTargetAugmentation(Canvas C)
 	C.Font = LoadProgressFont();
 
 	// check 500 feet in front of the player
-	target = TraceLOS(TRACE_LOS_DIST/* 8000*/);
+	target = TraceLOS(TRACE_LOS_DIST, AimLocation);
 
 	// draw targetting reticle information based on the weapon's accuracy
 	// reticle size is based on accuracy - larger box = higher (worse) accuracy value
@@ -657,16 +657,19 @@ function DrawTargetAugmentation(Canvas C)
 				if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
 				{
 					str = msgDisabled;
+					crossColor.A = 255;
 					c.drawColor = crossColor;
-					//gc.GetTextExtent(0, w, h, str);
 					c.textsize(str, w,h);
-					x = boxCX - w/2;
-					y = boxTLY - h - marginX;
+					x = boxCX - w / 2;// Верно. - c.SizeX / 2; //w/2;
+					y = boxTLY + h + marginX;
+
+					c.SetPos(200,200);
+					c.DrawText("Robots: X = "$x$" Y = "$y $ "  boxTLY = "$boxTLY$"  boxTLX = "$boxTLX);
+
 					c.setpos(x,y);
 					c.drawtext(str);
 				}
 			}
-		//}
 	}
 	else if (bTargetActive)
 	{
@@ -678,7 +681,7 @@ function DrawTargetAugmentation(Canvas C)
 		x = c.SizeX/2 - w/2;
 		y = (c.sizeY/2 - h) - 20;
 		c.setpos(x,y);
-		c.DrawText(/*x, y, w, h,*/ str);
+		c.DrawText(str);
 	}
  c.ReSet();
 	// set the crosshair colors
@@ -970,49 +973,40 @@ function bool IsHeatSource(Actor A)
 // ----------------------------------------------------------------------
 // TraceLOS()
 // ----------------------------------------------------------------------
-
-function Actor TraceLOS(float checkDist)
+function Actor TraceLOS(float checkDist, out vector HitLocation)
 {
 	local Actor target;
 	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
 
-	if (playerOwner.pawn != none)
-	{
 	target = None;
 
 	// figure out how far ahead we should trace
-	StartTrace = Human(Playerowner.pawn).Location;
-	EndTrace = Human(Playerowner.pawn).Location + (Vector(Human(Playerowner.pawn).GetViewRotation()) * checkDist);
+	StartTrace = PlayerOwner.Pawn.Location;
+	EndTrace = PlayerOwner.Pawn.Location + (Vector(Player.GetViewRotation()) * checkDist);
 
 	// adjust for the eye height
-	StartTrace.Z += Human(Playerowner.pawn).BaseEyeHeight;
-	EndTrace.Z += Human(Playerowner.pawn).BaseEyeHeight;
+	StartTrace.Z += PlayerOwner.Pawn.BaseEyeHeight;
+	EndTrace.Z += PlayerOwner.Pawn.BaseEyeHeight;
 
 	// find the object that we are looking at
 	// make sure we don't select the object that we're carrying
-	foreach Human(Playerowner.pawn).TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+	foreach PlayerOwner.Pawn.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
 	{
-//   if (target.isA('StaticMeshActor')) // Отфильтровать StaticMesh
-//       return none;
-//   else
-		if (target.IsA('Pawn') || target.IsA('DeusExDecoration') || target.IsA('ThrownProjectile') ||
-			 (target.IsA('DeusExMover') && DeusExMover(target).bBreakable))
+		if (target.IsA('Pawn') || target.IsA('DeusExDecoration') || target.IsA('ThrownProjectile') || (target.IsA('DeusExMover')))// && DeusExMover(target).bBreakable))
 		{
-			if (target != Human(Playerowner.pawn).CarriedDecoration)
+			if (target != Human(PlayerOwner.Pawn).CarriedDecoration)
 			{
-				break;
+					break;
 			}
 		}
 	}
-
+	HitLocation = HitLoc;
 	return target;
-	}
 }
 
 // ----------------------------------------------------------------------
 // Interpolate()
 // ----------------------------------------------------------------------
-
 function Interpolate(Canvas C, float fromX, float fromY, float toX, float toY, int power)
 {
 	local float xPos, yPos;
@@ -1602,16 +1596,10 @@ function RenderFrobTarget(Canvas C)
 	  Y=C.ClipY * 0.5;
  		C.SetPos(X,Y);
 
-//	local vector ScreenPos
-//	ScreenPos = C.WorldToScreen( Target.Location );
-//	native(1489) final function bool ConvertVectorToCoordinates(vector location,out float relativeX,out float relativeY);
-//	vector WorldToScreen( vector WorldLoc )
-//	native(1286) final function DrawBox(float destX, float destY,float destWidth, float destHeight,float orgX, float orgY,float boxThickness,texture tx);
-//	var const int SizeX, SizeY;  // Zero-based actual dimensions. (canvas)
-   C.Font = LoadProgressFont();
-   FrobName = DeusExPlayer(playerOwner.pawn).frobTarget; //DeusExPlayerController(Player).FrobTarget;
+    C.Font = LoadProgressFont();
+    FrobName = DeusExPlayer(playerOwner.pawn).frobTarget; //DeusExPlayerController(Player).FrobTarget;
 
-   If ((FrobName != None) && (DeusExPlayerController(Player).IsHighlighted(frobName)) && (!bDrawInfo))
+   if ((FrobName != None) && (DeusExPlayerController(Player).IsHighlighted(frobName)) && (!bDrawInfo))
    {
    		// пульсация рамки
 //			offset = (24.0 * (frobname.Level.TimeSeconds % 0.3)); // Original
@@ -1621,7 +1609,7 @@ function RenderFrobTarget(Canvas C)
 
  			if (fMover != none)
  			{
-				fMover.GetBoundingBox(v1, v2);//, False, fMover.KeyPos[M.KeyNum]+fMover.BasePos, fMover.KeyRot[M.KeyNum]+fMover.BaseRot);
+				fMover.GetBoundingBox(v1, v2);
 				centerLoc = v1 + (v2 - v1) * 0.5;
 				v1.X = 16;
 				v1.Y = 16;
