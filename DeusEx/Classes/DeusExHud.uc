@@ -85,6 +85,14 @@ event PostLoadSavedGame()
   	dxc = new(none) class'DxCanvas';
 }
 
+exec function ExtraHUDDebugInfo()
+{
+  if (DeusExPlayer(PlayerOwner.Pawn) != none)
+  {
+    DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo = !DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo;
+  }
+}
+
 simulated event PostRender(canvas C)
 {
 	super.postrender(C);
@@ -431,7 +439,7 @@ function RenderDebugInfo(Canvas c)
        {
           if (pawn(target).controller != none)
           {
-             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName()$", ");
+             c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName()$" ");
              c.SetPos(c.SizeX/3, c.CurY);
              c.DrawText("HasNextState()? "$DXRAiController(pawn(target).controller).HasNextState()$" bInterruptState? "$ScriptedPawn(target).bInterruptState);
              c.DrawColor = WhiteColor;
@@ -443,15 +451,15 @@ function RenderDebugInfo(Canvas c)
              switch (ScriptedPawn(target).TurnDirection)
              {
                case TURNING_Right:
-               c.DrawText("TurnDirection = TURNING_Right");
+               c.DrawText("TurnDirection = _ÿÿTURNING_Right");
                break;
 
                case TURNING_Left:
-               c.DrawText("TurnDirection = TURNING_Left");
+               c.DrawText("TurnDirection = _ÿÿTURNING_Left");
                break;
 
                case TURNING_None:
-               c.DrawText("TurnDirection = TURNING_None");
+               c.DrawText("TurnDirection = _ÿÿTURNING_None");
                break;
              }
             

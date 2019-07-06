@@ -5,6 +5,9 @@ class JCDentonMale extends Human config;
 
 var travel class TravelClass;
 var bool bMouseMode;
+var bool bAimValue;
+
+var array<string> testStrings;
 
 event TravelPostAccept()
 {
@@ -471,6 +474,20 @@ exec function m08()
 exec function m09()
 {
    GetFlagBase().SetBool('MS_ShipBreeched', true,, 9);
+}
+
+exec function AimHelp()
+{
+  bAimValue = !bAimValue;
+
+  PlayerController(Controller).bAimingHelp = bAimValue;
+
+  ClientMessage("PlayerController(Controller).bAimingHelp = "$PlayerController(Controller).bAimingHelp);
+}
+
+exec function ArrayBound()
+{
+ testStrings[999] = "Test String";
 }
 
 // ----------------------------------------------------------------------
