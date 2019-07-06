@@ -104,7 +104,7 @@ function ChunkUp(int Damage)
 // ----------------------------------------------------------------------
 // TakeDamage()
 // ----------------------------------------------------------------------
-function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
+function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
 {
 	local int i;
 
@@ -112,8 +112,7 @@ function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vecto
 		return;
 
 	// only take "gib" damage from these damage types
-	if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded') || (damageType == class'DM_Munch') ||
-	    (damageType == class'DM_Tantalus'))
+	if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded') || (damageType == class'DM_Munch') || (damageType == class'DM_Tantalus'))
 	{
 		if ((damageType != class'DM_Munch') && (damageType != class'DM_Tantalus'))
 		{
@@ -701,13 +700,14 @@ function bool AddInventory(inventory NewItem)
 
 	// The item should not have been destroyed if we get here.
 	assert(NewItem!=None);
-
+	              
 	// Add to front of inventory chain.
 	NewItem.SetOwner(Self);
 	NewItem.Inventory = Inventory;
-	NewItem.GoToState('idle2');
-	// InitialState = 'Idle2'; <- why this does not worsks? 
+	NewItem.InitialState = 'Idle2';
 	Inventory = NewItem;
+
+log(self$" NewItem = "$NewItem);
 
 	return true;
 }
