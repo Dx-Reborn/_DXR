@@ -41,5 +41,9 @@ class DXR_HUDColor extends hcObject;
   var() color AIBarksHeader;
   var() color AIBarksFrame;
 
+  var() color FrobBoxColor;
+  var() color FrobBoxShadow;
+  var() color FrobBoxText;
+
   var() string HUDName; // Theme displayable name
 

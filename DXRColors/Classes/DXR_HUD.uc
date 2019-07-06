@@ -113,6 +113,15 @@ static function color GetAIBarksHeader(int ThemeIndex)
 static function color GetAIBarksFrame(int ThemeIndex)
 {return default.HUDColors[ThemeIndex].AIBarksFrame;}
 /*---------------------------------------------------------------*/
+static function color GetFrobBoxColor(int ThemeIndex)
+{return default.HUDColors[ThemeIndex].FrobBoxColor;}
+
+static function color GetFrobBoxShadow(int ThemeIndex)
+{return default.HUDColors[ThemeIndex].FrobBoxShadow;}
+
+static function color GetFrobBoxText(int ThemeIndex)
+{return default.HUDColors[ThemeIndex].FrobBoxText;}
+
 
 
 defaultproperties
@@ -155,6 +164,11 @@ defaultproperties
      AIBarksText=(R=255,G=255,B=255,A=255)
      AIBarksHeader=(R=255,G=233,B=177,A=255)
      AIBarksFrame=(R=185,G=177,B=140,A=255)
+
+     FrobBoxColor=(R=139,G=105,B=35,A=255)
+     FrobBoxShadow=(R=185,G=177,B=140,A=255)
+     FrobBoxText=(R=255,G=255,B=255,A=255)
+
      HUDName="Amber"
 	End Object
 	HUDColors(0)=col00
@@ -197,6 +211,11 @@ defaultproperties
      AIBarksText=(R=200,G=0,B=0,A=255)
      AIBarksHeader=(R=255,G=0,B=0,A=255)
      AIBarksFrame=(R=255,G=25,B=25,A=255)
+
+     FrobBoxColor=(R=255,G=0,B=0,A=255)
+     FrobBoxShadow=(R=128,G=0,B=0,A=255)
+     FrobBoxText=(R=200,G=0,B=0,A=255)
+
      HUDName="Terminator"
 	End Object
 	HUDColors(1)=col01
@@ -240,6 +259,11 @@ defaultproperties
      AIBarksText=(R=130,G=139,B=138,A=255)
      AIBarksHeader=(R=170,G=179,B=178,A=255)
      AIBarksFrame=(R=82,G=82,B=80,A=255)
+
+     FrobBoxColor=(R=170,G=179,B=178,A=255)
+     FrobBoxShadow=(R=82,G=82,B=80,A=255)
+     FrobBoxText=(R=130,G=139,B=138,A=255)
+
      HUDName="Darkest Time"
 	End Object
 	HUDColors(2)=col02
