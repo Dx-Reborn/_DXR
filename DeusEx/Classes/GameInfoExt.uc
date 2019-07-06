@@ -128,6 +128,7 @@ final function bool GetBool(coerce String flagName) {
 	local bool bResult;
 
 	bResult = class'GameFlags'.static.GetFlag(flagName, Flag) && flag.value == 1;
+//	log("GetBool for flag "$flagName$" result = "$bResult);
 	return bResult;
 }
 
@@ -182,7 +183,19 @@ final function int GetExpiration(coerce String flagName, EFlagType flagType)
 /* Теперь обрабатывается в C++ */
 final function DeleteExpiredFlags(int criteria)
 {
-  class'GameFlags'.static.DeleteExpiredFlags(criteria);
+  local array<string> myFlags;
+	local int i;
+
+	myFlags = class'GameFlags'.static.GetAllFlagIds(true); // True -- вернуть в регистре "как есть"
+
+	for (i=0; i<myFlags.Length; i++)
+	{
+	  if (Getexpiration(myFlags[i], FLAG_Bool) >= criteria)
+        DeleteFlag(myFlags[i]);
+	}
+    //log(myFlags[i],'ExpiredFlag');
+
+//  class'GameFlags'.static.DeleteExpiredFlags(criteria); // Вылет?
   log("Deleted expired flags up to "$criteria);
 }
 
@@ -228,6 +241,11 @@ function ResetFlags()
 {
    DeleteAlmostAllFlags();
 }
+
+
+// Do nothing.
+function DiscardInventory(Pawn Other);
+function ScoreKill(Controller Killer, Controller Other);
 
 // 
 // Установка правильной скорости игры.
