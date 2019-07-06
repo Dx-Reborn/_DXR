@@ -328,7 +328,7 @@ local name HCESlave;
 
 function SetSeq(int seqnum)
 {
-log("function SetSeq "$seqnum);
+//log("function SetSeq "$seqnum);
 
 	if (bDestroyed)
 		return;
@@ -375,12 +375,12 @@ log("function SetSeq "$seqnum);
 		}		
 
 		KeyNum = seqnum;
-		log("seqnum "$seqnum$ "GotoState('CaroneElevator', 'CheckDoors'); keynum=" $keynum);
+//		log("seqnum "$seqnum$ "GotoState('CaroneElevator', 'CheckDoors'); keynum=" $keynum);
 		GotoState('CaroneElevatorEx', 'CheckDoors');
 	}
 	else if (KeyNum == seqnum)
 	{
-		log(keynum$" keynum		GotoState('CaroneElevator', 'OpenCloseDoors');");
+//		log(keynum$" keynum		GotoState('CaroneElevator', 'OpenCloseDoors');");
 		GotoState('CaroneElevatorEx', 'OpenCloseDoors');
 	}
 }
@@ -556,7 +556,7 @@ auto state() CaroneElevatorEx
 {
 	event KeyFrameReached()
 	{
-		log("state() CaroneElevator");
+//		log("state() CaroneElevator");
 		if (bFollowKeyframes)
 			Super.KeyFrameReached();
 	}
@@ -727,4 +727,5 @@ defaultproperties
     MoverStrength=1.00
     MoverEncroachType=2
     InitialState=CaroneElevator
+    bUseDynamicLights=true
 }
