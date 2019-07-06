@@ -23,7 +23,6 @@ defaultproperties
     Mesh=Mesh'DeusExItems.BallisticArmor'
 
     Charge=1000
-    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
     Icon=Texture'DeusExUI.Icons.BeltIconArmorBallistic'
     largeIcon=Texture'DeusExUI.Icons.LargeIconArmorBallistic'
     largeIconWidth=34

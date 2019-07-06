@@ -77,7 +77,6 @@ defaultproperties
     Mesh=Mesh'DeusExItems.GogglesIR'
 
     Charge=500
-    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
     Icon=Texture'DeusExUI.Icons.BeltIconTechGoggles'
     largeIcon=Texture'DeusExUI.Icons.LargeIconTechGoggles'
     largeIconWidth=49

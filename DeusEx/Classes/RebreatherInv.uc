@@ -23,7 +23,6 @@ defaultproperties
     PickupViewMesh=Mesh'DeusExItems.Rebreather'
     Mesh=Mesh'DeusExItems.Rebreather'
 
-    LandSound=Sound'DeusExSounds.Generic.PaperHit2'
     Icon=Texture'DeusExUI.Icons.BeltIconRebreather'
     largeIcon=Texture'DeusExUI.Icons.LargeIconRebreather'
     largeIconWidth=44
