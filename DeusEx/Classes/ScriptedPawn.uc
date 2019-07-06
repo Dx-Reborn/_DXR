@@ -7,11 +7,15 @@ class ScriptedPawn extends DeusExNPCPawn
 
 #exec obj load file=DeusExCharacters.ukx
 
+const SEEK_RADIUS = 1000; // ToDo: Расстояние для замены ReachablePathnodes
+const BEAM_CHECK_RADIUS = 1200;
+const BEST_ENEMY_CHECK_RADIUS = 2000;
+
 var name AlarmTag;
 
 var		bool		bCanGlide;   // DEUS_EX STM -- added for flying/swimming states
 
-var		bool		bJumpOffPawn;		
+var		bool		bJumpOffPawn;
 
 // Blending Animation control - DEUS_EX CNN
 var          float        BlendAnimLast[4];        // Last frame.
@@ -98,61 +102,26 @@ var DeusExPlayer myDxPlayer;
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
 
+// Заглушка, для того чтобы собиралось.
+final function float ParabolicTrace(out vector finalLocation,optional vector startVelocity,optional vector startLocation,optional bool bCheckActors,
+                                    optional vector cylinder,optional float maxTime,optional float elasticity,optional bool bBounce,optional float landingSpeed,
+                                    optional float  granularity)
+{
+   return 1.0f;
+}
+
+final function float AICanSee(actor other, optional float visibility,optional bool bCheckVisibility, optional bool bCheckDir,
+                                          optional bool bCheckCylinder, optional bool bCheckLOS)
+{
+   return DXRAiController(controller).AICanSee(other, visibility,bCheckVisibility, bCheckDir,bCheckCylinder,  bCheckLOS);
+}
+
+final function bool AIDirectionReachable(vector focus, int yaw, int pitch,float minDist, float maxDist, out vector bestDest)
+{
+  return DXRAiController(controller).AIDirectionReachable(focus, yaw, pitch, minDist, maxDist, bestDest);
+}
+
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
-function ConDialogue FindConversationByName(string conName)
-{
-  local int y;
-
-  for (y=0; y<conList.length; y++)
-  {
-//    if (conList[y].Name == conName)
-    if (caps(conList[y].Name) == caps(conName))
-        return conList[y];
-//    break;
-//    log("found conversationByName="$conName);
-//    conv = conList[y];
-  }
-//  return conv;
-}
-
-function AddRefCount()
-{
-	local bool barkPrefix;
-	local conDialogue con;
-	local int y;
-
-	DecreaseRefCount();
-
-	for (y=0; y<conList.length; y++)
-	{
-		con = conList[y];
-		barkPrefix = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ CON_BARK_PREFIX));
-
-			if (BarkBindName != con.OwnerName || !barkPrefix)
-			{
-					if (BindName != con.OwnerName)
-						continue;
-				if (BarkBindName != "")
-				{
-					if (BarkBindName == "" || barkPrefix)
-						continue;
-				}
-			}
-//	 log("Increased refcount for "$con, 'AddRefCount');
-	 con.ownerRefCount++;
-	}
-}
-
-function DecreaseRefCount()
-{
-	local int y;
-
-	for (y=0; y<conList.length; y++)
-	{
-     conList[y].ownerRefCount--;
-	}
-}
-
 function ConBindEvents()
 {
 	local DeusExLevelInfo dxInfo;
@@ -172,7 +141,7 @@ function ConBindEvents()
 		log("DeusExLevelInfo not found! Failed to register conversations.");
 }
 
-// ђҐЈЁбва жЁп *.con д ©«®ў
+// Регистрация *.con файлов
 function RegisterConFiles(string Path)
 {
   local array<byte> bt;
@@ -193,22 +162,6 @@ function RegisterConFiles(string Path)
     res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
   }
 }
-
-function LoadConsForMission(int mission)
-{
-  local int convos, barks;
-
-  if (bindName != "")
-    convos = class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
-//    log(convos);
-
-
-  if (barkBindName != "")
-    barks = class'ConversationManager'.static.GetConversations(conList, mission, BarkbindName, "");
-//    log(barks);
-}
-
-
 
 function float LastRendered()
 {
@@ -283,19 +236,9 @@ event PostBeginPlay()
 	if (Controller != None)
 	{
 		Controller.Possess(self);
-//		Controller.GoToState(orders);
 		Controller.pawn = self;
-		//SetOrders(orders);
 	}
 	CreateShadow();
-
-/*		if (CollisionHeight > 9)
-		{
-      class'ActorManager'.static.SetDefaultCollisionSize(self, CollisionRadius, defHeight - 4.5);
-//      log("Default collision Radius/Height ="@default.CollisionRadius @ default.CollisionHeight);
-    }
-		else
-      class'ActorManager'.static.SetDefaultCollisionSize(self, CollisionRadius, defHeight * 0.5);*/
 }
 
 event PostLoadSavedGame()
@@ -307,21 +250,20 @@ event PostLoadSavedGame()
 
 event Destroyed()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
+    // Pass a message to conPlay, if it exists in the player, that 
+    // this pawn has been destroyed.  This is used to prevent 
+    // bad things from happening in converseations.
 
-	// Pass a message to conPlay, if it exists in the player, that 
-	// this pawn has been destroyed.  This is used to prevent 
-	// bad things from happening in converseations.
+    player = DeusExPlayer(GetPlayerPawn());
 
-	player = DeusExPlayer(GetPlayerPawn());
+    if ((player != None) && (player.conPlay != None))
+         player.conPlay.ActorDestroyed(Self);
 
-	if ((player != None) && (player.conPlay != None))
-      player.conPlay.ActorDestroyed(Self);
+    if (PawnShadow != none)
+        PawnShadow.Destroy();
 
-  if (PawnShadow != none)
-      PawnShadow.Destroy();
-
-	Super.Destroyed();
+        Super.Destroyed();
 }
 
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
@@ -381,8 +323,6 @@ function HitWall(vector HitLocation, Actor hitActor)
 // ----------------------------------------------------------------------
 function SetHomeBase(vector baseLocation, optional rotator baseRotator, optional float baseExtent)
 {
-//	local vector vectRot;
-
 	if (baseExtent == 0)
 		baseExtent = 800;
 
@@ -451,14 +391,71 @@ function SetDistressTimer()
 }
 
 // ----------------------------------------------------------------------
-// SetSeekLocation()
-// ----------------------------------------------------------------------
-
-
-
-// ----------------------------------------------------------------------
 // GetCarcassData()
 // ----------------------------------------------------------------------
+function bool GetCarcassData(actor sender, out Name killer, out Name alliance,out Name CarcassName, optional bool bCheckName)
+{
+	local DeusExPlayer  dxPlayer;
+	local DeusExCarcass carcass;
+	local POVCorpse     corpseItem;
+	local bool          bCares;
+	local bool          bValid;
+
+	alliance = '';
+	killer   = '';
+
+	bValid   = false;
+	dxPlayer = DeusExPlayer(sender);
+	carcass  = DeusExCarcass(sender);
+
+	if (dxPlayer != None)
+	{
+		corpseItem = POVCorpse(dxPlayer.inHand);
+		if (corpseItem != None)
+		{
+			if (corpseItem.bEmitCarcass)
+			{
+				alliance    = corpseItem.Alliance;
+				killer      = corpseItem.KillerAlliance;
+				CarcassName = corpseItem.CarcassName;
+				bValid      = true;
+			}
+		}
+	}
+	else if (carcass != None)
+	{
+		if (carcass.bEmitCarcass)
+		{
+			alliance    = carcass.Alliance;
+			killer      = carcass.KillerAlliance;
+			CarcassName = carcass.CarcassName;
+			bValid      = true;
+		}
+	}
+
+	bCares = false;
+	if (bValid && (!bCheckName || !HaveSeenCarcass(CarcassName)))
+	{
+		if (bFearCarcass)
+			bCares = true;
+		else
+		{
+			if (GetAllianceType(alliance) == ALLIANCE_Friendly)
+			{
+				if (bHateCarcass)
+					bCares = true;
+				else if (bReactCarcass)
+				{
+					if (GetAllianceType(killer) == ALLIANCE_Hostile)
+						bCares = true;
+				}
+			}
+		}
+	}
+
+	return bCares;
+}
+
 
 
 
@@ -806,7 +803,7 @@ function Actor FindTaggedActor(Name actorTag, optional bool bRandom, optional Cl
 			}
 		}
 	}
-	log("FindTaggedActor returned "$bestActor);
+	log(self@"FindTaggedActor = "$bestActor);
 	return bestActor;
 }
 
@@ -975,54 +972,482 @@ function float ComputeActorVisibility(actor seeActor)
 // ----------------------------------------------------------------------
 // UpdateReactionLevel() [internal use only]
 // ----------------------------------------------------------------------
+function UpdateReactionLevel(bool bRise, float deltaSeconds)
+{
+	local float surpriseTime;
+
+	// Handle surprise levels...
+	if (bRise)
+	{
+		if (ReactionLevel < 1.0)
+		{
+			surpriseTime = SurprisePeriod;
+			if (surpriseTime <= 0)
+				surpriseTime = 0.00000001;
+			ReactionLevel += deltaSeconds/surpriseTime;
+			if (ReactionLevel > 1.0)
+				ReactionLevel = 1.0;
+		}
+	}
+	else
+	{
+		if (ReactionLevel > 0.0)
+		{
+			surpriseTime = 7.0;
+			ReactionLevel -= deltaSeconds/surpriseTime;
+			if (ReactionLevel <= 0.0)
+				ReactionLevel = 0.0;
+		}
+	}
+}
 
 
 
 // ----------------------------------------------------------------------
 // CheckCycle() [internal use only]
 // ----------------------------------------------------------------------
+final function DeusExPawn CheckCycle()
+{
+	local float attackPeriod;
+	local float maxAttackPeriod;
+	local float sustainPeriod;
+	local float decayPeriod;
+	local float minCutoff;
+	local DeusExPawn  cycleEnemy;
 
+	attackPeriod    = 0.5;
+	maxAttackPeriod = 4.5;
+	sustainPeriod   = 3.0;
+	decayPeriod     = 4.0;
 
+	minCutoff = attackPeriod/maxAttackPeriod;
 
-// ----------------------------------------------------------------------
-// CheckEnemyPresence()
-// ----------------------------------------------------------------------
+	cycleEnemy = None;
 
+	if (CycleCumulative <= 0)  // no enemies seen during this cycle
+	{
+		CycleTimer -= CyclePeriod;
+		if (CycleTimer <= 0)
+		{
+			CycleTimer = 0;
+			EnemyReadiness -= CyclePeriod/decayPeriod;
+			if (EnemyReadiness < 0)
+				EnemyReadiness = 0;
+		}
+	}
+	else  // I saw somebody!
+	{
+		CycleTimer = sustainPeriod;
+		CycleCumulative *= 2;  // hack
+		if (CycleCumulative < minCutoff)
+			CycleCumulative = minCutoff;
+		else if (CycleCumulative > 1.0)
+			CycleCumulative = 1.0;
+		EnemyReadiness += CycleCumulative*CyclePeriod/attackPeriod;
+		if (EnemyReadiness >= 1.0)
+		{
+			EnemyReadiness = 1.0;
+			if (IsValidEnemy(DeusExPawn(CycleCandidate)))
+				cycleEnemy = DeusExPawn(CycleCandidate);
+		}
+		else if (EnemyReadiness >= SightPercentage)
+			if (IsValidEnemy(DeusExPawn(CycleCandidate)))
+				HandleSighting(DeusExPawn(CycleCandidate));
+	}
+	CycleCumulative = 0;
+	CyclePeriod     = 0;
+	CycleCandidate  = None;
+	CycleDistance   = 0;
 
+	return (cycleEnemy);
 
-// ----------------------------------------------------------------------
-// CheckBeamPresence
-// ----------------------------------------------------------------------
+}
 
+// Проверить наличие света, исходящего от игрока.
+function/* bool*/ CheckBeamPresence(float deltaSeconds)
+{
+	local DeusExPlayer player;
+	local Beam         beamActor;
+	local bool         bReactToBeam;
+
+	if (bReactPresence && bLookingForEnemy && (BeamCheckTimer <= 0) && (LastRendered() < 5.0))
+	{
+		BeamCheckTimer = 1.0;
+		player = DeusExPlayer(GetPlayerPawn());
+		if (player != None)
+		{
+			bReactToBeam = false;
+			if (IsValidEnemy(player))
+			{
+				foreach RadiusActors(class'Beam', beamActor, BEAM_CHECK_RADIUS)
+				{
+					if ((beamActor.Owner == player) && (beamActor.LightType != LT_None) && (beamActor.LightBrightness > 32))
+					{
+						if (VSize(beamActor.Location - Location) < (beamActor.LightRadius+1)*25)
+							bReactToBeam = true;
+						else
+						{
+							if (AICanSee(beamActor, , false, true, false, false) > 0)
+							{
+								if (FastTrace(beamActor.Location, Location+vect(0,0,1)*BaseEyeHeight))
+									bReactToBeam = true;
+							}
+						}
+					}
+					if (bReactToBeam)
+						break;
+				}
+			}
+			if (bReactToBeam)
+				HandleSighting(player);
+		}
+	}
+}
+
+function HandleSighting(DeusExPawn pawnSighted)
+{
+	SetSeekLocation(pawnSighted, pawnSighted.Location, SEEKTYPE_Sight);
+	Controller.GotoState('Seeking');
+}
+
+function SetSeekLocation(DeusExPawn seekCandidate, vector newLocation, ESeekType newSeekType, optional bool bNewPostCombat)
+{
+	SetEnemy(None, 0, true);
+	SeekPawn      = seekCandidate;
+	Controller.LastSeenPos   = newLocation;
+	bSeekLocation = True;
+	SeekType      = newSeekType;
+
+	if (newSeekType == SEEKTYPE_Carcass)
+		CarcassTimer      = 120.0;
+	if (newSeekType == SEEKTYPE_Sight)
+		SeekLevel = Max(SeekLevel, 1);
+	else
+		SeekLevel = Max(SeekLevel, 3);
+	if (bNewPostCombat)
+		bSeekPostCombat = true;
+}
 
 
 // ----------------------------------------------------------------------
 // CheckCarcassPresence()
+// Проверяет наличие трупов
 // ----------------------------------------------------------------------
+function /*bool*/CheckCarcassPresence(float deltaSeconds)
+{
+	local Actor         carcass;
+	local Name          CarcassName;
+	local int           lastCycle;
+	local DeusExCarcass body;
+	local DeusExPlayer  player;
+	local float         visibility;
+	local Name          KillerAlliance;
+	local Name          killedAlliance;
+	local DeusExPawn    killer;
+	local DeusExPawn    bestKiller;
+	local float         dist;
+	local float         bestDist;
+	local float         maxCarcassDist;
+	local int           maxCarcassCount;
+	local DXRAiController MyController;
+
+	MyController = DXRAiController(Controller);
+
+	if (bFearCarcass && !bHateCarcass && !bReactCarcass)  // Major hack!
+		maxCarcassCount = 1;
+	else
+		maxCarcassCount = ArrayCount(Carcasses);
+
+	//if ((bHateCarcass || bReactCarcass || bFearCarcass) && bLookingForCarcass && (CarcassTimer <= 0))
+	if ((bHateCarcass || bReactCarcass || bFearCarcass) && (NumCarcasses < maxCarcassCount))
+	{
+		maxCarcassDist = 1200;
+		if (CarcassCheckTimer <= 0)
+		{
+			CarcassCheckTimer = 0.1;
+			carcass           = None;
+			lastCycle         = BodyIndex;
+			foreach MyController.CycleActors(Class'DeusExCarcass', body, BodyIndex)
+			{
+				if (body.Physics != PHYS_Falling)
+				{
+					if (VSize(body.Location-Location) < maxCarcassDist)
+					{
+						if (GetCarcassData(body, KillerAlliance, killedAlliance, CarcassName, true))
+						{
+							visibility = AICanSee(body, ComputeActorVisibility(body), true, true, true, true);
+							if (visibility > 0)
+								carcass = body;
+							break;
+						}
+					}
+				}
+			}
+			if (lastCycle >= BodyIndex)
+			{
+				if (carcass == None)
+				{
+					player = DeusExPlayer(GetPlayerPawn());
+					if (player != None)
+					{
+						if (VSize(player.Location-Location) < maxCarcassDist)
+						{
+							if (GetCarcassData(player, KillerAlliance, killedAlliance, CarcassName, true))
+							{
+								visibility = AICanSee(player, ComputeActorVisibility(player), true, true, true, true);
+								if (visibility > 0)
+									carcass = player;
+							}
+						}
+					}
+				}
+			}
+			if (carcass != None)
+			{
+				CarcassTimer = 120;
+				AddCarcass(CarcassName);
+				if (bLookingForCarcass)
+				{
+					if (KillerAlliance == 'Player')
+						killer = DeusExPlayer(GetPlayerPawn());
+					else
+					{
+						bestKiller = None;
+						bestDist   = 0;
+						foreach AllActors(Class'DeusExPawn', killer)  // hack // ToDo: DXR: Заменить на DynamicActors? Он работает быстрее.
+						{
+							if (killer.Alliance == KillerAlliance)
+							{
+								dist = VSize(killer.Location - Location);
+								if ((bestKiller == None) || (bestDist > dist))
+								{
+									bestKiller = killer;
+									bestDist   = dist;
+								}
+							}
+						}
+						killer = bestKiller;
+					}
+					if (bHateCarcass)
+					{
+						PotentialEnemyAlliance = KillerAlliance;
+						PotentialEnemyTimer    = 15.0;
+						bNoNegativeAlliances   = false;
+					}
+					if (bFearCarcass)
+						IncreaseFear(killer, 2.0);
+
+					if (bFearCarcass && IsFearful() && !IsValidEnemy(killer))
+					{
+						SetDistressTimer();
+						SetEnemy(killer, , true);
+						Controller.GotoState('Fleeing');
+					}
+					else
+					{
+						SetDistressTimer();
+						SetSeekLocation(killer, carcass.Location, SEEKTYPE_Carcass);
+						HandleEnemy();
+					}
+				}
+			}
+		}
+	}
+}
+
 
 
 
 // ----------------------------------------------------------------------
 // AddProjectileToList()
 // ----------------------------------------------------------------------
+function AddProjectileToList(out NearbyProjectileList projList,DeusExProjectile proj, vector projPos,float dist, float range)
+{
+	local int   pos;
+	local int   bestPos;
+	local float worstDist;
 
+	bestPos   = -1;
+	worstDist = dist;
+	pos       = 0;
+	while (pos < ArrayCount(projList.list))
+	{
+		if (projList.list[pos].projectile == None)
+		{
+			bestPos = pos;
+			break;  // short-circuit loop
+		}
+		else
+		{
+			if (worstDist < projList.list[pos].dist)
+			{
+				worstDist = projList.list[pos].dist;
+				bestPos   = pos;
+			}
+		}
 
+		pos++;
+	}
+
+	if (bestPos >= 0)
+	{
+		projList.list[bestPos].projectile = proj;
+		projList.list[bestPos].location   = projPos;
+		projList.list[bestPos].dist       = dist;
+		projList.list[bestPos].range      = range;
+	}
+}
 
 // ----------------------------------------------------------------------
 // IsProjectileDangerous()
 // ----------------------------------------------------------------------
+function bool IsProjectileDangerous(DeusExProjectile projectile)
+{
+	local bool bEvil;
+
+	if (projectile.IsA('Cloud'))
+		bEvil = true;
+	else if (projectile.IsA('ThrownProjectile'))
+	{
+		if (projectile.IsA('SpyDrone')) // DXR: Наверное SpyDrone (было SpyBot)?
+			bEvil = false;
+		else if ((ThrownProjectile(projectile) != None) && (ThrownProjectile(projectile).bProximityTriggered))
+			bEvil = false;
+		else
+			bEvil = true;
+	}
+	else
+		bEvil = false;
+
+	return (bEvil);
+}
 
 
 
 // ----------------------------------------------------------------------
 // GetProjectileList()
 // ----------------------------------------------------------------------
+function int GetProjectileList(out NearbyProjectileList projList, vector Location)
+{
+	local float            dist;
+	local int              count;
+	local DeusExProjectile curProj;
+	local ThrownProjectile throwProj;
+	local Cloud            cloudProj;
+	local vector           HitNormal, HitLocation;
+	local vector           extent;
+	local vector           traceEnd;
+	local Actor            hitActor;
+	local float            range;
+	local vector           pos;
+	local float            time;
+	local float            maxTime;
+	local float            elasticity;
+	local int              i;
+	local bool             bValid;
+
+	for (i=0; i<ArrayCount(projList.list); i++)
+		projList.list[i].projectile = None;
+	projList.center = Location;
+
+	maxTime = 2.0;
+	foreach RadiusActors(Class'DeusExProjectile', curProj, 1000)
+	{
+		if (IsProjectileDangerous(curProj))
+		{
+			throwProj = ThrownProjectile(curProj);
+			cloudProj = Cloud(curProj);
+			extent   = vect(1,1,0)*curProj.CollisionRadius;
+			extent.Z = curProj.CollisionHeight;
+
+			range    = VSize(extent);
+			if (curProj.bExplodes)
+				if (range < curProj.blastRadius)
+					range = curProj.blastRadius;
+			if (cloudProj != None)
+				if (range < cloudProj.cloudRadius)
+					range = cloudProj.cloudRadius;
+			range += CollisionRadius+60;
+
+			if (throwProj != None)
+				elasticity = throwProj.Elasticity;
+			else
+				elasticity = 0.2;
+
+			bValid = true;
+			if (throwProj != None)
+				if (throwProj.bProximityTriggered)  // HACK!!!
+					bValid = false;
+
+			if (((curProj.Physics == PHYS_Falling) || (curProj.Physics == PHYS_Projectile) || (curProj.Physics == PHYS_None)) && bValid)
+			{
+				pos = curProj.Location;
+				dist = VSize(Location - curProj.Location);
+				AddProjectileToList(projList, curProj, pos, dist, range);
+				if (curProj.Physics == PHYS_Projectile)
+				{
+					traceEnd = curProj.Location + curProj.Velocity*maxTime;
+					hitActor = Trace(HitLocation, HitNormal, traceEnd, curProj.Location, true, extent);
+					if (hitActor == None)
+						pos = traceEnd;
+					else
+						pos = HitLocation;
+					dist = VSize(Location - pos);
+					AddProjectileToList(projList, curProj, pos, dist, range);
+				}
+				else if (curProj.Physics == PHYS_Falling)
+				{
+					time = ParabolicTrace(pos, curProj.Velocity, curProj.Location, true, extent, maxTime, elasticity, curProj.bBounce, 60);
+					if (time > 0)
+					{
+						dist = VSize(Location - pos);
+						AddProjectileToList(projList, curProj, pos, dist, range);
+					}
+				}
+			}
+		}
+	}
+
+	count = 0;
+	for (i=0; i<ArrayCount(projList.list); i++)
+		if (projList.list[i].projectile != None)
+			count++;
+
+	return (count);
+
+}
 
 
 
 // ----------------------------------------------------------------------
 // IsLocationDangerous()
 // ----------------------------------------------------------------------
+function bool IsLocationDangerous(NearbyProjectileList projList,vector Location)
+{
+	local bool  bDanger;
+	local int   i;
+	local float dist;
+
+	bDanger = false;
+	for (i=0; i<ArrayCount(projList.list); i++)
+	{
+		if (projList.list[i].projectile == None)
+			break;
+		if (projList.center == Location)
+			dist = projList.list[i].dist;
+		else
+			dist = VSize(projList.list[i].location - Location);
+		if (dist < projList.list[i].range)
+		{
+			bDanger = true;
+			break;
+		}
+	}
+
+	return (bDanger);
+
+}
+
 
 
 
@@ -1247,8 +1672,6 @@ function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, EHitLoca
 		}
 		else
 		{
-//			if (instigatedBy.bIsPlayer)
-//				ReactToFutz();
 			Controller.SetNextState(currentState);
 		}
 		DXRAiController(Controller).GotoDisabledState(damageType, hitPos);
@@ -1422,6 +1845,8 @@ function Carcass SpawnCarcass()
 		carc.SetLocation(loc);
 		carc.Velocity = Velocity;
 		carc.Acceleration = Acceleration;
+
+		log(self$" Inventory = "$Inventory);
 
 		// give the carcass the pawn's inventory if we aren't an animal or robot
 		if (!IsA('Animal') && !IsA('Robot'))
@@ -1741,9 +2166,9 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
 	GenerateTotalHealth();
 
-	return hitPos;
 	log("hit position:"@hitpos);
 
+	return hitPos;
 }
 
 
@@ -1810,9 +2235,6 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 		    (damageType != class'DM_Poison') && (damageType != class'DM_PoisonEffect'))
 			bleedRate += (origHealth-Health)/(0.3*Default.Health);  // 1/3 of default health = bleed profusely
 
-//	if (CarriedDecoration != None)
-//		DropDecoration();
-
 	if ((actualDamage > 0) && (damageType == class'DM_Poison'))
 		StartPoison(Damage, instigatedBy);
 
@@ -1829,6 +2251,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 		else
 			Health = -1;
 
+		log("Inventory = "$Inventory);
 		Died(instigatedBy.controller, damageType, HitLocation);
 
 		if ((DamageType == class'DM_Flamed') || (DamageType == class'DM_Burned'))
@@ -2032,7 +2455,7 @@ function ResetSkinStyle()
 
 	for (i=0; i<skins.length; i++)
 		Skins[i] = default.Skins[i];
-//	Skin      = default.Skin;
+
 	ScaleGlow = default.ScaleGlow;
 	Style     = default.Style;
 }
@@ -2048,7 +2471,8 @@ function EnableCloak(bool bEnable)
 
 	if (bEnable && !bCloakOn)
 	{
-		SetSkinStyle(STY_Translucent, Texture'WhiteStatic', 0.05);
+//		SetSkinStyle(STY_Translucent, Texture'WhiteStatic', 0.05);
+		SetSkinStyle(STY_Translucent, Shader'WhiteStatic_SH', 0.05);
 		KillShadow();
 		bCloakOn = bEnable;
 	}
@@ -2103,7 +2527,7 @@ function float RandomPitch()
 // ----------------------------------------------------------------------
 function PlayDyingSound()
 {
-//	SetDistressTimer();
+	SetDistressTimer();
 	PlaySound(Die, SLOT_Pain,,,, RandomPitch());
 	class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
 
@@ -2382,7 +2806,7 @@ function PlayIdle()
 // ----------------------------------------------------------------------
 // PlayTakeHitSound()
 // ----------------------------------------------------------------------
-function PlayTakeHitSound(int Damage, class <damageType> damageType, int Mult)
+function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
 {
 	local Sound hitSound;
 	local float volume;
@@ -2394,17 +2818,45 @@ function PlayTakeHitSound(int Damage, class <damageType> damageType, int Mult)
 
 	LastPainSound = Level.TimeSeconds;
 
-	if (Damage <= 30)
-		hitSound = HitSound1;
-	else
-		hitSound = HitSound2;
+	//Lork: Use extra pain sounds if appropriate
+	if(hitSound1 == sound'MalePainSmall' || hitSound1 == sound'FemalePainSmall')
+	{
+		if(PhysicsVolume.bWaterVolume && damageType == class'Drowned')
+		{
+			if(bIsFemale)
+				hitSound = sound'FemaleDrown';
+			else
+				hitSound = sound'MaleDrown';
+		}
+		else if(damageType == class'DM_PoisonGas')
+		{
+			if(!bIsFemale)
+				hitSound = sound'MaleCough';
+		}
+		else if(damage >= 60)
+		{
+			if(bIsFemale)
+				hitSound = sound'FemalePainLarge';
+			else
+				hitSound = sound'MalePainLarge';
+		}
+	}
+	
+	if(hitSound == None)
+	{
+		if (Damage <= 30)
+			hitSound = HitSound1;
+		else
+			hitSound = HitSound2;
+	}
 	volume = FMax(Mult*TransientSoundVolume, Mult*2.0);
 
-//	SetDistressTimer();
+	SetDistressTimer();
 	PlaySound(hitSound, SLOT_Pain, volume,,, RandomPitch());
 	if ((hitSound != None) && bEmitDistress)
 		class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio, volume);
 }
+
 
 
 
@@ -3102,8 +3554,8 @@ function UpdateFire()
 // ----------------------------------------------------------------------
 function bool CanConverse()
 {
-	// Return True if this NPC is in a conversable state                       // DXR: Sitting for now uses PHYS_Spider.
-	return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Spider /*PHYS_Flying*/)));
+	// Return True if this NPC is in a conversable state
+	return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Flying)));
 //	return true; // for now
 }
 
@@ -3340,38 +3792,449 @@ function AgitateAlliance(Name newEnemy, float agitation)
 // ----------------------------------------------------------------------
 // AISafeToShoot()
 // ----------------------------------------------------------------------
+function bool AISafeToShoot(out Actor hitActor, vector traceEnd, vector traceStart,optional vector extent, optional bool bIgnoreLevel)
+{
+	local Actor            traceActor;
+	local Vector           hitLocation;
+	local Vector           hitNormal;
+	local DeusExPawn       tracePawn;
+	local DeusExDecoration traceDecoration;
+	local DeusExMover      traceMover;
+	local bool             bSafe;
+
+	// Future improvement:
+	// Ideally, this should use the ammo type to determine how many shots
+	// it will take to destroy an obstruction, and call it unsafe if it takes
+	// more than x shots.  Also, if the ammo is explosive, and the
+	// obstruction is too close, it should never be safe...
+
+	bSafe    = true;
+	hitActor = None;
+
+	foreach TraceActors(Class'Actor', traceActor, hitLocation, hitNormal,traceEnd, traceStart, extent)
+	{
+		if (hitActor == None)
+			hitActor = traceActor;
+		if (traceActor == Level)
+		{
+			if (!bIgnoreLevel)
+				bSafe = false;
+			break;
+		}
+		tracePawn = DeusExPawn(traceActor);
+		if (tracePawn != None)
+		{
+			if (tracePawn != self)
+			{
+				if (GetPawnAllianceType(tracePawn) == ALLIANCE_Friendly)
+					bSafe = false;
+				break;
+			}
+		}
+		traceDecoration = DeusExDecoration(traceActor);
+		if (traceDecoration != None)
+		{
+			if (traceDecoration.bExplosive || traceDecoration.bInvincible)
+			{
+				bSafe = false;
+				break;
+			}
+			if ((traceDecoration.HitPoints > 20) || (traceDecoration.minDamageThreshold > 4))  // hack
+			{
+				bSafe = false;
+				break;
+			}
+		}
+		traceMover = DeusExMover(traceActor);
+		if (traceMover != None)
+		{
+			if (!traceMover.bBreakable)
+			{
+				bSafe = false;
+				break;
+			}
+			else if ((traceMover.doorStrength > 0.2) || (traceMover.minDamageThreshold > 8))  // hack
+			{
+				bSafe = false;
+				break;
+			}
+			else  // hack
+				break;
+		}
+		if (Inventory(traceActor) != None)
+		{
+			bSafe = false;
+			break;
+		}
+	}
+	return (bSafe);
+}
 
 
 
 // ----------------------------------------------------------------------
 // ComputeThrowAngles()
 // ----------------------------------------------------------------------
+function bool ComputeThrowAngles(vector traceEnd, vector traceStart,float speed,out Rotator angle1, out Rotator angle2)
+{
+	local float   deltaX, deltaY;
+	local float   x, y;
+	local float   tanAngle1, tanAngle2;
+	local float   A, B, C;
+	local float   m, n;
+	local float   sqrtTerm;
+	local float   gravity;
+	local float   traceYaw;
+	local bool    bValid;
 
+	bValid = false;
 
+	// Reduce our problem to two dimensions
+	deltaX = traceEnd.X - traceStart.X;
+	deltaY = traceEnd.Y - traceStart.Y;
+	x = sqrt(deltaX*deltaX + deltaY*deltaY);
+	y = traceEnd.Z - traceStart.Z;
+
+	gravity = -PhysicsVolume.Gravity.Z;
+	if ((x > 0) && (gravity > 0))
+	{
+		A = -gravity*x*x;
+		B = 2*speed*speed*x;
+		C = -gravity*x*x - 2*y*speed*speed;
+
+		sqrtTerm = B*B - 4*A*C;
+		if (sqrtTerm >= 0)
+		{
+			m = -B/(2*A);
+			n = sqrt(sqrtTerm)/(2*A);
+
+			tanAngle1 = atan(m+n, 1);
+			tanAngle2 = atan(m-n, 1);
+
+			angle1 = Rotator(traceEnd - traceStart);
+			angle2 = angle1;
+			angle1.Pitch = tanAngle1*32768/Pi;
+			angle2.Pitch = tanAngle2*32768/Pi;
+
+			bValid = true;
+		}
+	}
+
+	return bValid;
+}
+/*
+so in your case:
+
+tanAngle1 = atan(m+n, 1);
+tanAngle2 = atan(m-n, 1);
+
+also consider this:
+
+m = -B;
+n = sqrt(sqrtTerm);
+// Declare a new variable
+o = 2 * A;
+
+tanAngle1 = atan(m + n, o);
+tanAngle2 = atan(m - n, o);
+*/
 
 // ----------------------------------------------------------------------
 // AISafeToThrow()
 // ----------------------------------------------------------------------
+function bool AISafeToThrow(vector traceEnd, vector traceStart, float throwAccuracy,optional vector extent)
+{
+	local float                   time1, time2, tempTime;
+	local vector                  pos1,  pos2,  tempPos;
+	local rotator                 rot1,  rot2,  tempRot;
+	local rotator                 bestAngle;
+	local bool                    bSafe;
+	local DeusExWeaponInv         dxWeapon;
+	local Class<ThrownProjectile> throwClass;
+
+	// Someday, we should check for nearby friendlies within the blast radius
+	// before throwing...
+
+	// Sanity checks
+	throwClass = None;
+	dxWeapon = DeusExWeaponInv(Weapon);
+
+	if (dxWeapon != None)
+		throwClass = class<ThrownProjectile>(dxWeapon.ProjectileClass);
+	if (throwClass == None)
+		return false;
+
+	if (extent == vect(0,0,0))
+	{
+		extent = vect(1,1,0) * throwClass.default.CollisionRadius;
+		extent.Z = throwClass.default.CollisionHeight;
+	}
+
+	if (throwAccuracy < 0.01)
+		throwAccuracy = 0.01;
+
+	bSafe = false;
+	if (ComputeThrowAngles(traceEnd, traceStart, dxWeapon.ProjectileSpeed, rot1, rot2))
+	{
+		time1 = ParabolicTrace(pos1, Vector(rot1)*dxWeapon.ProjectileSpeed, traceStart,true, extent, 5.0,throwClass.Default.Elasticity, throwClass.Default.bBounce,60, throwAccuracy);
+		time2 = ParabolicTrace(pos2, Vector(rot2)*dxWeapon.ProjectileSpeed, traceStart,true, extent, 5.0,throwClass.Default.Elasticity, throwClass.Default.bBounce,60, throwAccuracy);
+		if ((time1 > 0) || (time2 > 0))
+		{
+			if ((time1 > time2) && (time2 > 0))
+			{
+				tempTime = time1;
+				time1    = time2;
+				time2    = tempTime;
+				tempPos  = pos1;
+				pos1     = pos2;
+				pos2     = tempPos;
+				tempRot  = rot1;
+				rot1     = rot2;
+				rot2     = tempRot;
+			}
+			if (VSize(pos1-traceEnd) <= throwClass.Default.blastRadius)
+			{
+				if (FastTrace(traceEnd, pos1))
+				{
+					if ((VSize(pos1-Location) > throwClass.Default.blastRadius*0.5) || !FastTrace(Location, pos1))
+					{
+						bestAngle = rot1;
+						bSafe     = true;
+					}
+				}
+			}
+		}
+		if (!bSafe && (time2 > 0))
+		{
+			if (VSize(pos2-traceEnd) <= throwClass.Default.blastRadius)
+			{
+				if (FastTrace(traceEnd, pos2))
+				{
+					if ((VSize(pos2-Location) > throwClass.Default.blastRadius*0.5) ||
+					    !FastTrace(Location, pos2))
+					{
+						bestAngle = rot2;
+						bSafe     = true;
+					}
+				}
+			}
+		}
+	}
+
+	if (bSafe)
+		SetViewRotation(bestAngle);
+
+	return (bSafe);
+
+}
+
 
 
 
 // ----------------------------------------------------------------------
 // AICanShoot()
 // ----------------------------------------------------------------------
+function bool AICanShoot(DeusExPawn target, bool bLeadTarget, bool bCheckReadiness,optional float throwAccuracy, optional bool bDiscountMinRange)
+{
+	local DeusExWeaponInv dxWeapon;
+	local Vector X, Y, Z;
+	local Vector projStart, projEnd;
+	local float  tempMinRange, tempMaxRange;
+	local float  temp;
+	local float  dist;
+	local float  extraDist;
+	local actor  hitActor;
+	local Vector hitLocation, hitNormal;
+	local Vector extent;
+	local bool   bIsThrown;
+	local float  elevation;
+	local bool   bSafe;
 
+	if (target == None)
+		return false;
+	if (target.bIgnore)
+		return false;
 
+	dxWeapon = DeusExWeaponInv(Weapon);
+	if (dxWeapon == None)
+		return false;
+	if (bCheckReadiness && !dxWeapon.bReadyToFire)
+		return false;
+
+	if (dxWeapon.ReloadCount > 0)
+	{
+		if (dxWeapon.AmmoType == None)
+			return false;
+		if (dxWeapon.AmmoType.AmmoAmount <= 0)
+			return false;
+	}
+	if (FireElevation > 0)
+	{
+		elevation = FireElevation + (CollisionHeight+target.CollisionHeight);
+		if (elevation < 10)
+			elevation = 10;
+		if (Abs(Location.Z-target.Location.Z) > elevation)
+			return false;
+	}
+	bIsThrown = IsThrownWeapon(dxWeapon);
+
+	extraDist = target.CollisionRadius;
+	//extraDist = 0;
+
+	GetPawnWeaponRanges(self, tempMinRange, tempMaxRange, temp);
+
+	if (bDiscountMinRange)
+		tempMinRange = 0;
+
+	if (tempMinRange >= tempMaxRange)
+		return false;
+
+//	ViewRotation = Rotation;
+	GetAxes(GetViewRotation(), X, Y, Z);
+	projStart = dxWeapon.ComputeProjectileStart(X, Y, Z);
+	if (bLeadTarget && !dxWeapon.bInstantHit && (dxWeapon.ProjectileSpeed > 0))
+	{
+		if (bIsThrown)
+		{
+			// compute target's position 1.5 seconds in the future
+			projEnd = target.Location + (target.Velocity*1.5);
+		}
+		else
+		{
+			// projEnd = target.Location + (target.Velocity*dist/dxWeapon.ProjectileSpeed);
+			if (!ComputeTargetLead(target, projStart, dxWeapon.ProjectileSpeed, 5.0, projEnd))
+				return false;
+		}
+	}
+	else
+		projEnd = target.Location;
+
+	if (bIsThrown)
+		projEnd += vect(0,0,-1)*(target.CollisionHeight-5);
+
+	dist = VSize(projEnd - Location);
+	if (dist < 0)
+		dist = 0;
+
+	if ((dist < tempMinRange) || (dist-extraDist > tempMaxRange))
+		return false;
+
+	if (!bIsThrown)
+	{
+		bSafe = FastTrace(target.Location, projStart);
+		if (!bSafe && target.controller.bIsPlayer)  // players only... hack
+		{
+			projEnd += vect(0,0,1)*target.BaseEyeHeight;
+			bSafe = FastTrace(target.Location + vect(0,0,1)*target.BaseEyeHeight, projStart);
+		}
+		if (!bSafe)
+			return false;
+	}
+
+	if (dxWeapon.bInstantHit)
+		return (AISafeToShoot(hitActor, projEnd, projStart, , true));
+	else
+	{
+		extent.X = dxWeapon.ProjectileClass.default.CollisionRadius;
+		extent.Y = dxWeapon.ProjectileClass.default.CollisionRadius;
+		extent.Z = dxWeapon.ProjectileClass.default.CollisionHeight;
+		if (bIsThrown && (throwAccuracy > 0))
+			return (AISafeToThrow(projEnd, projStart, throwAccuracy,extent));
+		else
+			return (AISafeToShoot(hitActor, projEnd, projStart, extent*3));
+	}
+}
 
 // ----------------------------------------------------------------------
 // ComputeTargetLead()
 // ----------------------------------------------------------------------
+function bool ComputeTargetLead(pawn target, vector projectileStart,float projectileSpeed,float maxTime,out Vector hitPos)
+{
+	local vector targetLoc;
+	local vector targetVel;
+	local float  termA, termB, termC;
+	local float  temp;
+	local float  base, range;
+	local float  time1, time2;
+	local bool   bSuccess;
 
+	bSuccess = true;
 
+	targetLoc = target.Location - projectileStart;
+	targetVel = target.Velocity;
+	if (target.Physics == PHYS_Falling)
+		targetVel.Z = 0;
+
+	// Given a target position and velocity, and a projectile speed,
+	// compute the position at which a projectile will hit the
+	// target if the target continues at its current velocity
+
+	// (Warning: messy computations follow.  I can't believe I remembered
+	// enough algebra to figure this out on my own... :)
+
+	termA = targetVel.X*targetVel.X +
+	        targetVel.Y*targetVel.Y +
+	        targetVel.Z*targetVel.Z -
+	        projectileSpeed*projectileSpeed;
+	termB = 2*targetLoc.X*targetVel.X +
+	        2*targetLoc.Y*targetVel.Y +
+	        2*targetLoc.Z*targetVel.Z;
+	termC = targetLoc.X*targetLoc.X +
+	        targetLoc.Y*targetLoc.Y +
+	        targetLoc.Z*targetLoc.Z;
+
+	if ((termA < 0.000001) && (termA > -0.000001))  // avoid divide-by-zero errors...
+		termA = 0.000001;  // fudge a little when velocities are equal
+	temp = termB*termB - 4*termA*termC;
+	if (temp < 0)
+		bSuccess = false;
+
+	if (bSuccess)
+	{
+		base = -termB/(2*termA);
+		range = sqrt(temp)/(2*termA);
+		time1 = base+range;
+		time2 = base-range;
+		if ((time1 > time2) || (time1 < 0))  // best time first
+			time1 = time2;
+		if ((time1 < 0) || (time1 >= maxTime))
+			bSuccess = false;
+	}
+
+	if (bSuccess)
+		hitPos = target.Location + target.Velocity*time1;
+
+	return (bSuccess);
+
+}
 
 // ----------------------------------------------------------------------
 // GetPawnWeaponRanges()
 // ----------------------------------------------------------------------
+function GetPawnWeaponRanges(DeusExPawn other, out float minRange, out float maxAccurateRange, out float maxRange)
+{
+	local DeusExWeaponInv         pawnWeapon;
+	local class<DeusExProjectile> projectileClass;
 
+	pawnWeapon = DeusExWeaponInv(other.Weapon);
+	if (pawnWeapon != None)
+	{
+		pawnWeapon.GetWeaponRanges(minRange, maxAccurateRange, maxRange);
+		if (IsThrownWeapon(pawnWeapon))  // hack
+			minRange = 0;
+	}
+	else
+	{
+		minRange         = 0;
+		maxAccurateRange = other.CollisionRadius;
+		maxRange         = maxAccurateRange;
+	}
 
+	if (maxAccurateRange > maxRange)
+		maxAccurateRange = maxRange;
+	if (minRange > maxRange)
+		minRange = maxRange;
+}
 
 // ----------------------------------------------------------------------
 // GetWeaponBestRange()
@@ -3415,7 +4278,125 @@ function GetWeaponBestRange(DeusExWeaponInv dxWeapon, out float bestRangeMin, ou
 // ----------------------------------------------------------------------
 // ReadyForNewEnemy()
 // ----------------------------------------------------------------------
+function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bCheckOther)
+{
+	local int          i;
+	local int          count;
+	local int          checked;
+	local DeusExPawn   candidate;
+	local float        candidateDist;
+//	local DeusExPlayer playerCandidate;
+	local bool         bCanSee;
+	local int          lastCycle;
+	local float        visibility;
+	local DeusExPawn   cycleEnemy;
+	local bool         bValid;
+	local bool         bPlayer;
+//	local float        surpriseTime;
+	local bool         bValidEnemy;
+	local bool         bPotentialEnemy;
+	local bool         bCheck;
+	local DXRAiController MyController;
 
+	MyController = DXRAiController(Controller);
+
+	bValid  = false;
+	bCanSee = false;
+	if (bReactPresence && bLookingForEnemy && !bNoNegativeAlliances)
+	{
+		if (PotentialEnemyAlliance != '')
+			bCheck = true;
+		else
+		{
+			for (i=0; i<16; i++)
+				if ((AlliancesEx[i].AllianceLevel < 0) || (AlliancesEx[i].AgitationLevel >= 1.0))
+					break;
+			if (i < 16)
+				bCheck = true;
+		}
+
+		if (bCheck)
+		{
+			bValid       = true;
+			CyclePeriod += deltaSeconds;
+			count        = 0;
+			checked      = 0;
+			lastCycle    = CycleIndex;
+			foreach MyController.CycleActors(Class'DeusExPawn', candidate, CycleIndex)
+			{
+				bValidEnemy = IsValidEnemy(candidate);
+				if (!bValidEnemy && (PotentialEnemyTimer > 0))
+					if (PotentialEnemyAlliance == candidate.Alliance)
+						bPotentialEnemy = true;
+				if (bValidEnemy || bPotentialEnemy)
+				{
+					count++;
+					bPlayer = candidate.IsA('PlayerPawn');
+					if ((bPlayer && bCheckPlayer) || (!bPlayer && bCheckOther))
+					{
+						visibility = AICanSee(candidate, ComputeActorVisibility(candidate), true, true, true, true);
+						if (visibility > 0)
+						{
+							if (bPotentialEnemy)  // We can see the potential enemy; ergo, we hate him
+							{
+								IncreaseAgitation(candidate, 1.0);
+								PotentialEnemyAlliance = '';
+								PotentialEnemyTimer    = 0;
+								bValidEnemy = IsValidEnemy(candidate);
+							}
+							if (bValidEnemy)
+							{
+								visibility += VisibilityThreshold;
+								candidateDist = VSize(Location-candidate.Location);
+								if ((CycleCandidate == None) || (CycleDistance > candidateDist))
+								{
+									CycleCandidate = candidate;
+									CycleDistance  = candidateDist;
+								}
+								if (!bPlayer)
+									CycleCumulative += 100000;  // a bit of a hack...
+								else
+									CycleCumulative += visibility;
+							}
+						}
+					}
+					if (count >= 1)
+						break;
+				}
+				checked++;
+				if (checked > 20)  // hacky hardcoded number
+					break;
+			}
+			if (lastCycle >= CycleIndex)  // have we cycled through all actors?
+			{
+				cycleEnemy = CheckCycle();
+				if (cycleEnemy != None)
+				{
+					SetDistressTimer();
+					SetEnemy(cycleEnemy, 0, true);
+					bCanSee = true;
+				}
+			}
+		}
+		else
+			bNoNegativeAlliances = True;
+	}
+
+	// Handle surprise levels...
+	UpdateReactionLevel((EnemyReadiness > 0) || (controller.GetStateName() == 'Seeking') || bDistressed, deltaSeconds);
+
+	if (!bValid)
+	{
+		CycleCumulative = 0;
+		CyclePeriod     = 0;
+		CycleCandidate  = None;
+		CycleDistance   = 0;
+		CycleTimer      = 0;
+	}
+
+	return (bCanSee);
+
+}
 
 
 // ----------------------------------------------------------------------
@@ -3483,7 +4464,7 @@ function CheckEnemyParams(Pawn checkPawn,out Pawn bestPawn, out int bestThreatLe
 
 		if (bReplace)
 		{
-			if ((Controller.Enemy == checkPawn)) //|| (AICanSee(checkPawn, , false, false, true, true) > 0))
+			if (((Controller.Enemy == checkPawn)) || (AICanSee(checkPawn, , false, false, true, true) > 0))
 			{
 				bestPawn        = checkPawn;
 				bestThreatLevel = threatLevel;
@@ -3511,7 +4492,7 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
 
 	if (!bIgnoreCurrentEnemy && (Controller.Enemy != None))
 		CheckEnemyParams(Controller.Enemy, bestPawn, bestThreatLevel, bestDist);
-	foreach RadiusActors(class'Pawn', nextPawn, 2000)  // arbitrary
+	foreach RadiusActors(class'Pawn', nextPawn, BEST_ENEMY_CHECK_RADIUS)  // arbitrary
 		if (Controller.enemy != nextPawn)
 			CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
 
@@ -3531,14 +4512,37 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
 // ----------------------------------------------------------------------
 // ShouldStrafe()
 // ----------------------------------------------------------------------
-
-
+function bool ShouldStrafe()
+{
+	// This may be overridden from subclasses
+	//return (AICanSee(enemy, 1.0, false, true, true, true) > 0);
+	return (AICanShoot(DeusExPawn(controller.enemy), false, false, 0.025, true));
+}
 
 // ----------------------------------------------------------------------
 // ShouldFlee()
 // ----------------------------------------------------------------------
-
-
+function bool ShouldFlee()
+{
+	// This may be overridden from subclasses
+	if (MinHealth > 0)
+	{
+		if (Health <= MinHealth)
+			return true;
+		else if (HealthArmLeft <= 0)
+			return true;
+		else if (HealthArmRight <= 0)
+			return true;
+		else if (HealthLegLeft <= 0)
+			return true;
+		else if (HealthLegRight <= 0)
+			return true;
+		else
+			return false;
+	}
+	else
+		return false;
+}
 
 // ----------------------------------------------------------------------
 // ShouldDropWeapon()
@@ -3554,6 +4558,31 @@ function bool ShouldDropWeapon()
 // ----------------------------------------------------------------------
 // TryLocation()
 // ----------------------------------------------------------------------
+function bool TryLocation(out vector position, optional float minDist, optional bool bTraceActors,optional NearbyProjectileList projList)
+{
+	local float   magnitude;
+	local vector  normalPos;
+	local Rotator rot;
+//	local float   dist;
+	local bool    bSuccess;
+
+	normalPos = position-Location;
+	magnitude = VSize(normalPos);
+	if (minDist > magnitude)
+		minDist = magnitude;
+	rot = Rotator(position-Location);
+	bSuccess = AIDirectionReachable(Location, rot.Yaw, rot.Pitch, minDist, magnitude, position);
+
+	if (bSuccess)
+	{
+		if (bDefendHome && !IsNearHome(position))
+			bSuccess = false;
+		else if (bAvoidHarm && IsLocationDangerous(projList, position))
+			bSuccess = false;
+	}
+
+	return (bSuccess);
+}
 
 
 
@@ -3569,6 +4598,20 @@ function bool ShouldDropWeapon()
 // Sets the angle from which an asynchronous attack will occur
 // (hack needed for DeusExWeapon)
 // ----------------------------------------------------------------------
+
+function SetAttackAngle()
+{
+	local bool bCanShoot;
+
+	bCanShoot = false;
+	if (Controller.Enemy != None)
+		if (AICanShoot(DeusExPawn(Controller.Enemy), true, false, 0.025))
+			bCanShoot = true;
+
+	if (!bCanShoot)
+		SetViewRotation(Rotation);
+}
+
 
 
 
@@ -3601,19 +4644,20 @@ function bool IsThrownWeapon(DeusExWeaponInv testWeapon)
 	return bIsThrown;
 }
 
-
-
-
-
 function bool InStasis()
 {
    if ((DistanceFromPlayer() > 1200.0) && (LastRenderTime > 5.0))
    return true;
    else return false;
-
-
 //   return bStasis;
 }
+
+
+function HandleEnemy()
+{
+	Controller.SetState('HandlingEnemy', 'Begin');
+}
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // CALLBACKS AND OVERRIDDEN FUNCTIONS
@@ -3636,7 +4680,7 @@ function Tick(float deltaTime)
 	player = DeusExPlayer(GetPlayerPawn());
 	myDxPlayer = player;
 
-	Super.Tick(deltaTime);
+//	Super.Tick(deltaTime);
 
 	bDoLowPriority = true;
 	bCheckPlayer   = true;
@@ -3652,37 +4696,37 @@ function Tick(float deltaTime)
 			bCheckOther = false;
 	}
 
-	if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
+/*	if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
 	{
 	 if (Controller != none)
 	  Controller.Destroy();
 
 		Destroy();
 		return;
-	}
+	}*/
 
-	if (AvoidWallTimer > 0)
+/*	if (AvoidWallTimer > 0)
 	{
 		AvoidWallTimer -= deltaTime;
 		if (AvoidWallTimer < 0)
 			AvoidWallTimer = 0;
-	}
+	}*/
 
-	if (AvoidBumpTimer > 0)
+/*	if (AvoidBumpTimer > 0)
 	{
 		AvoidBumpTimer -= deltaTime;
 		if (AvoidBumpTimer < 0)
 			AvoidBumpTimer = 0;
-	}
+	}*/
 
-	if (ObstacleTimer > 0)
+/*	if (ObstacleTimer > 0)
 	{
 		ObstacleTimer -= deltaTime;
 		if (ObstacleTimer < 0)
 			ObstacleTimer = 0;
-	}
+	}*/
 //
-	if /*(*/(Controller != none) //&& (controller.bAdvancedTactics))
+/*	if (Controller != none && bAdvancedTactics)
 	{
 		if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
 		{
@@ -3697,7 +4741,7 @@ function Tick(float deltaTime)
 			bClearedObstacle = true;
 			ObstacleTimer    = 0;
 		}
-	}
+	}*/
 
 
 	if (bStandInterpolation)
@@ -3723,14 +4767,14 @@ function Tick(float deltaTime)
 				player.StartConversation(Self, IM_Radius);
 		}
 
-/*		if (CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther))
+		if (CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther))
 			HandleEnemy();
 		else
 		{
 			CheckBeamPresence(deltaTime);
 			if (bDoLowPriority || LastRendered() < 5.0)
 				CheckCarcassPresence(deltaTime);  // hacky -- may change state!
-		}*/
+		}
 	}
 
 	// Randomly spawn an air bubble every 0.2 seconds if we're underwater
@@ -4306,10 +5350,6 @@ function PlaySwimming()
 	LoopAnimPivot('Tread', , , , GetSwimPivot());
 }
 
-
-
-
-
 // ----------------------------------------------------------------------
 // BackOff()
 // ----------------------------------------------------------------------
@@ -4608,9 +5648,11 @@ function AlterDestination()
 				if (TurnDirection == TURNING_Left)
 					moveYaw = avoidYaw - 16384;
 				else
+				{
 					moveYaw = avoidYaw + 16384;
 				controller./*Destination*/ focalPoint = Location + Vector(rot(0,1,0)*moveYaw)*400;
 				controller.Destination = Location + Vector(rot(0,1,0)*moveYaw)*400;
+				}
 			}
 			else  // cleared the actor -- move on
 				TurnDirection = TURNING_None;
@@ -4633,7 +5675,8 @@ function AlterDestination()
 	{
 		NextDirection    = TURNING_None;
 		ActorAvoiding    = None;
-		bAdvancedTactics = false;
+//		bAdvancedTactics = false;
+    controller.bPreparingMove = true;
 		ObstacleTimer    = 0;
 		bClearedObstacle = true;
 
@@ -4798,6 +5841,158 @@ function InitializeHomeBase()
 	}
 }
 
+/* Или все карты вручную править, или... */
+function FixInitialInventory()
+{
+  local int i;
+
+  for(i=0; i<ArrayCount(InitialInventory); i++)
+  {
+  // Fix weapons...
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponPistol')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponPistolInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponRifle')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponRifleInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponGEPGun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponGEPGunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponSawedOffShotGun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponSawedOffShotGunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponFlameThrower')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponFlameThrowerInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponAssaultGun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponAssaultGunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponAssaultShotgun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponAssaultShotgunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponNanoSword')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponNanoSwordInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponNanoVirusGrenade')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponNanoVirusGrenadeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponEMPGrenade')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponEMPGrenadeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponStealthPistol')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponStealthPistolInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponMiniCrossbow')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponMiniCrossbowInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponGasGrenade')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponGasGrenadeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponLAM')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponLAMInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponProd')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponProdInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponBaton')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponBatonInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponCombatKnife')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponCombatKnifeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponCrowbar')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponCrowbarInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponHideAGun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponHideAGunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponLAW')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponLAWInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponPepperGun')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponPepperGunInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponPlasmaRifle')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponPlasmaRifleInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponShuriken')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponShurikenInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponSword')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponSwordInv';
+/*-----------------------------------------------------------------------------*/
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModSilencer')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModSilencerInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModRecoil')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModRecoilInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModRange')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModRangeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModLaser')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModLaserInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModAccuracy')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModAccuracyInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModScope')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModScopeInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModClip')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModClipInv';
+     if (InitialInventory[i].Inventory == class'DeusEx.WeaponModReload')
+        InitialInventory[i].Inventory = class'DeusEx.WeaponModReloadInv';
+
+/*-- Fix ammunition...--*/
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoRocketWP')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoRocketWPInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoNone')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoNoneInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoEMPGrenade')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoEMPGrenadeInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoGasGrenade')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoGasGrenadeInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoNanoVirusGrenade')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoNanoVirusGrenadeInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoLAM')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoLAMInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.Ammo10mm')
+          InitialInventory[i].Inventory = class'DeusEx.Ammo10mmInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.Ammo20mm')
+          InitialInventory[i].Inventory = class'DeusEx.Ammo20mmInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.Ammo3006')
+          InitialInventory[i].Inventory = class'DeusEx.Ammo3006Inv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.Ammo762mm')
+          InitialInventory[i].Inventory = class'DeusEx.Ammo762mmInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoBattery')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoBatteryInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoDartFlare')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoDartFlareInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoDart')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoDartInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoDartPoison')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoDartPoisonInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoGraySpit')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoGraySpitInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoGreaselSpit')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoGreaselSpitInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoNapalm')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoNapalmInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoPepper')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoPepperInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoPlasma')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoPlasmaInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoRocket')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoRocketInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoRocketMini')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoRocketMiniInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoRocketRobot')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoRocketRobotInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoSabot')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoSabotInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoShell')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoShellInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.AmmoShuriken')
+          InitialInventory[i].Inventory = class'DeusEx.AmmoShurikenInv';
+  }
+}
+
 function InitializeInventory()
 {
 	local int                i, j;
@@ -4805,6 +6000,8 @@ function InitializeInventory()
 	local DeusExWeaponInv    weapons[8];
 	local int                weaponCount;
 	local DeusExWeaponInv    firstWeapon;
+
+	FixInitialInventory();
 
 	// Add initial inventory items
 	weaponCount = 0;
@@ -4999,7 +6196,7 @@ Begin:
 	bHidden = true;
 
 	Acceleration = vect(0,0,0);
-	Controller.Destroy();
+//	Controller.Destroy();
 	SpawnCarcass();
 	Destroy();
 }
