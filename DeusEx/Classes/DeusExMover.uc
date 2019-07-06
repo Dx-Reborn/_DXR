@@ -14,8 +14,6 @@ var() bool 				bOneWay;				// this door can only be opened from one side
 var() bool 				bLocked;				// this door is locked
 var() bool 				bPickable;				// this lock can be picked
 var() float 			lockStrength;			// "toughness" of the lock on this door - 0.0 is easy, 1.0 is hard
-//var() float          initiallockStrength; // for resetting lock, initial lock strength of door.
-//var() bool           bInitialLocked;      // for resetting lock
 var() bool 				bBreakable;				// this door can be destroyed
 var() float				doorStrength;			// "toughness" of this door - 0.0 is weak, 1.0 is strong
 var() name				KeyIDNeeded;			// key ID code to open the door
@@ -48,11 +46,7 @@ var() sound				ExplodeSound2;			// large explosion sound
 var() bool				bDrawExplosion;			// should we draw an explosion?
 var() bool				bIsDoor;				// is this mover an actual door?
 
-//var() float          TimeSinceReset;   // how long since we relocked it
-//var() float          TimeToReset;      // how long between relocks
-
 var() bool 				bUseDXCollision; // Использовать отключение коллизии пока Mover движется?
-var() edfindable  DoorAreaVolume AreaVolume;
 var		  Pawn			WaitingPawn;
 
 
@@ -330,7 +324,7 @@ function BlowItUp(Pawn instigatedBy)
 //
 // Copied from Engine.Mover
 //
-function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
+function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
 {
 	if (bDestroyed)
 		return;
@@ -349,8 +343,8 @@ function TakeDamage( int Damage, Pawn EventInstigator, vector HitLocation, vecto
 		// add up the damage
 		if (Damage >= minDamageThreshold)
 			doorStrength -= Damage * 0.01;
-		else
-			doorStrength -= Damage * 0.001;		// damage below the threshold does 1/10th the damage
+//		else
+//			doorStrength -= Damage * 0.001;		// damage below the threshold does 1/10th the damage
 
 		doorStrength = FClamp(doorStrength, 0.0, 1.0);
 		if (doorStrength ~= 0.0)
@@ -417,13 +411,13 @@ function bool EncroachingOn(actor Other)
 		}	
 		return true;
 	}
-	else if( MoverEncroachType == ME_CrushWhenEncroach )
+	else if(MoverEncroachType == ME_CrushWhenEncroach)
 	{
 		// Kill it.
-		Other.KilledBy( Instigator );
+		Other.KilledBy(Instigator);
 		return false;
 	}
-	else if( MoverEncroachType == ME_IgnoreWhenEncroach )
+	else if(MoverEncroachType == ME_IgnoreWhenEncroach)
 	{
 		// Ignore it.
 		return false;
@@ -499,13 +493,11 @@ function Timer()
 }
 
 
-//
-// Called to deal with resetting the device
-// Добавлять код из мультиплейерного патча?
 
 //
 // Stops the current pick-in-progress
 //
+
 function StopPicking()
 {
 	// alert NPCs that I'm not messing with stuff anymore
@@ -520,6 +512,7 @@ function StopPicking()
 	curPick = None;
 	SetTimer(0.1, False);
 }
+
 //
 // The main logic function for doors
 //
@@ -764,7 +757,5 @@ defaultproperties
      BumpType=BT_PawnBump
      InitialState=TriggerToggle
      bDirectional=True
-
 		 bUseDynamicLights=true // Чтобы более-менее освещались от AugLight
-		 maxLights=4 // То-же
 }
