@@ -4,8 +4,6 @@
 class Carcass extends Decoration
 		placeable;
 
-// Sprite.
-//#exec Texture Import File=Textures\S_Corpse.pcx Name=S_Corpse Mips=Off Flags=2
 
 // Variables.
 var bool bPlayerCarcass;
@@ -28,12 +26,10 @@ function CreateReplacement()
 
 function Destroyed()
 {
-//	local Actor A;
-
-	if (Bugs != None)
-			Bugs.Destroy();
+  if (Bugs != None)
+      Bugs.Destroy();
 				
-	Super.Destroyed();
+      super.Destroyed();
 }
 
 function Initfor(actor Other)
@@ -137,4 +133,7 @@ defaultproperties
     bProjTarget=True
     Mass=180.00
     Buoyancy=105.00
+
+    bLightingVisibility=false
+    bDramaticLighting=true
 }

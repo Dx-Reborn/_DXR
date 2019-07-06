@@ -40,7 +40,7 @@ function BeginPlay()
 // then
 // ----------------------------------------------------------------------
 
-function GiveTo(pawn Other, optional Pickup Pickup)
+function GiveTo(pawn Other)
 {
 	local DeusExPlayer player;
 
