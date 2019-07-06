@@ -58,7 +58,7 @@ function PlayLandingSound()
 
 function material GetMeshTexture(optional int texnum)
 {
-  return class'ObjectManager'.static.GetMeshTexture(self, texnum);
+  return class'ObjectManager'.static.GetActorMeshTexture(self, texnum);
 }
 
 function bool HandlePickupQuery(inventory Item)
@@ -88,7 +88,7 @@ function bool IsActive()
 	return bIsActive;
 }
 
-function GiveTo(pawn Other, optional Pickup Pickup)
+function GiveTo(pawn Other)
 {
 	Instigator = Other;
 	BecomeItem();

@@ -60,7 +60,7 @@ var() class<Projectile> ProjectileNames[3];		// projectile classes for different
 var() class<projectile> ProjectileClass;
 var() class<projectile> AltProjectileClass;
 var() int projectileSpeed;
-var()	byte    ReloadCount;			// Amount of ammo depletion before reloading. 0 if no reloading is done.
+var() travel byte ReloadCount;			// Amount of ammo depletion before reloading. 0 if no reloading is done.
 var()	int     PickupAmmoCount;		// Amount of ammo initially in pick-up item.
 //-----------------------------------------------------------------------------
 // Weapon firing/state information:
@@ -136,10 +136,6 @@ var(ShakeView) float  ShakeOffsetTime;       // how much time to offset view
 
 var FireProperties aFireProperties;
 
-// New from 1.1112fm
-var globalconfig vector SwingOffset;     // offsets for this weapon swing.
-var float MinWeaponAcc;        // Minimum accuracy for a weapon at all.  Affects only multiplayer.
-
 //
 // DEUS_EX AJY - additions (from old DeusExPickup)
 //
@@ -161,6 +157,16 @@ var	  bool bHeldItem;	// Set once an item has left pickup state.
 var	  bool bSleepTouch; // Set when item is touched when leaving sleep state.
 var() bool bWeaponStay;
 var() bool bAmbientGlow;
+
+// New from 1.1112fm
+var vector SwingOffset;     // offsets for this weapon swing.
+var float MinWeaponAcc;        // Minimum accuracy for a weapon at all.  Affects only multiplayer.
+var float MinSpreadAcc;        // Minimum accuracy for multiple slug weapons (shotgun).  Affects only multiplayer,
+                               // keeps shots from all going in same place (ruining shotgun effect)
+var float MinProjSpreadAcc;
+
+var(WeaponAI) bool	  bWarnTarget;		 // When firing projectile, warn the target
+var(WeaponAI) bool	  bAltWarnTarget;	 // When firing alternate projectile, warn the target
 
 /*----------------------------------------------------------------------------------------------------------------
  Properties to behave like old-style weapons. Third person mesh is not used, because there is better replacement.
@@ -347,10 +353,10 @@ simulated function TweenDown()
 	local name Anim;
 	local float frame,rate;
 
-	if (IsAnimating() && AnimIsInGroup(0,'Select'))
+	if (/*IsAnimating()*/ GetAnimSequence() != '' && AnimIsInGroup(0,'Select'))
 	{
 		GetAnimParams(0,Anim,frame,rate);
-		TweenAnim(Anim, frame * 0.4);
+		TweenAnim(Anim, frame * 0.4); //0.4
 	}
 	else
 		PlayAnim('Down', 1.0, 0.05);
@@ -379,71 +385,6 @@ simulated function BringUp(optional weapon PrevWeapon)
 	GotoState('Active');
 }
 
-// Finish a sequence
-function Finish()
-{
-	local bool bForce, bForceAlt;
-
-	if (NeedsToReload() && AmmoType.HasAmmo())
-	{
-		GotoState('Reloading');
-		return;
-	}
-
-	bForce = bForceFire;
-	bForceAlt = bForceAltFire;
-	bForceFire = false;
-	bForceAltFire = false;
-
-	if (bChangeWeapon)
-	{
-		GotoState('DownWeapon');
-		return;
-	}
-
-	if ((Instigator == None) || (Instigator.Controller == None))
-	{
-		GotoState('');
-		return;
-	}
-
-	if (!Instigator.IsHumanControlled())
-	{
-		if (!AmmoType.HasAmmo())
-		{
-			Instigator.Controller.SwitchToBestWeapon();
-			if (bChangeWeapon)
-				GotoState('DownWeapon');
-			else
-				GotoState('Idle');
-			return;
-		}
-		if (AIController(Instigator.Controller) != None)
-		{
-			if ( !AIController(Instigator.Controller).WeaponFireAgain(AmmoType.RefireRate,true) )
-			{
-				if (bChangeWeapon)
-					GotoState('DownWeapon');
-				else
-					GotoState('Idle');
-			}
-			return;
-		}
-	}
-	if (!AmmoType.HasAmmo() && Instigator.IsLocallyControlled())
-	{
-		SwitchToWeaponWithAmmo();
-		return;
-	}
-	if ( Instigator.Weapon != self )
-		GotoState('Idle');
-	else if ((StopFiringTime > Level.TimeSeconds) || bForce || Instigator.PressingFire())
-		Global.ServerFire();
-	else if (bForceAlt || Instigator.PressingAltFire())
-		CauseAltFire();
-	else 
-		GotoState('Idle');
-}
 
 function SwitchToWeaponWithAmmo()
 {
@@ -458,43 +399,7 @@ function SwitchToWeaponWithAmmo()
 		GotoState('Idle');
 }
 
-simulated function ClientFinish()
-{
-	if ( (Instigator == None) || (Instigator.Controller == None) )
-	{
-		GotoState('');
-		return;
-	}
-	if (NeedsToReload() && AmmoType.HasAmmo())
-	{
-		GotoState('Reloading');
-		return;
-	}
-	if (!AmmoType.HasAmmo())
-	{
-		Instigator.Controller.SwitchToBestWeapon();
-		if (!bChangeWeapon)
-		{
-			PlayIdleAnim();
-			GotoState('Idle');
-			return;
-		}
-	}
-	if (bChangeWeapon)
-		GotoState('DownWeapon');
-	else if (Instigator.PressingFire())
-		Global.Fire(0);
-	else
-	{
-		if (Instigator.PressingAltFire())
-			Global.AltFire(0);
-		else
-		{
-			PlayIdleAnim();
-			GotoState('Idle');
-		}
-	}
-}
+simulated function ClientFinish();
 
 function CheckAnimating();
 simulated function PlayIdleAnim();
@@ -504,56 +409,8 @@ simulated function bool NeedsToReload()
 	return (bForceReload || (Default.ReloadCount > 0) && (ReloadCount == 0));
 }
 
-function ServerFire()
-{
-	if (AmmoType == None)
-	{
-		// ammocheck
-		log("WARNING "$self$" HAS NO AMMO!!!");
-		GiveAmmo(Pawn(Owner));
-	}
-	if (AmmoType.HasAmmo())
-	{
-		GotoState('NormalFire');
-		ReloadCount--;
-		if (AmmoType.bInstantHit)
-			TraceFire(0.0,0,0);
-		else
-		  ProjectileFire(projectileClass);	//ProjectileFire(none);
-		LocalFire();
-	}
-}
-
-function CauseAltFire()
-{
-	Global.ServerAltFire();
-}
-
-function ServerAltFire()
-{
-	if ( !IsInState('Idle') )
-		GotoState('Idle');
-}
-
-
-function TraceFire(float Accuracy, float YOffset, float ZOffset)
-{
-	local vector HitLocation, HitNormal, StartTrace, EndTrace, X,Y,Z;
-	local actor Other;
-
-	Owner.MakeNoise(1.0);
-	GetAxes(Instigator.GetViewRotation(),X,Y,Z);
-	StartTrace = GetFireStart(X,Y,Z); 
-	AdjustedAim = Instigator.AdjustAim(aFireProperties, StartTrace, 2*AimError);
-	EndTrace = StartTrace + (YOffset + Accuracy * (FRand() - 0.5 ) ) * Y * 1000 + (ZOffset + Accuracy * (FRand() - 0.5 )) * Z * 1000;
-	X = vector(AdjustedAim);
-	EndTrace += (TraceDist * X); 
-	Other = Trace(HitLocation,HitNormal,EndTrace,StartTrace,True);
-	AmmoType.ProcessTraceHit(self, Other, HitLocation, HitNormal, X,Y,Z);
-
-	log(self@"TraceFire()");
-	ProcessTraceHit(Other, HitLocation, HitNormal, X,Y,Z);
-}
+// Override in subclasses
+function TraceFire(float Accuracy);
 
 //Spawn appropriate effects at hit location, any weapon lights, and damage hit actor
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z);
@@ -564,49 +421,7 @@ simulated function vector GetFireStart(vector X, vector Y, vector Z)
 }
 
 /* if projectile class is None, spawns class defined in AmmoType */
-function projectile ProjectileFire(class<projectile> ProjClass, optional float ProjSpeed);
-/*{
-	local Vector Start, X,Y,Z;
-	local Projectile proj;
-
-	Owner.MakeNoise(1.0);
-	GetAxes(Instigator.GetViewRotation(),X,Y,Z);
-	Start = GetFireStart(X,Y,Z); 
-	AdjustedAim = Instigator.AdjustAim(aFireProperties, Start, AimError);
-
-	log(self@"ProjectileFire()");
-
-	proj =  //Spawn(ProjClass,,, Start, AdjustedAim);
-
-	return proj;
-
-	if (ProjClass == None)
-      return AmmoType.SpawnProjectile(Start,AdjustedAim);
-      else
-      {
-      	proj = Spawn(ProjClass,,, Start,AdjustedAim);
-      	if (ProjSpeed != 0)
-            proj.Speed = ProjSpeed;
-        return proj;
-      }
-}*/
-
-simulated function LocalFire()
-{
-	local PlayerController P;
-
-	bPointing = true;
-
-	if ( (Instigator != None) && Instigator.IsLocallyControlled() )
-	{
-		P = PlayerController(Instigator.Controller);
-		if (P!=None)
-        P.WeaponShakeView(ShakeRotMag, ShakeRotRate, ShakeRotTime,ShakeOffsetMag, ShakeOffsetRate, ShakeOffsetTime);
-	}
-	if (Affector != None)
-		Affector.FireEffect();
-	PlayFiring();
-}
+simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn);
 
 simulated function PlayFiring();
 
@@ -615,44 +430,12 @@ simulated function bool RepeatFire()
 	return bRapidFire;
 }
 
-function ServerRapidFire()
-{
-	ServerFire();
-	if (IsInState('NormalFire'))
-		StopFiringTime = Level.TimeSeconds + 0.6;
-}
 
-simulated function Fire(float Value)
-{
-	if (!AmmoType.HasAmmo())
-		return;
+simulated function Fire(float Value);
+simulated function AltFire(float Value);
 
-	if (!RepeatFire())
-		ServerFire();
-	else if (StopFiringTime < Level.TimeSeconds + 0.3)
-	{
-		StopFiringTime = Level.TimeSeconds + 0.6;
-		ServerRapidFire();
-	}
-	if (Role < ROLE_Authority)
-	{
-		ReloadCount--;
-		LocalFire();
-		GotoState('ClientFiring');
-	}
-}
+function ServerStopFiring();
 
-simulated function AltFire(float Value)
-{
-	if (!IsInState('Idle'))
-		GotoState('Idle');
-	ServerAltFire();
-}
-
-function ServerStopFiring()
-{
-	StopFiringTime = Level.TimeSeconds;
-}
 
 simulated function PlayReloading()
 {
@@ -687,6 +470,7 @@ function BecomePickup()
 
 function BecomeItem()
 {
+log(self$" BecomeItem? ");
 	RemoteRole    = ROLE_SimulatedProxy;
 
 	LinkMesh(FirstPersonViewMesh);
@@ -727,7 +511,7 @@ function inventory SpawnCopy(pawn Other)
 	return newWeapon;
 }
 
-function GiveTo(pawn Other, optional Pickup Pickup)
+function GiveTo(pawn Other)
 {
 	Instigator = Other;
 	BecomeItem();
@@ -775,6 +559,7 @@ function DropFrom(vector StartLocation)
 }
 
 
+function Finish();
 
 
 /*--- States ---------------------------------------------------------*/
@@ -922,8 +707,7 @@ Putting down weapon in favor of a new one.  No firing in this state
 */
 State DownWeapon
 {
-	function Fire( float Value ) {}
-	function AltFire( float Value ) {}
+  ignores Fire, AltFire;
 
 	function ServerFire() {}
 	function ServerAltFire() {}
@@ -934,99 +718,53 @@ State DownWeapon
 		return true; //just keep putting it down
 	}
 
-	simulated function AnimEnd(int Channel)
-	{
-//	  Pawn(Owner).Weapon = none;
-//		Pawn(Owner).ChangedWeapon();
-	}
-
 	simulated function BeginState()
 	{
 		OldWeapon = None;
 		bChangeWeapon = false;
 		bMuzzleFlash = false;
-		TweenDown();
 	}
+
+Begin:
+	TweenDown();
+	FinishAnim();
+	Pawn(Owner).ChangedWeapon();
 }
 
-/* Active
-Bring newly active weapon up.
-The weapon will remain in this state while its selection animation is being played (as well as any postselect animation).
-While in this state, the weapon cannot be fired.
-*/
 state Active
 {
-	function Fire( float Value ) {}
-	function AltFire( float Value ) {}
-
-	function ServerFire()
+	function Fire(float F) 
 	{
-		bForceFire = true;
 	}
 
-	function ServerAltFire()
+	function AltFire(float F) 
 	{
-		bForceAltFire = true;
 	}
 
-	simulated function bool PutDown()
+	function bool PutDown()
 	{
-		local name anim;
-		local float frame,rate;
-		GetAnimParams(0,anim,frame,rate);
-		if (bWeaponUp || (frame < 0.75))
+		if (bWeaponUp || (GetAnimFrame() < 0.75))
 			GotoState('DownWeapon');
 		else
 			bChangeWeapon = true;
 		return True;
 	}
 
-	simulated function BeginState()
+	function BeginState()
 	{
-		Instigator = Pawn(Owner);
-		bForceFire = false;
-		bForceAltFire = false;
-		bWeaponUp = false;
 		bChangeWeapon = false;
 	}
 
-	simulated function EndState()
-	{
-		bForceFire = false;
-		bForceAltFire = false;
-	}
-
-	simulated function AnimEnd(int Channel)
-	{
-		if (bChangeWeapon)
-			GotoState('DownWeapon');
-		if ( Owner == None )
-		{
-			log(self$" no owner");
-			Global.AnimEnd(0);
-			GotoState('');
-		}
-		else if (bWeaponUp)
-		{
-			if ( Role == ROLE_Authority )
-				Finish();
-			else
-				ClientFinish();
-		}
-		else
-		{
-			PlayPostSelect();
-			bWeaponUp = true;
-		}
-		CheckAnimating();
-	}
-
-	function CheckAnimating()
-	{
-		if ( !IsAnimating() )
-			warn(self$" stuck in Active and not animating!");
-	}
+Begin:
+	FinishAnim();
+	if (bChangeWeapon)
+		GotoState('DownWeapon');
+	bWeaponUp = True;
+	PlayPostSelect();
+	FinishAnim();
+	Finish();
 }
+
 
 /* 
    Fire on the client side. This state is only entered on the network client of the player that is firing this weapon. 
@@ -1058,122 +796,32 @@ state ClientFiring
 
 state NormalFire
 {
-	function CheckAnimating()
+	function Fire(float F) 
 	{
-		if (!IsAnimating())
-			warn(self$" stuck in NormalFire and not animating!");
 	}
-
-	function ServerFire()
+	function AltFire(float F) 
 	{
-		bForceFire = true;
-	}
-
-	function ServerAltFire()
-	{
-		bForceAltFire = true;
-	}
-
-	function Fire(float F) {}
-	function AltFire(float F) {} 
-
-	function AnimEnd(int Channel)
-	{
-		Finish();
-		CheckAnimating();
-	}
-
-	function EndState()
-	{
-		StopFiringTime = Level.TimeSeconds;
 	}
 
 Begin:
-	Sleep(0.0);
+	FinishAnim();
+	Finish();
 }
 
-/* PendingClientWeaponSet
-Weapon on network client side may be set here by the replicated function ClientWeaponSet(), to wait,
-if needed properties have not yet been replicated.  ClientWeaponSet() is called by the server to 
-tell the client about potential weapon changes after the player runs over a weapon (the client 
-decides whether to actually switch weapons or not.
-*/
-State PendingClientWeaponSet
+state AltFiring
 {
-	simulated function Timer()
+	function Fire(float F) 
 	{
-		if ( Pawn(Owner) != None )
-			ClientWeaponSet(false);
 	}
 
-	simulated function BeginState()
+	function AltFire(float F) 
 	{
-		SetTimer(0.05, true);
 	}
 
-	simulated function EndState()
-	{
-		SetTimer(0.0, false);
-	}
+Begin:
+	FinishAnim();
+	Finish();
 }
-
-state Reloading
-{
-	function ServerForceReload() {}
-	function ClientForceReload() {}
-	function Fire( float Value ) {}
-	function AltFire( float Value ) {}
-
-	function ServerFire()
-	{
-		bForceFire = true;
-	}
-
-	function ServerAltFire()
-	{
-		bForceAltFire = true;
-	}
-
-	simulated function bool PutDown()
-	{
-		bChangeWeapon = true;
-		return True;
-	}
-
-	simulated function BeginState()
-	{
-		if (!bForceReload)
-		{
-			if ( Role < ROLE_Authority )
-				ServerForceReload();
-			else
-				ClientForceReload();
-		}
-		bForceReload = false;
-		PlayReloading();
-	}
-
-	simulated function AnimEnd(int Channel)
-	{
-		ReloadCount = Default.ReloadCount;
-		if ( Role < ROLE_Authority )
-			ClientFinish();
-		else
-			Finish();
-		CheckAnimating();
-	}
-
-	function CheckAnimating()
-	{
-		if ( !IsAnimating() )
-			warn(self$" stuck in Reloading and not animating!");
-	}
-}
-
-
-
-
-
 
 defaultproperties
 {

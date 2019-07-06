@@ -17,12 +17,12 @@ var inventory inv_ptr;
 
 function PostBeginPlay()
 {
-  SetCollision(false,false,false);
+//  SetCollision(false,false,false);
   Super.PostBeginPlay();
 
     // We need to just spawn Inventory item, everything else is in inventory item itself.
     inv_ptr = spawn(inventoryType,,,location,rotation);
-      if (inv_ptr == none)
+         if (inv_ptr == none)
          {
            log(self@"Warning! Failed to spawn"@InventoryType@"!!! Possible cause: invalid class or not enough space to spawn. Theoretically.");
          }
@@ -31,6 +31,7 @@ function PostBeginPlay()
            if (inv_ptr.IsA('RuntimePickup'))
                RuntimePickup(inv_ptr).RestoreProperties(self);
 
+           inv_ptr.SetPhysics(Physics);
            destroy(); // Our work is done.
           }
 }
@@ -39,7 +40,7 @@ defaultproperties
 {
   bCollideWorld=true
   drawType=DT_Mesh // vertMesh or SkeletalMesh (mesh). 
-  CollisionHeight=5 // These should match with inventory item's collision size
-  CollisionRadius=5 
+  CollisionHeight=20 // These should match with inventory item's collision size
+  CollisionRadius=20
   Physics=PHYS_Falling
 }

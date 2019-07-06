@@ -46,7 +46,7 @@ function Frob(actor Other, inventory FrobWith)
      SpawnCopy(Pawn(Other));
 }
 
-function inventory SpawnCopy( pawn Other )
+function inventory SpawnCopy(pawn Other)
 {
 	local inventory Copy;
 
@@ -55,7 +55,7 @@ function inventory SpawnCopy( pawn Other )
 	return Copy;
 }
 
-function GiveTo(pawn Other, optional pickup pickup)
+function GiveTo(pawn Other)
 {
 	Instigator = Other;
 	BecomeItem();
@@ -82,6 +82,7 @@ function BecomeItem()
 
 defaultproperties
 {
+  bCollideWorld=true
    bUseDynamicLights=true
    PickupMessage="Found ammo:"
 }
