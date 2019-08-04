@@ -11,7 +11,7 @@ var Int actorDistance;
 
 function TurnOn()
 {
-	LightType = LT_Steady;
+    LightType = LT_Steady;
 }
 
 // ----------------------------------------------------------------------
@@ -20,7 +20,7 @@ function TurnOn()
 
 function TurnOff()
 {
-	LightType = LT_None;
+    LightType = LT_None;
 }
 
 // ----------------------------------------------------------------------
@@ -29,33 +29,33 @@ function TurnOff()
 
 function UpdateLocation(Actor lightActor)
 {
-	local Vector dirVect;
-	local Vector eyeVect;
-	local Float eyeHeight;
+    local Vector dirVect;
+    local Vector eyeVect;
+    local Float eyeHeight;
 
-	if (lightActor == None)
-	{
-		TurnOff();
-	}
-	else
-	{
-		TurnOn();
+    if (lightActor == None)
+    {
+        TurnOff();
+    }
+    else
+    {
+        TurnOn();
 
-		dirVect = Vector(lightActor.Rotation) * actorDistance;
+        dirVect = Vector(lightActor.Rotation) * actorDistance;
 
-		if (lightActor.IsA('Pawn'))
-			eyeHeight = Pawn(lightActor).baseEyeHeight;
-		else if (lightActor.IsA('Decoration'))
-			eyeHeight = Decoration(lightActor).GetbaseEyeHeight();
-		else
-			eyeHeight = 0;
+        if (lightActor.IsA('Pawn'))
+            eyeHeight = Pawn(lightActor).baseEyeHeight;
+        else if (lightActor.IsA('Decoration'))
+            eyeHeight = Decoration(lightActor).GetbaseEyeHeight();
+        else
+            eyeHeight = 0;
 
-		eyeVect = Vect(0, 0, 1) * eyeHeight + lightActor.location;
-		dirVect += eyeVect; 
+        eyeVect = Vect(0, 0, 1) * eyeHeight + lightActor.location;
+        dirVect += eyeVect; 
 
-		SetLocation(dirVect);
-		SetRotation(Rotator(eyeVect - dirVect));
-	}
+        SetLocation(dirVect);
+        SetRotation(Rotator(eyeVect - dirVect));
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -68,9 +68,8 @@ defaultproperties
     bNoDelete=False
     bMovable=True
     LightType=LT_Steady
-    LightEffect=LE_NonIncidence
-    LightBrightness=255
-    LightRadius=3
+    LightBrightness=128//255
+    LightRadius=2
     LightCone=32
     bDynamicLight=true
 }
