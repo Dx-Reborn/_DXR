@@ -9,22 +9,25 @@ var localized string strReceived;
 var transient DxCanvas dxc;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
+const MIN_OVERLAY_DELAY = 0.7;
+
 function addItem(inventory newItem)
 {
   local int x;
 
   x = recentItems.Length;
-  recentItems.Length = x + 1; // ¤®Ў ўЁвм 1 Є ¤«Ё­Ґ ¬ ббЁў 
-  recentItems[x] = newItem; // ЇаЁбў®Ёвм ¤ ­­лҐ Є н«Ґ¬Ґ­вг ¬ ббЁў 
+  recentItems.Length = x + 1; // добавить 1 к длине массива
+  recentItems[x] = newItem; // присвоить данные к элементу массива
 }
 
 function SetInitialState()
 {
   local DeusExHUD h;
 
-	SetTimer(recentItems.Length, false);
-	dxc = new(Outer) class'DxCanvas';
-	Super.SetInitialState();
+    SetTimer(FMax(MIN_OVERLAY_DELAY,recentItems.Length), false);
+
+    dxc = new(Outer) class'DxCanvas';
+    Super.SetInitialState();
 
   h = DeusExHUD(level.GetLocalPlayerController().myHUD);
   InfoLinkBG = h.InfoLinkBG;
@@ -35,7 +38,7 @@ function SetInitialState()
 
 function Timer()
 {
-	Destroy();
+    Destroy();
 }
 
 //
@@ -45,12 +48,12 @@ function Timer()
 //
 function Render(Canvas C)
 {
-	local float w,h;
-	local int x;
-	local texture border;
-	local material ico;
+    local float w,h;
+    local int x;
+    local texture border;
+    local material ico;
 
-	local string infoBuffer;
+    local string infoBuffer;
 
    dxc.SetCanvas(C);
 
@@ -60,12 +63,12 @@ function Render(Canvas C)
 
         w = 50+40*recentItems.Length;
         h = 64;
-        infoBuffer=StrReceived;
+        infoBuffer = StrReceived;
 
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-        c.DrawColor=InfoLinkBG;// (127,127,127);
+        c.DrawColor=InfoLinkBG;
         if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
               else
@@ -113,8 +116,7 @@ function Render(Canvas C)
         else
         c.Style = ERenderStyle.STY_Alpha;
 
-        c.DrawColor = InfoLinkFrame;//  SetDrawColor(255,255,255);
-        //c.Style = ERenderStyle.STY_Translucent;
+        c.DrawColor = InfoLinkFrame;
 
         c.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
@@ -169,25 +171,25 @@ function Render(Canvas C)
             if (recentItems[x].isA('DeusExPickupInv'))
             {
               c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
-            	ico = DeusExPickupInv(recentItems[x]).Icon;
-	            c.DrawIconEx(ico,1.0);
-  	          c.Style=1;
+                ico = DeusExPickupInv(recentItems[x]).Icon;
+                c.DrawIconEx(ico,1.0);
+              c.Style=1;
               c.DrawColor = InfoLinkText;
-	            dxc.DrawTextJustified(DeusExPickupInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExPickupInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
             }
             if (recentItems[x].isA('DeusExWeaponInv'))
             {
               c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
-            	ico = DeusExWeaponInv(recentItems[x]).Icon;
-	            c.DrawIconEx(ico,1.0);
-  	          c.Style=1;
+                ico = DeusExWeaponInv(recentItems[x]).Icon;
+                c.DrawIconEx(ico,1.0);
+              c.Style=1;
               c.DrawColor = InfoLinkText;
-	            dxc.DrawTextJustified(DeusExWeaponInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
-	          }
-	        }
+                dxc.DrawTextJustified(DeusExWeaponInv(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
+              }
+            }
         }
-	c.reset();
-	c.SetClip(c.sizeX,c.sizeY);
+    c.reset();
+    c.SetClip(c.sizeX,c.sizeY);
 }
 
 
@@ -195,5 +197,5 @@ function Render(Canvas C)
 
 defaultproperties
 {
-	strReceived="Received: "
+    strReceived="ITEMS: "
 }
