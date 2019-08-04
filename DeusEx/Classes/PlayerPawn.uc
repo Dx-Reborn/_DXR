@@ -6,16 +6,16 @@ class PlayerPawn extends DeusExPlayerPawn
                          config (DXRConfig);
 
 // Это для возврата назад, поскольку .default будет заменен нативной функцией.
-const DefaultPlayerHeight = 43.5;
+const DefaultPlayerHeight = 44.5;
 const DefaultPlayerRadius = 20.0;
 const CrouchedPlayerHeight = 16.0;
 
 enum EMusicMode {
-	MUS_Ambient,
-	MUS_Combat,
-	MUS_Conversation,
-	MUS_Outro,
-	MUS_Dying
+    MUS_Ambient,
+    MUS_Combat,
+    MUS_Conversation,
+    MUS_Outro,
+    MUS_Dying
 };
 
 var EMusicMode musicMode;
@@ -23,7 +23,7 @@ var float savedSongPos;
 var float musicCheckTimer;
 var float musicChangeTimer;
 
-var(Flags) editconst /*travel*/ array<byte> RawByteFlags; // ЃҐ§«®Ј®ўл© ўл«Ґв Ґб«Ё Tavel??
+var(Flags) editconst /*travel*/ array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
 var localized String InventoryFull;
 var localized String TooMuchAmmo;
@@ -44,41 +44,124 @@ var localized String HealedPointLabel;
 var localized String SkillPointsAward;
 var localized String QuickSaveGameTitle;
 
+                              // When player management menu (Inventory or Augmentations for example) is opened...
+var config int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
+var config bool bObjectNames;                 // Object names on/off
+var config bool bNPCHighlighting;             // NPC highlighting when new convos
+var config bool bSubtitles;                   // True if Conversation Subtitles are on
+var config float logTimeout;                  // Log Timeout Value
+var config byte  maxLogLines;                 // Maximum number of log lines visible
+var config bool bHUDShowAllAugs;              // TRUE = Always show Augs on HUD
+var config byte translucencyLevel;            // 0 - 10? // DXR: Remove?
+
+var config bool bObjectBeltVisible;           // ToDo: Implement this.
+var config bool bHitDisplayVisible;           // ToDo: Implement this.
+var config bool bAmmoDisplayVisible;          // ToDo: Implement this.
+var config bool bAugDisplayVisible;           // ToDo: Implement this.
+var config bool bDisplayAmmoByClip;           // ToDo: Implement this.
+var config bool bCompassVisible;              // ToDo: Implement this.
+var config bool bCrosshairVisible;            // ToDo: Implement this.
+
+var config bool bAutoReload;
+var config bool bDisplayAllGoals;             // ToDo: Implement this.
+var config int  UIBackground;                 // 0 = Render 3D, 1 = Snapshot, 2 = Black // ToDo: Check alternative way.
+var config bool bDisplayCompletedGoals;       // ToDo: Implement this.
+var config bool bShowAmmoDescriptions;        // ToDo: Implement this.
+var config bool bConfirmSaveDeletes;          // ToDo: Implement this.
+var config bool bConfirmNoteDeletes;          // ToDo: Implement this.
+var config bool bAskedToTrain;                // Useless now? 
+var config bool bSoundsForLadderVolumes;      // Play sounds when moving in LadderVolume
+// DXR: New options (from Vanilla Matters, but can be turned on/off)
+var config bool bLeftClickForLastItem;
+var config int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
+
+// DXR: New option to display debug info, in addition to built-in ShowDebug()
+var config bool bExtraDebugInfo;
+
+var config bool bHUDBordersVisible;
+var config bool bHUDBordersTranslucent;
+var config bool bHUDBackgroundTranslucent;
+var config bool bMenusTranslucent; // Note: PlayerInterface translucency depends on color theme.
+
+
 // used while crouching
 var travel bool bForceDuck;
-var travel bool bCrouchOn;				// used by toggle crouch // travel
-var travel bool bWasCrouchOn;			// used by toggle crouch
+var travel bool bCrouchOn;              // used by toggle crouch // travel
+var travel bool bWasCrouchOn;           // used by toggle crouch
+var config bool bAlwaysRun;             // True to default to running
+
+var bool bToggleWalk;
+var bool bToggleCrouch;             // True to let key toggle crouch
 var bool bIsCrouching;
-var travel byte lastbDuck;				// used by toggle crouch
+var travel byte lastbDuck;              // used by toggle crouch
 
 var transient cameraeffect ce;    // Указатель на эффект камеры
 var bool bMblurActive;
 
-var() editconst	DeusExDecoration carriedDecoration;
+var() editconst DeusExDecoration carriedDecoration;
+var travel class<DeusExDecoration> carriedDecorationClass;
+var vector savedDecoLocation;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
+
+var travel float MyAutoAim;
+
+var ConHistory conHistory;           // Conversation History
+
+final function ConHistory CreateHistoryObject()
+{
+    local ConHistory ch;
+    ch = new(Outer) class'ConHistory';
+
+    return ch;
+}
+
+final function ConHistoryEvent CreateHistoryEvent()
+{
+    local ConHistoryEvent ce;
+    ce = new(Outer) class'ConHistoryEvent';
+
+    return ce;
+}
+
+
+function PlayInAir();
+
+function int StandingCount()
+{
+    local int count;
+    local actor a;
+
+    foreach BasedActors(class'Actor', A)
+      if (!A.IsA('Inventory'))
+        count++;
+
+ return count;
+}
+
+function p_HandleWalking();
 
 
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
 
 function ConBindEvents()
 {
-	local DeusExLevelInfo dxInfo;
+    local DeusExLevelInfo dxInfo;
 
-	foreach AllActors(class'DeusExLevelInfo', dxInfo)
-	{
-		if (dxInfo != none)
-			break;
-	}
-	if (dxInfo != none)
-	{
-	   RegisterConFiles(dxinfo.ConversationsPath);
+    foreach AllActors(class'DeusExLevelInfo', dxInfo)
+    {
+        if (dxInfo != none)
+            break;
+    }
+    if (dxInfo != none)
+    {
+       RegisterConFiles(dxinfo.ConversationsPath);
      LoadConsForMission(dxinfo.missionNumber);
      AddRefCount();
-	}
-	else
-		log("DeusExLevelInfo not found! Failed to register conversations.");
+    }
+    else
+        log("DeusExLevelInfo not found! Failed to register conversations.");
 }
 
 // Регистрация *.con файлов
@@ -113,7 +196,7 @@ function PreBeginPlay()
 event PostLoadSavedGame()
 {
   log(self@"PostLoadSavedGame()");
-	ConBindEvents();
+    ConBindEvents();
 }
 
 // ToDo: Добавить экран с текстом как в оригинале?
@@ -135,20 +218,20 @@ function DeusExGameInfo getFlagBase()
 
 function DeusExLevelInfo GetLevelInfo()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	foreach AllActors(class'DeusExLevelInfo', info)
-		break;
+    foreach AllActors(class'DeusExLevelInfo', info)
+        break;
 
-		if (info != none)
-		    DxLevel = info;
+        if (info != none)
+            DxLevel = info;
 
-	return info;
+    return info;
 }
 
 function float RandomPitch()
 {
-	return (1.1 - 0.2*FRand());
+    return (1.1 - 0.2*FRand());
 }
 
 /*
@@ -237,44 +320,44 @@ exec function unblur()
 
 function ChangedWeapon()
 {
-	local Weapon OldWeapon;
+    local Weapon OldWeapon;
 
-	OldWeapon = Weapon;
+    OldWeapon = Weapon;
 
-	if (Weapon == PendingWeapon)
-	{
-		if (Weapon == None)
-			SwitchToBestWeapon();
-		else if (Weapon.IsInState('DownWeapon'))
-			Weapon.BringUp();
-		if (Weapon != None)
-			Weapon.SetDefaultDisplayProperties();
-		Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
-		PendingWeapon = None;
-		return;
-	}
-	// removed these lines so you don't automatically pick another weapon - DEUS_EX CNN
-//	if ( PendingWeapon == None )
-//		PendingWeapon = Weapon;
+    if (Weapon == PendingWeapon)
+    {
+        if (Weapon == None)
+            SwitchToBestWeapon();
+        else if (Weapon.IsInState('DownWeapon'))
+            Weapon.BringUp();
+        if (Weapon != None)
+            Weapon.SetDefaultDisplayProperties();
+        Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
+        PendingWeapon = None;
+        return;
+    }
+    // removed these lines so you don't automatically pick another weapon - DEUS_EX CNN
+//  if ( PendingWeapon == None )
+//      PendingWeapon = Weapon;
 
-	PlayWeaponSwitch(PendingWeapon);
-//	if ((PendingWeapon != None) && (PendingWeapon.Mass > 20) && (carriedDecoration != None))
-//		DropDecoration();
-	if (Weapon != None)
-		Weapon.SetDefaultDisplayProperties();
-		
-	Weapon = PendingWeapon;
-	Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
-	if ( Weapon != None )
-	{
-		Weapon.BringUp(OldWeapon);
-		if ( (Level.Game != None) && (Level.Game.GameDifficulty > 1) )
-			MakeNoise(0.1 * Level.Game.GameDifficulty);
-	}
-	PendingWeapon = None;
+    PlayWeaponSwitch(PendingWeapon);
+//  if ((PendingWeapon != None) && (PendingWeapon.Mass > 20) && (carriedDecoration != None))
+//      DropDecoration();
+    if (Weapon != None)
+        Weapon.SetDefaultDisplayProperties();
+        
+    Weapon = PendingWeapon;
+    Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
+    if ( Weapon != None )
+    {
+        Weapon.BringUp(OldWeapon);
+        if ( (Level.Game != None) && (Level.Game.GameDifficulty > 1) )
+            MakeNoise(0.1 * Level.Game.GameDifficulty);
+    }
+    PendingWeapon = None;
 }
 
-function SwitchToBestWeapon();
+function bool SwitchToBestWeapon();
 
 // Для проверки что это есть.
 exec function CheckMusic()
@@ -447,8 +530,56 @@ function UpdateDynamicMusic(float deltaTime)
 }
 
 
+function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool bLeadTarget, bool bWarnTarget)
+{
+    local vector FireDir, AimSpot, HitNormal, HitLocation;
+    local actor BestTarget;
+    local float bestAim, bestDist;
+    local actor HitActor;
+    
+    FireDir = vector(GetViewRotation());
+    HitActor = Trace(HitLocation, HitNormal, projStart + 4000 * FireDir, projStart, true);
+    if ((HitActor != None) && HitActor.bProjTarget)
+    {
+        if (bWarnTarget && HitActor.IsA('Pawn'))
+            Pawn(HitActor).WarnTarget(self, projSpeed, FireDir);
+        return GetViewRotation();
+    }
+
+    bestAim = FMin(0.93, MyAutoAim);
+    BestTarget = controller.PickTarget(bestAim, bestDist, FireDir, projStart, 4000);
+
+    if (bWarnTarget && (Pawn(BestTarget) != None))
+        Pawn(BestTarget).WarnTarget(self, projSpeed, FireDir);  
+
+    if ( (Level.NetMode != NM_Standalone) || (Level.Game.GameDifficulty > 2) 
+        || PlayerController(Controller).bAlwaysMouseLook || ((BestTarget != None) && (bestAim < MyAutoAim)) || (MyAutoAim >= 1) )
+        return GetViewRotation();
+    
+    if (BestTarget == None)
+    {
+        bestAim = MyAutoAim;
+        BestTarget = Controller.PickAnyTarget(bestAim, bestDist, FireDir, projStart);
+        if (BestTarget == None)
+            return GetViewRotation();
+    }
+
+    AimSpot = projStart + FireDir * bestDist;
+    AimSpot.Z = BestTarget.Location.Z + 0.3 * BestTarget.CollisionHeight;
+
+    return rotator(AimSpot - projStart);
+}
+// ue2
+/*native(531) final function pawn PickTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart, float MaxRange);
+native(534) final function actor PickAnyTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
+
+native(531) final function pawn PickTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
+native(534) final function actor PickAnyTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
+*/
+
 defaultproperties
 {
    bCanCrouch=true
    bCanFly=true
+   MyAutoAim=1.00
 }
