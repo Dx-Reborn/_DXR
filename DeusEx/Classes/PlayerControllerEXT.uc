@@ -50,10 +50,10 @@ exec function AllMenuThemes()
 
   themes = class'DXR_Menu'.static.GetAllThemes();
 
-	for (x = 0; x < themes.Length; x++)
-	{
+    for (x = 0; x < themes.Length; x++)
+    {
      log(themes[x]);
-	}
+    }
 }
 
 exec function SetMenuTheme(int index)
@@ -82,10 +82,10 @@ exec function AllHUDThemes()
 
   themes = class'DXR_HUD'.static.GetAllHUDThemes();
 
-	for (x = 0; x < themes.Length; x++)
-	{
+    for (x = 0; x < themes.Length; x++)
+    {
      log(themes[x]);
-	}
+    }
 }
 
 exec function HudColor(int index)
@@ -153,15 +153,6 @@ function AssignHUDColors(int index)
      ClientMessage("Current HUD colorTheme: "$class'DXR_HUD'.static.GetHUDThemeName(index));
    }
 }
-/*
-function SetInitialState()
-{
-  super.SetInitialState();
-
-  gl = class'DeusExGlobals'.static.GetGlobals();
-  AssignHUDColors(gl.HUDThemeIndex);
-}
-*/
 
 // ----------------------------------------------------------------------
 // RestrictInput()
@@ -169,10 +160,10 @@ function SetInitialState()
 // ----------------------------------------------------------------------
 function bool RestrictInput()
 {
-	if (IsInState('Interpolating') || pawn.IsInState('Dying') || IsInState('Paralyzed'))
-		return True;
+    if (IsInState('Interpolating') || pawn.IsInState('Dying') || IsInState('Paralyzed'))
+        return True;
 
-	return False;
+    return False;
 }
 
 // ----------------------------------------------------------------------
@@ -181,42 +172,38 @@ function bool RestrictInput()
 // ----------------------------------------------------------------------
 function bool IsHighlighted(actor A)
 {
-	if (bBehindView)
-		return False;
+    if (bBehindView)
+        return False;
 
-	if (A != None)
-	{
-		if (A.bDeleteMe || A.bHidden)
-			return False;
+    if (A != None)
+    {
+        if (A.bDeleteMe || A.bHidden)
+            return False;
 
-		if (A.IsA('Pawn'))
-		{
-			if (!Human(pawn).bNPCHighlighting)
-				return False;
-		}
+        if (A.IsA('Pawn'))
+        {
+            if (!Human(pawn).bNPCHighlighting)
+                return False;
+        }
 
-		if (A.IsA('DeusExMover') && !DeusExMover(A).bHighlight)
-			return False;
-		else if (A.IsA('Mover') && !A.IsA('DeusExMover'))
-			return False;
-		else if (A.IsA('DeusExDecoration') && !DeusExDecoration(A).bHighlight)
-			return False;
-		else if (A.IsA('DeusExCarcass') && !DeusExCarcass(A).bHighlight)
-			return False;
-		else if (A.IsA('ThrownProjectile') && !ThrownProjectile(A).bHighlight)
-			return False;
-		else if (A.IsA('DeusExProjectile') && !DeusExProjectile(A).bStuck)
-			return False;
-		else if (A.IsA('ScriptedPawn') && !ScriptedPawn(A).bHighlight)
-			return False;
-	}
-	return True;
+        if (A.IsA('DeusExMover') && !DeusExMover(A).bHighlight)
+            return False;
+        else if (A.IsA('Mover') && !A.IsA('DeusExMover'))
+            return False;
+        else if (A.IsA('DeusExDecoration') && !DeusExDecoration(A).bHighlight)
+            return False;
+        else if (A.IsA('DeusExCarcass') && !DeusExCarcass(A).bHighlight)
+            return False;
+        else if (A.IsA('ThrownProjectile') && !ThrownProjectile(A).bHighlight)
+            return False;
+        else if (A.IsA('DeusExProjectile') && !DeusExProjectile(A).bStuck)
+            return False;
+        else if (A.IsA('ScriptedPawn') && !ScriptedPawn(A).bHighlight)
+            return False;
+    }
+    return True;
 }
 
-// Находит объект в центре внимания.
-// Эта функция используется в DeusExHud, для рендеринга рамки выделения.
-// Поскольку BoundingBox как в DeusEx мы узнать не можем, будем базироваться 
-// на цилиндре коллизии.
 function HighlightCenterObject()
 {
   local Actor mytarget, smallestTarget;
@@ -247,11 +234,8 @@ function HighlightCenterObject()
     // use the last traced object as the target...this will handle
     // smaller items under larger items for example
     // ScriptedPawns always have precedence, though
-    foreach TraceActors(class'Actor', mytarget, HitLoc, HitNormal, EndTrace, StartTrace)
+    foreach pawn.TraceActors(class'Actor', mytarget, HitLoc, HitNormal, EndTrace, StartTrace)
     {
-//    if 	(mytarget.IsA('StaticMeshActor')) // исключить StaticMesh
-//    return;
-
       if (IsFrobbable(mytarget) && (mytarget != Human(pawn).CarriedDecoration))
       {
         if (mytarget.IsA('ScriptedPawn'))
@@ -284,43 +268,236 @@ function HighlightCenterObject()
 // ----------------------------------------------------------------------
 function bool IsFrobbable(actor A)
 {
-	if (!A.bHidden)
-		if (A.IsA('Mover') || A.IsA('DeusExDecoration') || A.IsA('DeusExAmmoInv') ||
-			A.IsA('ScriptedPawn') || A.IsA('DeusExCarcass') || A.IsA('DeusExProjectile') ||
-			A.IsA('DeusExWeapon') || A.IsA('DeusExPickupInv') || A.IsA('DeusExWeaponInv'))
-			return True;
+    if (!A.bHidden)
+        if (A.IsA('Mover') || A.IsA('DeusExDecoration') || A.IsA('DeusExAmmoInv') ||
+            A.IsA('ScriptedPawn') || A.IsA('DeusExCarcass') || A.IsA('DeusExProjectile') ||
+            A.IsA('DeusExWeapon') || A.IsA('DeusExPickupInv') || A.IsA('DeusExWeaponInv'))
+            return True;
 
-	return False;
+    return False;
 }
 
 function DeusExLevelInfo GetLevelInfo()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	foreach AllActors(class'DeusExLevelInfo', info)
-		break;
+    foreach AllActors(class'DeusExLevelInfo', info)
+        break;
 
-	return info;
+    return info;
 }
-
-/*function bool CanJumpOffLadder()
-{
-	return (bPressedJump && (aForward != 0 || aStrafe != 0) && Level != None && Level.Pauser == None);
-}*/
 
 function HandleWalking()
 {
-	Super.HandleWalking();
+    Super.HandleWalking();
 
   if (pawn != none) // To avoid spamlog if player is dead )))))
   {
+    if (PlayerPawn(pawn).bAlwaysRun)
+        PlayerPawn(pawn).bIsWalking = (bRun != 0) || (bDuck != 0); 
+    else
+        PlayerPawn(pawn).bIsWalking = (bRun == 0) || (bDuck != 0); 
 
-	if (Human(pawn).bAlwaysRun)
-		Human(pawn).SetWalking((bRun != 0) || (bDuck != 0));
-	else
-		Human(pawn).SetWalking((bRun == 0) || (bDuck != 0));
-	}
+    // handle the toggle walk key
+    if (PlayerPawn(pawn).bToggleWalk)
+        PlayerPawn(pawn).bIsWalking = !PlayerPawn(pawn).bIsWalking;
+
+    if (PlayerPawn(pawn).bToggleCrouch)
+    {
+        if (!PlayerPawn(pawn).bCrouchOn && !PlayerPawn(pawn).bWasCrouchOn && (bDuck != 0))
+        {
+            PlayerPawn(pawn).bCrouchOn = True;
+        }
+        else if (PlayerPawn(pawn).bCrouchOn && !PlayerPawn(pawn).bWasCrouchOn && (bDuck == 0))
+        {
+            PlayerPawn(pawn).bWasCrouchOn = True;
+        }
+        else if (PlayerPawn(pawn).bCrouchOn && PlayerPawn(pawn).bWasCrouchOn && (bDuck == 0) && (PlayerPawn(pawn).lastbDuck != 0))
+        {
+            PlayerPawn(pawn).bCrouchOn = False;
+            PlayerPawn(pawn).bWasCrouchOn = False;
+        }
+
+        if (PlayerPawn(pawn).bCrouchOn)
+        {
+            PlayerPawn(pawn).bIsCrouching = True;
+            bDuck = 1;
+        }
+        PlayerPawn(pawn).lastbDuck = bDuck;
+    }
+    if (Human(pawn) != none)
+       Human(pawn).p_HandleWalking();
+  }
 }
+
+//
+// LookAtActor - DEUS_EX STM
+//
+
+function LookAtActor(Actor targ, bool bRotate,
+                     bool bLookHorizontal, bool bLookVertical,
+                     optional float DelayTime, optional float rate,
+                     optional float LockAngle, optional float AngleOffset)
+{
+    local vector lookTo;
+
+    // If we're looking at a pawn, look at the head;
+    // otherwise, look at the center point
+
+    lookTo = targ.Location;
+    if (Pawn(targ) != None)
+        lookTo += (vect(0,0,1)*Pawn(targ).BaseEyeHeight);
+    else if (DeusExDecoration(targ) != None)
+        lookTo += (vect(0,0,1)*DeusExDecoration(targ).BaseEyeHeight);
+    else
+        lookTo += (vect(0,0,1)*targ.CollisionHeight*0.75);
+
+    LookAtVector(lookTo, bRotate, bLookHorizontal, bLookVertical,
+                 DelayTime, rate, LockAngle, AngleOffset);
+}
+
+//
+// LookAtVector - DEUS_EX STM
+//
+
+function LookAtVector(vector lookTo, bool bRotate,
+                      bool bLookHorizontal, bool bLookVertical,
+                      optional float DelayTime, optional float rate,
+                      optional float LockAngle, optional float AngleOffset)
+{
+    local vector         lookFrom;
+    local rotator        lookAngle;
+    local int            hPos, vPos;
+    local int            hAngle, vAngle;
+    local int            hAbs, vAbs;
+    local int            hRot;
+    local PlayerPawn.ELookDirection lookDir;
+
+    if (rate <= 0)
+        rate = 1.0;
+
+    // Head movement angles
+    hAngle = 54; //5461;  // 30 degrees horizontally // ToDo: чтобы повернуть голову, нужно повернуть её кость. У имеющихся моделей в голове и шее
+    vAngle = 27; //2731;  // 15 degrees vertically // ОЧЕНЬ много костей, мне их все поворачивать ?! В оригинале на остаток NPC доворачивал голову в нужном направлении.
+
+    // Determine our angle to the target
+    lookFrom  = pawn.Location + (vect(0,0,1)*pawn.CollisionHeight*0.9);
+    lookAngle = Rotator(lookTo - lookFrom);
+    lookAngle.Yaw = (lookAngle.Yaw - pawn.Rotation.Yaw) & 65535;
+    if (lookAngle.Yaw > 32767)
+        lookAngle.Yaw -= 65536;
+    if (lookAngle.Pitch > 32767)
+        lookAngle.Pitch -= 65536;
+
+    // hPos and vPos determine which way the pawn needs to look
+    // horizontally and vertically
+
+    hPos = 0;
+    vPos = 0;
+
+    // Do we need to look up or down?
+    if (bLookVertical)
+    {
+        if (lookAngle.Pitch > vAngle * 0.9)
+            vPos = 1;
+        else if (lookAngle.Pitch < -vAngle * 0.75)
+            vPos = -1;
+    }
+
+    // Do we need to look left or right?
+    if (bLookHorizontal)
+    {
+        if (lookAngle.Yaw > hAngle * 0.5)
+            hPos = 1;
+        else if (lookAngle.Yaw < -hAngle * 0.5)
+            hPos = -1;
+    }
+
+    hAbs = Abs(lookAngle.Yaw);
+    vAbs = Abs(lookAngle.Pitch);
+
+    if (bRotate)
+    {
+        hRot = lookAngle.Yaw;
+
+        // Hack -- NPCs that look horizontally or vertically, AND rotate, will use inexact rotations
+        if (bLookHorizontal && (vPos == 0))
+        {
+            if (hRot > hAngle * 1.2)
+                hRot -= hAngle * 1.2;
+            else if (hRot < -hAngle * 1.2)
+                hRot += hAngle * 1.2;
+            else
+                hRot = 0;
+        }
+        else if (bLookVertical && (hPos == 0))
+        {
+            if (hRot > hAngle * 0.35)
+                hRot -= hAngle * 0.35;
+            else if (hRot < -hAngle * 0.35)
+                hRot += hAngle * 0.35;
+            else
+                hRot = 0;
+        }
+
+        // Clamp the rotation angle, based on the angles passed in
+        if (AngleOffset > 0)
+        {
+            hRot = (hRot + (pawn.Rotation.Yaw - LockAngle) + 65536 * 4) & 65535;
+            if (hRot > 32767)
+                hRot -= 65536;
+            if      (hRot < -AngleOffset)
+                hRot = -AngleOffset;
+            else if (hRot > AngleOffset)
+                hRot = AngleOffset;
+            hRot = (hRot + (LockAngle - pawn.Rotation.Yaw) + 65536 * 4) & 65535;
+            if (hRot > 32767)
+                hRot -= 65536;
+        }
+
+        // Compute actual rotation, based on new angle
+        hAbs = (65536 + lookAngle.Yaw - hRot) & 65535;
+        if (hAbs > 32767)
+            hAbs = 65536-hAbs;
+    }
+
+    // No rotation
+    else
+        hRot = 0;
+
+    // We can't look vertically AND horizontally at the same time
+    // (we need a skeletal animation system!!!)
+
+    if ((hPos != 0) && (vPos != 0))
+    {
+        if (hAbs > vAbs)
+            vPos = 0;
+        else
+            hPos = 0;
+    }
+
+    // Play head turning animation
+    if (hPos > 0)
+        lookDir = LOOK_Right;
+    else if (hPos < 0)
+        lookDir = LOOK_Left;
+    else if (vPos > 0)
+        lookDir = LOOK_Up;
+    else if (vPos < 0)
+        lookDir = LOOK_Down;
+    else
+        lookDir = LOOK_Forward;
+//    if ((bLookHorizontal || bLookVertical) && (ScriptedPawn(pawn).animTimer[1] >= DelayTime)) 
+  //      ScriptedPawn(pawn).PlayTurnHead(lookDir, 1.0, rate);
+
+    // Turn as necessary
+    if (bRotate)
+        pawn.DesiredRotation = pawn.Rotation + rot(0,1,0)*hRot;
+}
+
+
+
+
 
 //
 // STATES
@@ -332,50 +509,50 @@ state PlayerWalking
 {
 ignores SeePlayer, HearNoise, Bump;
 
-		function PlayerTick(float DeltaTime)
-		{
-			HighlightCenterObject();
-	    FrobTime += deltaTime;
+        function PlayerTick(float DeltaTime)
+        {
+            HighlightCenterObject();
+        FrobTime += deltaTime;
 
-	   if (Human(pawn) != none)
-	   {
-			Human(pawn).MaintainEnergy(deltaTime);
+       if (Human(pawn) != none)
+       {
+            Human(pawn).MaintainEnergy(deltaTime);
       Human(pawn).UpdateInHand();
-			Human(pawn).DrugEffects(deltaTime);
-			Human(pawn).UpdatePoison(deltaTime);
-  		Human(pawn).Bleed(deltaTime);
-  		Human(pawn).UpdateDynamicMusic(deltaTime);
-  		Human(pawn).RepairInventory();//
-  		
+            Human(pawn).DrugEffects(deltaTime);
+            Human(pawn).UpdatePoison(deltaTime);
+        Human(pawn).Bleed(deltaTime);
+        Human(pawn).UpdateDynamicMusic(deltaTime);
+        Human(pawn).RepairInventory();//
+        
 
-			if (Human(pawn).bOnFire)
-			{
-				Human(pawn).burnTimer += deltaTime;
-				if (Human(pawn).burnTimer >= 30)
-					Human(pawn).ExtinguishFire();
-			}
+            if (Human(pawn).bOnFire)
+            {
+                Human(pawn).burnTimer += deltaTime;
+                if (Human(pawn).burnTimer >= 30)
+                    Human(pawn).ExtinguishFire();
+            }
 
-			// save some texture info
-			//FloorMaterial = GetFloorMaterial();
-			//WallMaterial = GetWallMaterial(WallNormal);
+            // save some texture info
+            //FloorMaterial = GetFloorMaterial();
+            //WallMaterial = GetWallMaterial(WallNormal);
       Human(pawn).UpdateTimePlayed(DeltaTime);
 
-			// Check if player has walked outside a first-person convo.
-			Human(pawn).CheckActiveConversationRadius();
+            // Check if player has walked outside a first-person convo.
+            Human(pawn).CheckActiveConversationRadius();
 
-			// Check if all the people involved in a conversation are 
-			// still within a reasonable radius.
-			Human(pawn).CheckActorDistances();
+            // Check if all the people involved in a conversation are 
+            // still within a reasonable radius.
+            Human(pawn).CheckActorDistances();
      }
-			Super.PlayerTick(DeltaTime);
-		}
+            Super.PlayerTick(DeltaTime);
+        }
 
     function bool NotifyPhysicsVolumeChange( PhysicsVolume NewVolume )
     {
         if (NewVolume.bWaterVolume)
-        		{
-   						Human(pawn).DropDecoration(); // бросить переносимый предмет
-	            GotoState(Human(pawn).WaterMovementState);
+                {
+                        Human(pawn).DropDecoration(); // бросить переносимый предмет
+                GotoState(Human(pawn).WaterMovementState);
             }
         return false;
     }
@@ -385,266 +562,253 @@ ignores SeePlayer, HearNoise, Bump;
         local vector OldAccel;
 //        local bool OldCrouch;
 
-				local int newSpeed, defSpeed;
-//				local name mat;
-				local vector HitLocation, HitNormal, checkpoint, downcheck;
-				local Actor HitActor, HitActorDown;
-				local bool bCantStandUp;
-				local Vector loc, traceSize;
-				local float alpha, maxLeanDist, prevLeanDist;
-//				local float legTotal;
-				local rotator Lr;
-				local bool bCanLean;
-				local SpyDrone aDrone;
+                local int newSpeed, defSpeed;
+//              local name mat;
+                local vector HitLocation, HitNormal, checkpoint, downcheck;
+                local Actor HitActor, HitActorDown;
+                local bool bCantStandUp;
+                local Vector loc, traceSize;
+                local float alpha, maxLeanDist, prevLeanDist;
+//              local float legTotal;
+                local rotator Lr;
+                local bool bCanLean;
+                local SpyDrone aDrone;
 
-				Human(pawn).H_ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
+                Human(pawn).H_ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
 
-        if (Human(pawn).bToggleWalk)
-				{
-				  bRun = 0;
-				  Human(pawn).SetWalking(true);
-				}
+                if (Human(pawn).bToggleWalk)
+                {
+                  bRun = 0;
+                  Human(pawn).SetWalking(true);
+                }
 
-				// if the spy drone augmentation is active
-					if (DeusExHud(myHUD).bSpyDroneActive)
-					{
-						aDrone = DeusExHud(myHUD).aDrone;
-							if (aDrone != None)
-							{
-								// put away whatever is in our hand
-							if (Human(pawn).inHand != None)
-								Human(pawn).PutInHand(None);
+                // if the spy drone augmentation is active
+                    if (DeusExHud(myHUD).bSpyDroneActive)
+                    {
+                        aDrone = DeusExHud(myHUD).aDrone;
+                            if (aDrone != None)
+                            {
+                                // put away whatever is in our hand
+                            if (Human(pawn).inHand != None)
+                                Human(pawn).PutInHand(None);
 
-								// make the drone's rotation match the player's view
-								aDrone.SetRotation(pawn.GetViewRotation());
+                                // make the drone's rotation match the player's view
+                                aDrone.SetRotation(pawn.GetViewRotation());
 
-								// move the drone
-								loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> pawn.GetViewRotation());
+                                // move the drone
+                                loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> pawn.GetViewRotation());
 
-								// if the wanted velocity is zero, apply drag so we slow down gradually
-								if (VSize(loc) == 0)
-									aDrone.Velocity *= 0.9;
-								else
-								aDrone.Velocity += DeltaTime * aDrone.MaxSpeed * loc;
+                                // if the wanted velocity is zero, apply drag so we slow down gradually
+                                if (VSize(loc) == 0)
+                                    aDrone.Velocity *= 0.9;
+                                else
+                                aDrone.Velocity += DeltaTime * aDrone.MaxSpeed * loc;
 
-								// add slight bobbing
-								aDrone.Velocity += DeltaTime * Sin(Level.TimeSeconds * 2.0) * vect(0,0,1);
+                                // add slight bobbing
+                                aDrone.Velocity += DeltaTime * Sin(Level.TimeSeconds * 2.0) * vect(0,0,1);
 
-								// freeze the player
-								Human(pawn).Velocity = vect(0,0,0);
-								return;
-							}
-					}
+                                // freeze the player
+                                Human(pawn).Velocity = vect(0,0,0);
+                                return;
+                            }
+                    }
 
-						// crouching makes you two feet tall
-//				if (Human(pawn).bIsCrouched || Human(pawn).bForceDuck) //////////////
-     		if (Human(pawn).bIsCrouched || Human(pawn).bForceDuck)
-				{
-					//Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
-					bRun=0;
-					Human(pawn).SetWalking(true); // Перейти в режим ходьбы
+                // crouching makes you two feet tall
+                if (Human(pawn).bIsCrouching || Human(pawn).bForceDuck)
+                {
+                    Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16); //
+                    bRun=0;
+                    Human(pawn).SetWalking(true); // Перейти в режим ходьбы
 
-				// check to see if we could stand up if we wanted to
-					checkpoint = Human(pawn).Location;
-			// check normal standing height
-					checkpoint.Z = checkpoint.Z - Human(pawn).CollisionHeight + 2 * Human(pawn).GetDefaultCollisionHeight();
-					traceSize.X = Human(pawn).CollisionRadius;
-					traceSize.Y = Human(pawn).CollisionRadius;
-					traceSize.Z = 1;
-					HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
-					if (HitActor == None)
-						bCantStandUp = False;
-							else
-						bCantStandUp = True;
-					}
-				else
-				{
-					Human(pawn).GroundSpeed = Human(pawn).GetCurrentGroundSpeed();
+                // check to see if we could stand up if we wanted to
+                    checkpoint = Human(pawn).Location;
+            // check normal standing height
+                    checkpoint.Z = checkpoint.Z - Human(pawn).CollisionHeight + 2 * Human(pawn).GetDefaultCollisionHeight();
+                    traceSize.X = Human(pawn).CollisionRadius;
+                    traceSize.Y = Human(pawn).CollisionRadius;
+                    traceSize.Z = 1;
+                    HitActor = pawn.Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
+                    if (HitActor == None)
+                        bCantStandUp = False;
+                            else
+                        bCantStandUp = True;
+                }
+                else
+                {
+                    Human(pawn).GroundSpeed = Human(pawn).GetCurrentGroundSpeed();
 
-				// make sure the collision height is fudged for the floor problem - CNN
-					if (!Human(pawn).IsLeaning())
-					{
-						//Human(pawn).ResetBasedPawnSize();
-					}
-				}
+                // make sure the collision height is fudged for the floor problem - CNN
+                    if (!Human(pawn).IsLeaning())
+                    {
+                        Human(pawn).ResetBasedPawnSize();
+                    }
+                }
 
-				if (bCantStandUp)
-					Human(pawn).bForceDuck = True;
-						else
-					Human(pawn).bForceDuck = False;
+                if (bCantStandUp)
+                    Human(pawn).bForceDuck = True;
+                        else
+                    Human(pawn).bForceDuck = False;
 
-		// if the player's legs are damaged, then reduce our speed accordingly
-				defSpeed = Human(pawn).GetCurrentGroundSpeed();
-				newSpeed = defSpeed;
+        // if the player's legs are damaged, then reduce our speed accordingly
+                defSpeed = Human(pawn).GetCurrentGroundSpeed();
+                newSpeed = defSpeed;
 
-				if (Human(pawn).HealthLegLeft < 1)
-					newSpeed -= (defSpeed/2) * 0.25;
-				else if (Human(pawn).HealthLegLeft < 34)
-					newSpeed -= (defSpeed/2) * 0.15;
-				else if (Human(pawn).HealthLegLeft < 67)
-					newSpeed -= (defSpeed/2) * 0.10;
+                if (Human(pawn).HealthLegLeft < 1)
+                    newSpeed -= (defSpeed/2) * 0.25;
+                else if (Human(pawn).HealthLegLeft < 34)
+                    newSpeed -= (defSpeed/2) * 0.15;
+                else if (Human(pawn).HealthLegLeft < 67)
+                    newSpeed -= (defSpeed/2) * 0.10;
 
-				if (Human(pawn).HealthLegRight < 1)
-					newSpeed -= (defSpeed/2) * 0.25;
-				else if (Human(pawn).HealthLegRight < 34)
-					newSpeed -= (defSpeed/2) * 0.15;
-				else if (Human(pawn).HealthLegRight < 67)
-				newSpeed -= (defSpeed/2) * 0.10;
+                if (Human(pawn).HealthLegRight < 1)
+                    newSpeed -= (defSpeed/2) * 0.25;
+                else if (Human(pawn).HealthLegRight < 34)
+                    newSpeed -= (defSpeed/2) * 0.15;
+                else if (Human(pawn).HealthLegRight < 67)
+                newSpeed -= (defSpeed/2) * 0.10;
 
-				if (Human(pawn).HealthTorso < 67)
-					newSpeed -= (defSpeed/2) * 0.05;
+                if (Human(pawn).HealthTorso < 67)
+                    newSpeed -= (defSpeed/2) * 0.05;
 
-				// let the player pull themselves along with their hands even if both of
-				// their legs are blown off
-				if ((Human(pawn).HealthLegLeft < 1) && (Human(pawn).HealthLegRight < 1))
-				{
-					newSpeed = defSpeed * 0.8;
-					Human(pawn).bForceDuck = True;
-					Human(pawn).bIsWalking = True;
-				}
-				// make crouch speed faster than normal
-				else if (Human(pawn).bIsCrouched || Human(pawn).bForceDuck)
-				{
-					//newSpeed = defSpeed * 1.8;		// DEUS_EX CNN - uncomment to speed up crouch
-					Human(pawn).bIsWalking = True;
-					bRun=-1;
-				}
+                // let the player pull themselves along with their hands even if both of
+                // their legs are blown off
+                if ((Human(pawn).HealthLegLeft < 1) && (Human(pawn).HealthLegRight < 1))
+                {
+                    newSpeed = defSpeed * 0.8;
+                    Human(pawn).bForceDuck = True;
+                    Human(pawn).bIsWalking = True;
+                }
+                // make crouch speed faster than normal
+                else if (Human(pawn).bIsCrouching || Human(pawn).bForceDuck)
+                {
+                    //newSpeed = defSpeed * 1.8;        // DEUS_EX CNN - uncomment to speed up crouch
+                    Human(pawn).bIsWalking = True;
+                    bRun=-1;
+                }
 
-				// slow the player down if he's carrying something heavy
-				// Like a DEAD BODY!  AHHHHHH!!!
-				if (Human(pawn).CarriedDecoration != None)
-				{
-					newSpeed -= Human(pawn).CarriedDecoration.Mass * 2;
-				}
-				// don't slow the player down if he's skilled at the corresponding weapon skill
-				else if ((Human(pawn).Weapon != None) && (Human(pawn).Weapon.Mass > 30)) // && (DeusExWeaponInv(Human(pawn).weapon).GetWeaponSkill() > -0.25))
-				{
-					Human(pawn).bIsWalking = True;
-					newSpeed = defSpeed;
-				}
-				else if ((Human(pawn).inHand != None) && Human(pawn).inHand.IsA('POVCorpse'))
-				{
-					newSpeed -= Human(pawn).inHand.Mass * 3;
-				}
+                // slow the player down if he's carrying something heavy
+                // Like a DEAD BODY!  AHHHHHH!!!
+                if (Human(pawn).CarriedDecoration != None)
+                {
+                    newSpeed -= Human(pawn).CarriedDecoration.Mass * 2;
+                }
+                // don't slow the player down if he's skilled at the corresponding weapon skill
+                else if ((Human(pawn).Weapon != None) && (Human(pawn).Weapon.Mass > 30)) // && (DeusExWeaponInv(Human(pawn).weapon).GetWeaponSkill() > -0.25))
+                {
+                    Human(pawn).bIsWalking = True;
+                    newSpeed = defSpeed;
+                }
+                else if ((Human(pawn).inHand != None) && Human(pawn).inHand.IsA('POVCorpse'))
+                {
+                    newSpeed -= Human(pawn).inHand.Mass * 3;
+                }
 
-				// if we are moving really slow, force us to walking
-				if ((newSpeed <= defSpeed / 3) && !Human(pawn).bForceDuck)
-				{
-					Human(pawn).SetWalking(true); // bIsWalking = True;
-					newSpeed = defSpeed;
-				}
+                // if we are moving really slow, force us to walking
+                if ((newSpeed <= defSpeed / 3) && !Human(pawn).bForceDuck)
+                {
+                    Human(pawn).SetWalking(true); // bIsWalking = True;
+                    newSpeed = defSpeed;
+                }
 
-				// if we are moving backwards, we should move slower
-				if (aForward < 0)
-					newSpeed *= 0.65;
+                // if we are moving backwards, we should move slower
+                if (aForward < 0)
+                    newSpeed *= 0.65;
 
-				Human(pawn).GroundSpeed = FMax(newSpeed, 100);
+                Human(pawn).GroundSpeed = FMax(newSpeed, 100);
 
 
 ////////// if we are moving or crouching, we can't lean
-				// uncomment below line to disallow leaning during crouch
-				if ((Human(pawn).VSize(Velocity) < 10) && (aForward == 0))		// && !bIsCrouching && !bForceDuck)
-					/*Human(pawn).*/bCanLean = True;
-				else
-					/*Human(pawn).*/bCanLean = False;
+                // uncomment below line to disallow leaning during crouch
+                if ((Human(pawn).VSize(Velocity) < 10) && (aForward == 0))      // && !bIsCrouching && !bForceDuck)
+                    /*Human(pawn).*/bCanLean = True;
+                else
+                    /*Human(pawn).*/bCanLean = False;
 
-				// check leaning buttons (axis aExtra0 is used for leaning)
-				maxLeanDist = 40;
-				if (Human(pawn).IsLeaning())
-				{ //			ViewRotation.Roll = curLeanDist * 20;
-					Lr=Human(pawn).GetViewRotation();
-					Lr.Roll = /*Human(pawn).*/curLeanDist * 20;
-					Human(pawn).SetViewRotation(Lr);
+                // check leaning buttons (axis aExtra0 is used for leaning)
+                maxLeanDist = 40;
+                if (Human(pawn).IsLeaning())
+                { //            ViewRotation.Roll = curLeanDist * 20;
+                    Lr=Human(pawn).GetViewRotation();
+                    Lr.Roll = /*Human(pawn).*/curLeanDist * 20;
+                    Human(pawn).SetViewRotation(Lr);
 
-					if (!Human(pawn).bIsCrouched && !Human(pawn).bForceDuck)
-					Human(pawn).SetBasedPawnSize(Human(pawn).CollisionRadius, Human(pawn).GetDefaultCollisionHeight() - Abs(/*Human(pawn).*/curLeanDist) / 3.0);
-				}
+                    if (!Human(pawn).bIsCrouching && !Human(pawn).bForceDuck)
+                    Human(pawn).SetBasedPawnSize(Human(pawn).CollisionRadius, Human(pawn).GetDefaultCollisionHeight() - Abs(/*Human(pawn).*/curLeanDist) / 3.0);
+                }
 
-				if (/*Human(pawn).*/bCanLean && (aExtra0 != 0))
-				{
-				// lean
-				Human(pawn).DropDecoration();		// drop the decoration that we are carrying
-//				if (Human(pawn).SimAnim.AnimSequence != 'CrouchWalk')
-//					Human(pawn).PlayCrawling();
+                if (/*Human(pawn).*/bCanLean && (aExtra0 != 0))
+                {
+                // lean
+                Human(pawn).DropDecoration();       // drop the decoration that we are carrying
+                if (pawn.GetAnimSequence() != 'CrouchWalk')
+                    Human(pawn).PlayCrawling();
 
-				alpha = maxLeanDist * aExtra0 * 2.0 * DeltaTime;
-				loc = vect(0,0,0);
-				loc.Y = alpha;
-				if (Abs(/*Human(pawn).*/curLeanDist + alpha) < maxLeanDist)
-				{
-				// check to make sure the destination not blocked
-				checkpoint = (loc >> Human(pawn).GetViewRotation()) + Human(pawn).Location;
-				traceSize.X = Human(pawn).CollisionRadius;
-				traceSize.Y = Human(pawn).CollisionRadius;
-				traceSize.Z = Human(pawn).CollisionHeight;
-				HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
+                alpha = maxLeanDist * aExtra0 * 2.0 * DeltaTime;
+                loc = vect(0,0,0);
+                loc.Y = alpha;
+                  if (Abs(/*Human(pawn).*/curLeanDist + alpha) < maxLeanDist)
+                  {
+                   // check to make sure the destination not blocked
+                    checkpoint = (loc >> Human(pawn).GetViewRotation()) + Human(pawn).Location;
+                    traceSize.X = Human(pawn).CollisionRadius;
+                    traceSize.Y = Human(pawn).CollisionRadius;
+                    traceSize.Z = Human(pawn).CollisionHeight;
+                    HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
 
-				// check down as well to make sure there's a floor there
-				downcheck = checkpoint - vect(0,0,1) * Human(pawn).CollisionHeight;
-				HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
-				if ((HitActor == None) && (HitActorDown != None))
-					{
-					Human(pawn).SetLocation(checkpoint);
-					/*Human(pawn).*/curLeanDist += alpha;
-					}
-				}
-				else
-					/*Human(pawn).*/curLeanDist = aExtra0 * maxLeanDist;
-				}
-				else if (Human(pawn).IsLeaning())	//if (!bCanLean && IsLeaning())	// uncomment this to not hold down lean
-				{
-				// un-lean
-					if (Human(pawn).GetAnimSequence() == 'CrouchWalk')
-						Human(pawn).PlayRising();
-		
-				prevLeanDist = /*Human(pawn).*/curLeanDist;
-				alpha = FClamp(7.0 * DeltaTime, 0.001, 0.9);
-				/*Human(pawn).*/curLeanDist *= 1.0 - alpha;
-				if (Abs(/*Human(pawn).*/curLeanDist) < 1.0)
-					/*Human(pawn).*/curLeanDist = 0;
-				loc = vect(0,0,0);
-				loc.Y = -(prevLeanDist - /*Human(pawn).*/curLeanDist);
-
-				// check to make sure the destination not blocked
-				checkpoint = (loc >> Human(pawn).GetViewRotation()) + Human(pawn).Location;
-				traceSize.X = Human(pawn).CollisionRadius;
-				traceSize.Y = Human(pawn).CollisionRadius;
-				traceSize.Z = Human(pawn).CollisionHeight;
-				HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
-
-			// check down as well to make sure there's a floor there
-				downcheck = checkpoint - vect(0,0,1) * Human(pawn).CollisionHeight;
-				HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
-				if ((HitActor == None) && (HitActorDown != None))
-					Human(pawn).SetLocation(checkpoint);
-				}
-
-				Super.ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
-
+                  // check down as well to make sure there's a floor there
+                    downcheck = checkpoint - vect(0,0,1) * Human(pawn).CollisionHeight;
+                    HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
+                   if ((HitActor == None) && (HitActorDown != None))
+                   {
+                       Human(pawn).SetLocation(checkpoint);
+                       /*Human(pawn).*/curLeanDist += alpha;
+                   }
+                }
+                else
+                    /*Human(pawn).*/curLeanDist = aExtra0 * maxLeanDist;
+                }
+                else if (Human(pawn).IsLeaning())   //if (!bCanLean && IsLeaning()) // uncomment this to not hold down lean
+                {
+                // un-lean
+                    if (Human(pawn).GetAnimSequence() == 'CrouchWalk')
+                        Human(pawn).PlayRising();
         
-				if ( Pawn == None )
-					return;
-        OldAccel = Human(pawn).Acceleration;
-        if (Human(pawn).Acceleration != NewAccel )
-				Human(pawn).Acceleration = NewAccel;
-        if ( bPressedJump )
-				Human(pawn).DoJump(bUpdating);
-        Human(pawn).SetViewPitch(Rotation.Pitch);
+                prevLeanDist = /*Human(pawn).*/curLeanDist;
+                alpha = FClamp(7.0 * DeltaTime, 0.001, 0.9);
+                /*Human(pawn).*/curLeanDist *= 1.0 - alpha;
+                if (Abs(/*Human(pawn).*/curLeanDist) < 1.0)
+                    /*Human(pawn).*/curLeanDist = 0;
+                loc = vect(0,0,0);
+                loc.Y = -(prevLeanDist - /*Human(pawn).*/curLeanDist);
 
-/*        if ( Human(pawn).Physics != PHYS_Falling )
-        {
-            OldCrouch = Human(pawn).bWantsToCrouch;
-            if (bDuck == 0)
-            	{
-                Human(pawn).ShouldCrouch(false);
-                Human(pawn).ResetBasedPawnSize();
-              }
-            else if (Human(pawn).bCanCrouch)
-            	{
-                Human(pawn).ShouldCrouch(true);
-                Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
-               }
-        }*/
+                // check to make sure the destination not blocked
+                checkpoint = (loc >> Human(pawn).GetViewRotation()) + Human(pawn).Location;
+                traceSize.X = Human(pawn).CollisionRadius;
+                traceSize.Y = Human(pawn).CollisionRadius;
+                traceSize.Z = Human(pawn).CollisionHeight;
+                HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, True, traceSize);
+
+                // check down as well to make sure there's a floor there
+                downcheck = checkpoint - vect(0,0,1) * Human(pawn).CollisionHeight;
+                HitActorDown = Trace(HitLocation, HitNormal, downcheck, checkpoint, True, traceSize);
+                if ((HitActor == None) && (HitActorDown != None))
+                    Human(pawn).SetLocation(checkpoint);
+                }
+
+                Super.ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
+
+                if (Pawn == None)
+                    return;
+
+               OldAccel = Human(pawn).Acceleration;
+
+              if (Human(pawn).Acceleration != NewAccel )
+                  Human(pawn).Acceleration = NewAccel;
+
+              if (bPressedJump)
+                  Human(pawn).DoJump(bUpdating);
+
+              Human(pawn).SetViewPitch(Rotation.Pitch);
     }
 
     function PlayerMove( float DeltaTime )
@@ -672,15 +836,14 @@ ignores SeePlayer, HearNoise, Bump;
         {
             // tell pawn about any direction changes to give it a chance to play appropriate animation
             //if walking, look up/down stairs - unless player is rotating view
-             if ( (bLook == 0)
-                && (((Pawn.Acceleration != Vect(0,0,0)) && bSnapToLevel) || !bKeyboardLook) )
+             if ((bLook == 0) && (((Pawn.Acceleration != Vect(0,0,0)) && bSnapToLevel) || !bKeyboardLook))
             {
-                if ( bLookUpStairs || bSnapToLevel )
+                if (bLookUpStairs || bSnapToLevel)
                 {
                     GroundPitch = FindStairRotation(deltaTime);
                     ViewRotation.Pitch = GroundPitch;
                 }
-                else if ( bCenterView )
+                else if (bCenterView )
                 {
                     ViewRotation.Pitch = ViewRotation.Pitch & 65535;
                     if (ViewRotation.Pitch > 32768)
@@ -698,7 +861,7 @@ ignores SeePlayer, HearNoise, Bump;
                 ViewRotation.Pitch = ViewRotation.Pitch & 65535;
                 if (ViewRotation.Pitch > 32768)
                     ViewRotation.Pitch -= 65536;
-		                ViewRotation.Pitch = ViewRotation.Pitch * (1 - 12 * FMin(0.0833, deltaTime));
+                        ViewRotation.Pitch = ViewRotation.Pitch * (1 - 12 * FMin(0.0833, deltaTime));
                 if ( (Abs(ViewRotation.Pitch) < 250) && (ViewRotation.Pitch < 100) )
                     ViewRotation.Pitch = -249;
             }
@@ -709,7 +872,7 @@ ignores SeePlayer, HearNoise, Bump;
         SetRotation(ViewRotation);
         OldRotation = Rotation;
         UpdateRotation(DeltaTime, 1);
-				bDoubleJump = false;
+                bDoubleJump = false;
 
         if ( bPressedJump && Pawn.CannotJumpNow() )
         {
@@ -727,21 +890,20 @@ ignores SeePlayer, HearNoise, Bump;
     }
     function BeginState()
     {
-       	DoubleClickDir = DCLICK_None;
-       	bPressedJump = false;
-       	GroundPitch = 0;
-				if ( Pawn != None )
-				{
+        DoubleClickDir = DCLICK_None;
+        bPressedJump = false;
+        GroundPitch = 0;
+        if (Pawn != None)
+        {
             if (Pawn.Mesh == None)
                 Pawn.SetMesh();
-		            Pawn.ShouldCrouch(false);
 
             if (Pawn.Physics != PHYS_Falling && Pawn.Physics != PHYS_Karma) // FIXME HACK!!!
-            	{
+            {
                 Pawn.SetPhysics(PHYS_Walking);
- 								//bRun=1; // пока так
- 							}
-				}
+                                //bRun=1; // пока так
+            }
+        }
      }
     function EndState()
     {
@@ -763,52 +925,52 @@ ignores SeePlayer, HearNoise, Bump;
     }
 
     function GrabDecoration()
-		{
-			// перенесено в DeusExPlayer
-		}
+    {
+        // перенесено в DeusExPlayer
+    }
 
-    function bool NotifyLanded(vector HitNormal)
+    event bool NotifyLanded(vector HitNormal)
     {
         if (Human(pawn).PhysicsVolume.bWaterVolume)
             Human(pawn).SetPhysics(PHYS_Swimming);
         else
-        		{
-		            GotoState(Human(pawn).LandMovementState);	
-            }
+        {
+           GotoState(Human(pawn).LandMovementState);   
+        }
         return bUpdating;
     }
 
-    function bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
+    event bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
     {
         local actor HitActor;
         local vector HitLocation, HitNormal, checkpoint;
 
-        if ( !NewVolume.bWaterVolume )
+        if (!NewVolume.bWaterVolume)
         {
             Pawn.SetPhysics(PHYS_Falling);
-            if ( (Human(pawn).Velocity.Z > 0) || Human(pawn).bWaterStepup)
+            if ((Human(pawn).Velocity.Z > 0) || Human(pawn).bWaterStepup)
             {
-      				if (Human(pawn).bUpAndOut && Human(pawn).CheckWaterJump(HitNormal)) //check for waterjump
-							{
-							Human(pawn).velocity.Z = FMax(Human(pawn).JumpZ,420) + 2 * Human(pawn).CollisionRadius; //set here so physics uses this for remainder of tick
-							GotoState(Human(pawn).LandMovementState);
-							}
-							else if ((Human(pawn).Velocity.Z > 160) || !Human(pawn).TouchingWaterVolume())
-							GotoState(Human(pawn).LandMovementState);
-							else //check if in deep water
-							{
-								checkpoint = Human(pawn).Location;
-								checkpoint.Z -= (Human(pawn).CollisionHeight + 6.0);
-								HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, false);
-								if (HitActor != None)
-									GotoState(Human(pawn).LandMovementState);
-									else
-										{
-										Enable('Timer');
-										SetTimer(0.7,false);
-										}
-								}
-						}
+                    if (Human(pawn).bUpAndOut && Human(pawn).CheckWaterJump(HitNormal)) //check for waterjump
+                            {
+                               Human(pawn).velocity.Z = FMax(Human(pawn).JumpZ,420) + 2 * Human(pawn).CollisionRadius; //set here so physics uses this for remainder of tick
+                               GotoState(Human(pawn).LandMovementState);
+                            }
+                            else if ((Human(pawn).Velocity.Z > 160) || !Human(pawn).TouchingWaterVolume())
+                            GotoState(Human(pawn).LandMovementState);
+                            else //check if in deep water
+                            {
+                                checkpoint = Human(pawn).Location;
+                                checkpoint.Z -= (Human(pawn).CollisionHeight + 6.0);
+                                HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, false);
+                                if (HitActor != None)
+                                    GotoState(Human(pawn).LandMovementState);
+                                    else
+                                    {
+                                        Enable('Timer');
+                                        SetTimer(0.7,false);
+                                    }
+                                }
+            }
         }
         else
         {
@@ -820,19 +982,19 @@ ignores SeePlayer, HearNoise, Bump;
     function ProcessMove(float DeltaTime, vector NewAccel, eDoubleClickDir DoubleClickMove, rotator DeltaRot)
     {
         local vector X,Y,Z, OldAccel;
-				local bool bUpAndOut;
+                local bool bUpAndOut;
 
         GetAxes(Rotation,X,Y,Z);
         OldAccel = Human(pawn).Acceleration;
 
         if (Human(pawn).Acceleration != NewAccel)
-					Human(pawn).Acceleration = NewAccel;
-        	bUpAndOut = ((X Dot Human(pawn).Acceleration) > 0) && ((Human(pawn).Acceleration.Z > 0) || (Rotation.Pitch > 4096)); // 
+                    Human(pawn).Acceleration = NewAccel;
+            bUpAndOut = ((X Dot Human(pawn).Acceleration) > 0) && ((Human(pawn).Acceleration.Z > 0) || (Rotation.Pitch > 4096)); // 
 
-					if ( Human(pawn).bUpAndOut != bUpAndOut )
-					Human(pawn).bUpAndOut = bUpAndOut;
+                    if ( Human(pawn).bUpAndOut != bUpAndOut )
+                    Human(pawn).bUpAndOut = bUpAndOut;
 
-	        if ( !Human(pawn).PhysicsVolume.bWaterVolume ) //check for waterjump
+            if (!Human(pawn).PhysicsVolume.bWaterVolume) //check for waterjump
             NotifyPhysicsVolumeChange(Human(pawn).PhysicsVolume);
     }
 
@@ -867,88 +1029,88 @@ ignores SeePlayer, HearNoise, Bump;
 
         if ( !Human(pawn).PhysicsVolume.bWaterVolume && (Role == ROLE_Authority) )
             GotoState(Human(pawn).LandMovementState);
-			      Disable('Timer');
+                  Disable('Timer');
     }
 
-    event PlayerTick(float DeltaTime)
-		{
-				local vector loc;
+        event PlayerTick(float DeltaTime)
+        {
+                local vector loc;
 
-				HighlightCenterObject();
-		    FrobTime += deltaTime;
+                HighlightCenterObject();
+            FrobTime += deltaTime;
 
-  		if (Human(pawn) != none)
-  		{
-				Human(pawn).MaintainEnergy(deltaTime);
-				Human(pawn).UpdateInHand();
-				Human(pawn).DrugEffects(deltaTime);
+        if (Human(pawn) != none)
+        {
+                Human(pawn).MaintainEnergy(deltaTime);
+                Human(pawn).UpdateInHand();
+                Human(pawn).DrugEffects(deltaTime);
         Human(pawn).UpdateTimePlayed(DeltaTime);
         Human(pawn).UpdateDynamicMusic(deltaTime);
-     		Human(pawn).RepairInventory(); //
+            Human(pawn).RepairInventory(); //
     
-				Human(pawn).SetWalking(true); // Перейти в режим ходьбы
-				bRun=-1;
+                Human(pawn).SetWalking(true); // Перейти в режим ходьбы
+                bRun=-1;
 
-				if (Human(pawn).bOnFire)
-				Human(pawn).ExtinguishFire();
+                if (Human(pawn).bOnFire)
+                Human(pawn).ExtinguishFire();
 
-				// update our swimming info
-				Human(pawn).swimTimer -= deltaTime;
-				Human(pawn).swimTimer = FMax(0, Human(pawn).swimTimer);
-				if (Human(pawn).swimTimer > 0)           // Human(pawn).PainTime = Human(pawn).swimTimer;
-     				Human(pawn).LastPainTime = Human(pawn).swimTimer;
-				Human(pawn).swimBubbleTimer += deltaTime;
-				Human(pawn).swimSoundTimer += deltaTime;
+                // update our swimming info
+                Human(pawn).swimTimer -= deltaTime;
+                Human(pawn).swimTimer = FMax(0, Human(pawn).swimTimer);
+                if (Human(pawn).swimTimer > 0)           // Human(pawn).PainTime = Human(pawn).swimTimer;
+                    Human(pawn).LastPainTime = Human(pawn).swimTimer;
+                Human(pawn).swimBubbleTimer += deltaTime;
+                Human(pawn).swimSoundTimer += deltaTime;
 
-					if (Human(pawn).swimSoundTimer >= 1.0)
-					{
-						Human(pawn).swimSoundTimer = 0;
-						if (FRand() < 0.4)
-						Human(pawn).inWaterLeft();
-						else
-						Human(pawn).inWaterRight();
-					}
+                    if (Human(pawn).swimSoundTimer >= 1.0)
+                    {
+                        Human(pawn).swimSoundTimer = 0;
+                        if (FRand() < 0.4)
+                        Human(pawn).inWaterLeft();
+                        else
+                        Human(pawn).inWaterRight();
+                    }
 
-				  if (Human(pawn).swimBubbleTimer >= 0.2)
-					{
-					Human(pawn).swimBubbleTimer = 0;
-					if (FRand() < 0.4)
-						{
-							loc = Human(pawn).Location + VRand() * 4;
-							loc += Vector(Human(pawn).GetViewRotation()) * Human(pawn).CollisionRadius * 2;
-							loc.Z += Human(pawn).CollisionHeight * 0.9;
-							Spawn(class'AirBubble', Human(pawn),, loc);
-						}
-					}
-					Human(pawn).CheckActiveConversationRadius();
-					Human(pawn).CheckActorDistances();
-			}
-			Super.PlayerTick(deltaTime);
-		}
-		//-------------------
+                  if (Human(pawn).swimBubbleTimer >= 0.2)
+                    {
+                    Human(pawn).swimBubbleTimer = 0;
+                    if (FRand() < 0.4)
+                        {
+                            loc = Human(pawn).Location + VRand() * 4;
+                            loc += Vector(Human(pawn).GetViewRotation()) * Human(pawn).CollisionRadius * 2;
+                            loc.Z += Human(pawn).CollisionHeight * 0.9;
+                            Spawn(class'AirBubble', Human(pawn),, loc);
+                        }
+                    }
+                    Human(pawn).CheckActiveConversationRadius();
+                    Human(pawn).CheckActorDistances();
+            }
+            Super.PlayerTick(deltaTime);
+        }
+        //-------------------
     function BeginState()
     {
-			local float mult;
+            local float mult;
 
-				SavedBRun=bRun;
+                SavedBRun=bRun;
 
-				// set us to be two feet high
-				Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
+                // set us to be two feet high
+                Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
 
-				// get our skill info
-				mult = Human(pawn).SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-				Human(pawn).swimDuration = Human(pawn).UnderWaterTime * mult;
-				Human(pawn).swimTimer = Human(pawn).swimDuration;
-				Human(pawn).swimBubbleTimer = 0;
-				Human(pawn).WaterSpeed = Human(pawn).Default.WaterSpeed * mult;
+                // get our skill info
+                mult = Human(pawn).SkillSystem.GetSkillLevelValue(class'SkillSwimming');
+                Human(pawn).swimDuration = Human(pawn).UnderWaterTime * mult;
+                Human(pawn).swimTimer = Human(pawn).swimDuration;
+                Human(pawn).swimBubbleTimer = 0;
+                Human(pawn).WaterSpeed = Human(pawn).Default.WaterSpeed * mult;
 
         Disable('Timer');
         Human(pawn).SetPhysics(PHYS_Swimming);
-				Super.BeginState();
+                Super.BeginState();
     }
     function EndState()
     {
-			bRun=savedbRun;
+            bRun=savedbRun;
     }
 }
 
@@ -971,13 +1133,13 @@ ignores SeePlayer, HearNoise, Bump;
 
     function ProcessMove(float DeltaTime, vector NewAccel, eDoubleClickDir DoubleClickMove, rotator DeltaRot)
     {
-        local vector	OldAccel;
+        local vector    OldAccel;
 
         OldAccel = Human(pawn).Acceleration;
         if (Human(pawn).Acceleration != NewAccel)
         {
-						Human(pawn).Acceleration = NewAccel;
-				}
+                        Human(pawn).Acceleration = NewAccel;
+                }
         if (bPressedJump)
         {
             Human(pawn).DoJump(bUpdating);
@@ -999,12 +1161,12 @@ ignores SeePlayer, HearNoise, Bump;
         {
             NewAccel = aForward*Human(pawn).OnLadder.ClimbDir;
             if (Human(pawn).OnLadder.bAllowLadderStrafing )
-						NewAccel += aStrafe*Y;
-				}
+                        NewAccel += aStrafe*Y;
+                }
         else
             NewAccel = aForward*X + aStrafe*Y;
-		        if (VSize(NewAccel) < 1.0)
-    	        NewAccel = vect(0,0,0);
+                if (VSize(NewAccel) < 1.0)
+                NewAccel = vect(0,0,0);
 
         ViewRotation = Rotation;
 
@@ -1015,15 +1177,15 @@ ignores SeePlayer, HearNoise, Bump;
         ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;
         // Play Ladder Stepping sounds here...
-     	  LStepTimer+=DeltaTime;
-		  	if ((LStepTimer > LADDERSTEPINTERVAL) && (Human(pawn).velocity.z !=0))
-	  		{
-	  			if (bUsingWoodenLadder)
-						Human(pawn).WLadderStepSounds();
-	  					else
-			  		Human(pawn).LadderStepSounds();
-					LStepTimer=0;
-				}
+          LStepTimer+=DeltaTime;
+            if ((LStepTimer > LADDERSTEPINTERVAL) && (Human(pawn).velocity.z !=0))
+            {
+                if (bUsingWoodenLadder)
+                        Human(pawn).WLadderStepSounds();
+                        else
+                    Human(pawn).LadderStepSounds();
+                    LStepTimer=0;
+                }
 //        Human(pawn).ForceCrouch();
     }
 
@@ -1041,36 +1203,36 @@ ignores SeePlayer, HearNoise, Bump;
 //        Human(pawn).ShouldCrouch(false);
     }
 
-		function PlayerTick( float DeltaTime )
-		{
-			HighlightCenterObject();
-	    FrobTime += deltaTime;
-			Human(pawn).MaintainEnergy(deltaTime);
-			Human(pawn).UpdateInHand();
-			Human(pawn).DrugEffects(deltaTime);
-			Human(pawn).UpdatePoison(deltaTime);
-  		Human(pawn).Bleed(deltaTime);
+        function PlayerTick( float DeltaTime )
+        {
+            HighlightCenterObject();
+        FrobTime += deltaTime;
+            Human(pawn).MaintainEnergy(deltaTime);
+            Human(pawn).UpdateInHand();
+            Human(pawn).DrugEffects(deltaTime);
+            Human(pawn).UpdatePoison(deltaTime);
+        Human(pawn).Bleed(deltaTime);
       Human(pawn).UpdateTimePlayed(DeltaTime);
       Human(pawn).RepairInventory(); //
 
-  		if (Human(pawn).bOnFire)
-			{
-				Human(pawn).burnTimer += deltaTime;
-				if (Human(pawn).burnTimer >= 30)
-					Human(pawn).ExtinguishFire();
-			}
-			// save some texture info
-			//FloorMaterial = GetFloorMaterial();
-			//WallMaterial = GetWallMaterial(WallNormal);
+        if (Human(pawn).bOnFire)
+            {
+                Human(pawn).burnTimer += deltaTime;
+                if (Human(pawn).burnTimer >= 30)
+                    Human(pawn).ExtinguishFire();
+            }
+            // save some texture info
+            //FloorMaterial = GetFloorMaterial();
+            //WallMaterial = GetWallMaterial(WallNormal);
 
-			// Check if player has walked outside a first-person convo.
-			Human(pawn).CheckActiveConversationRadius();
+            // Check if player has walked outside a first-person convo.
+            Human(pawn).CheckActiveConversationRadius();
 
-			// Check if all the people involved in a conversation are 
-			// still within a reasonable radius.
-			Human(pawn).CheckActorDistances();
-			Super.PlayerTick(DeltaTime);
-		}	
+            // Check if all the people involved in a conversation are 
+            // still within a reasonable radius.
+            Human(pawn).CheckActorDistances();
+            Super.PlayerTick(DeltaTime);
+        }   
 }
 
 
@@ -1110,113 +1272,110 @@ state PlayerMousing
 
 state Conversation
 {
-ignores SeePlayer, HearNoise, NotifyBump;
+ignores SeePlayer, HearNoise, Bump;
 
-	event PlayerTick(float deltaTime)
-	{
-//		local rotator tempRot;
-//		local float   yawDelta;
+    event PlayerTick(float deltaTime)
+    {
+        local rotator tempRot;
+        local float   yawDelta;
 
-		UpdateRotation(DeltaTime, 0);
+        Human(pawn).UpdateInHand();
+        Human(pawn).UpdateDynamicMusic(deltaTime);
 
-		Human(pawn).UpdateInHand();
-		Human(pawn).UpdateDynamicMusic(deltaTime);
+        Human(pawn).DrugEffects(deltaTime);
+        Human(pawn).Bleed(deltaTime);
+        Human(pawn).MaintainEnergy(deltaTime);
 
-		Human(pawn).DrugEffects(deltaTime);
-		Human(pawn).Bleed(deltaTime);
-		Human(pawn).MaintainEnergy(deltaTime);
-    Human(pawn).UpdateTimePlayed(DeltaTime);
-		// must update viewflash manually incase a flash happens during a convo
-		ViewFlash(deltaTime);
+        // must update viewflash manually incase a flash happens during a convo
+        ViewFlash(deltaTime);
 
-		// Check if player has walked outside a first-person convo.
-		Human(pawn).CheckActiveConversationRadius();
-	
-		// Check if all the people involved in a conversation are 
-		// still within a reasonable radius.
-		Human(pawn).CheckActorDistances();
+        // Check if player has walked outside a first-person convo.
+        Human(pawn).CheckActiveConversationRadius();
+    
+        // Check if all the people involved in a conversation are 
+        // still within a reasonable radius.
+        Human(pawn).CheckActorDistances();
 
-		Super.PlayerTick(deltaTime);
-//		LipSynch(deltaTime);
+        Super.PlayerTick(deltaTime);
+//        LipSynch(deltaTime);
 
-		// Keep turning towards the person we're speaking to
-/*		if (Human(pawn).ConversationActor != None)
-		{
-//			Human(pawn).LookAtActor(Human(pawn).ConversationActor, true, true, true, 0, 0.5);
+        // Keep turning towards the person we're speaking to
+        if (Human(pawn).ConversationActor != None)
+        {
+            LookAtActor(Human(pawn).ConversationActor, true, true, true, 0, 0.5);
 
-			// Hacky way to force the player to turn...
-			tempRot = rot(0,0,0);
-			tempRot.Yaw = (DesiredRotation.Yaw - Rotation.Yaw) & 65535;
-			if (tempRot.Yaw > 32767)
-				tempRot.Yaw -= 65536;
-			yawDelta = RotationRate.Yaw * deltaTime;
-			if (tempRot.Yaw > yawDelta)
-				tempRot.Yaw = yawDelta;
-			else if (tempRot.Yaw < -yawDelta)
-				tempRot.Yaw = -yawDelta;
-			SetRotation(Rotation + tempRot);
-		}*/
+            // Hacky way to force the player to turn...
+            tempRot = rot(0,0,0);
+            tempRot.Yaw = (pawn.DesiredRotation.Yaw - pawn.Rotation.Yaw) & 65535;
+            if (tempRot.Yaw > 32767)
+                tempRot.Yaw -= 65536;
+            yawDelta = pawn.RotationRate.Yaw * deltaTime;
+            if (tempRot.Yaw > yawDelta)
+                tempRot.Yaw = yawDelta;
+            else if (tempRot.Yaw < -yawDelta)
+                tempRot.Yaw = -yawDelta;
+            pawn.SetRotation(pawn.Rotation + tempRot);
+        }
 
-		// Update Time Played
-//		UpdateTimePlayed(deltaTime);
-	}
+        // Update Time Played
+        Human(pawn).UpdateTimePlayed(deltaTime);
+    }
 
-	function EndState()
-	{
-		Human(pawn).conPlay = None;
+    function LoopHeadConvoAnim()
+    {
+    }
 
-		// Re-enable the PC's detectability
-//		MakePlayerIgnored(false);
+    function EndState()
+    {
+        Human(pawn).conPlay = None;
 
-//		MoveTarget = None;
-		bBehindView = false;
-//		StopBlendAnims();
-		Human(pawn).ConversationActor = None;
-	}
+        // Re-enable the PC's detectability
+        Human(pawn).MakePlayerIgnored(false);
+
+        MoveTarget = None;
+        bBehindView = false;
+//        StopBlendAnims();
+        Human(pawn).ConversationActor = None;
+    }
 
 Begin:
-		ClientMessage(self@"entered State Conversation");
-	// Make sure we're stopped
-		Human(pawn).Velocity.X = 0;
-		Human(pawn).Velocity.Y = 0;
-		Human(pawn).Velocity.Z = 0;
+    // Make sure we're stopped
+    pawn.Velocity.X = 0;
+    pawn.Velocity.Y = 0;
+    pawn.Velocity.Z = 0;
 
-		Human(pawn).Acceleration = Velocity;
+    pawn.Acceleration = pawn.Velocity;
 
-		Human(pawn).PlayRising();
+    Human(pawn).PlayRising();
 
-		// Make sure the player isn't on fire!
-		if (Human(pawn).bOnFire)
-			Human(pawn).ExtinguishFire();
+    // Make sure the player isn't on fire!
+    if (Human(pawn).bOnFire)
+        Human(pawn).ExtinguishFire();
 
-	// Make sure the PC can't be attacked while in conversation
-//	MakePlayerIgnored(true);
+    // Make sure the PC can't be attacked while in conversation
+    Human(pawn).MakePlayerIgnored(true);
 
-//		Human(pawn).LookAtActor(Human(pawn).conPlay.startActor, true, false, true, 0, 0.5);
+    LookAtActor(Human(pawn).conPlay.startActor, true, false, true, 0, 0.5);
 
-    Focus = Human(pawn).conPlay.startActor;
-//		Human(pawn).SetRotation(DesiredRotation);
+    SetRotation(pawn.DesiredRotation);
 
-		Human(pawn).PlayTurning();
-//	TurnToward(conPlay.startActor);
-//	TweenToWaiting(0.1);
-//	FinishAnim();
+    Human(pawn).PlayTurning();
 
-		if (!Human(pawn).conPlay.StartConversation(Human(pawn))) // self
-		{
-			Human(pawn).AbortConversation(True);
-			ClientMessage(self@"Conversation ABORTED!!!");
-		}
-		else
-		{
-			// Put away whatever the PC may be holding
-			Human(pawn).conPlay.SetInHand(Human(pawn).InHand);
-			Human(pawn).PutInHand(None);
-			Human(pawn).UpdateInHand();
+    if (!Human(pawn).conPlay.StartConversation(Human(pawn)))
+    {
+        Human(pawn).AbortConversation(True);
+          GoToState('PlayerWalking'); // Fallback if failed?
+    }
+    else
+    {
+        // Put away whatever the PC may be holding
+        Human(pawn).conPlay.SetInHand(Human(pawn).InHand);
+        Human(pawn).PutInHand(None);
+        Human(pawn).UpdateInHand();
 
-			if (Human(pawn).conPlay.GetDisplayMode() == DM_ThirdPerson )
-				bBehindView = true;	
-		}
+        if (Human(pawn).conPlay.GetDisplayMode() == DM_ThirdPerson)
+            bBehindView = true; 
+    }
 }
 
 
@@ -1235,9 +1394,9 @@ function ShowMidGameMenu(bool bPause)
     {
      class'DxUtil'.static.PrepareShotForSaveGame(self.XLevel, ConsoleCommand("get System savepath"));
 
-	// Pause if not already
+    // Pause if not already
    if(bPause && Level.Pauser == None)
-	   SetPause(true);
+       SetPause(true);
      StopForceFeedback();  // jdf - no way to pause feedback
      ClientOpenMenu(MidGameMenuClass);
     }
