@@ -4,220 +4,127 @@
 
 class EM_LaserBeam extends DeusExEmitter;
 
-var LaserSpot spot[2];			// max of 2 reflections
+var LaserSpot spot[2];          // max of 2 reflections
 var bool bIsOn;
 var actor HitActor;
-var bool bFrozen;				// are we out of the player's sight?
+var bool bFrozen;               // are we out of the player's sight?
 var bool bRandomBeam;
-var bool bBlueBeam;				// is this beam blue?
-var bool bHiddenBeam;			// is this beam hidden?
-var LaserProxy proxy;
+var bool bBlueBeam;             // is this beam blue?
+var bool bHiddenBeam;           // is this beam hidden?
+var float InitDist; // 5000
+
+function SetBeamLength(int Length)
+{
+      BeamEmitter(Emitters[0]).BeamDistanceRange.Min = Length;
+      BeamEmitter(Emitters[0]).BeamDistanceRange.Max = Length;
+}
 
 function CalcTrace(float deltaTime)
 {
-	local vector StartTrace, EndTrace, HitLocation, HitNormal, Reflection;
-	local actor target;
-	local int i, texFlags;
-	local name texName, texGroup;
+    local vector StartTrace, EndTrace, HitLocation, HitNormal;
+    local actor target;
+    local int texFlags;
+    local name texName, texGroup;
 
-	StartTrace = Location;
-	EndTrace = Location + 5000 * vector(Rotation);
-	HitActor = None;
+    StartTrace = Location;
+    EndTrace = Location + InitDist * vector(Rotation);
+    HitActor = None;
 
-	// trace the path of the reflected beam and draw points at each hit
-//	for (i=0; i<ArrayCount(spot); i++)
-//	{
-//    foreach TraceActors(class'Actor', target, HitLocation, HitNormal, EndTrace, StartTrace)
-   	foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, StartTrace, HitNormal, EndTrace)
-		{
-			if ((target.DrawType == DT_None) || target.bHidden)
-			{
-				// do nothing - keep on tracing
-			}
-			else if ((target == Level) || target.IsA('Mover'))// || target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
-			{
-				break;
-			}
-			else
-			{
-				HitActor = target;
-				break;
-			}
-		}
+      foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, StartTrace)
+      {
+            if ((target.DrawType == DT_None) || target.bHidden)
+            {
+                // do nothing - keep on tracing
+            }
+            else if ((target == Level) || target.IsA('Mover'))// || target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
+            {
+                break;
+            }
+            else
+            {
+                if (target != none)
+                    HitActor = target;
+                break;
+            }
 
-		// draw first beam
-//		if (i == 0)
-//		{
-//			if (LaserIterator != None)
-//				LaserIterator.AddBeam(i, Location, Rotation, VSize(Location - HitLocation));
-  //        BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(Location - HitActor.Location);
-//          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(Location - HitActor.Location);
-//            DeusExHUD(level.GetLocalPlayerController().MyHUD).DebugConString2=string(VSize(Location - HitLocation));
-//             EndTrace = HitActor.Location;
-//		}
-//		else
-//		{
-//			if (LaserIterator != None)
-//				LaserIterator.AddBeam(i, StartTrace - HitNormal, Rotator(Reflection), VSize(StartTrace - HitLocation - HitNormal));
-//          BeamEmitter(Emitters[0]).BeamDistanceRange.Min=VSize(StartTrace - HitLocation - HitNormal);
-//          BeamEmitter(Emitters[0]).BeamDistanceRange.Max=VSize(StartTrace - HitLocation - HitNormal);
-//                      DeusExHUD(level.GetLocalPlayerController().MyHUD).DebugConString2=string(VSize(Location - HitLocation));
-//		}
-
-/*		if (spot[i] == None)
-		{
-			spot[i] = Spawn(class'LaserSpot', Self, , HitLocation, Rotator(HitNormal));
-			if (bBlueBeam && (spot[i] != None))
-				spot[i].Texture = Texture'LaserSpot2';
-		}
-		else
-		{
-			spot[i].SetLocation(HitLocation);
-			spot[i].SetRotation(Rotator(HitNormal));
-		}*/
-
-		// Отражение вроде как работает, но выглядит странно, возможно нужно "сгибать" луч или создавать несколько эмиттеров...
-		// don't reflect any more if we don't hit a mirror
-		// 0x08000000 is the PF_Mirrored flag from UnObj.h
-//		if ((texFlags & /*0x08000000*/0x20000000) == 0)
-/*		{
-			// kill all of the other spots after this one
-			if (i < ArrayCount(spot)-1)
-			{
-				do
-				{
-					i++;
-					if (spot[i] != None)
-					{
-						spot[i].Destroy();
-						spot[i] = None;
-//						if (LaserIterator(RenderInterface) != None)
-//							LaserIterator(RenderInterface).DeleteBeam(i);
-					}
-				} until (i>=ArrayCount(spot)-1);
-			}
-			return;
-		}*/
-//		Reflection = MirrorVectorByNormal(Normal(HitLocation - StartTrace), HitNormal);
-//		StartTrace = HitLocation + HitNormal;
-//		EndTrace = Reflection * 10000;
-//	}
+      }
+      SetBeamLength(Abs(vSize(Location - HitLocation)));
 }
 
 function TurnOn()
 {
-	if (!bIsOn)
-	{
-		bIsOn = True;
-		HitActor = None;
-		CalcTrace(0.0);
-		if (!bHiddenBeam)
-			BeamEmitter(Emitters[0]).Opacity=1.0;
-		SoundVolume = 128;
-		Resume(self);
-	}
+    if (!bIsOn)
+    {
+        bIsOn = True;
+        HitActor = None;
+        CalcTrace(0.0);
+        if (!bHiddenBeam)
+            BeamEmitter(Emitters[0]).Opacity=1.0;
+        SoundVolume = 128;
+//        Resume(self);
+    }
 }
 
 function TurnOff()
 {
  local int i;
 
-	if (bIsOn)
-	{
-		for (i=0; i<ArrayCount(spot); i++)
-		{
-			if (spot[i] != None)
-			{
-				spot[i].Destroy();
-				spot[i] = None;
-			}
-		}
+    if (bIsOn)
+    {
+        for (i=0; i<ArrayCount(spot); i++)
+        {
+            if (spot[i] != None)
+            {
+                spot[i].Destroy();
+                spot[i] = None;
+            }
+        }
 
-		HitActor = None;
-		bIsOn = False;
-		if (!bHiddenBeam)
-			BeamEmitter(Emitters[0]).Opacity=0.1;
-		SoundVolume = 0;
-		Pause(self);
-	}
+        HitActor = None;
+        bIsOn = False;
+        if (!bHiddenBeam)
+            BeamEmitter(Emitters[0]).Opacity=0.1;
+        SoundVolume = 0;
+//        Pause(self);
+    }
 }
 
 function Destroyed()
 {
-	TurnOff();
-	Kill();
-	Super.Destroyed();
+    TurnOff();
+    Kill();
+    Super.Destroyed();
 }
 
 function Tick(float deltaTime)
-//function Timer()
 {
-/*	local DeusExPlayer player;
-
-	// check for visibility
-	player = DeusExPlayer(GetPlayerPawn());*/
-
-	if (bIsOn)
-	{
-/*		// if we are a weapon's laser sight, do not freeze us
-		if ((Owner != None) && (Owner.IsA('Weapon') || Owner.IsA('ScriptedPawn')))
-			bFrozen = False;
-		else if (proxy != None)
-		{
-			// if we are close, say 60 feet
-			if (proxy.DistanceFromPlayer < 960)
-				bFrozen = False;
-			else
-			{
-				// can the player see the generator?
-				if (proxy.LastRendered() <= 2.0)
-					bFrozen = False;
-				else
-					bFrozen = True;
-			}
-		}
-		else
-			bFrozen = True;
-
-		if (bFrozen)
-			return;*/
-
-		CalcTrace(deltaTime);
-//		CalcTrace(timerRate);
-	}
+    if (bIsOn)
+        CalcTrace(deltaTime);
 }
-
-function PostBeginPlay()
-{
-	Super.PostBeginPlay();
-
-	// create our proxy laser beam
-	if (proxy == None)
-		proxy = Spawn(class'LaserProxy',,, Location, Rotation);
-}
-
 
 function SetBlueBeam()
 {
-	bBlueBeam = True;
-	BeamEmitter(Emitters[0]).Texture = Texture'LaserBeam2';
+    bBlueBeam = True;
+    BeamEmitter(Emitters[0]).Texture = Texture'LaserBeam2';
 }
 
 function SetHiddenBeam(bool bHide)
 {
-	bHiddenBeam = bHide;
-	If (bHiddenBeam)
-	BeamEmitter(Emitters[0]).Opacity=0.01;
-	else
-		BeamEmitter(Emitters[0]).Opacity=1.0;
-/*	if (proxy != None)
-		proxy.bHidden = bHide;*/
+    bHiddenBeam = bHide;
+//    if (bHiddenBeam)
+//    BeamEmitter(Emitters[0]).Opacity=0.1;
+  //  else
+    //    BeamEmitter(Emitters[0]).Opacity=1.0;
+/*  if (proxy != None)
+        proxy.bHidden = bHide;*/
 }
 
 
 
 defaultproperties
 {
+    initDist=5000
+
     Begin Object Class=BeamEmitter Name=BeamEmitter1
         BeamDistanceRange=(Min=512.000000,Max=512.000000)
         DetermineEndPointBy=PTEP_Distance
