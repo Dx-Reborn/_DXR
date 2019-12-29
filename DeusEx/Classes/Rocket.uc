@@ -3,33 +3,27 @@
 //=============================================================================
 class Rocket extends DeusExProjectile;
 
-//var NewRedeemerTrail fsGen;
+var EM_ThinTrail fsGen;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
-
-   if (Level.NetMode == NM_DedicatedServer)
-      return;
-   SpawnRocketEffects();
+    Super.PostBeginPlay();
+    SpawnRocketEffects();
 }
 
 simulated function SpawnRocketEffects()
 {
-/*	fsGen = Spawn(class'NewRedeemerTrail', Self);
-	if (fsGen != None)
-	{
-    fsGen.RemoteRole = ROLE_None;
-		fsGen.SetBase(Self);
-	}*/
+  fsGen = Spawn(class'EM_ThinTrail', Self);
+    if (fsGen != None)
+        fsGen.SetBase(Self);
 }
 
 simulated function Destroyed()
 {
-/*	if (fsGen != None)
-		fsGen.Kill();
-  */
-	Super.Destroyed();
+  if (fsGen != None)
+        fsGen.Kill();
+
+    Super.Destroyed();
 }
 
 defaultproperties
@@ -54,6 +48,6 @@ defaultproperties
      Mesh=Mesh'DeusExItems.Rocket'
      DrawScale=0.250000
      SoundRadius=16
-     SoundVolume=224
+//     SoundVolume=224
      RotationRate=(Pitch=32768,Yaw=32768)
 }

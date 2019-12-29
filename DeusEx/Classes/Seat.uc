@@ -2,7 +2,7 @@
 // Seat.
 //=============================================================================
 class Seat extends Furniture
-	abstract;
+    abstract;
 
 //
 // Seat class to allow NPCs to sit down
@@ -15,46 +15,62 @@ var vector InitialPosition;
 
 function BeginPlay()
 {
-	local int i;
+    local int i;
 
-	// count how many sitpoints are valid
-	for(i=0; i<ArrayCount(sitPoint); i++)
-	{
-		if (sitPoint[i] != vect(-1000,-1000,-1000))
-			numSitPoints++;
-		else
-			break;
-	}
+    super.BeginPlay();
 
-	InitialPosition = Location;
+    // count how many sitpoints are valid
+    for(i=0; i<ArrayCount(sitPoint); i++)
+    {
+        if (sitPoint[i] != vect(-1000,-1000,-1000))
+            numSitPoints++;
+        else
+            break;
+    }
+    InitialPosition = Location;
 }
 
 function Bump(actor Other)
 {
-//	local ScriptedPawn sitter;
-	local bool         bInUse;
-	local int          i;
+    local bool         bInUse;
+    local int          i;
 
-	bInUse = false;
-	for (i=0; i<ArrayCount(sittingActor); i++)
-	{
-		if (sittingActor[i] != None)
-		{
-			if ((sittingActor[i] == Other) ||
-			    ((ScriptedPawn(sittingActor[i]) != None) &&
-			     ScriptedPawn(sittingActor[i]).bSitting))
-			{
-				bInUse = true;
-				break;
-			}
-		}
-	}
+    bInUse = false;
+    for (i=0; i<ArrayCount(sittingActor); i++)
+    {
+        if (sittingActor[i] != None)
+        {
+            if ((sittingActor[i] == Other) || ((ScriptedPawn(sittingActor[i]) != None) && ScriptedPawn(sittingActor[i]).bSitting))
+            {
+                bInUse = true;
+                break;
+            }
+        }
+    }
 
-	// If we're in use, ignore bump (no pushing)
-	if (!bInUse)
-		Super.Bump(Other);
+    // If we're in use, ignore bump (no pushing)
+    if (!bInUse)
+        Super.Bump(Other);
 }
 
+function int StandingCount()
+{
+   if (SittingActor[0] != none)
+       return 2;
+    else
+       return 0;
+}
+
+event Destroyed()
+{
+    local int i;
+
+    for (i=0; i<ArrayCount(sittingActor); i++)
+       if (sittingActor[i] != None)
+            ScriptedPawn(SittingActor[i]).FollowOrders();
+
+   Super.Destroyed();
+}
 
 defaultproperties
 {

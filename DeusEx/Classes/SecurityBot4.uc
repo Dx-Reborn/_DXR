@@ -16,7 +16,7 @@ defaultproperties
      WalkingSpeed=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponRobotMachinegun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=50)
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=50)
      GroundSpeed=95.000000
      WaterSpeed=50.000000
      AirSpeed=144.000000
@@ -29,7 +29,7 @@ defaultproperties
      SoundRadius=16
      SoundVolume=128
      CollisionRadius=27.500000
-     CollisionHeight=24.00
+     CollisionHeight=24.50
      //CollisionHeight=28.500000
      Mass=1000.000000
      Buoyancy=100.000000

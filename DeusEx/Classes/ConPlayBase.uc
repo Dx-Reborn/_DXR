@@ -8,15 +8,15 @@ const INV_SUFF = "inv";
 
 var enum EPlayModes
 {
-	PM_Passive,
-	PM_Active
+    PM_Passive,
+    PM_Active
 } playMode;
 
 var enum EDisplayMode
 {
-	DM_FirstPerson,
-	DM_ThirdPerson, 
-	DM_Bark
+    DM_FirstPerson,
+    DM_ThirdPerson, 
+    DM_Bark
 } displayMode;
 
 // Possible Event Actions
@@ -25,45 +25,45 @@ var enum EDisplayMode
 enum EEventAction
 {
   EA_NextEvent,
-	EA_JumpToLabel,
-	EA_JumpToConversation,
-	EA_WaitForInput,
-	EA_WaitForSpeech,
-	EA_WaitForText,
-	EA_PlayAnim,
-	EA_ConTurnActors,
+    EA_JumpToLabel,
+    EA_JumpToConversation,
+    EA_WaitForInput,
+    EA_WaitForSpeech,
+    EA_WaitForText,
+    EA_PlayAnim,
+    EA_ConTurnActors,
     EA_PlayChoiceAndNext,
-	EA_End
+    EA_End
 };
 
 // Various and sundry Event Types
 enum EEventType
 {
-	ET_Speech,					// 0
-	ET_Choice,					// 1
-	ET_SetFlag,					// 2
-	ET_CheckFlag,				// 3
-	ET_CheckObject,				// 4
-	ET_TransferObject,			// 5
-	ET_MoveCamera,				// 6	
-	ET_Animation,				// 7
-	ET_Trade,					// 8
-	ET_Jump,					// 9
-	ET_Random,					// 10
-	ET_Trigger,					// 11
-	ET_AddGoal,					// 12
-	ET_AddNote,					// 13
-	ET_AddSkillPoints,			// 14
-	ET_AddCredits,				// 15
-	ET_CheckPersona,			// 16
-	ET_Comment,					// 17
-	ET_End						// 18
+    ET_Speech,                  // 0
+    ET_Choice,                  // 1
+    ET_SetFlag,                 // 2
+    ET_CheckFlag,               // 3
+    ET_CheckObject,             // 4
+    ET_TransferObject,          // 5
+    ET_MoveCamera,              // 6    
+    ET_Animation,               // 7
+    ET_Trade,                   // 8
+    ET_Jump,                    // 9
+    ET_Random,                  // 10
+    ET_Trigger,                 // 11
+    ET_AddGoal,                 // 12
+    ET_AddNote,                 // 13
+    ET_AddSkillPoints,          // 14
+    ET_AddCredits,              // 15
+    ET_CheckPersona,            // 16
+    ET_Comment,                 // 17
+    ET_End                      // 18
 };
 
 enum ESpeechFonts
 {
-	SF_Normal,
-	SF_Computer
+    SF_Normal,
+    SF_Computer
 };
 
 // ----------------------------------------------------------------------
@@ -71,50 +71,50 @@ enum ESpeechFonts
 
 enum EFlagType
 {
-	FLAG_Bool,
-	FLAG_Byte,
-	FLAG_Int,
-	FLAG_Float,
-	FLAG_Name,
-	FLAG_Vector,
-	FLAG_Rotator,
+    FLAG_Bool,
+    FLAG_Byte,
+    FLAG_Int,
+    FLAG_Float,
+    FLAG_Name,
+    FLAG_Vector,
+    FLAG_Rotator,
 };
 
 enum EConditions
 {
-	EC_Less,
-	EC_LessEqual,
-	EC_Equal,
-	EC_GreaterEqual,
-	EC_Greater
+    EC_Less,
+    EC_LessEqual,
+    EC_Equal,
+    EC_GreaterEqual,
+    EC_Greater
 };
 
 // Event Persona types
 enum EPersonaTypes
 {
-	EP_Credits,
-	EP_Health,
-	EP_SkillPoints
+    EP_Credits,
+    EP_Health,
+    EP_SkillPoints
 };
 
-var DeusExHUD  	 rootWindow;		// Scott is that black stuff in the oven
-var() transient ConDialogue con;					// Conversation we're working with
-var() transient ConDialogue startCon;				// Conversation that was -initially- started
-var DeusExPlayer player;				// Player Pawn
-var() transient Actor 			 invokeActor;					// Actor who invoked conversation
-var() transient ConEvent	 	 currentEvent;
-var() int	 	       currentEventIndex; //
-var() transient ConEvent     lastEvent;				// Last event
-var() transient Actor        lastActor;				// Last Speaking Actor
+var DeusExHUD    rootWindow;        // Scott is that black stuff in the oven
+var() transient ConDialogue con;                    // Conversation we're working with
+var() transient ConDialogue startCon;               // Conversation that was -initially- started
+var DeusExPlayer player;                // Player Pawn
+var() /*transient*/ Actor            invokeActor;                   // Actor who invoked conversation
+var() transient ConEvent         currentEvent;
+var() int              currentEventIndex; //
+var() transient ConEvent     lastEvent;             // Last event
+var() /*transient*/ Actor        lastActor;             // Last Speaking Actor
 
-var transient sound playingSoundId;		// Currently playing speech
+var transient sound playingSoundId;     // Currently playing speech
 var transient sound lastSound;
 
-var Int			 		 lastSpeechTextLength;
+var Int                  lastSpeechTextLength;
 var Int          missionNumber;
-var String		 	 missionLocation;
-//var ConHistory	 history;				// Saved History for this convo
-var Actor        startActor;			// Actor who triggered convo
+var String           missionLocation;
+var ConHistory     history;               // Saved History for this convo
+var Actor        startActor;            // Actor who triggered convo
 var int          saveRadiusDistance;
 var int          initialRadius;
 var bool         bConversationStarted;
@@ -123,8 +123,8 @@ var bool         bForcePlay;
 var int x;
 
 // Все диалоги теперь выводятся на оверлеи ГДИ
-//var HudOverlay_Cinematic conWinThird;		// Интерактивные
-var transient ConWindowActive conWinThird;		// 
+//var HudOverlay_Cinematic conWinThird;     // Интерактивные
+var transient ConWindowActive conWinThird;      // 
 
 var DeusExPlayerController PC;
 var float SpeechVolume;
@@ -161,71 +161,43 @@ function bool UseDelayedMessage()
 
 function SetStartActor(Actor newStartActor)
 {
-	startActor = newStartActor;
+    startActor = newStartActor;
 }
 
 // Sets the conversation to be played.
 function bool SetConversation(ConDialogue newCon)
 {
-	startCon = newCon;
-	con      = newCon;
+    startCon = newCon;
+    con      = newCon;
 
-	saveRadiusDistance = con.InvokeRadius;
+    saveRadiusDistance = con.InvokeRadius;
 
-	if (UseDelayedMessage())
-	{
-    dMsg = Spawn(class'DelayedMessage'); // DXR: Spawn our delayedMessage actor
-    dMsg.SetPlayer(DeusExPlayer(Level.GetLocalPlayerController().pawn)); // Сама себе напоминаю!!!
-  }
+    if (UseDelayedMessage())
+    {
+       dMsg = Spawn(class'DelayedMessage'); // DXR: Spawn our delayedMessage actor
+       dMsg.SetPlayer(DeusExPlayer(Level.GetLocalPlayerController().pawn)); // Сама себе напоминаю!!!
+    }
 
-	return True;
+    return True;
 }
 
 function SetInitialRadius(int newInitialRadius)
 {
-	initialRadius = newInitialRadius;
+    initialRadius = newInitialRadius;
 }
 
-/*ScriptLog: Autoplay.MyCustomConPlay0 conactorsBound 0: Autoplay.UNATCOTroop1
-ScriptLog: Autoplay.MyCustomConPlay0 conactorsBound 1: Autoplay.AV_Player0*/
 function LogConActorsBound()
 {
-	log(self@"conactors 0: "$conActors[0]);
-	log(self@"conactors 1: "$conActors[1]);
-	log(self@"conactors 2: "$conActors[2]);
-	log(self@"conactors 3: "$conActors[3]);
-	log(self@"conactors 4: "$conActors[4]);
-	log(self@"conactors 5: "$conActors[5]);
-	log(self@"conactors 6: "$conActors[6]);
-	log(self@"conactors 7: "$conActors[7]);
-	log(self@"conactors 8: "$conActors[8]);
-	log(self@"conactors 9: "$conActors[9]);
-	log("---------------------------------------------------------------------------------");
+  local int i;
 
-	log(self@"conactorsBound 0: "$conActorsBound[0]);
-	log(self@"conactorsBound 1: "$conActorsBound[1]);
-	log(self@"conactorsBound 2: "$conActorsBound[2]);
-	log(self@"conactorsBound 3: "$conActorsBound[3]);
-	log(self@"conactorsBound 4: "$conActorsBound[4]);
-	log(self@"conactorsBound 5: "$conActorsBound[5]);
-	log(self@"conactorsBound 6: "$conActorsBound[6]);
-	log(self@"conactorsBound 7: "$conActorsBound[7]);
-	log(self@"conactorsBound 8: "$conActorsBound[8]);
-	log(self@"conactorsBound 9: "$conActorsBound[9]);
+  log("---------------------------------------------------------------------------------",'ConActorsBoundBegin');
+
+  for(i=0;i < 10;i++)
+    log(self@"conactorsBound: "$ i @conActorsBound[i]);
+
+  log("-----------------------------------------------------------------------------------",'ConActorsBoundEnd');
 }
 
-function AssingArrayItems()
-{
-	local DeusExGlobals gl;
-	local int i;
-
-	gl = class'DeusExGlobals'.static.GetGlobals();
-
-	for (i=0;i<10;i++)
-	{
-    ConActorsBound[i] = gl.LinkConActorsBound[i];
-	}
-}
 
 // ----------------------------------------------------------------------
 // StartConversation()
@@ -238,96 +210,88 @@ function AssingArrayItems()
 // ----------------------------------------------------------------------
 function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvokeActor, optional bool bForcePlay)
 {
-	local DeusExLevelInfo aDeusExLevelInfo;
-	local DeusExGlobals gl;
+    local DeusExLevelInfo aDeusExLevelInfo;
+    local DeusExGlobals gl;
 
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    gl = class'DeusExGlobals'.static.GetGlobals();
 
-	// Make sure we have a conversation and a valid Player
-	if (( con == None ) || ( newPlayer == None ))
-	{
-		log("con == None || newPlayer == None, StartConversation failed");
-		return False;
-	}
+    // Make sure we have a conversation and a valid Player
+    if (( con == None ) || ( newPlayer == None ))
+    {
+        log("con == None || newPlayer == None, StartConversation failed");
+        return False;
+    }
 
-	// Make sure the player isn't, uhhrr, you know, DEAD!
-	if (newPlayer.IsInState('Dying'))
-		return False;
+    // Make sure the player isn't, uhhrr, you know, DEAD!
+    if (newPlayer.IsInState('Dying'))
+        return False;
 
-	// Keep a pointer to the player and invoking actor
-	player      = newPlayer;
+    // Keep a pointer to the player and invoking actor
+    player      = newPlayer;
 
-	if (newInvokeActor != None) 
-		invokeActor = newInvokeActor;
-	else
-		invokeActor = startActor;
+    if (newInvokeActor != None) 
+        invokeActor = newInvokeActor;
+    else
+        invokeActor = startActor;
 
-	log(self@"---------- ConActorsBound: invokeactor is "$invokeActor);
+//  log(self@"---------- ConActorsBound: invokeactor is "$invokeActor);
 
-	// Bind the conversation events
-	// Передача параметра LevelInfo чтобы быстрее прогнать итератор от актора а не от объекта.
-	gl.AssignEvents(ConActorsBound, invokeActor, self.level, con);
+    // Bind the conversation events
+    con.BindEvents(ConActorsBound, invokeActor, self.level);
+//    LogConActorsBound();
 
-  AssingArrayItems();
+    // Check to see if the conversation has multiple owners, in which case we 
+    // want to rebind all the events with this owner.  This allows conversations
+    // to be shared by more than one owner.
+    if ((con.ownerRefCount > 1) && (invokeActor != None))
+    {
+        con.BindActorEvents(invokeActor);
+//        LogConActorsBound();
+    }
+    // Check to see if all the actors are on the level.
+    // Don't check this for InfoLink conversations, since oftentimes
+    // the person speaking via InfoLink *won't* be on the map.
+    //
+    // If a person speaking on the conversation can't be found 
+    // (say, they were ruthlessly MURDERED!) then abort.
+    //
+    // Hi Ken!
 
-  LogConActorsBound();
-	//con.BindEvents(ConActorsBound, invokeActor, self.level);
+    if ((!bForcePlay) && (!con.bDataLinkCon) && (!con.CheckActors(true))) // true для вывода списка в лог.
+    {
+//      log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
+        return false;
+    }
 
-	// Check to see if the conversation has multiple owners, in which case we 
-	// want to rebind all the events with this owner.  This allows conversations
-	// to be shared by more than one owner.
-	if ((con.ownerRefCount > 1) && (invokeActor != None))
-	{
-	  log("ownerRefCount > 1 && invokeActor="$invokeactor);
-	  gl.AssignActorEvents(invokeactor, con);
-	    LogConActorsBound();
-		//con.BindActorEvents(invokeActor);
-	}
+    // Now check to make sure that all the actors are a reasonable distance
+    // from one another (excluding the player)
+    if ((!bForcePlay) && (!con.CheckActorDistances(player)))
+    {
+//      log(self$" forcePlay=false, "$con$"CheckActorDistances("$player$") false");
+        return false;
+    }
 
-	// Check to see if all the actors are on the level.
-	// Don't check this for InfoLink conversations, since oftentimes
-	// the person speaking via InfoLink *won't* be on the map.
-	//
-	// If a person speaking on the conversation can't be found 
-	// (say, they were ruthlessly MURDERED!) then abort.
-	//
-	// Hi Ken!
+    // Save the mission number and location
+    foreach AllActors(class'DeusExLevelInfo', aDeusExLevelInfo)
+    {
+        if (aDeusExLevelInfo != None)
+        {
+            missionNumber   = aDeusExLevelInfo.missionNumber;
+            missionLocation = aDeusExLevelInfo.MissionLocation;
+            break;
+        }
+    }
 
-	if ((!bForcePlay) && (!con.bDataLinkCon) && (!con.CheckActors(false))) // true для вывода списка в лог.
-	{
-//		log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
-		return false;
-	}
+    // Save the conversation radius
+    saveRadiusDistance = con.InvokeRadius;
 
-	// Now check to make sure that all the actors are a reasonable distance
-	// from one another (excluding the player)
-	if ((!bForcePlay) && (!con.CheckActorDistances(player)))
-	{
-//		log(self$" forcePlay=false, "$con$"CheckActorDistances("$player$") false");
-		return false;
-	}
+    // Initialize Windowing System
+    PC = DeusExPlayerController(Level.GetLocalPlayerController());
+    rootWindow = DeusExHud(PC.myHUD);
 
-	// Save the mission number and location
-	foreach AllActors(class'DeusExLevelInfo', aDeusExLevelInfo)
-	{
-		if (aDeusExLevelInfo != None)
-		{
-			missionNumber   = aDeusExLevelInfo.missionNumber;
-			missionLocation = aDeusExLevelInfo.MissionLocation;
-			break;
-		}
-	}
+    bConversationStarted = True;
 
-	// Save the conversation radius
-	saveRadiusDistance = con.InvokeRadius;
-
-	// Initialize Windowing System
-	PC = DeusExPlayerController(Level.GetLocalPlayerController());
-	rootWindow = DeusExHud(PC.myHUD);
-
-	bConversationStarted = True;
-
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -336,31 +300,31 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
 {
 // local sound s;
-	// Make sure there's no audio playing
-	if (!bContinueSpeech)
-	{
-	 if (player != none)
+    // Make sure there's no audio playing
+    if (!bContinueSpeech)
+    {
+     if (player != none)
    class'DxUtil'.static.StopSound(player, playingSoundid);
 //   log("TerminateConversation : stopped sound"@ player @ playingSoundid);
   }
 
-	// Set the played flag
-	if (!bNoPlayedFlag)
-		SetPlayedFlag();
+    // Set the played flag
+    if (!bNoPlayedFlag)
+        SetPlayedFlag();
 
-	// Clear the bound event actors
-	//con.ClearBindEvents();
+    // Clear the bound event actors
+    con.ClearBindEvents();
 
-	// Reset the conversation radious
-	con.InvokeRadius = saveRadiusDistance;
+    // Reset the conversation radious
+    con.InvokeRadius = saveRadiusDistance;
 
-	// Notify the conversation participants to go about their
-	// business.
-	EndConActorStates();
+    // Notify the conversation participants to go about their
+    // business.
+    EndConActorStates();
 
-	con          = None;
-	currentEvent = None;
-	lastEvent    = None;
+    con          = None;
+    currentEvent = None;
+    lastEvent    = None;
 }
 
 // ----------------------------------------------------------------------
@@ -369,7 +333,7 @@ function TerminateConversation(optional bool bContinueSpeech, optional bool bNoP
 
 function bool ConversationStarted()
 {
-	return bConversationStarted;
+    return bConversationStarted;
 }
 
 // ----------------------------------------------------------------------
@@ -378,7 +342,7 @@ function bool ConversationStarted()
 
 function SetOriginalRadius(int newOriginalDistance)
 {
-	saveRadiusDistance = newOriginalDistance;
+    saveRadiusDistance = newOriginalDistance;
 }
 
 // ----------------------------------------------------------------------
@@ -387,10 +351,10 @@ function SetOriginalRadius(int newOriginalDistance)
 
 function bool CanInterrupt()
 {
-	if (con != None)
-		return !con.bCannotBeInterrupted;
-	else
-		return False;
+    if (con != None)
+        return !con.bCannotBeInterrupted;
+    else
+        return False;
 }
 
 // ----------------------------------------------------------------------
@@ -399,7 +363,7 @@ function bool CanInterrupt()
 
 function InterruptConversation()
 {
-	SetInterruptedFlag();	
+    SetInterruptedFlag();   
 }
 
 // ----------------------------------------------------------------------
@@ -408,46 +372,46 @@ function InterruptConversation()
 
 function SetPlayedFlag()
 {
-	local Name flagName;
+    local Name flagName;
 
-	if (con != None)
-	{
-		// Make a note of when this conversation ended
-		con.lastPlayedTime = player.Level.TimeSeconds;
+    if (con != None)
+    {
+        // Make a note of when this conversation ended
+        con.lastPlayedTime = player.Level.TimeSeconds;
 
-		flagName = class'DxUtil'.static.StringToName(con.Name $ "_Played");
+        flagName = class'ObjectManager'.static.StringToName(con.Name $ "_Played");
 
-		// Only set the Played flag if it doesn't already exist 
-		// (some conversations set this intentionally with a longer expiration
-		// date so they can be relied up on in future missions)
+        // Only set the Played flag if it doesn't already exist 
+        // (some conversations set this intentionally with a longer expiration
+        // date so they can be relied up on in future missions)
 
-		if (!player.GetflagBase().GetBool(flagName))
-		{
-			// Add a flag noting that we've finished this conversation.  
-			player.GetflagBase().SetBool(flagName, True);
-		}
+        if (!player.GetflagBase().GetBool(flagName))
+        {
+            // Add a flag noting that we've finished this conversation.  
+            player.GetflagBase().SetBool(flagName, True);
+        }
 
-		// If this was a third-person convo, keep track of when the conversation
-		// ended and who it was with (this is used to prevent radius convos
-		// from playing immediately after letterbox convos).
-		//
-		// If this was a first-person convo, keep track of the owner and 
-		// play time so we can prevent multiple radius-induced conversations
-		// from playing without a pause (we don't want them to run into 
-		// each other).
+        // If this was a third-person convo, keep track of when the conversation
+        // ended and who it was with (this is used to prevent radius convos
+        // from playing immediately after letterbox convos).
+        //
+        // If this was a first-person convo, keep track of the owner and 
+        // play time so we can prevent multiple radius-induced conversations
+        // from playing without a pause (we don't want them to run into 
+        // each other).
 
-		if (con.bFirstPerson)
-		{
-			player.lastFirstPersonConvoActor = invokeActor;
-			player.lastFirstPersonConvoTime  = con.lastPlayedTime;
-		}
-		else
-		{
-			player.lastThirdPersonConvoActor = invokeActor;
-			player.lastThirdPersonConvoTime  = con.lastPlayedTime;
-		}
+        if (con.bFirstPerson)
+        {
+            player.lastFirstPersonConvoActor = invokeActor;
+            player.lastFirstPersonConvoTime  = con.lastPlayedTime;
+        }
+        else
+        {
+            player.lastThirdPersonConvoActor = invokeActor;
+            player.lastThirdPersonConvoTime  = con.lastPlayedTime;
+        }
 
-	}
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -456,15 +420,15 @@ function SetPlayedFlag()
 
 function SetInterruptedFlag()
 {
-	local Name flagName;
+    local Name flagName;
 
-	if (con != None)
-	{
-		flagName = class'DxUtil'.static.StringToName(con.Name $ "_Interrupted");
+    if (con != None)
+    {
+        flagName = class'ObjectManager'.static.StringToName(con.Name $ "_Interrupted");
 
-		// Add a flag noting that we've finished this conversation.  
-		player.GetflagBase().SetBool(flagName, True);
-	}
+        // Add a flag noting that we've finished this conversation.  
+        player.GetflagBase().SetBool(flagName, True);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -496,7 +460,7 @@ function StopSpeech()
 
 function ConEvent GetNextEvent()
 {
-	return con.GetNextEvent(currentEvent); //currentEvent.nextEvent;
+    return con.GetNextEvent(currentEvent); //currentEvent.nextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -505,7 +469,7 @@ function ConEvent GetNextEvent()
 
 function EEventAction SetupEventSetFlag(ConEventSetFlag event, out String nextLabel)
 {
-//	local ConFlagRef currentRef;
+//  local ConFlagRef currentRef;
     local int y;
 
     for (y=0; y<event.FlagRefList.length; y++)
@@ -514,21 +478,21 @@ function EEventAction SetupEventSetFlag(ConEventSetFlag event, out String nextLa
 //      player.GetflagBase().SetExpiration(event.FlagRefList[y].Name, FLAG_Bool, event.FlagRefList[y].expiration); 
     }
 
-	// Just follow the chain of flag references and set the flags to
-	// the proper value!
+    // Just follow the chain of flag references and set the flags to
+    // the proper value!
 
-/*	currentRef = event.flagRef;
+/*  currentRef = event.flagRef;
 
-	while(currentRef != None)
-	{
-		player.GetflagBase().SetBool(currentRef.flagName, currentRef.value);
-		player.GetflagBase().SetExpiration(currentRef.flagName, FLAG_Bool, currentRef.expiration); 
+    while(currentRef != None)
+    {
+        player.GetflagBase().SetBool(currentRef.flagName, currentRef.value);
+        player.GetflagBase().SetExpiration(currentRef.flagName, FLAG_Bool, currentRef.expiration); 
 
-		currentRef = currentRef.nextFlagRef;
-	}*/
+        currentRef = currentRef.nextFlagRef;
+    }*/
 
-	nextLabel = "";
-	return EA_NextEvent;
+    nextLabel = "";
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -537,46 +501,46 @@ function EEventAction SetupEventSetFlag(ConEventSetFlag event, out String nextLa
 
 function EEventAction SetupEventCheckFlag(ConEventCheckFlag event, out String nextLabel)
 {
-//	local ConFlagRef currentRef;
-	local EEventAction action;
+//  local ConFlagRef currentRef;
+    local EEventAction action;
   local int y;
 
-	// Default values if we actually make it all the way 
-	// through the while loop below.
+    // Default values if we actually make it all the way 
+    // through the while loop below.
 
-	nextLabel = event.setLabel;
-	action = EA_JumpToLabel;
-	
-	// Loop through our list of FlagRef's, checking the value of each.
-	// If we hit a bad match, then we'll stop right away since there's
-	// no point of continuing.
+    nextLabel = event.setLabel;
+    action = EA_JumpToLabel;
+    
+    // Loop through our list of FlagRef's, checking the value of each.
+    // If we hit a bad match, then we'll stop right away since there's
+    // no point of continuing.
 
   for (y=0; y<event.FlagRefList.length; y++)
   {
-		if (player.GetflagBase().GetBool(event.FlagRefList[y].Name) != (event.FlagRefList[y].value))
-		{
-//		  log(event.FlagRefList[y].Name,'SetupEventCheckFlag');
-			nextLabel = "";
-			action = EA_NextEvent;
-			break;
-		}
-//	break;
+        if (player.GetflagBase().GetBool(event.FlagRefList[y].Name) != (event.FlagRefList[y].value))
+        {
+//        log(event.FlagRefList[y].Name,'SetupEventCheckFlag');
+            nextLabel = "";
+            action = EA_NextEvent;
+            break;
+        }
+//  break;
   }
 
-/*	currentRef = event.flagRef;
+/*  currentRef = event.flagRef;
 
-	while( currentRef != None )
-	{
-		if ( player.GetflagBase().GetBool(currentRef.flagName) != currentRef.value )
-		{
-			nextLabel = "";
-			action = EA_NextEvent;
-			break;
-		}
-		currentRef = currentRef.nextFlagRef;
-	}*/
-	
-	return action;
+    while( currentRef != None )
+    {
+        if ( player.GetflagBase().GetBool(currentRef.flagName) != currentRef.value )
+        {
+            nextLabel = "";
+            action = EA_NextEvent;
+            break;
+        }
+        currentRef = currentRef.nextFlagRef;
+    }*/
+    
+    return action;
 }
 
 // ----------------------------------------------------------------------
@@ -585,8 +549,8 @@ function EEventAction SetupEventCheckFlag(ConEventCheckFlag event, out String ne
 
 function EEventAction SetupEventTrade(ConEventTrade event, out String nextLabel)
 {
-	nextLabel = "";
-	return EA_NextEvent;
+    nextLabel = "";
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -599,38 +563,38 @@ function EEventAction SetupEventTrade(ConEventTrade event, out String nextLabel)
 
 function EEventAction SetupEventCheckObject(ConEventCheckObject event, out String nextLabel)
 {
-	local EEventAction nextAction;
-	local Name keyName;
-	local bool bHasObject;
+    local EEventAction nextAction;
+    local Name keyName;
+    local bool bHasObject;
 
-	// Okay this is some HackyHack stuff here.  We want the ability to 
-	// check if the player has a particular nanokey.  Sooooooo.
-	
-	if ((event.checkObject == None) && (Left(event.objectName, 3) == "NK_"))
-	{
-		// Look for key
-		keyName    = class'DxUtil'.static.StringToName(Right(event.ObjectName, Len(event.ObjectName) - 3));
-		bHasObject = ((player.KeyRing != None) && (player.KeyRing.HasKey(keyName)));
-	}
-	else 
-	{
-		bHasObject = (player.FindInventoryType(event.checkObject) != None);
-	}
+    // Okay this is some HackyHack stuff here.  We want the ability to 
+    // check if the player has a particular nanokey.  Sooooooo.
+    
+    if ((event.checkObject == None) && (Left(event.objectName, 3) == "NK_"))
+    {
+        // Look for key
+        keyName    = class'ObjectManager'.static.StringToName(Right(event.ObjectName, Len(event.ObjectName) - 3));
+        bHasObject = ((player.KeyRing != None) && (player.KeyRing.HasKey(keyName)));
+    }
+    else 
+    {
+        bHasObject = (player.FindInventoryType(event.checkObject) != None);
+    }
 
-	// Now branch appropriately
+    // Now branch appropriately
 
-	if (bHasObject)
-	{
-		nextAction = EA_NextEvent;
-		nextLabel  = "";
-	}
-	else
-	{
-		nextAction = EA_JumpToLabel;
-		nextLabel  = event.failLabel;
-	}
+    if (bHasObject)
+    {
+        nextAction = EA_NextEvent;
+        nextLabel  = "";
+    }
+    else
+    {
+        nextAction = EA_JumpToLabel;
+        nextLabel  = event.failLabel;
+    }
 
-	return nextAction;
+    return nextAction;
 }
 
 // ----------------------------------------------------------------------
@@ -647,296 +611,296 @@ function EEventAction SetupEventCheckObject(ConEventCheckObject event, out Strin
 
 function EEventAction SetupEventTransferObject(ConEventTransferObject event, out String nextLabel)
 {
-	local EEventAction nextAction;
-	local Inventory invItemFrom;
-	local Inventory invItemTo;
-	local ammunition AmmoType;
-	local bool bSpawnedItem;
-	local bool bSplitItem;
-	local int itemsTransferred;//, temp;
+    local EEventAction nextAction;
+    local Inventory invItemFrom;
+    local Inventory invItemTo;
+    local ammunition AmmoType;
+    local bool bSpawnedItem;
+    local bool bSplitItem;
+    local int itemsTransferred;//, temp;
 
 
-/*	log("SetupEventTransferObject()------------------------------------------");
-	log("  event = " $ event);
-	log("  event.giveObject = " $ event.giveObject);
-	log("  event.fromActor  = " $ event.fromActor );
-	log("  event.toActor    = " $ event.toActor );*/
+/*  log("SetupEventTransferObject()------------------------------------------");
+    log("  event = " $ event);
+    log("  event.giveObject = " $ event.giveObject);
+    log("  event.fromActor  = " $ event.fromActor );
+    log("  event.toActor    = " $ event.toActor );*/
 
-	itemsTransferred = 1;
+    itemsTransferred = 1;
 
-	if ( event.failLabel != "" )
-	{
-		nextAction = EA_JumpToLabel;
-		nextLabel  = event.failLabel;
-	}
-	else
-	{
-		nextAction = EA_NextEvent;
-		nextLabel = "";
-	}
+    if ( event.failLabel != "" )
+    {
+        nextAction = EA_JumpToLabel;
+        nextLabel  = event.failLabel;
+    }
+    else
+    {
+        nextAction = EA_NextEvent;
+        nextLabel = "";
+    }
 
-	// First verify that the receiver exists!
-	if (event.toActor == None)
-	{
-		log("SetupEventTransferObject:  WARNING!  toActor does not exist!");
-		log("  Conversation = " $ con.Name);
+    // First verify that the receiver exists!
+    if (event.toActor == None)
+    {
+        log("SetupEventTransferObject:  WARNING!  toActor does not exist!");
+        log("  Conversation = " $ con.Name);
     log("--------------------------------------------------------------------");
-		return nextAction;
-	}
+        return nextAction;
+    }
 
-	// First, check to see if the giver actually has the object.  If not, then we'll
-	// fabricate it out of thin air.  (this is useful when we want to allow
-	// repeat visits to the same NPC so the player can restock on items in some
-	// scenarios).
-	//
-	// Also check to see if the item already exists in the recipient's inventory
+    // First, check to see if the giver actually has the object.  If not, then we'll
+    // fabricate it out of thin air.  (this is useful when we want to allow
+    // repeat visits to the same NPC so the player can restock on items in some
+    // scenarios).
+    //
+    // Also check to see if the item already exists in the recipient's inventory
 
-	if (event.fromActor != None)
-		invItemFrom = Pawn(event.fromActor).FindInventoryType(event.giveObject);
+    if (event.fromActor != None)
+        invItemFrom = Pawn(event.fromActor).FindInventoryType(event.giveObject);
 
-	invItemTo   = Pawn(event.toActor).FindInventoryType(event.giveObject);
+    invItemTo   = Pawn(event.toActor).FindInventoryType(event.giveObject);
 
-	log("  invItemFrom = " $ invItemFrom);
-	log("  invItemTo   = " $ invItemTo);
+    log("  invItemFrom = " $ invItemFrom);
+    log("  invItemTo   = " $ invItemTo);
 
-	// If the player is doing the giving, make sure we remove it from 
-	// the object belt.
+    // If the player is doing the giving, make sure we remove it from 
+    // the object belt.
 
-	// If the giver doesn't have the item then we must spawn a copy of it
-	if (invItemFrom == None)
-	{
-		invItemFrom = Spawn(event.giveObject);
-		bSpawnedItem = True;
-	}
+    // If the giver doesn't have the item then we must spawn a copy of it
+    if (invItemFrom == None)
+    {
+        invItemFrom = Spawn(event.giveObject);
+        bSpawnedItem = True;
+    }
 
-	// If we're giving this item to the player and he does NOT yet have it,
-	// then make sure there's enough room in his inventory for the 
-	// object!
+    // If we're giving this item to the player and he does NOT yet have it,
+    // then make sure there's enough room in his inventory for the 
+    // object!
 
-	if ((invItemTo == None) &&
-		(DeusExPlayer(event.toActor) != None) && 
-	    (DeusExPlayer(event.toActor).FindInventorySlot(invItemFrom, True) == False))
-	{
-		// First destroy the object if we previously Spawned it
-		if (bSpawnedItem)
-			invItemFrom.Destroy();
-				
-		return nextAction;
-	}
+    if ((invItemTo == None) &&
+        (DeusExPlayer(event.toActor) != None) && 
+        (DeusExPlayer(event.toActor).FindInventorySlot(invItemFrom, True) == False))
+    {
+        // First destroy the object if we previously Spawned it
+        if (bSpawnedItem)
+            invItemFrom.Destroy();
+                
+        return nextAction;
+    }
 
-	// Okay, there's enough room in the player's inventory or we're not 
-	// transferring to the player in which case it doesn't matter.
-	//
-	// Now check if the recipient already has the item.  If so, we are just
-	// going to give it to him, with a few special cases.  Otherwise we
-	// need to spawn a new object.
+    // Okay, there's enough room in the player's inventory or we're not 
+    // transferring to the player in which case it doesn't matter.
+    //
+    // Now check if the recipient already has the item.  If so, we are just
+    // going to give it to him, with a few special cases.  Otherwise we
+    // need to spawn a new object.
 
-	if (invItemTo != None)
-	{
-		// Check if this item was in the player's hand, and if so, remove it
-		RemoveItemFromPlayer(invItemFrom);
+    if (invItemTo != None)
+    {
+        // Check if this item was in the player's hand, and if so, remove it
+        RemoveItemFromPlayer(invItemFrom);
 
-		// If this is ammo, then we want to just increment the ammo count
-		// instead of adding another ammo to the inventory
+        // If this is ammo, then we want to just increment the ammo count
+        // instead of adding another ammo to the inventory
 
-		if (invItemTo.IsA('ammunition'))
-		{
-			// If this is Ammo and the player already has it, make sure the player isn't
-			// already full of this ammo type! (UGH!)
-			if (!ammunition(invItemTo).AddAmmo(ammunition(invItemFrom).AmmoAmount))
-			{
-				invItemFrom.Destroy();
-				return nextAction;
-			}
+        if (invItemTo.IsA('ammunition'))
+        {
+            // If this is Ammo and the player already has it, make sure the player isn't
+            // already full of this ammo type! (UGH!)
+            if (!ammunition(invItemTo).AddAmmo(ammunition(invItemFrom).AmmoAmount))
+            {
+                invItemFrom.Destroy();
+                return nextAction;
+            }
 
-			// Destroy our From item
-			invItemFrom.Destroy();		
-		}
+            // Destroy our From item
+            invItemFrom.Destroy();      
+        }
 
-		// Pawn cannot have multiple weapons, but we do want to give the 
-		// player any ammo from the weapon
-		else if ((invItemTo.IsA('DeusExWeaponInv')) && (DeusExPlayer(event.ToActor) != None))
-		{
+        // Pawn cannot have multiple weapons, but we do want to give the 
+        // player any ammo from the weapon
+        else if ((invItemTo.IsA('DeusExWeaponInv')) && (DeusExPlayer(event.ToActor) != None))
+        {
 
-			AmmoType = ammunition(DeusExPlayer(event.ToActor).FindInventoryType(DeusExWeaponInv(invItemTo).AmmoName));
+            AmmoType = ammunition(DeusExPlayer(event.ToActor).FindInventoryType(DeusExWeaponInv(invItemTo).AmmoName));
 
-			if ( AmmoType != None )
-			{
-				// Special case for Grenades and LAMs.  Blah.
-				if ((AmmoType.IsA('AmmoEMPGrenadeInv')) || 
-				    (AmmoType.IsA('AmmoGasGrenadeInv')) || 
-					(AmmoType.IsA('AmmoNanoVirusGrenadeInv')) ||
-					(AmmoType.IsA('AmmoLAMInv')))
-				{
-					if (!AmmoType.AddAmmo(event.TransferCount))
-					{
-						invItemFrom.Destroy();
-						return nextAction;
-					}
-				}
-				else
-				{
-					if (!AmmoType.AddAmmo(DeusExWeaponInv(invItemTo).PickUpAmmoCount))
-					{
-						invItemFrom.Destroy();
-						return nextAction;
-					}
+            if ( AmmoType != None )
+            {
+                // Special case for Grenades and LAMs.  Blah.
+                if ((AmmoType.IsA('AmmoEMPGrenadeInv')) || 
+                    (AmmoType.IsA('AmmoGasGrenadeInv')) || 
+                    (AmmoType.IsA('AmmoNanoVirusGrenadeInv')) ||
+                    (AmmoType.IsA('AmmoLAMInv')))
+                {
+                    if (!AmmoType.AddAmmo(event.TransferCount))
+                    {
+                        invItemFrom.Destroy();
+                        return nextAction;
+                    }
+                }
+                else
+                {
+                    if (!AmmoType.AddAmmo(DeusExWeaponInv(invItemTo).PickUpAmmoCount))
+                    {
+                        invItemFrom.Destroy();
+                        return nextAction;
+                    }
 
-					event.TransferCount = DeusExWeaponInv(invItemTo).PickUpAmmoCount;
-					itemsTransferred = event.TransferCount;
-				}
+                    event.TransferCount = DeusExWeaponInv(invItemTo).PickUpAmmoCount;
+                    itemsTransferred = event.TransferCount;
+                }
 
-				if (event.ToActor.IsA('DeusExPlayer'))
-					DeusExPlayer(event.ToActor).UpdateAmmoBeltText(AmmoType);
+                if (event.ToActor.IsA('DeusExPlayer'))
+                    DeusExPlayer(event.ToActor).UpdateAmmoBeltText(AmmoType);
 
-				// Tell the player he just received some ammo!
-				invItemTo = AmmoType;
-			}
-			else
-			{
-				// Don't want to show this as being received in a convo
-				invItemTo = None;
-			}
+                // Tell the player he just received some ammo!
+                invItemTo = AmmoType;
+            }
+            else
+            {
+                // Don't want to show this as being received in a convo
+                invItemTo = None;
+            }
 
-			// Destroy our From item
-			invItemFrom.Destroy();
-			invItemFrom = None;
-		}
+            // Destroy our From item
+            invItemFrom.Destroy();
+            invItemFrom = None;
+        }
 
-		// Otherwise check to see if we need to transfer more than 
-		// one of the given item
-		else
-		{
-			itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), False);
+        // Otherwise check to see if we need to transfer more than 
+        // one of the given item
+        else
+        {
+            itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), False);
 
-			// If no items were transferred, then the player's inventory is full or 
-			// no more of these items can be stacked, so abort.
-			if (itemsTransferred == 0)
-				return nextAction;
+            // If no items were transferred, then the player's inventory is full or 
+            // no more of these items can be stacked, so abort.
+            if (itemsTransferred == 0)
+                return nextAction;
 
-			// Now destroy the originating object (which we either spawned
-			// or is sitting in the giver's inventory), but check to see if this 
-			// item still has any copies left first
+            // Now destroy the originating object (which we either spawned
+            // or is sitting in the giver's inventory), but check to see if this 
+            // item still has any copies left first
 
-			if (((invItemFrom.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies) && (DeusExPickupInv(invItemFrom).NumCopies <= 0)) ||
-			   ((invItemFrom.IsA('DeusExPickupInv')) && (!DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies)) ||
-			   (!invItemFrom.IsA('DeusExPickupInv')))
-			{
-				invItemFrom.Destroy();
-				invItemFrom = None;
-			}
-		}
-	}
+            if (((invItemFrom.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies) && (DeusExPickupInv(invItemFrom).NumCopies <= 0)) ||
+               ((invItemFrom.IsA('DeusExPickupInv')) && (!DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies)) ||
+               (!invItemFrom.IsA('DeusExPickupInv')))
+            {
+                invItemFrom.Destroy();
+                invItemFrom = None;
+            }
+        }
+    }
 
-	// Okay, recipient does *NOT* have the item, so it must be give
-	// to that pawn and the original destroyed
-	else
-	{
-		// If the item being given is a stackable item and the 
-		// recipient isn't receiving *ALL* the copies, then we 
-		// need to spawn a *NEW* copy and give that to the recipient.
-		// Otherwise just do a "SpawnCopy", which transfers ownership
-		// of the object to the new owner.
+    // Okay, recipient does *NOT* have the item, so it must be give
+    // to that pawn and the original destroyed
+    else
+    {
+        // If the item being given is a stackable item and the 
+        // recipient isn't receiving *ALL* the copies, then we 
+        // need to spawn a *NEW* copy and give that to the recipient.
+        // Otherwise just do a "SpawnCopy", which transfers ownership
+        // of the object to the new owner.
 
-		if ((invItemFrom.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies) && (DeusExPickupInv(invItemFrom).NumCopies > event.transferCount))
-		{
-			itemsTransferred = event.TransferCount;
-			invItemTo = Spawn(event.giveObject);
-			invItemTo.GiveTo(Pawn(event.toActor));
-			DeusExPickupInv(invItemFrom).NumCopies -= event.transferCount;
-			bSplitItem   = True;
-			bSpawnedItem = True;
-		}
-		else
-		{
-//				log("invItemTo = invItemFrom.SpawnCopy(Pawn(event.toActor))"); //////////////////
-//			invItemTo = invItemFrom.Spawn(Pawn(event.toActor));
-			invItemTo = invItemFrom.SpawnCopy(Pawn(event.toActor));
-		}
+        if ((invItemFrom.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemFrom).bCanHaveMultipleCopies) && (DeusExPickupInv(invItemFrom).NumCopies > event.transferCount))
+        {
+            itemsTransferred = event.TransferCount;
+            invItemTo = Spawn(event.giveObject);
+            invItemTo.GiveTo(Pawn(event.toActor));
+            DeusExPickupInv(invItemFrom).NumCopies -= event.transferCount;
+            bSplitItem   = True;
+            bSpawnedItem = True;
+        }
+        else
+        {
+//              log("invItemTo = invItemFrom.SpawnCopy(Pawn(event.toActor))"); //////////////////
+//          invItemTo = invItemFrom.Spawn(Pawn(event.toActor));
+            invItemTo = invItemFrom.SpawnCopy(Pawn(event.toActor));
+        }
 
-		log("  invItemFrom = "$  invItemFrom);
-		log("  invItemTo   = " $ invItemTo);
+        log("  invItemFrom = "$  invItemFrom);
+        log("  invItemTo   = " $ invItemTo);
 
-		if (DeusExPlayer(event.toActor) != None)
-			DeusExPlayer(event.toActor).FindInventorySlot(invItemTo);
+        if (DeusExPlayer(event.toActor) != None)
+            DeusExPlayer(event.toActor).FindInventorySlot(invItemTo);
 
-		// Check if this item was in the player's hand *AND* that the player is 
-		// giving the item to someone else.
-		if ((DeusExPlayer(event.fromActor) != None) && (!bSplitItem))
-			RemoveItemFromPlayer(invItemFrom);
+        // Check if this item was in the player's hand *AND* that the player is 
+        // giving the item to someone else.
+        if ((DeusExPlayer(event.fromActor) != None) && (!bSplitItem))
+            RemoveItemFromPlayer(invItemFrom);
 
-		// If this was a DataVaultImage, then the image needs to be 
-		// properly added to the datavault
-		if ((invItemTo.IsA('DataVaultImageInv')) && (event.toActor.IsA('DeusExPlayer')))
-		{
-			DeusExPlayer(event.toActor).AddImage(DataVaultImageInv(invItemTo));
-				
-//			if (conWinThird != None)
-//			{
+        // If this was a DataVaultImage, then the image needs to be 
+        // properly added to the datavault
+        if ((invItemTo.IsA('DataVaultImageInv')) && (event.toActor.IsA('DeusExPlayer')))
+        {
+            DeusExPlayer(event.toActor).AddImage(DataVaultImageInv(invItemTo));
+                
+//          if (conWinThird != None)
+//          {
 //         conWinThird.recentItemTime = 3.0;
 //         temp = conWinThird.recentItems.Length;
 //         conWinThird.recentItems.Length = temp + 1;
 //         conWinThird.recentItems[temp] = inventory[x].class;
-//			}
-//				conWinThird.ShowReceivedItem(invItemTo, 1);
-//			else
-//				DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, 1);
+//          }
+//              conWinThird.ShowReceivedItem(invItemTo, 1);
+//          else
+//              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, 1);
 
-			invItemFrom = None;
-			invItemTo   = None;
-		}
+            invItemFrom = None;
+            invItemTo   = None;
+        }
 
-		// Special case for Credit Chits also
-		else if ((invItemTo.IsA('CreditsInv')) && (event.toActor.IsA('DeusExPlayer')))
-		{
-//			if (conWinThird != None)
-//				conWinThird.ShowReceivedItem(invItemTo, Credits(invItemTo).numCredits);
-//			else
-//				DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, Credits(invItemTo).numCredits);
+        // Special case for Credit Chits also
+        else if ((invItemTo.IsA('CreditsInv')) && (event.toActor.IsA('DeusExPlayer')))
+        {
+//          if (conWinThird != None)
+//              conWinThird.ShowReceivedItem(invItemTo, Credits(invItemTo).numCredits);
+//          else
+//              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, Credits(invItemTo).numCredits);
 
-			player.Credits += CreditsInv(invItemTo).numCredits;
-			
-			invItemTo.Destroy();
+            player.Credits += CreditsInv(invItemTo).numCredits;
+            
+            invItemTo.Destroy();
 
-			invItemFrom = None;
-			invItemTo   = None;
-		}
+            invItemFrom = None;
+            invItemTo   = None;
+        }
 
-		// Now check to see if the transfer event specified transferring
-		// more than one copy of the object
-		else
-		{
-			itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), True);
+        // Now check to see if the transfer event specified transferring
+        // more than one copy of the object
+        else
+        {
+            itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), True);
 
-			// If no items were transferred, then the player's inventory is full or 
-			// no more of these items can be stacked, so abort.
-			if (itemsTransferred == 0)
-			{
-				invItemTo.Destroy();
-				return nextAction;
-			}
+            // If no items were transferred, then the player's inventory is full or 
+            // no more of these items can be stacked, so abort.
+            if (itemsTransferred == 0)
+            {
+                invItemTo.Destroy();
+                return nextAction;
+            }
 
-			// Update the belt text
-			if (invItemTo.IsA('ammunition'))
-				player.UpdateAmmoBeltText(Ammunition(invItemTo));
-			else
-				player.UpdateBeltText(invItemTo);
-		}
-	}
+            // Update the belt text
+            if (invItemTo.IsA('ammunition'))
+                player.UpdateAmmoBeltText(Ammunition(invItemTo));
+            else
+                player.UpdateBeltText(invItemTo);
+        }
+    }
 
-	// Show the player that he/she/it just received something!
-	if ((DeusExPlayer(event.toActor) != None) && (conWinThird != None) && (invItemTo != None))
-	{
-//		if (conWinThird != None)
-//			conWinThird.ShowReceivedItem(invItemTo, itemsTransferred);
-//		else
-//			DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, itemsTransferred);
-	}
+    // Show the player that he/she/it just received something!
+    if ((DeusExPlayer(event.toActor) != None) && (conWinThird != None) && (invItemTo != None))
+    {
+//      if (conWinThird != None)
+//          conWinThird.ShowReceivedItem(invItemTo, itemsTransferred);
+//      else
+//          DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, itemsTransferred);
+    }
 
-	nextAction = EA_NextEvent;
-	nextLabel = "";
+    nextAction = EA_NextEvent;
+    nextLabel = "";
 
-	return nextAction;
+    return nextAction;
 }
 
 // ---------------------------------------------------------------------
@@ -945,101 +909,101 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
 
 function int AddTransferCount(Inventory invItemFrom, Inventory invItemTo, ConEventTransferObject event, pawn transferTo, bool bSpawned)
 {
-	local ammunition AmmoType;
-	local int itemsTransferred;
-	local DeusExPickupInv giveItem;
+    local ammunition AmmoType;
+    local int itemsTransferred;
+    local DeusExPickupInv giveItem;
 
-	itemsTransferred = 1;
+    itemsTransferred = 1;
 
-/*	log("AddTransferCount()-------------------------------");
-	log("  invItemFrom = " $ invItemFrom);
-	log("  invItemTo   = " $ invItemTo);
-	log("  transferTo  = " $ transferTo);
-	log("  bSpawned    = " $ bSpawned);
-	log("  event.transferCount = " $ event.transferCount);
-	log("-------------------------------------------------");*/
+/*  log("AddTransferCount()-------------------------------");
+    log("  invItemFrom = " $ invItemFrom);
+    log("  invItemTo   = " $ invItemTo);
+    log("  transferTo  = " $ transferTo);
+    log("  bSpawned    = " $ bSpawned);
+    log("  event.transferCount = " $ event.transferCount);
+    log("-------------------------------------------------");*/
 
-	if (invItemTo == None)
-		return 0;
+    if (invItemTo == None)
+        return 0;
 
-	// If this is a Weapon, then we need to just add additional 
-	// ammo.
-	if (invItemTo.IsA('DeusExWeaponInv'))
-	{
-		if (event.transferCount > 1)
-		{
-			AmmoType = ammunition(transferTo.FindInventoryType(DeusExWeaponInv(invItemTo).AmmoName));
+    // If this is a Weapon, then we need to just add additional 
+    // ammo.
+    if (invItemTo.IsA('DeusExWeaponInv'))
+    {
+        if (event.transferCount > 1)
+        {
+            AmmoType = ammunition(transferTo.FindInventoryType(DeusExWeaponInv(invItemTo).AmmoName));
 
-			if ( AmmoType != None )
-			{
-				itemsTransferred = DeusExWeaponInv(invItemTo).PickUpAmmoCount * (event.transferCount - 1);
-				AmmoType.AddAmmo(itemsTransferred);
+            if ( AmmoType != None )
+            {
+                itemsTransferred = DeusExWeaponInv(invItemTo).PickUpAmmoCount * (event.transferCount - 1);
+                AmmoType.AddAmmo(itemsTransferred);
 
-				// For count displayed
-				itemsTransferred++;
-			}
-		}
-	}
+                // For count displayed
+                itemsTransferred++;
+            }
+        }
+    }
 
-	// If this is a DeusExPickup and he already has it, just 
-	// increment the count
-	else if ((invItemTo.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemTo).bCanHaveMultipleCopies))
-	{
-		// If the item was spawned, then it will already have a copy count of 1, so we
-		// only want to add to that if it was specified to transfer > 1 items.
+    // If this is a DeusExPickup and he already has it, just 
+    // increment the count
+    else if ((invItemTo.IsA('DeusExPickupInv')) && (DeusExPickupInv(invItemTo).bCanHaveMultipleCopies))
+    {
+        // If the item was spawned, then it will already have a copy count of 1, so we
+        // only want to add to that if it was specified to transfer > 1 items.
 
-		if (bSpawned)
-		{
-			itemsTransferred = event.transferCount;
-			if (event.transferCount > 1)
-			{
-				DeusExPickupInv(invItemTo).NumCopies += event.transferCount - 1;
+        if (bSpawned)
+        {
+            itemsTransferred = event.transferCount;
+            if (event.transferCount > 1)
+            {
+                DeusExPickupInv(invItemTo).NumCopies += event.transferCount - 1;
 
-				if (DeusExPickupInv(invItemTo).NumCopies > DeusExPickupInv(invItemTo).maxCopies)
-				{
-					itemsTransferred = DeusExPickupInv(invItemTo).maxCopies;
-					DeusExPickupInv(invItemTo).NumCopies = DeusExPickupInv(invItemTo).maxCopies;
-				}
-			}
-		}
+                if (DeusExPickupInv(invItemTo).NumCopies > DeusExPickupInv(invItemTo).maxCopies)
+                {
+                    itemsTransferred = DeusExPickupInv(invItemTo).maxCopies;
+                    DeusExPickupInv(invItemTo).NumCopies = DeusExPickupInv(invItemTo).maxCopies;
+                }
+            }
+        }
 
-		// Wasn't spawned, so add the appropriate amount (if transferCount
-		// isn't specified, just add one).
+        // Wasn't spawned, so add the appropriate amount (if transferCount
+        // isn't specified, just add one).
 
-		else
-		{
-			if (event.transferCount > 0)
-				itemsTransferred = event.transferCount;
-			else
-				itemsTransferred = 1;
+        else
+        {
+            if (event.transferCount > 0)
+                itemsTransferred = event.transferCount;
+            else
+                itemsTransferred = 1;
 
-			if ((DeusExPickupInv(invItemTo).NumCopies + itemsTransferred) > DeusExPickupInv(invItemTo).MaxCopies)
-				itemsTransferred = DeusExPickupInv(invItemTo).MaxCopies - DeusExPickupInv(invItemTo).NumCopies;
+            if ((DeusExPickupInv(invItemTo).NumCopies + itemsTransferred) > DeusExPickupInv(invItemTo).MaxCopies)
+                itemsTransferred = DeusExPickupInv(invItemTo).MaxCopies - DeusExPickupInv(invItemTo).NumCopies;
 
-			DeusExPickupInv(invItemTo).NumCopies += itemsTransferred;
+            DeusExPickupInv(invItemTo).NumCopies += itemsTransferred;
 
-			if ((DeusExPickupInv(invItemFrom) != None) && (invItemFrom != InvItemTo))
-				DeusExPickupInv(invItemFrom).NumCopies -= itemsTransferred;
-		}
+            if ((DeusExPickupInv(invItemFrom) != None) && (invItemFrom != InvItemTo))
+                DeusExPickupInv(invItemFrom).NumCopies -= itemsTransferred;
+        }
 
-		// Update the belt text
-		DeusExPickupInv(invItemTo).UpdateBeltText();
-	}
-	else if ((invItemTo.IsA('DeusExPickupInv')) && (!bSpawned))
-	{
-		giveItem = DeusExPickupInv(Spawn(invItemTo.Class));
-		giveItem.GiveTo(transferTo);
+        // Update the belt text
+        DeusExPickupInv(invItemTo).UpdateBeltText();
+    }
+    else if ((invItemTo.IsA('DeusExPickupInv')) && (!bSpawned))
+    {
+        giveItem = DeusExPickupInv(Spawn(invItemTo.Class));
+        giveItem.GiveTo(transferTo);
  
-		// Just give the player another one of these fucking things
-		if ((DeusExPlayer(transferTo) != None) && (DeusExPlayer(transferTo).FindInventorySlot(giveItem)))
-			itemsTransferred = 1;
-		else
-			itemsTransferred = 0;
-	}
+        // Just give the player another one of these fucking things
+        if ((DeusExPlayer(transferTo) != None) && (DeusExPlayer(transferTo).FindInventorySlot(giveItem)))
+            itemsTransferred = 1;
+        else
+            itemsTransferred = 0;
+    }
 
 log("  return itemsTransferred = " $ itemsTransferred);
 
-	return itemsTransferred;
+    return itemsTransferred;
 }
 
 // ----------------------------------------------------------------------
@@ -1050,8 +1014,8 @@ log("  return itemsTransferred = " $ itemsTransferred);
 
 function RemoveItemFromPlayer(Inventory item)
 {
-	if ((player != None) && (item != None))
-		player.RemoveItemDuringConversation(item);
+    if ((player != None) && (item != None))
+        player.RemoveItemDuringConversation(item);
 }
 
 // ----------------------------------------------------------------------
@@ -1060,32 +1024,32 @@ function RemoveItemFromPlayer(Inventory item)
 
 function EEventAction SetupEventJump(ConEventJump event, out String nextLabel)
 {
-	local EEventAction nextAction;
+    local EEventAction nextAction;
 
   SetPointerToJumpToCon(event); //
 
-	// Check to see if the jump label is empty.  If so, then we just want
-	// to fall through to the next event.  This can happen when jump
-	// events get inserted during the import process.  ConEdit will not
-	// allow the user to create events like this. 
+    // Check to see if the jump label is empty.  If so, then we just want
+    // to fall through to the next event.  This can happen when jump
+    // events get inserted during the import process.  ConEdit will not
+    // allow the user to create events like this. 
 
-	if ( event.jumpLabel == "" ) 
-	{
-		nextAction = EA_NextEvent;
-		nextLabel = "";
-	}
-	else
-	{
-		// Jump to a specific label.  We can also jump into another conversation
-		nextLabel = event.jumpLabel;
+    if ( event.jumpLabel == "" ) 
+    {
+        nextAction = EA_NextEvent;
+        nextLabel = "";
+    }
+    else
+    {
+        // Jump to a specific label.  We can also jump into another conversation
+        nextLabel = event.jumpLabel;
 
-		if ( event.jumpCon != None )
-			nextAction = EA_JumpToConversation;
-		else
-			nextAction = EA_JumpToLabel;
-	}
+        if ( event.jumpCon != None )
+            nextAction = EA_JumpToConversation;
+        else
+            nextAction = EA_JumpToLabel;
+    }
 
-	return nextAction;
+    return nextAction;
 }
 
 // ----------------------------------------------------------------------
@@ -1094,8 +1058,8 @@ function EEventAction SetupEventJump(ConEventJump event, out String nextLabel)
 
 function EEventAction SetupEventAnimation(ConEventAnimation event, out String nextLabel)
 {
-	nextLabel = "";
-	return EA_PlayAnim;
+    nextLabel = "";
+    return EA_PlayAnim;
 }
 
 // ----------------------------------------------------------------------
@@ -1108,9 +1072,9 @@ function EEventAction SetupEventRandomLabel(ConEventRandom event, out String nex
 
   gl = class'DeusExGlobals'.static.GetGlobals();
 
-	// Pick a random label
-	nextLabel = gl.GetRandomLabel(event); //event.GetRandomLabel();
-	return EA_JumpToLabel;
+    // Pick a random label
+    nextLabel = gl.GetRandomLabel(event); //event.GetRandomLabel();
+    return EA_JumpToLabel;
 }
 
 // ----------------------------------------------------------------------
@@ -1119,13 +1083,13 @@ function EEventAction SetupEventRandomLabel(ConEventRandom event, out String nex
 
 function EEventAction SetupEventTrigger(ConEventTrigger event, out String nextLabel)
 {
-	local Actor anActor;
+    local Actor anActor;
 
-	// Loop through all the actors, firing a trigger for each
-	foreach AllActors(class'Actor', anActor, class'DxUtil'.static.StringToName(event.triggerTag))
-		anActor.Trigger(lastActor, Pawn(lastActor));
+    // Loop through all the actors, firing a trigger for each
+    foreach AllActors(class'Actor', anActor, class'ObjectManager'.static.StringToName(event.triggerTag))
+        anActor.Trigger(lastActor, Pawn(lastActor));
 
-	return EA_NextEvent;
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -1136,24 +1100,24 @@ function EEventAction SetupEventTrigger(ConEventTrigger event, out String nextLa
 
 function EEventAction SetupEventAddGoal(ConEventAddGoal event, out String nextLabel)
 {
-	local /*DeusExGoal*/ name goal;
+    local /*DeusExGoal*/ name goal;
 
-	// First check to see if this goal exists
-	goal = player.FindGoal(class'DxUtil'.static.StringToName(event.goalNameString));
+    // First check to see if this goal exists
+    goal = player.FindGoal(class'ObjectManager'.static.StringToName(event.goalNameString));
 
-	if ((goal == 'None') && (!event.bGoalCompleted))
-	{
-		// Add this goal to the player's goals
-	    goal = player.AddGoal(class'DxUtil'.static.StringToName(event.goalNameString), event.bPrimaryGoal, event.goalText);
-//		goal.SetText(event.goalText);
-	}
-	// Check if we're just marking this goal as complete
-	else if (( goal != 'None' ) && ( event.bGoalCompleted ))
-	{
-		player.GoalCompleted(class'DxUtil'.static.StringToName(event.goalNameString));
-	}
+    if ((goal == 'None') && (!event.bGoalCompleted))
+    {
+        // Add this goal to the player's goals
+        goal = player.AddGoal(class'ObjectManager'.static.StringToName(event.goalNameString), event.bPrimaryGoal, event.goalText);
+//      goal.SetText(event.goalText);
+    }
+    // Check if we're just marking this goal as complete
+    else if (( goal != 'None' ) && ( event.bGoalCompleted ))
+    {
+        player.GoalCompleted(class'ObjectManager'.static.StringToName(event.goalNameString));
+    }
 
-	return EA_NextEvent;
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -1167,16 +1131,16 @@ function EEventAction SetupEventAddNote(ConEventAddNote event, out String nextLa
   local array<string> temparray;
 
   temparray[0] = event.noteText;
-	// Only add the note if it hasn't been added already (in case the 
-	// PC has the same conversation more than once)
+    // Only add the note if it hasn't been added already (in case the 
+    // PC has the same conversation more than once)
 
-	if (!event.bNoteAdded)
-	{
-		// Add the note to the player's list of notes
-		player.AddNote(/*event.noteText*/temparray, False, True);
-		event.bNoteAdded = True;
-	}
-	return EA_NextEvent;
+    if (!event.bNoteAdded)
+    {
+        // Add the note to the player's list of notes
+        player.AddNote(/*event.noteText*/temparray, False, True);
+        event.bNoteAdded = True;
+    }
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -1185,10 +1149,10 @@ function EEventAction SetupEventAddNote(ConEventAddNote event, out String nextLa
 
 function EEventAction SetupEventAddSkillPoints(ConEventAddSkillPoints event, out String nextLabel)
 {
-	player.SkillPointsAdd(event.pointsToAdd);
+    player.SkillPointsAdd(event.pointsToAdd);
 
-	nextLabel = "";
-	return EA_NextEvent;
+    nextLabel = "";
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -1201,14 +1165,14 @@ function EEventAction SetupEventAddSkillPoints(ConEventAddSkillPoints event, out
 
 function EEventAction SetupEventAddCredits(ConEventAddCredits event, out String nextLabel)
 {
-	player.credits += event.creditsToAdd;
+    player.credits += event.creditsToAdd;
 
-	// Make sure we haven't gone into the negative
-	player.credits = Max(player.credits, 0);
-	// ToDo: notify player
+    // Make sure we haven't gone into the negative
+    player.credits = Max(player.credits, 0);
+    // ToDo: notify player
 
-	nextLabel = "";
-	return EA_NextEvent;
+    nextLabel = "";
+    return EA_NextEvent;
 }
 
 // ----------------------------------------------------------------------
@@ -1217,65 +1181,65 @@ function EEventAction SetupEventAddCredits(ConEventAddCredits event, out String 
 
 function EEventAction SetupEventCheckPersona(ConEventCheckPersona event, out String nextLabel)
 {
-	local EEventAction action;
-	local int personaValue;
-	local bool bPass;
+    local EEventAction action;
+    local int personaValue;
+    local bool bPass;
 
-	// First determine which persona item we're checking
-	switch(event.personaType)
-	{
-		case EP_Credits:
-//		  log(event@"checking EP_Credits, value in event ="$event.value,'Credits');//
-			personaValue = player.Credits;
-			break;
+    // First determine which persona item we're checking
+    switch(event.personaType)
+    {
+        case EP_Credits:
+//        log(event@"checking EP_Credits, value in event ="$event.value,'Credits');//
+            personaValue = player.Credits;
+            break;
 
-		case EP_Health:
-			player.GenerateTotalHealth();
-			personaValue = player.Health;
-			break;
+        case EP_Health:
+            player.GenerateTotalHealth();
+            personaValue = player.Health;
+            break;
 
-		case EP_SkillPoints:
-			personaValue = player.SkillPointsAvail;
-			break;
-	}
+        case EP_SkillPoints:
+            personaValue = player.SkillPointsAvail;
+            break;
+    }
 
-	// Now decide what to do baby!
-	switch(event.condition)
-	{
-		case EC_Less:
-			bPass = (personaValue < event.value);
-			break;
+    // Now decide what to do baby!
+    switch(event.condition)
+    {
+        case EC_Less:
+            bPass = (personaValue < event.value);
+            break;
 
-		case EC_LessEqual:
-			bPass = (personaValue <= event.value);
-			break;
+        case EC_LessEqual:
+            bPass = (personaValue <= event.value);
+            break;
 
-		case EC_Equal:
-			bPass = (personaValue == event.Value);
-			break;
+        case EC_Equal:
+            bPass = (personaValue == event.Value);
+            break;
 
-		case EC_GreaterEqual:
-			bPass = (personaValue >= event.Value);
-			break;
+        case EC_GreaterEqual:
+            bPass = (personaValue >= event.Value);
+            break;
 
-		case EC_Greater:
-			bPass = (personaValue > event.Value);
-			break;
-	}
+        case EC_Greater:
+            bPass = (personaValue > event.Value);
+            break;
+    }
 
-	if (bPass)
-	{
-//	  log("passed, jump to "$event$" label="$event.jumpLabel);
-		nextLabel = event.jumpLabel;
-		action = EA_JumpToLabel;
-	}
-	else
-	{
-		nextLabel = "";
-		action = EA_NextEvent;
-	}
+    if (bPass)
+    {
+//    log("passed, jump to "$event$" label="$event.jumpLabel);
+        nextLabel = event.jumpLabel;
+        action = EA_JumpToLabel;
+    }
+    else
+    {
+        nextLabel = "";
+        action = EA_NextEvent;
+    }
 
-	return action;
+    return action;
 }
 
 // ----------------------------------------------------------------------
@@ -1284,8 +1248,8 @@ function EEventAction SetupEventCheckPersona(ConEventCheckPersona event, out Str
 
 function EEventAction SetupEventEnd(ConEventEnd event, out String nextLabel)
 {
-	nextLabel = "";
-	return EA_End;
+    nextLabel = "";
+    return EA_End;
 }
 
 // ----------------------------------------------------------------------
@@ -1293,32 +1257,34 @@ function EEventAction SetupEventEnd(ConEventEnd event, out String nextLabel)
 // ----------------------------------------------------------------------
 function SetupHistory(String ownerName, optional Bool bInfoLink)
 {
-	local string flagName;
-	local bool bBarkConvo;
-	local DeusExGlobals gl;
+    local string flagName;
+    local bool bBarkConvo;
 
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    // If this conversation has already been played, we don't want
+    // to record it again
+    //
+    // Also ignore Bark conversations.
 
-	// If this conversation has already been played, we don't want
-	// to record it again
-	//
-	// Also ignore Bark conversations.
+    bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
+    flagName = con.Name $ "_Played";
 
-	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
-	flagName = con.Name $ "_Played";
+    if ((player.GetflagBase().GetBool(flagName) == false) && (!bBarkConvo))
+    {
+        history = player.CreateHistoryObject();
 
-//	if (bBarkConvo)
-//	    return;
-
-	if ((player.GetflagBase().GetBool(flagName) == False) && (!bBarkConvo))
-	{
-    x = gl.myConHistory.Length;
-    gl.myConHistory.Length = x + 1; // добавить 1 к длине массива
-	  gl.myConHistory[x].conOwnerName = ownerName;
-		gl.myConHistory[x].strLocation = MissionLocation;
-		gl.myConHistory[x].strDescription = con.Description;
-		gl.myConHistory[x].bInfoLink = bInfoLink;
-	}
+        history.conOwnerName    = ownerName;
+        history.strLocation     = MissionLocation;
+        history.strDescription  = con.Description;
+        history.bInfoLink       = bInfoLink;
+        history.firstEvent      = None;
+        history.lastEvent       = None;
+        history.next            = None;
+          Player.ClientMessage("Added ConHistory entry, conversation = "$con.Name @ con);
+    }
+    else
+    {
+        history = None;
+    }
 }
 
 // -------------------------------------------------------------------------
@@ -1327,28 +1293,26 @@ function SetupHistory(String ownerName, optional Bool bInfoLink)
 
 function AddHistoryEvent(String eventSpeaker, ConEventSpeech eventSpeech)
 {
-//	local ConHistoryEvent newEvent;
-	local DeusExGlobals gl;
-	local int c;
-	local bool bBarkConvo;
-	local bool bIntroConvo;
+    local ConHistoryEvent newEvent;
+    local DeusExGlobals gl;
 
-	// Don't save conversations history for Intro && AIBarks
-	bBarkConvo = (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"));
-	bIntroConvo = DeusExPlayerController(level.GetLocalPlayerController()).GetLevelInfo().MapName == "Intro";
+    gl = class'DeusExGlobals'.static.GetGlobals();
 
-	if (bBarkConvo || bIntroConvo)
-	    return;
+    if (history != None)
+    {
+        // First, create a new event
+        newEvent = player.CreateHistoryEvent(); 
 
-	gl = class'DeusExGlobals'.static.GetGlobals();
+        // Assign variables
+        newEvent.conSpeaker = eventSpeaker;
 
-  c = gl.myConHistory[x].conHistoryEvents.Length;
-  gl.myConHistory[x].conHistoryEvents.Length = c + 1; // добавить 1 к длине массива
-  gl.myConHistory[x].conHistoryEvents[c].conSpeaker = eventSpeaker;
-  gl.myConHistory[x].conHistoryEvents[c].speech = eventSpeech.speech;
-  gl.myConHistory[x].conHistoryEvents[c].soundPath = eventSpeech.soundPath;
+        newEvent.speech  = eventSpeech.speech;
+        newEvent.soundID = eventSpeech.soundPath;
 
-//  log(gl.myConHistory[x].conHistoryEvents[c].speech);
+        newEvent.next = None;
+
+        history.AddEvent(newEvent);
+    }
 }
 
 // -------------------------------------------------------------------------
@@ -1357,16 +1321,31 @@ function AddHistoryEvent(String eventSpeaker, ConEventSpeech eventSpeech)
 
 function AddHistoryEventChoice(String eventSpeaker, ConChoice choice)
 {
-	local DeusExGlobals gl;
-	local int c;
+    local ConHistoryEvent newEvent;
 
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    if (history != None)
+    {
+        // First, create a new event
+        newEvent = player.CreateHistoryEvent(); 
+        newEvent.conSpeaker = eventSpeaker;
+
+        newEvent.speech  = choice.ChoiceText;
+        newEvent.soundID = choice.soundPath;
+
+        newEvent.next = None;
+
+        history.AddEvent(newEvent);
+    }
+/*    local DeusExGlobals gl;
+    local int c;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
 
   c = gl.myConHistory[x].conHistoryEvents.Length;
   gl.myConHistory[x].conHistoryEvents.Length = c + 1; // добавить 1 к длине массива
   gl.myConHistory[x].conHistoryEvents[c].conSpeaker = eventSpeaker;
   gl.myConHistory[x].conHistoryEvents[c].speech = choice.ChoiceText;
-  gl.myConHistory[x].conHistoryEvents[c].soundPath = choice.soundPath;
+  gl.myConHistory[x].conHistoryEvents[c].soundPath = choice.soundPath;*/
 }
 
 
@@ -1379,18 +1358,18 @@ function AddHistoryEventChoice(String eventSpeaker, ConChoice choice)
 
 function TurnSpeakingActors(Actor speaker, Actor speakingTo)
 {
-	if (!bForcePlay)
-	{
-		TurnActor(speaker,    speakingTo);
-		TurnActor(speakingTo, speaker);
-	}
-	else
-	{
-		if ((speaker != None) && (speaker.IsA('ScriptedPawn')))
-			ScriptedPawn(speaker).EnterConversationState(con.bFirstPerson);
-		if ((speakingTo != None) && (speakingTo.IsA('ScriptedPawn')))
-			ScriptedPawn(speakingTo).EnterConversationState(con.bFirstPerson);
-	}
+    if (!bForcePlay)
+    {
+        TurnActor(speaker,    speakingTo);
+        TurnActor(speakingTo, speaker);
+    }
+    else
+    {
+        if ((speaker != None) && (speaker.IsA('ScriptedPawn')))
+            ScriptedPawn(speaker).EnterConversationState(con.bFirstPerson);
+        if ((speakingTo != None) && (speakingTo.IsA('ScriptedPawn')))
+            ScriptedPawn(speakingTo).EnterConversationState(con.bFirstPerson);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1399,19 +1378,19 @@ function TurnSpeakingActors(Actor speaker, Actor speakingTo)
 
 function TurnActor(Actor turnActor, Actor turnTowards)
 {
-	// Check to see if each Actor is already in the conversation
-	// state.  If not, they need to be in that state.  Just don't 
-	// add the player
+    // Check to see if each Actor is already in the conversation
+    // state.  If not, they need to be in that state.  Just don't 
+    // add the player
 
-	if (DeusExPlayer(turnActor) == None)
-	{
-		AddConActor(turnActor, con.bFirstPerson);
+    if (DeusExPlayer(turnActor) == None)
+    {
+        AddConActor(turnActor, con.bFirstPerson);
 
-		if ((turnActor != None) && (turnActor.IsA('ScriptedPawn')))
-			ScriptedPawn(turnActor).ConversationActor = turnTowards;
-	}
-	else
-		DeusExPlayer(turnActor).ConversationActor = turnTowards;
+        if ((turnActor != None) && (turnActor.IsA('ScriptedPawn')))
+            ScriptedPawn(turnActor).ConversationActor = turnTowards;
+    }
+    else
+        DeusExPlayer(turnActor).ConversationActor = turnTowards;
 }
 
 // ----------------------------------------------------------------------
@@ -1422,20 +1401,20 @@ function TurnActor(Actor turnActor, Actor turnTowards)
 // ----------------------------------------------------------------------
 
 function AddConActor(Actor newConActor, bool bFirstPerson)
-{	
-	if ((!bForcePlay) && (newConActor != None))
-	{
-		// Only do if we have space and this pawn isn't already speaking
-		if ((!IsConActorInList(newConActor)) && (conActorCount < 9))
-		{
-			ConActors[conActorCount++] = newConActor;
+{   
+    if ((!bForcePlay) && (newConActor != None))
+    {
+        // Only do if we have space and this pawn isn't already speaking
+        if ((!IsConActorInList(newConActor)) && (conActorCount < 9))
+        {
+            ConActors[conActorCount++] = newConActor;
 
-			if (newConActor.IsA('ScriptedPawn'))
-				ScriptedPawn(newConActor).EnterConversationState(bFirstPerson);
-			else if (newConActor.IsA('DeusExDecoration'))
-				DeusExDecoration(newConActor).EnterConversationState(bFirstPerson);
-		}
-	}
+            if (newConActor.IsA('ScriptedPawn'))
+                ScriptedPawn(newConActor).EnterConversationState(bFirstPerson);
+            else if (newConActor.IsA('DeusExDecoration'))
+                DeusExDecoration(newConActor).EnterConversationState(bFirstPerson);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1444,22 +1423,22 @@ function AddConActor(Actor newConActor, bool bFirstPerson)
 
 function bool IsConActorInList(Actor conActor, optional bool bRemoveActor)
 {
-	local int conActorIndex;
-	local bool bFound;
+    local int conActorIndex;
+    local bool bFound;
 
-	for(conActorIndex=0; conActorIndex<conActorCount; conActorIndex++)
-	{
-		if (ConActors[conActorIndex] == conActor)
-		{
-			if (bRemoveActor)
-				ConActors[conActorIndex] = None;
+    for(conActorIndex=0; conActorIndex<conActorCount; conActorIndex++)
+    {
+        if (ConActors[conActorIndex] == conActor)
+        {
+            if (bRemoveActor)
+                ConActors[conActorIndex] = None;
 
-			bFound = True;
-			break;
-		}
-	}
+            bFound = True;
+            break;
+        }
+    }
 
-	return bFound;
+    return bFound;
 }
 
 // ----------------------------------------------------------------------
@@ -1471,27 +1450,27 @@ function bool IsConActorInList(Actor conActor, optional bool bRemoveActor)
 
 function EndConActorStates()
 {
-	local int conActorIndex;
+    local int conActorIndex;
 
-	if (!bForcePlay)
-	{
-		for(conActorIndex=conActorCount-1; conActorIndex>=0; conActorIndex--)
-		{
-			if (ConActors[conActorIndex] != None)
-			{
-				ConActors[conActorIndex].EndConversation();
-				ConActors[conActorIndex] = None;
-				conActorCount--;
-			}
-		}
+    if (!bForcePlay)
+    {
+        for(conActorIndex=conActorCount-1; conActorIndex>=0; conActorIndex--)
+        {
+            if (ConActors[conActorIndex] != None)
+            {
+                ConActors[conActorIndex].EndConversation();
+                ConActors[conActorIndex] = None;
+                conActorCount--;
+            }
+        }
 
-		// Make sure the invoking actor, if a DeusExDecoration or ScriptedPawn,
-		// is not stuck in the conversation state
-		if (ScriptedPawn(invokeActor) != None )
-			ScriptedPawn(invokeActor).EndConversation();
-		else if (DeusExDecoration(invokeActor) != None )
-			DeusExDecoration(invokeActor).EndConversation();
-	}
+        // Make sure the invoking actor, if a DeusExDecoration or ScriptedPawn,
+        // is not stuck in the conversation state
+        if (ScriptedPawn(invokeActor) != None )
+            ScriptedPawn(invokeActor).EndConversation();
+        else if (DeusExDecoration(invokeActor) != None )
+            DeusExDecoration(invokeActor).EndConversation();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1508,22 +1487,22 @@ function EndConActorStates()
 
 function ActorDestroyed(Actor destroyedActor)
 {
-	local int conActorIndex;
+    local int conActorIndex;
 
-	for(conActorIndex=0; conActorIndex<ArrayCount(ConActorsBound); conActorIndex++)
-	{
-		if (ConActorsBound[conActorIndex] == destroyedActor)
-		{
-			// First check to see if it's in the ConActors list, in 
-			// which case it needs to be removed before we abort
-			// (so it doesn't try to do anything with that variable)
-			IsConActorInList(destroyedActor, True);
+    for(conActorIndex=0; conActorIndex<ArrayCount(ConActorsBound); conActorIndex++)
+    {
+        if (ConActorsBound[conActorIndex] == destroyedActor)
+        {
+            // First check to see if it's in the ConActors list, in 
+            // which case it needs to be removed before we abort
+            // (so it doesn't try to do anything with that variable)
+            IsConActorInList(destroyedActor, True);
 
-			// Abort the conversation!!!
-			TerminateConversation();
-			break;
-		}
-	}
+            // Abort the conversation!!!
+            TerminateConversation();
+            break;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1531,7 +1510,7 @@ function ActorDestroyed(Actor destroyedActor)
 // ----------------------------------------------------------------------
 function SetForcePlay(bool bNewForcePlay)
 {
-	bForcePlay = bNewForcePlay;
+    bForcePlay = bNewForcePlay;
 }
 
 // ----------------------------------------------------------------------
@@ -1539,12 +1518,11 @@ function SetForcePlay(bool bNewForcePlay)
 // ----------------------------------------------------------------------
 function bool GetForcePlay()
 {
-	return bForcePlay;
+    return bForcePlay;
 }
 
 // ----------------------------------------------------------------------
 // Проверить, существует ли файл озвучивания для этого события.
-
 function String CheckConversationsAudio(Object ev)
 {
    local DeusExLevelInfo dxl;
@@ -1584,7 +1562,6 @@ function Sound GetSound(string path)
 
   aPath = dxl.ConAudioPath;
 
-//  bResult = class'DxUtil'.static.LoadSoundFromFile(aPath $ Path, tmp, none);
    bResult = class'SoundManager'.static.LoadSound(aPath $ Path, tmp, outer);
 
   if (bResult)
@@ -1598,34 +1575,25 @@ function Sound GetSound(string path)
 
 final function ConCamera CreateConCamera()
 {
-	local ConCamera rezultat;
+    local ConCamera rezultat;
 
-	// Не создавать, если такой уже есть.
-	foreach AllObjects(class'ConCamera', rezultat)
-	break;
+    // Не создавать, если такой уже есть.
+    foreach AllObjects(class'ConCamera', rezultat)
+    break;
 
-	if (rezultat != none)
-	    return rezultat;
+    if (rezultat != none)
+        return rezultat;
 
-	else if (rezultat == none)
+    else if (rezultat == none)
       rezultat = new(Outer) class'ConCamera';
 
-	return rezultat; 
+    return rezultat; 
 }
 
 event Destroyed()
 {
-  local ConWindowActive wa;
-
    if (dMsg != none)
       dMsg.Activate(); // DXR: Start displaying delayed messages
-
-  foreach AllObjects(class'ConWindowActive', wa)
-  {
-
-//    class'ObjectManager'.static.DestroyObject(wa);
-  }
-  
 
    Super.Destroyed();
 }

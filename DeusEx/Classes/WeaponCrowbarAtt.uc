@@ -1,7 +1,4 @@
-//=============================================================================
-// WeaponCrowbar.
-//=============================================================================
-class WeaponCrowbarAtt extends WeaponAttachment;
+class WeaponCrowbarAtt extends DXRWeaponAttachment;
 
 defaultproperties
 {

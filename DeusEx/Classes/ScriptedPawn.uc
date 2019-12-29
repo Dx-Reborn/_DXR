@@ -10,18 +10,13 @@ class ScriptedPawn extends DeusExNPCPawn
 const SEEK_RADIUS = 1000; // ToDo: Расстояние для замены ReachablePathnodes
 const BEAM_CHECK_RADIUS = 1200;
 const BEST_ENEMY_CHECK_RADIUS = 2000;
+const SKIP_ENEMY_DISTANCE = 2500;
+const MAX_CARCASS_DIST = 1200;
 
 var name AlarmTag;
 
-var     bool        bCanGlide;   // DEUS_EX STM -- added for flying/swimming states
-
-var     bool        bJumpOffPawn;
-
-// Blending Animation control - DEUS_EX CNN
-var          float        BlendAnimLast[4];        // Last frame.
-var          float        BlendAnimMinRate[4];     // Minimum rate for velocity-scaled animation.
-var          float        OldBlendAnimRate[4];     // Animation rate of previous animation (= AnimRate until animation completes).
-var          plane        SimBlendAnim[4];         // replicated to simulated proxies.
+var bool bJumpOffPawn;
+var() bool bCrouchToPassObstacles; // Использовать в Controller > NotifyHitWall, чтобы Pawn пригибался для обхода ПОД препятствием. По умолчанию False.
 
 // ----------------------------------------------------------------------
 // Structures
@@ -71,13 +66,14 @@ var float            Restlessness;  // 0-1
 var float            Wanderlust;    // 0-1
 var float            Cowardice;     // 0-1
 
-var(Pawn) class<carcass> CarcassType;       // mesh to use when killed from the front
+var(Pawn) class<carcass> CarcassType; // mesh to use when killed from the front
 
 // Advanced AI attributes.
 var     HomeBase    HomeActor;      // home base
 var     Vector      HomeLoc;        // location of home base
 var     Vector      HomeRot;        // rotation of home base
 var     bool        bUseHome;       // true if home base should be used
+var(Pawn) bool bHasHeels;           // Special case for footstepping
 
 var     AlarmUnit   AlarmActor;
 
@@ -96,31 +92,96 @@ var      bool     bSeatHackUsed;
 
 var globalconfig bool bPawnShadows;
 var globalconfig bool bBlobShadow;
-var transient ShadowProjector PawnShadow;
 
-var DXRAIController DController;
 var DeusExPlayer myDxPlayer;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
+
+// Saving/Loading animations
+var name    SaveAnim;           // Last anim I was playing when saved
+var float   SaveFrame;          // 0 to 1.0 value for what frame we were on
+var float   SaveRate;           // value for how fast we were playing the frame, 1.0 is normal.
+
+function RobotFiringEffects();
+function PawnFiringEffects();
+
+simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
+{
+//    local string T;
+    Super.DisplayDebug(Canvas, YL, YPos);
+
+    Canvas.DrawText("я EnemyLastSeen = "$EnemyLastSeen);
+}
+
+function Draw_DebugLine()
+{
+/*   if (AIDirReach_Location != vect(0,0,0))
+       DrawStayingDebugLine(Location, AIDirReach_Location, 255, 221, 100);
+
+   if (AIPickRandom_Location != vect(0,0,0))
+       DrawStayingDebugLine(Location, AIPickRandom_Location, 0, 0, 255);
+
+    if (destPoint != None)
+        DrawStayingDebugLine(Location, DestPoint.Location, 55, 121, 100);*/
+}
+
+event AnimEnd(int channel)
+{
+   ClearStayingDebugLines();
+}
+
+event PreSaveGame()
+{
+    // Make anything that was playing an anim in the 0 channel restore properly.
+    // Only get them for channel 0.
+    GetAnimParams(0, SaveAnim, SaveFrame, SaveRate);
+    if(SaveFrame < 0.0)
+        SaveFrame = 0.0;
+    else if(SaveFrame > 1.0)
+        SaveFrame = 1.0;
+
+        SimAnim.AnimSequence = SaveAnim;
+        SimAnim.bAnimLoop = false;
+        SimAnim.AnimRate = SaveRate;
+        SimAnim.AnimFrame = SaveFrame;
+        SimAnim.TweenRate = 0.0;
+}
+
+event PostLoadSavedGame()
+{
+//    log(self@"PostLoadSavedGame() called !");
+
+    // Force the animations to restart
+    if(SaveAnim != '')
+    {
+        SetAnimFrame(SaveFrame, 0);
+
+        if (bDancing)
+           PlayDancing();
+        else
+        PlayAnim(SaveAnim, SaveRate, , 0);
+    }
+
+    if (shadow == none)
+        CreateShadow();
+
+  ConBindEvents();
+}
+
+event ObstacleTimerIsOver()
+{
+//  if ((Controller != None) && (controller.MoveTarget != None))
+//   Controller.Focus = controller.MoveTarget;
+}
 
 // Заглушка, для того чтобы собиралось.
 final function float ParabolicTrace(out vector finalLocation,optional vector startVelocity,optional vector startLocation,optional bool bCheckActors,
                                     optional vector cylinder,optional float maxTime,optional float elasticity,optional bool bBounce,optional float landingSpeed,
                                     optional float  granularity)
 {
+   finalLocation = Controller.Enemy.Location;
    return 1.0f;
-}
-
-function float AICanSee(actor other, optional float visibility,optional bool bCheckVisibility, optional bool bCheckDir,
-                                          optional bool bCheckCylinder, optional bool bCheckLOS)
-{
-   return DXRAiController(controller).AICanSee(other, visibility,bCheckVisibility, bCheckDir,bCheckCylinder,  bCheckLOS);
-}
-
-function bool AIPickRandomDestination(float minDist, float maxDist,int centralYaw, float yawDistribution, int centralPitch, float pitchDistribution,int tries, float multiplier,out vector Dest)
-{
-   return DXRAiController(controller).AIPickRandomDestination(minDist, maxDist,centralYaw, yawDistribution, centralPitch, pitchDistribution,tries, multiplier,Dest);
 }
 
 function float GetCrouchHeight()
@@ -128,6 +189,11 @@ function float GetCrouchHeight()
     return (Default.CollisionHeight*0.65);
 }
 
+function TakeDrowningDamage()
+{
+    // DEUS_EX CNN - make drowning damage happen from center
+    TakeDamage(5, None, Location, vect(0,0,0), class'DM_Drowned');
+}
 
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
 function ConBindEvents()
@@ -142,8 +208,8 @@ function ConBindEvents()
     if (dxInfo != none)
     {
        RegisterConFiles(dxinfo.ConversationsPath);
-     LoadConsForMission(dxinfo.missionNumber);
-     AddRefCount();
+       LoadConsForMission(dxinfo.missionNumber);
+       AddRefCount();
     }
     else
         log("DeusExLevelInfo not found! Failed to register conversations.");
@@ -159,22 +225,22 @@ function RegisterConFiles(string Path)
   conFiles = class'FileManager'.static.FindFiles(Path$"*.con", true, false);
 
   if (conFiles.length == 0)
-     {
-       log("ERROR -- No *.con files found !");
-       return;
-     }
+  {
+     log("ERROR -- No *.con files found !");
+     return;
+  }
 
   for (f=0; f<conFiles.length; f++)
   {
-    bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
-    res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
+     bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
+     res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
   }
 }
 
-function float LastRendered()
+/*function float LastRendered()
 {
    return LastRenderTime; //Level.TimeSeconds;
-}
+}*/
 
 
 function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
@@ -198,6 +264,9 @@ function Touch(actor toucher)
 // ----------------------------------------------------------------------
 function PreBeginPlay()
 {
+    // Added angular size computation - DEUS_EX STM
+  MinAngularSize = tan(AngularResolution*0.5*Pi/180.0);
+  MinAngularSize *= MinAngularSize;
 
   // TODO:
   //
@@ -249,12 +318,8 @@ event PostBeginPlay()
     CreateShadow();
 }
 
-event PostLoadSavedGame()
-{
-  if (shadow == none)
-    CreateShadow();
-    ConBindEvents();
-}
+
+
 
 event Destroyed()
 {
@@ -268,64 +333,28 @@ event Destroyed()
     if ((player != None) && (player.conPlay != None))
          player.conPlay.ActorDestroyed(Self);
 
-    if (PawnShadow != none)
-        PawnShadow.Destroy();
+//    if (PawnShadow != none)
+//        PawnShadow.Destroy();
 
         Super.Destroyed();
 }
 
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
 {
-   return DXRAiController(controller).SetEnemy(newEnemy, newSeenTime, bForce);
-}
-
-function HitWall(vector HitLocation, Actor hitActor)
-{
-    local ScriptedPawn avoidPawn;
-
-    // We only care about HitWall as it pertains to level geometry
-    if (hitActor != Level)
-        return;
-
-    // Are we walking?
-    if ((Physics == PHYS_Walking) && (Acceleration != vect(0,0,0)) && bWalkAround && (AvoidWallTimer <= 0))
+    if (bForce || IsValidEnemy(DeusExPawn(newEnemy)))
     {
-        // Are we turning?
-        if (TurnDirection != TURNING_None)
-        {
-            AvoidWallTimer = 1.0;
+        if (newEnemy != Controller.Enemy)
+            EnemyTimer = 0;
+        Controller.Enemy = newEnemy;
+        EnemyLastSeen    = newSeenTime;
 
-            // About face
-            TurnDirection    = NextDirection;
-            NextDirection    = TURNING_None;
-            bClearedObstacle = false;
+//        log(self@".SetEnemy = "@newEnemy);
 
-            // Avoid pairing off
-            avoidPawn = ScriptedPawn(ActorAvoiding);
-            if (avoidPawn != None)
-            {
-                if ((avoidPawn.Acceleration != vect(0,0,0)) && (avoidPawn.Physics == PHYS_Walking) && (avoidPawn.TurnDirection != TURNING_None) && (avoidPawn.ActorAvoiding == self))
-                {
-                    if ((avoidPawn.TurnDirection == TURNING_Left) && (TurnDirection == TURNING_Right))
-                        TurnDirection = TURNING_None;
-                    else if ((avoidPawn.TurnDirection == TURNING_Right) && (TurnDirection == TURNING_Left))
-                        TurnDirection = TURNING_None;
-                }
-            }
-
-            // Stopped turning?  Shut down
-            if (TurnDirection == TURNING_None)
-            {
-                ActorAvoiding = None;
-                //bAdvancedTactics = false;
-//              controller.bPreparingMove = false;
-                controller.MoveTimer -= 4.0;
-                ObstacleTimer = 0;
-            }
-        }
+        return True;
     }
+    else
+        return False;
 }
-
 
 function HandToHandAttack()
 {
@@ -497,21 +526,21 @@ function ReactToFutz()
 function ReactToProjectiles(Actor projectileActor)
 {
     local DeusExProjectile dxProjectile;
-    local Pawn             instigator;
+    local Pawn             inst;
 
     if ((bFearProjectiles || bReactProjectiles) && bLookingForProjectiles)
     {
         dxProjectile = DeusExProjectile(projectileActor);
         if ((dxProjectile == None) || IsProjectileDangerous(dxProjectile))
         {
-            instigator = Pawn(projectileActor);
-            if (instigator == None)
-                instigator = projectileActor.Instigator;
-            if (instigator != None)
+            inst = Pawn(projectileActor);
+            if (inst == None)
+                inst = projectileActor.Instigator;
+            if (inst != None)
             {
                 if (bFearProjectiles)
-                    IncreaseFear(instigator, 2.0);
-                if (SetEnemy(DeusExPawn(instigator)))
+                    IncreaseFear(inst, 2.0);
+                if (SetEnemy(DeusExPawn(inst)))
                 {
                     SetDistressTimer();
                     HandleEnemy();
@@ -519,7 +548,7 @@ function ReactToProjectiles(Actor projectileActor)
                 else if (bFearProjectiles && IsFearful())
                 {
                     SetDistressTimer();
-                    SetEnemy(instigator, , true);
+                    SetEnemy(inst, , true);
                     Controller.GotoState('Fleeing');
                 }
                 else if (bAvoidHarm)
@@ -528,14 +557,6 @@ function ReactToProjectiles(Actor projectileActor)
         }
     }
 }
-
-
-
-// ----------------------------------------------------------------------
-// InstigatorToPawn()
-// ----------------------------------------------------------------------
-
-
 
 // ----------------------------------------------------------------------
 // EnableShadow()
@@ -557,18 +578,15 @@ function EnableShadow(bool bEnable)
 // ----------------------------------------------------------------------
 function CreateShadow()
 {
+/*  if(RealtimeShadow != none)
+     return;
 
     if(bActorShadows && bPawnShadows && (Level.NetMode != NM_DedicatedServer))
     {
-        PawnShadow = Spawn(class'ShadowProjector',Self,'',Location);
-        PawnShadow.RootMotion = true;// Без смещения
-        PawnShadow.ShadowActor = self;
-        PawnShadow.bBlobShadow = bBlobShadow;
-        PawnShadow.LightDirection = Normal(vect(1,1,3));
-        PawnShadow.LightDistance = 320;
-        PawnShadow.MaxTraceDistance = 350;
-        PawnShadow.InitShadow();
-    }
+        RealtimeShadow = Spawn(class'Effect_ShadowController',self,'',Location);
+        RealtimeShadow.Instigator = self;
+        RealtimeShadow.Initialize();
+    }*/
 }
 
 
@@ -577,11 +595,11 @@ function CreateShadow()
 // ----------------------------------------------------------------------
 function KillShadow()
 {
-    if (PawnShadow != None)
+/*    if (PawnShadow != None)
     {
         PawnShadow.Destroy();
         PawnShadow = None;
-    }
+    }*/
 }
 
 
@@ -627,9 +645,11 @@ function PutInWorld(bool bEnter)
 
     KillShadow();
     SetLocation(Location+vect(0,0,20000));  // move it out of the way
+//    Disable('Tick');  // DXR: New line
   }
   else if (!bInWorld && bEnter)
   {
+//    Enable('Tick'); // DXR: New line
     bInWorld    = true;
     bHidden     = Default.bHidden;
     bDetectable = Default.bDetectable;
@@ -741,33 +761,16 @@ function ResetBasedPawnSize()
   SetBasedPawnSize(Default.CollisionRadius, GetDefaultCollisionHeight());
 }
 
-
-// ----------------------------------------------------------------------
-// GetDefaultCollisionHeight()
-// ----------------------------------------------------------------------
 function float GetDefaultCollisionHeight()
 {
     return (Default.CollisionHeight-4.5);
 }
 
-
-// ----------------------------------------------------------------------
-// GetCrouchHeight()
-// ----------------------------------------------------------------------
-
-
-
-// ----------------------------------------------------------------------
-// GetSitHeight()
-// ----------------------------------------------------------------------
 function float GetSitHeight()
 {
     return (GetDefaultCollisionHeight()+(BaseAssHeight*0.5));
 }
 
-// ----------------------------------------------------------------------
-// IsPointInCylinder()
-// ----------------------------------------------------------------------
 function bool IsPointInCylinder(Actor cylinder, Vector point, optional float extraRadius, optional float extraHeight)
 {
     local bool  bPointInCylinder;
@@ -900,7 +903,6 @@ function Actor FindTaggedActor(Name actorTag, optional bool bRandom, optional Cl
             }
         }
     }
-    log(self@"FindTaggedActor = "$bestActor);
     return bestActor;
 }
 
@@ -1035,9 +1037,6 @@ function StopPoison()
     poisonDamage  = 0;
     Poisoner      = None;
 }
-
-
-
 
 // ----------------------------------------------------------------------
 // HasEnemyTimedOut()
@@ -1237,7 +1236,7 @@ function/* bool*/ CheckBeamPresence(float deltaSeconds)
 // CheckCarcassPresence()
 // Проверяет наличие трупов
 // ----------------------------------------------------------------------
-function /*bool*/CheckCarcassPresence(float deltaSeconds)
+function CheckCarcassPresence(float deltaSeconds)
 {
     local Actor         carcass;
     local Name          CarcassName;
@@ -1251,7 +1250,7 @@ function /*bool*/CheckCarcassPresence(float deltaSeconds)
     local DeusExPawn    bestKiller;
     local float         dist;
     local float         bestDist;
-    local float         maxCarcassDist;
+//    local float         maxCarcassDist;
     local int           maxCarcassCount;
 
     if (bFearCarcass && !bHateCarcass && !bReactCarcass)  // Major hack!
@@ -1262,7 +1261,7 @@ function /*bool*/CheckCarcassPresence(float deltaSeconds)
     //if ((bHateCarcass || bReactCarcass || bFearCarcass) && bLookingForCarcass && (CarcassTimer <= 0))
     if ((bHateCarcass || bReactCarcass || bFearCarcass) && (NumCarcasses < maxCarcassCount))
     {
-        maxCarcassDist = 1200;
+//        maxCarcassDist = 1200;
         if (CarcassCheckTimer <= 0)
         {
             CarcassCheckTimer = 0.1;
@@ -1272,7 +1271,7 @@ function /*bool*/CheckCarcassPresence(float deltaSeconds)
             {
                 if (body.Physics != PHYS_Falling)
                 {
-                    if (VSize(body.Location-Location) < maxCarcassDist)
+                    if (VSize(body.Location-Location) < MAX_CARCASS_DIST /*maxCarcassDist*/)
                     {
                         if (GetCarcassData(body, KillerAlliance, killedAlliance, CarcassName, true))
                         {
@@ -1291,7 +1290,7 @@ function /*bool*/CheckCarcassPresence(float deltaSeconds)
                     player = DeusExPlayer(GetPlayerPawn());
                     if (player != None)
                     {
-                        if (VSize(player.Location-Location) < maxCarcassDist)
+                        if (VSize(player.Location-Location) < MAX_CARCASS_DIST /*maxCarcassDist*/)
                         {
                             if (GetCarcassData(player, KillerAlliance, killedAlliance, CarcassName, true))
                             {
@@ -1563,8 +1562,8 @@ function vector ComputeAwayVector(NearbyProjectileList projList)
     local int             i;
 //    local float           dist;
     local int             yaw;
-    local int             absYaw;
-    local int             bestYaw;
+//    local int             absYaw;
+//    local int             bestYaw;
 //    local NavigationPoint navPoint;
     local NavigationPoint bestPoint;
     local float           segmentDist;
@@ -1637,7 +1636,6 @@ function SetupWeapon(bool bDrawWeapon, optional bool bForce)
         DropWeapon();
     else if (bDrawWeapon)
     {
-//      if (Weapon == None)
         SwitchToBestWeapon();
     }
     else
@@ -1801,8 +1799,8 @@ function DeusExPawn InstigatorToPawn(Actor eventActor)
     if (pawnActor == self)
         pawnActor = None;
 
+//        log(self@" << InstigatorToPawn returns >> "@pawnActor);
     return pawnActor;
-
 }
 
 
@@ -1979,7 +1977,7 @@ function Carcass SpawnCarcass()
         carc.Velocity = Velocity;
         carc.Acceleration = Acceleration;
 
-        log(self$" Inventory = "$Inventory);
+//        log(self$" Inventory = "$Inventory);
 
         // give the carcass the pawn's inventory if we aren't an animal or robot
         if (!IsA('Animal') && !IsA('Robot'))
@@ -2166,10 +2164,6 @@ function bool ShouldReactToInjuryType(class<DamageType> damageType, bool bHatePr
         return false;
 }
 
-
-
-
-
 // ----------------------------------------------------------------------
 // HandleDamage()
 // ----------------------------------------------------------------------
@@ -2177,6 +2171,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 {
     local EHitLocation hitPos;
     local float        headOffsetZ, headOffsetY, armOffset;
+//    local EM_HeadHit   HeadEffect; // DXR: New local variable
 
     // calculate our hit extents
     headOffsetZ = CollisionHeight * 0.7;
@@ -2201,6 +2196,14 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
                     hitPos = HITLOC_HeadBack;
                 else
                     hitPos = HITLOC_HeadFront;
+
+                    // DXR: Spawn DX_HeadHit effect if headshot!
+//                    if ((HealthHead == actualDamage) && ((damageType != class'DM_Stunned') || (damageType != class'DM_KnockedOut')))
+//                    {
+//                       HeadEffect = spawn(class'EM_HeadHit',,,hitLocation, rotation);
+//                    }
+                    // DXR: End of changes.
+
             }
             else  // sides of head treated as torso
             {
@@ -2296,7 +2299,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
     GenerateTotalHealth();
 
-    log("hit position:"@hitpos);
+//    log("hit position:"@hitpos);
 
     return hitPos;
 }
@@ -2363,7 +2366,9 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
             (damageType != class'DM_PoisonGas') && (damageType != class'DM_Radiation') && (damageType != class'DM_EMP') &&
             (damageType != class'DM_NanoVirus') && (damageType != class'DM_Drowned') && (damageType != class'DM_KnockedOut') &&
             (damageType != class'DM_Poison') && (damageType != class'DM_PoisonEffect'))
-            bleedRate += (origHealth-Health)/(0.3*Default.Health);  // 1/3 of default health = bleed profusely
+            {
+                bleedRate += (origHealth-Health)/(0.3*Default.Health);  // 1/3 of default health = bleed profusely
+            }
 
     if ((actualDamage > 0) && (damageType == class'DM_Poison'))
         StartPoison(Damage, instigatedBy);
@@ -2381,7 +2386,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         else
             Health = -1;
 
-        log("Inventory = "$Inventory);
+//        log("Inventory = "$Inventory);
         Died(instigatedBy.controller, damageType, HitLocation);
 
         if ((DamageType == class'DM_Flamed') || (DamageType == class'DM_Burned'))
@@ -2401,7 +2406,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     if ((DamageType == class'DM_Flamed') && !bOnFire)
         CatchFire();
 
-    log(self@"Damaged by"@instigatedBy@"amount:"@Damage);
+//    log(self@"Damaged by"@instigatedBy@"amount:"@Damage);
     DXRAIController(Controller).ReactToInjury(instigatedBy, damageType, hitPos);
 }
 
@@ -2951,6 +2956,7 @@ function PlayIdle()
         if (HasTwoHandedWeapon())
             PlayAnimPivot('Idle12H', , 0.3);
         else
+          if (HasAnim('Idle1')) // Устраняет спамлог для коммандос MJ12.
             PlayAnimPivot('Idle1', , 0.3);
     }
 }
@@ -3038,10 +3044,7 @@ function name GetFloorMaterial()
 }
 
 // ----------------------------------------------------------------------
-// PlayFootStep()
-//
 // Plays footstep sounds based on the texture group
-// (yes, I know this looks nasty -- I'll have to figure out a cleaner way to do this)
 // ----------------------------------------------------------------------
 function PlayFootStep()
 {
@@ -3052,10 +3055,14 @@ function PlayFootStep()
     local float volume, pitch, range;
     local float radius, maxRadius;
     local float volumeMultiplier;
-
     local DeusExPlayer dxPlayer;
+    local DeusExGlobals gl;
     local float shakeRadius, shakeMagnitude;
     local float playerDist;
+    local int FS_Index;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    FS_Index = gl.FS_Preset;
 
     rnd = FRand();
     mat = GetFloorMaterial();
@@ -3079,66 +3086,102 @@ function PlayFootStep()
                 case 'Textile':
                 case 'Paper':
                     volumeMultiplier = 0.7;
-                    if (rnd < 0.25)
+                    stepSound = class'DXRFootStepManager'.static.GetStepPaper(FS_Index);
+                   /* if (rnd < 0.25)
                         stepSound = Sound'CarpetStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'CarpetStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'CarpetStep3';
                     else
-                        stepSound = Sound'CarpetStep4';
+                        stepSound = Sound'CarpetStep4';*/
                     break;
 
                 case 'Foliage':
+                    stepSound = class'DXRFootStepManager'.static.GetFoliageStep(FS_Index);
+                     break;
+
                 case 'Earth':
                     volumeMultiplier = 0.6;
-                    if (rnd < 0.25)
+                    stepSound = class'DXRFootStepManager'.static.GetEarthStep(FS_Index);
+                    /*if (rnd < 0.25)
                         stepSound = Sound'GrassStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'GrassStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'GrassStep3';
                     else
-                        stepSound = Sound'GrassStep4';
+                        stepSound = Sound'GrassStep4';*/
                     break;
 
                 case 'Metal':
                 case 'Ladder':
                     volumeMultiplier = 1.0;
-                    if (rnd < 0.25)
+/*                    if ((bIsFemale) && (bHasHeels))
+                    {
+                       if (rnd < 0.25)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_a';
+                       else if (rnd < 0.5)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_b';
+                       else if (rnd < 0.75)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_c';
+                       else
+                          stepSound = Sound'Heels.Heels_Metal_Tip_d';
+                    }
+                    else*/
+                    stepSound = class'DXRFootStepManager'.static.GetMetalStep(FS_Index);
+                    /*if (rnd < 0.25)
                         stepSound = Sound'MetalStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'MetalStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'MetalStep3';
                     else
-                        stepSound = Sound'MetalStep4';
+                        stepSound = Sound'MetalStep4';*/
+                    break;
+
+                case 'Glass':
+                    volumeMultiplier = 0.7;
+                    stepSound = class'DXRFootStepManager'.static.GetGlassStep(FS_Index);
                     break;
 
                 case 'Ceramic':
-                case 'Glass':
                 case 'Tiles':
                     volumeMultiplier = 0.7;
-                    if (rnd < 0.25)
+                    stepSound = class'DXRFootStepManager'.static.GetCeramicStep(FS_Index);
+                    /*if (rnd < 0.25)
                         stepSound = Sound'TileStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'TileStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'TileStep3';
                     else
-                        stepSound = Sound'TileStep4';
+                        stepSound = Sound'TileStep4';*/
                     break;
 
                 case 'Wood':
                     volumeMultiplier = 0.7;
-                    if (rnd < 0.25)
+/*                    if ((bIsFemale) && (bHasHeels))
+                    {
+                       if (rnd < 0.25)
+                          stepSound = Sound'Heels.Heels_WoodFloor_a';
+                       else if (rnd < 0.5)
+                          stepSound = Sound'Heels.Heels_WoodFloor_b';
+                       else if (rnd < 0.75)
+                          stepSound = Sound'Heels.Heels_WoodFloor_c';
+                       else
+                          stepSound = Sound'Heels.Heels_WoodFloor_d';
+                    }
+                    else*/
+                    stepSound = class'DXRFootStepManager'.static.GetWoodStep(FS_Index);
+                    /*if (rnd < 0.25)
                         stepSound = Sound'WoodStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'WoodStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'WoodStep3';
                     else
-                        stepSound = Sound'WoodStep4';
+                        stepSound = Sound'WoodStep4';*/
                     break;
 
                 case 'Brick':
@@ -3147,14 +3190,27 @@ function PlayFootStep()
                 case 'Stucco':
                 default:
                     volumeMultiplier = 0.7;
-                    if (rnd < 0.25)
+/*                    if ((bIsFemale) && (bHasHeels))
+                    {
+                       if (rnd < 0.25)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_a';
+                       else if (rnd < 0.5)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_b';
+                       else if (rnd < 0.75)
+                          stepSound = Sound'Heels.Heels_Metal_Tip_c';
+                       else
+                          stepSound = Sound'Heels.Heels_Metal_Tip_d';
+                    }
+                    else*/
+                    stepSound = class'DXRFootStepManager'.static.GetDefaultStep(FS_Index);
+                    /*if (rnd < 0.25)
                         stepSound = Sound'StoneStep1';
                     else if (rnd < 0.5)
                         stepSound = Sound'StoneStep2';
                     else if (rnd < 0.75)
                         stepSound = Sound'StoneStep3';
                     else
-                        stepSound = Sound'StoneStep4';
+                        stepSound = Sound'StoneStep4';*/
                     break;
             }
         }
@@ -3165,20 +3221,19 @@ function PlayFootStep()
     // compute sound volume, range and pitch, based on mass and speed
     speedFactor = VSize(Velocity)/120.0;
     massFactor  = Mass/150.0;
-    radius      = 768.0;
-    maxRadius   = 2048.0;
-//  volume      = (speedFactor+0.2)*massFactor;//
+    radius      = 256;//768.0;
+    maxRadius   = 1200;//2048.0;
+//  volume      = (speedFactor+0.2)*massFactor;
 //  volume      = (speedFactor+0.7)*massFactor;
     volume      = massFactor*1.5;
     range       = radius * volume;
     pitch       = (volume+0.5);
-    volume      = 1.0; // DXR: I hear these sounds almost everywhere! 
-//  log(self@"FootStep sound volume = "$volume$" within range(Radius) ="$range/6);
+    volume      = 1.0;
     range       = FClamp(range, 0.01, maxRadius);
     pitch       = FClamp(pitch, 1.0, 1.5);
 
     // play the sound and send an AI event
-  PlaySound(stepSound, SLOT_Interact, volume, , range/6, pitch);
+    PlaySound(stepSound, SLOT_Interact, volume, , range/6, pitch);
 
     class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
 
@@ -3259,7 +3314,7 @@ function bool PlayTurnHead(ELookDirection dir, float rate, float tweentime)
     else
         lookName = 'Still';
 
-    bSuccess = false;
+//    bSuccess = false;
   //  if (BlendAnimSequence[3] != lookName)
 //    {
         //if (animTimer[1] > 0.00)
@@ -3268,7 +3323,7 @@ function bool PlayTurnHead(ELookDirection dir, float rate, float tweentime)
            // if (BlendAnimSequence[3] == '')
          //       BlendAnimSequence[3] = 'Still';
             PlayAnim(lookName, rate, tweentime, 3);
-       //     bSuccess = true;
+            bSuccess = true;
      //   }
    //}
 
@@ -3386,9 +3441,15 @@ function PlayShoot()
     else
     {
         if (HasTwoHandedWeapon())
+        {
             PlayAnimPivot('Shoot2H', , 0);
+            PawnFiringEffects();
+        }
         else
+        {
             PlayAnimPivot('Shoot', , 0);
+            PawnFiringEffects();
+        }
     }
 }
 
@@ -3853,8 +3914,10 @@ function ExtinguishFire()
     burnTimer = 0;
     SetTimer(0, False);
 
-    foreach BasedActors(class'Fire', f)
-        f.Destroy();
+    //foreach BasedActors(class'Fire', f)
+    foreach RadiusActors(class'Fire', f, 100)
+      if (f.Owner == Self)
+            f.Destroy();
 }
 
 // ----------------------------------------------------------------------
@@ -3887,7 +3950,6 @@ function bool CanConverse()
 {
     // Return True if this NPC is in a conversable state
     return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Flying)));
-//  return true; // for now
 }
 
 // ----------------------------------------------------------------------
@@ -4038,6 +4100,8 @@ function SetAlliance(Name newAlliance)
 function ChangeAlly(Name newAlly, optional float allyLevel, optional bool bPermanent, optional bool bHonorPermanence)
 {
     local int i;
+
+   // log(self@Alliance@".ChangeAlly -- newAlly = "$newAlly$" allyLevel = "$allyLevel $" bPermanent? ="@bPermanent);
 
     // Members of the same alliance will ALWAYS be friendly to each other
     if (newAlly == Alliance)
@@ -4606,18 +4670,18 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
     local int          checked;
     local DeusExPawn   candidate;
     local float        candidateDist;
-//  local DeusExPlayer playerCandidate;
     local bool         bCanSee;
     local int          lastCycle;
     local float        aVisibility;
     local DeusExPawn   cycleEnemy;
     local bool         bValid;
     local bool         bPlayer;
-//  local float        surpriseTime;
     local bool         bValidEnemy;
     local bool         bPotentialEnemy;
     local bool         bCheck;
 
+//    if (DistanceFromPlayer() > SKIP_ENEMY_DISTANCE)
+//        return false;
 
     bValid  = false;
     bCanSee = false;
@@ -4796,6 +4860,8 @@ function CheckEnemyParams(Pawn checkPawn,out Pawn bestPawn, out int bestThreatLe
 
 // ----------------------------------------------------------------------
 // FindBestEnemy()
+//               if ((npc != None) && (npc.Controller != none) && (VSize(npc.Location - Location) < (1600 + npc.CollisionRadius)))
+//BEST_ENEMY_CHECK_RADIUS
 // ----------------------------------------------------------------------
 function FindBestEnemy(bool bIgnoreCurrentEnemy)
 {
@@ -4804,6 +4870,7 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
     local float bestDist;
     local int   bestThreatLevel;
     local float newSeenTime;
+//    local Controller K;
 
     bestPawn        = None;
     bestDist        = 0;
@@ -4811,9 +4878,20 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
 
     if (!bIgnoreCurrentEnemy && (Controller.Enemy != None))
         CheckEnemyParams(Controller.Enemy, bestPawn, bestThreatLevel, bestDist);
-    foreach RadiusActors(class'Pawn', nextPawn, BEST_ENEMY_CHECK_RADIUS)  // arbitrary
+
+    foreach RadiusActors(Class'Pawn', nextPawn, 2000)  // arbitrary
         if (Controller.enemy != nextPawn)
             CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
+
+/*    for (K=Level.ControllerList; K!=None; K=K.NextController)
+    {
+       if (K.Pawn != None)
+           if (VSize(K.Location - Location) < BEST_ENEMY_CHECK_RADIUS + K.Pawn.CollisionRadius)
+               nextPawn = K.Pawn;
+    }*/
+       if (Controller.enemy != nextPawn)
+           CheckEnemyParams(nextPawn, bestPawn, bestThreatLevel, bestDist);
+
 
     if (bestPawn != Controller.Enemy)
         newSeenTime = 0;
@@ -4821,6 +4899,8 @@ function FindBestEnemy(bool bIgnoreCurrentEnemy)
         newSeenTime = EnemyLastSeen;
 
     SetEnemy(bestPawn, newSeenTime, true);
+
+//    log(self@"FindBestEnemy = "$bestPawn);
 
     EnemyTimer = 0;
 }
@@ -5068,7 +5148,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
     if ((dist <= 180) && controller.enemy.controller.bIsPlayer && (controller.enemy.Weapon != None) && (enemyMaxRange < 180))
         moveMult = CloseCombatMult;
 
-    if (bAvoidAim && !controller.enemy.IgnoreMe() && (FRand() <= AvoidAccuracy * moveMult))
+    if (bAvoidAim && !controller.enemy.bIgnore && (FRand() <= AvoidAccuracy * moveMult))
     {
         if ((awayDist < enemyMaxRange+maxDist+50) && (awayDist < 800) && (controller.Enemy.Weapon != None))
         {
@@ -5109,7 +5189,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
         reloadMult = 0.5;
 
     bUseSprint = false;
-    if (!bUseProjVector && bSprint && bCanStrafe && !controller.enemy.IgnoreMe() && (FRand() <= SprintRate * 0.5 * moveMult * reloadMult))
+    if (!bUseProjVector && bSprint && bCanStrafe && !controller.enemy.bIgnore && (FRand() <= SprintRate * 0.5 * moveMult * reloadMult))
     {
         if (bOuterValid || (innerRange[1] > 100))  // sprint on long-range weapons only
         {
@@ -5118,7 +5198,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
                 sprintRot.Yaw += 16384;
             else
                 sprintRot.Yaw += 49152;
-            sprintRot = class'DxUtil'.static.RandomBiasedRotation(sprintRot.Yaw, 0.5, 0, 0);
+            sprintRot = RandomBiasedRotation(sprintRot.Yaw, 0.5, 0, 0);
             sprintRot.Pitch = 0;
             sprintVect = Vector(sprintRot)*GroundSpeed*(FRand()+0.5);
             bUseSprint = true;
@@ -5177,7 +5257,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
         if (destType != DEST_Failure)
         {
             newPosition = tryVector;
-               log("ComputeBestFiringPosition() NewPosition ="@newPosition);
+//               log("ComputeBestFiringPosition() NewPosition ="@newPosition);
         }
     }
     else
@@ -5343,7 +5423,7 @@ function bool IsThrownWeapon(DeusExWeaponInv testWeapon) //
 
 function bool InStasis()
 {
-   if ((DistanceFromPlayer() > 1200.0) && (LastRenderTime > 5.0))
+   if ((DistanceFromPlayer() > 1200.0) && (LastRendered() > 5.0))
    return true;
    else return false;
 //   return bStasis;
@@ -5363,10 +5443,8 @@ function HandleEnemy()
 // ----------------------------------------------------------------------
 // Tick()
 // ----------------------------------------------------------------------
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-//  local float        dropPeriod;
-//  local float        adjustedRate;
     local DeusExPlayer player;
     local name         stateName;
     local vector       loc;
@@ -5375,19 +5453,27 @@ function Tick(float deltaTime)
     local bool         bCheckPlayer;
     local bool         bCheckEnemy;
 
+    if (!bInWorld)
+    return;
+
+    if (DistanceFromPlayer() > 2500)
+    return;
+
     player = DeusExPlayer(GetPlayerPawn());
     myDxPlayer = player;
 
-    Super.Tick(deltaTime);
-  //
-        animTimer[0] += deltaTime;
+    Draw_DebugLine();
+
+    animTimer[0] += deltaTime;
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
-//
 
     bDoLowPriority = true;
     bCheckPlayer   = true;
     bCheckOther    = true;
+
+    UpdateAgitation(deltaTime);
+    UpdateFear(deltaTime);
 
     if (bTickVisibleOnly)
     {
@@ -5395,46 +5481,16 @@ function Tick(float deltaTime)
             bDoLowPriority = false;
         if (DistanceFromPlayer() > 2500)
             bCheckPlayer = false;
-        if ((DistanceFromPlayer() > 600) && (LastRendered() >= 5.0))
+        if ((DistanceFromPlayer() > 600) && (LastRenderTime >= 5.0))
             bCheckOther = false;
     }
 
-/*  if (bDisappear && (InStasis() || (LastRendered() > 5.0)))
-    {
-     if (Controller != none)
-      Controller.Destroy();
-
-        Destroy();
-        return;
-    }*/
-
-/*  if (AvoidWallTimer > 0)
-    {
-        AvoidWallTimer -= deltaTime;
-        if (AvoidWallTimer < 0)
-            AvoidWallTimer = 0;
-    }*/
-
-/*  if (AvoidBumpTimer > 0)
-    {
-        AvoidBumpTimer -= deltaTime;
-        if (AvoidBumpTimer < 0)
-            AvoidBumpTimer = 0;
-    }*/
-
-/*  if (ObstacleTimer > 0)
-    {
-        ObstacleTimer -= deltaTime;
-        if (ObstacleTimer < 0)
-            ObstacleTimer = 0;
-    }*/
-//
-/*  if (Controller != none && bAdvancedTactics)
+    if ((DXRAIController(Controller) != none) && (DXRAIController(Controller).bUseAlterDest == true))
     {
         if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
         {
             //bAdvancedTactics = false;
-//          controller.bPreparingMove = false;
+            DXRAIController(Controller).bUseAlterDest = false;
             if (TurnDirection != TURNING_None)
                 controller.MoveTimer -= 4.0;
 
@@ -5444,7 +5500,7 @@ function Tick(float deltaTime)
             bClearedObstacle = true;
             ObstacleTimer    = 0;
         }
-    }*/
+    }
 
 
     if (bStandInterpolation)
@@ -5457,7 +5513,7 @@ function Tick(float deltaTime)
         stateName = controller.GetStateName();
 
         if ((stateName != 'Burning') && (stateName != 'TakingHit') && (stateName != 'RubbingEyes'))
-     if (Controller != none)
+           if (Controller != none)
             controller.GotoState('Burning');
     }
     else
@@ -5467,11 +5523,13 @@ function Tick(float deltaTime)
             // Don't allow radius-based convos to interupt other conversations!
         if (Controller != none)
             if ((player != None) && (controller.GetStateName() != 'Conversation') && (controller.GetStateName() != 'FirstPersonConversation'))
-                player.StartConversation(Self, IM_Radius);
+               if (ConList.length > 0)
+                   player.StartConversation(Self, IM_Radius);
         }
 
         bCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
 //      log(self@"bCheckEnemy = "$bCheckEnemy);
+
         if (bCheckEnemy)
             HandleEnemy();
         else
@@ -5519,8 +5577,9 @@ function SpurtBlood()
 // ----------------------------------------------------------------------
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
 {
-//  controller.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType); // Send to controller?
-    TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
+   // Отправить в контроллер, контроллер обратно передаст TakeDamageBase.
+   controller.NotifyTakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+//    TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
 }
 
 // ----------------------------------------------------------------------
@@ -5571,10 +5630,6 @@ function StopStanding()
 }
 
 
-
-// ----------------------------------------------------------------------
-// ZoneChange()
-// ----------------------------------------------------------------------
 function PhysicsVolumeChange(PhysicsVolume newZone)
 {
     local vector jumpDir;
@@ -6131,290 +6186,6 @@ function CheckDestLoc(vector newDestLoc, optional bool bPathnode)
         BackOff();
 }
 
-// ----------------------------------------------------------------------
-// HandleTurn()
-// ----------------------------------------------------------------------
-function bool HandleTurn(actor Other)
-{
-  local bool             bHandle;
-  local bool             bHackState;
-  local DeusExDecoration dxDecoration;
-  local ScriptedPawn     scrPawn;
-
-  // THIS ENTIRE SECTION IS A MASSIVE HACK TO GET AROUND PATHFINDING PROBLEMS
-  // WHEN AN OBSTACLE COMPLETELY BLOCKS AN NPC'S PATH...
-
-  bHandle    = true;
-  bHackState = false;
-  if (bEnableCheckDest)
-  {
-    if (DestAttempts >= 2)
-    {
-      dxDecoration = DeusExDecoration(Other);
-      scrPawn      = ScriptedPawn(Other);
-      if (dxDecoration != None)
-      {
-        if (!dxDecoration.bInvincible && !dxDecoration.bExplosive) // ha ha ha !!!!!!!!!!
-        {
-          dxDecoration.HitPoints = 0;
-          dxDecoration.TakeDamage(1, self, dxDecoration.Location, vect(0,0,0), class'DM_Shot');
-          bHandle = false;
-        }
-        else if (DestAttempts >= 3)
-        {
-          bHackState = true;
-          bHandle    = false;
-        }
-      }
-      else if (scrPawn != None)
-      {
-        if (DestAttempts >= 3)
-        {
-          if (scrPawn.Controller.GetStateName() != 'BackingOff')
-          {
-            bHackState = true;
-            bHandle    = false;
-          }
-        }
-      }
-    }
-
-    if (bHackState)
-   BackOff();
-  }
-
-  return (bHandle);
-}
-
-// ----------------------------------------------------------------------
-// Bump()
-// ----------------------------------------------------------------------
-
-/*function Bump(actor Other)
-{
-  local Rotator      rot1, rot2;
-  local int          yaw;
-  local ScriptedPawn avoidPawn;
-  local DeusExPlayer dxPlayer;
-  local bool         bTurn;
-
-//  log(self@"Bumped by "$Other);
-
-  // Handle futzing and projectiles
-  if (Other.Physics == PHYS_Falling)
-  {
-    if (DeusExProjectile(Other) != None)
-    log("Projectile reaction here!", self.name);
-//      ReactToProjectiles(Other);
-    else
-    {
-      dxPlayer = DeusExPlayer(Other.Instigator);
-      if ((Other != dxPlayer) && (dxPlayer != None))
-            ReactToFutz();
-    }
-  }
-  
-  // Have we walked into another (non-level) actor?
-  bTurn = false;
-  if ((Physics == PHYS_Walking) && (Acceleration != vect(0,0,0)) && bWalkAround && (Other != Level) && !Other.IsA('Mover'))
-    if ((TurnDirection == TURNING_None) || (AvoidBumpTimer <= 0))
-      if (HandleTurn(Other))
-        bTurn = true;
-
-  // Turn away from the actor
-  if (bTurn)
-  {
-    // If we're not already turning, start
-    if (TurnDirection == TURNING_None)
-    {
-      // Give ourselves a little extra time
-      controller.MoveTimer += 4.0;
-
-      rot1 = Rotator(Other.Location-Location);  // direction of object being bumped
-      rot2 = Rotator(Acceleration);  // direction we wish to go
-      yaw  = (rot2.Yaw - rot1.Yaw) & 65535;
-      if (yaw > 32767)
-        yaw -= 65536;
-
-      // Depending on the angle we bump the actor, turn left or right
-      if (yaw < 0)
-      {
-        TurnDirection = TURNING_Left;
-        NextDirection = TURNING_Right;
-      }
-      else
-      {
-        TurnDirection = TURNING_Right;
-        NextDirection = TURNING_Left;
-      }
-      bClearedObstacle = false;
-    }
-
-    // Ignore multiple bumps in a row
-    // BOOGER! Ignore same bump actor?
-    if (AvoidBumpTimer <= 0)
-    {
-      AvoidBumpTimer   = 0.2;
-      ActorAvoiding    = Other;
-      bClearedObstacle = false;
-
-        // Enable AlterDestination()
-            //Controller.bAdvancedTactics = true;
-
-      avoidPawn = ScriptedPawn(ActorAvoiding);
-
-      // Avoid pairing off
-      if (avoidPawn != None)
-      {
-        if ((avoidPawn.Acceleration != vect(0,0,0)) && (avoidPawn.Physics == PHYS_Walking) &&
-            (avoidPawn.TurnDirection != TURNING_None) && (avoidPawn.ActorAvoiding == self))
-        {
-          if ((avoidPawn.TurnDirection == TURNING_Left) && (TurnDirection == TURNING_Right))
-          {
-            TurnDirection = TURNING_Left;
-            if (NextDirection != TURNING_None)
-              NextDirection = TURNING_Right;
-          }
-          else if ((avoidPawn.TurnDirection == TURNING_Right) && (TurnDirection == TURNING_Left))
-          {
-            TurnDirection = TURNING_Right;
-            if (NextDirection != TURNING_None)
-              NextDirection = TURNING_Left;
-          }
-        }
-      }
-    }
-  }
-}    */
-
-
-function AlterDestination()
-{
-    local Rotator  dir;
-    local int      avoidYaw;
-    local int      destYaw;
-    local int      moveYaw;
-    local int      angle;
-    local bool     bPointInCylinder;
-    local float    dist1, dist2;
-    local bool     bAround;
-    local vector   tempVect;
-    local ETurning oldTurnDir;
-
-    oldTurnDir = TurnDirection;
-
-    // Sanity check -- are we done walking around the actor?
-    if (TurnDirection != TURNING_None)
-    {
-        if (!bWalkAround)
-            TurnDirection = TURNING_None;
-        else if (bClearedObstacle)
-            TurnDirection = TURNING_None;
-        else if (ActorAvoiding == None)
-            TurnDirection = TURNING_None;
-        else if (ActorAvoiding.bDeleteMe)
-            TurnDirection = TURNING_None;
-        else if (!IsPointInCylinder(ActorAvoiding, Location, CollisionRadius*2, CollisionHeight*2))
-            TurnDirection = TURNING_None;
-    }
-
-    // Are we still turning?
-    if (TurnDirection != TURNING_None)
-    {
-        bAround = false;
-
-        // Is our destination point inside the actor we're walking around?
-        bPointInCylinder = IsPointInCylinder(ActorAvoiding, controller.Destination, CollisionRadius-8, CollisionHeight-8);
-        if (bPointInCylinder)
-        {
-            dist1 = VSize((Location - ActorAvoiding.Location)*vect(1,1,0));
-            dist2 = VSize((Location - Controller.Destination)*vect(1,1,0));
-
-            // Are we on the right side of the actor?
-            if (dist1 > dist2)
-            {
-                // Just make a beeline, if possible
-                tempVect = Controller.Destination - ActorAvoiding.Location;
-                tempVect.Z = 0;
-                tempVect = Normal(tempVect) * (ActorAvoiding.CollisionRadius + CollisionRadius);
-                if (tempVect == vect(0,0,0))
-                {
-                    controller./*Destination*/ focalPoint = Location;
-                    controller.Destination = Location;
-                }
-                else
-                {
-                    tempVect += ActorAvoiding.Location;
-                    tempVect.Z = Controller.Destination.Z;
-                    controller./*Destination*/ focalPoint = tempVect;
-                    controller.Destination = tempVect;
-                }
-            }
-            else
-                bAround = true;
-        }
-        else
-            bAround = true;
-
-        // We have a valid destination -- continue to walk around
-        if (bAround)
-        {
-            // Determine the destination-self-obstacle angle
-            dir      = Rotator(ActorAvoiding.Location-Location);
-            avoidYaw = dir.Yaw;
-            dir      = Rotator(controller.Destination-Location);
-            destYaw  = dir.Yaw;
-
-            if (TurnDirection == TURNING_Left)
-                angle = (avoidYaw - destYaw) & 65535;
-            else
-                angle = (destYaw - avoidYaw) & 65535;
-            if (angle < 0)
-                angle += 65536;
-
-            // If the angle is between 90 and 180 degrees, we've cleared the obstacle
-            if (bPointInCylinder || (angle < 16384) || (angle > 32768))  // haven't cleared the actor yet
-            {
-                if (TurnDirection == TURNING_Left)
-                    moveYaw = avoidYaw - 16384;
-                else
-                {
-                    moveYaw = avoidYaw + 16384;
-                controller./*Destination*/ focalPoint = Location + Vector(rot(0,1,0)*moveYaw)*400;
-                controller.Destination = Location + Vector(rot(0,1,0)*moveYaw)*400;
-                }
-            }
-            else  // cleared the actor -- move on
-                TurnDirection = TURNING_None;
-        }
-    }
-
-    if (TurnDirection == TURNING_None)
-    {
-        if (ObstacleTimer > 0)
-        {
-            TurnDirection = oldTurnDir;
-            bClearedObstacle = true;
-        }
-    }
-    else
-        ObstacleTimer = 1.5;
-
-    // Reset if done turning
-    if (TurnDirection == TURNING_None)
-    {
-        NextDirection    = TURNING_None;
-        ActorAvoiding    = None;
-//      bAdvancedTactics = false;
-    controller.bPreparingMove = true;
-        ObstacleTimer    = 0;
-        bClearedObstacle = true;
-
-        if (oldTurnDir != TURNING_None)
-            controller.MoveTimer -= 4.0;
-    }
-}
-
 singular event Falling()
 {
     if (bCanFly)
@@ -6481,7 +6252,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
     {
         if (bImportant)
         {
-            flagName = class'DxUtil'.static.StringToName(BindName$"_Dead");
+            flagName = class'ObjectManager'.static.StringToName(BindName$"_Dead");
             GetflagBase().SetBool(flagName, True);
 
             // make sure the flag never expires
@@ -6489,7 +6260,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 
             if (bStunned)
             {
-                flagName = class'DxUtil'.static.StringToName(BindName$"_Unconscious");
+                flagName = class'ObjectManager'.static.StringToName(BindName$"_Unconscious");
                 GetflagBase().SetBool(flagName, True);
 
                 // make sure the flag never expires
@@ -6505,7 +6276,7 @@ function SetInitialState()
 {
   Super.SetInitialState();
 
-  Controller.SetFall();
+//  Controller.SetFall();
   //InitializePawn();
 }
 
@@ -6788,6 +6559,17 @@ function FixInitialInventory()
 
      if (InitialInventory[i].Inventory == class'DeusEx.AdaptiveArmor')
           InitialInventory[i].Inventory = class'DeusEx.AdaptiveArmorInv';
+
+          // 26/08/2019 -- fixed multitools and lockpicks.
+     if (InitialInventory[i].Inventory == class'DeusEx.MultiTool')
+          InitialInventory[i].Inventory = class'DeusEx.MultiToolInv';
+
+     if (InitialInventory[i].Inventory == class'DeusEx.LockPick')
+          InitialInventory[i].Inventory = class'DeusEx.LockPickInv';
+         // 17/09/2019 -- binoculars.
+     if (InitialInventory[i].Inventory == class'DeusEx.Binoculars')
+          InitialInventory[i].Inventory = class'DeusEx.BinocularsInv';
+
   }
 }
 
@@ -6820,6 +6602,7 @@ function InitializeInventory()
                 if (inv == None)
                 {
                     inv = spawn(InitialInventory[i].Inventory, self);
+                    //log("spawned InitialInventory["$i$"]"@inv);
                     if (inv != None)
                     {
                         inv.InitialState='Idle2';
@@ -6913,7 +6696,7 @@ state idle
 // ----------------------------------------------------------------------
 state Dying
 {
-    ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, /*Died,*/ Timer, TakeDamage;
+    ignores SeePlayer, /*EnemyNotVisible,*/ HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, /*Died,*/ Timer, TakeDamage;
 
     event Landed(vector HitNormal)
     {
@@ -7230,7 +7013,7 @@ function HandleLoudNoise(Name event, EAIEventState state, XAIParams params)
 function HandleProjectiles(Name event, EAIEventState state, XAIParams params)
 {
     // React, Fear
-    local DeusExProjectile dxProjectile;
+//    local DeusExProjectile dxProjectile;
 
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
         if (params.bestActor != None)
@@ -7319,10 +7102,10 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
     local bool         bDistressorValid;
     local float        distressVal;
     local name         stateName;
-    local bool         bAttacking;
+    local bool         bIsAttacking;//bAttacking;
     local bool         bFleeing;
 
-    bAttacking = false;
+    bIsAttacking = false;
     seeTime    = 0;
 
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
@@ -7374,13 +7157,13 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                     {
                         SetDistressTimer();
                         HandleEnemy();
-                        bAttacking = true;
+                        bIsAttacking = true;
                     }
                 }
                 // BOOGER! Make NPCs react by seeking if distressor isn't an enemy?
             }
 
-            if (!bAttacking && bFearDistress)
+            if (!bIsAttacking && bFearDistress)
             {
                 distressVal = 0;
                 bFleeing    = false;
@@ -7422,6 +7205,81 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
     }
 }
 
+
+function UpdateAgitation(float deltaSeconds)
+{
+    local float mult;
+    local float decrement;
+    local int   i;
+
+    if (AgitationCheckTimer > 0)
+    {
+        AgitationCheckTimer -= deltaSeconds;
+        if (AgitationCheckTimer < 0)
+            AgitationCheckTimer = 0;
+    }
+
+    decrement = 0;
+    if (AgitationTimer > 0)
+    {
+        if (AgitationTimer < deltaSeconds)
+        {
+            mult = 1.0 - (AgitationTimer/deltaSeconds);
+            AgitationTimer = 0;
+            decrement = mult * (AgitationDecayRate*deltaSeconds);
+        }
+        else
+            AgitationTimer -= deltaSeconds;
+    }
+    else
+        decrement = AgitationDecayRate*deltaSeconds;
+
+    if (bAlliancesChanged && (decrement > 0))
+    {
+        bAlliancesChanged = False;
+        for (i=15; i>=0; i--)
+        {
+            if ((AlliancesEx[i].AllianceName != '') && (!AlliancesEx[i].bPermanent))
+            {
+                if (AlliancesEx[i].AgitationLevel > 0)
+                {
+                    bAlliancesChanged = true;
+                    AlliancesEx[i].AgitationLevel -= decrement;
+                    if (AlliancesEx[i].AgitationLevel < 0)
+                        AlliancesEx[i].AgitationLevel = 0;
+                }
+            }
+        }
+    }
+}
+
+function UpdateFear(float deltaSeconds)
+{
+    local float mult;
+    local float decrement;
+
+    decrement = 0;
+    if (FearTimer > 0)
+    {
+        if (FearTimer < deltaSeconds)
+        {
+            mult = 1.0 - (FearTimer/deltaSeconds);
+            FearTimer = 0;
+            decrement = mult * (FearDecayRate*deltaSeconds);
+        }
+        else
+            FearTimer -= deltaSeconds;
+    }
+    else
+        decrement = FearDecayRate*deltaSeconds;
+
+    if ((decrement > 0) && (FearLevel > 0))
+    {
+        FearLevel -= decrement;
+        if (FearLevel < 0)
+            FearLevel = 0;
+    }
+}
 
 
 
@@ -7544,37 +7402,38 @@ defaultproperties
      CrouchHeight=26.0
      CrouchRadius=20.0
 
-     //  bCanOpenDoors=True
-     //  bIsHuman=True
+     bIsHuman=true
      AirSpeed=320.000000
      AccelRate=200.000000
      JumpZ=120.000000
      HearingThreshold=0.150000
      
      Texture=Texture'Engine.S_Pawn'
-         bAcceptsProjectors=true
-         ControllerClass=class'DXRAiController'
+     bAcceptsProjectors=true
+     ControllerClass=class'DXRAiController'
 
-            bCanWalkOffLedges=true
-            bAvoidLedges=false      // don't get too close to ledges
-            bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
-          bCanClimbLadders=true
+     bCanWalkOffLedges=true
+     bAvoidLedges=false      // don't get too close to ledges
+     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+     bCanClimbLadders=true
 
-          bSpecialCalcView=true
-      RotationRate=(Pitch=4096,Yaw=65000,Roll=3072)
+     bSpecialCalcView=true
+     RotationRate=(Pitch=4096,Yaw=90000,Roll=3072)
 
-            physics=phys_falling//none
+     physics=PHYS_Falling
+     bPhysicsAnimUpdate=false
+     bFullVolume=false
+     bActorShadows=true
+     bIgnoreOutOfWorld=true // Don't destroy if fell out of world
+     bRotateToDesired=true
+     bShouldBaseAtStartup=true
+     bCrouchToPassObstacles=false
+     SoundOcclusion=OCCLUSION_Default
+     bCanFly=false
+     CullDistance=8050 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
+     bFastTurnWhenAttacking=true
+     bDirectHitWall=false
 
-            bPhysicsAnimUpdate=false
-            bFullVolume=false
-
-            bActorShadows=true
-
-      bIgnoreOutOfWorld=true // Don't destroy if fell out of world
-
-      bShouldBaseAtStartup=true
-//      bIgnoreEncroachers=true
-      SoundOcclusion=OCCLUSION_BSP
-
-      bCanFly=false
+     TransientSoundVolume=+0.95
+     TransientSoundRadius=+50.00
 }

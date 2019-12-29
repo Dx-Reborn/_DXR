@@ -5,70 +5,70 @@ class AugDefense extends Augmentation;
 
 state Active
 {
-	function Timer()
-	{
-		local DeusExProjectile proj, minproj;
-		local float dist, mindist;
+    function Timer()
+    {
+        local DeusExProjectile proj, minproj;
+        local float dist, mindist;
 
-		// find the projectile closest to us
-		mindist = 999999;
-		minproj = None;
-		foreach AllActors(class'DeusExProjectile', proj)
-		{
-			if (!proj.IsA('Cloud') && !proj.IsA('Tracer') &&
-				!proj.IsA('GreaselSpit') && !proj.IsA('GraySpit'))
-			{
-				// make sure we don't own it
-				if (proj.Owner != Player)
-				{
-					// make sure it's moving fast enough
-					if (VSize(proj.Velocity) > 100)
-					{
-						dist = VSize(Player.Location - proj.Location);
-						if (dist < mindist)
-						{
-							mindist = dist;
-							minproj = proj;
-						}
-					}
-				}
-			}
-		}
+        // find the projectile closest to us
+        mindist = 999999;
+        minproj = None;
+        foreach DynamicActors(class'DeusExProjectile', proj) // DXR: Replaced to DynamicActors
+        {
+            if (!proj.IsA('Cloud') && !proj.IsA('Tracer') &&
+                !proj.IsA('GreaselSpit') && !proj.IsA('GraySpit'))
+            {
+                // make sure we don't own it
+                if (proj.Owner != Player)
+                {
+                    // make sure it's moving fast enough
+                    if (VSize(proj.Velocity) > 100)
+                    {
+                        dist = VSize(Player.Location - proj.Location);
+                        if (dist < mindist)
+                        {
+                            mindist = dist;
+                            minproj = proj;
+                        }
+                    }
+                }
+            }
+        }
 
-		// if we have a valid projectile, send it to the aug display window
-		if (minproj != None)
-		{
-			DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = True;
-			DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseLevel = CurrentLevel;
-			DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = minproj;
+        // if we have a valid projectile, send it to the aug display window
+        if (minproj != None)
+        {
+            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = True;
+            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseLevel = CurrentLevel;
+            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = minproj;
 
-			// play a warning sound
-			Player.PlaySound(sound'GEPGunLock', SLOT_None,,,, 2.0);
+            // play a warning sound
+            Player.PlaySound(sound'GEPGunLock', SLOT_None,,,, 2.0);
 
-			if (mindist < LevelValues[CurrentLevel])
-			{
-				minproj.Explode(minproj.Location, vect(0,0,1));
-				Player.PlaySound(sound'ProdFire', SLOT_None,,,, 2.0);
-			}
-		}
-		else
-		{
-			DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
-			DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
-		}
-	}
+            if (mindist < LevelValues[CurrentLevel])
+            {
+                minproj.Explode(minproj.Location, vect(0,0,1));
+                Player.PlaySound(sound'ProdFire', SLOT_None,,,, 2.0);
+            }
+        }
+        else
+        {
+            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
+            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
+        }
+    }
 
 Begin:
-	SetTimer(0.1, True);
+    SetTimer(0.1, True);
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
-	SetTimer(0.1, False);
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
+    SetTimer(0.1, False);
+    DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
+    DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
 }
 
 

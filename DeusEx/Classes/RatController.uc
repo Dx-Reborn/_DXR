@@ -30,7 +30,7 @@ state Wandering
             return true;
         Global.NotifyHitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
-        return true;
+        return false;
     }
 
 /*    function BeginState()
@@ -81,7 +81,10 @@ state Wandering
 
         // If we got a destination, go there
         if (iterations <= 0)
+        {
             Rat(pawn).destLoc = pawn.Location;
+//            log(pawn$" -- iterations are over, gonna stay at my location");
+        }
     }
 
 Begin:

@@ -5,10 +5,10 @@ class Doberman extends Dog;
 
 function PlayDogBark()
 {
-	if (FRand() < 0.5)
-		PlaySound(sound'DogLargeBark2', SLOT_None);
-	else
-		PlaySound(sound'DogLargeBark3', SLOT_None);
+    if (FRand() < 0.5)
+        PlaySound(sound'DogLargeBark2', SLOT_None);
+    else
+        PlaySound(sound'DogLargeBark3', SLOT_None);
 }
 
 
@@ -25,7 +25,6 @@ defaultproperties
      AccelRate=500.000000
      Health=20
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.DogLargeGrowl'
      HitSound2=Sound'DeusExSounds.Animal.DogLargeBark1'
      die=Sound'DeusExSounds.Animal.DogLargeDie'

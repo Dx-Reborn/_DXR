@@ -7,47 +7,31 @@ var localized string binocsActive, binocsInactive;
 
 state Activated
 {
-	function Activate()
-	{
-//		local DeusExPlayer player;
+    function BeginState()
+    {
+        Super.BeginState();
+        ToggleBinocularsView(true);
+    }
 
-		Super.Activate();
-
-//		player = DeusExPlayer(Owner);
-//		if (player != None)
-//			player.DesiredFOV = player.Default.DesiredFOV;
-	}
-
-	function BeginState()
-	{
-//		local DeusExPlayer player;
-	
-		Super.BeginState();
-    ToggleBinocularsView(true);
-
-//		player = DeusExPlayer(Owner);
-//		RefreshScopeDisplay(player, False);
-	}
 Begin:
 }
 
-//---------------
+
 state DeActivated
 {
-	function BeginState()
-	{
-		local DeusExPlayer player;
-		
-		Super.BeginState();
+    function BeginState()
+    {
+        local DeusExPlayer player;
+        
+        Super.BeginState();
 
-		player = DeusExPlayer(Owner);
-		if (player != None)
-		{
-			// Hide the Scope View
-         ToggleBinocularsView(false);
-//			DeusExRootWindow(player.rootWindow).scopeView.DeactivateView();
-		}
-	}
+        player = DeusExPlayer(Owner);
+        if (player != None)
+        {
+            // Hide the Scope View
+            ToggleBinocularsView(false);
+        }
+    }
 }
 
 function ToggleBinocularsView(bool bDoIt)

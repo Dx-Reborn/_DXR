@@ -3,13 +3,65 @@
 //=============================================================================
 class WeaponStealthPistolInv extends DeusExWeaponInv;
 
-// кость 124
+var EM_PistolSmoke extrapuff;
+var int amountOfShots;
+
+const SmokeThreshold = 10;
+
+// Spawn an emitter!
+function AddParticles()
+{
+    extrapuff = Spawn(class'EM_PistolSmoke');
+    AttachToBone(extrapuff, '18');
+}
+
+// Called from mesh notify
+function SPSmoke()
+{
+  amountOfShots++;
+
+  if (amountOfShots >= SmokeThreshold)
+  {
+    AddParticles();
+    extrapuff.Emitters[0].opacity = 0.1;
+  }
+//  BoneRefresh();
+}
+
+// Works only while weapon is in hand.
+function WeaponTick(float dt)
+{
+  if (extrapuff != none)
+     AttachToBone(extrapuff, '18');
+
+  Super.WeaponTick(dt);
+}
+
+function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
+{
+    local ShellCasing10mm s;
+    local coords K;
+
+    K = GetBoneCoords('132');
+
+     Super.ProcessTraceHit(Other, HitLocation, HitNormal, X, Y, Z);
+
+     s = Spawn(class'ShellCasing10mm',, '', K.Origin);
+     if (S != None)
+     {
+         s.SetDrawScale(0.1);
+         s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
+         s.Velocity.Z += 200;
+     }
+}        
+
 
 defaultproperties
 {
-		 PickupClass=class'WeaponStealthPistol'
+     PickupClass=class'WeaponStealthPistol'
+     AttachmentClass=class'WeaponStealthPistolAtt'
      PickupViewMesh=VertMesh'DXRPickups.StealthPistolPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.StealthPistol' 
+     FirstPersonViewMesh=Mesh'DeusExItems.StealthPistol'
      Mesh=VertMesh'DXRPickups.StealthPistolPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconStealthPistol'
@@ -37,6 +89,7 @@ defaultproperties
      bCanHaveModReloadTime=True
      AmmoName=Class'DeusEx.Ammo10mmInv'
      PickupAmmoCount=10
+     ReloadCount=10
      bInstantHit=True
      FireOffset=(X=-24.000000,Y=10.000000,Z=14.000000)
      FireSound=Sound'DeusExSounds.Weapons.StealthPistolFire'
@@ -49,5 +102,6 @@ defaultproperties
 
      Icon=Texture'DeusExUI.Icons.BeltIconStealthPistol'
      CollisionRadius=8.000000
-     CollisionHeight=0.800000
+     CollisionHeight=1.800000
+//     CollisionHeight=0.800000
 }

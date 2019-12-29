@@ -3,6 +3,12 @@
 //=============================================================================
 class AnnaNavarre extends HumanMilitary;
 
+
+function Bool HasTwoHandedWeapon()
+{
+    return False;
+}
+
 // ----------------------------------------------------------------------
 // SpawnCarcass()
 //
@@ -10,72 +16,81 @@ class AnnaNavarre extends HumanMilitary;
 // ----------------------------------------------------------------------
 function Carcass SpawnCarcass()
 {
-	if (bStunned)
-		return Super.SpawnCarcass();
+    if (bStunned)
+        return Super.SpawnCarcass();
 
-	Explode();
+    Explode();
 
-	return None;
+    return None;
 }
 
 function Explode()
 {
-	local SphereEffect sphere;
-	local ScorchMark s;
-	local ExplosionLight light;
-	local int i;
-	local float explosionDamage;
-	local float explosionRadius;
-	local vector loc;
+    local SphereEffect sphere;
+    local ScorchMark s;
+    local ExplosionLight light;
+    local int i;
+    local float explosionDamage;
+    local float explosionRadius;
+    local vector loc;
     local FleshFragment chunk;
 
-	explosionDamage = 110;
-	explosionRadius = 288;
+    explosionDamage = 110;
+    explosionRadius = 288;
 
-	// alert NPCs that I'm exploding
-	class'eventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , explosionRadius*16);
-	PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
+    // alert NPCs that I'm exploding
+    class'eventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
 
-	// draw a pretty explosion
-	light = Spawn(class'ExplosionLight',,, Location);
-	if (light != None)
-		light.size = 4;
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, Location);
+    if (light != None)
+        light.size = 4;
 
-	Spawn(class'ExplosionSmall',,, Location + 2*VRand()*CollisionRadius);
-	Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
-	Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionSmall',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
+    Spawn(class'ExplosionMedium',,, Location + 2*VRand()*CollisionRadius);
 
 
-	sphere = Spawn(class'SphereEffect',,, Location);
-	if (sphere != None)
-		sphere.size = explosionRadius / 32.0;
+    sphere = Spawn(class'SphereEffect',,, Location);
+    if (sphere != None)
+        sphere.size = explosionRadius / 32.0;
 
-	// spawn a mark
-	s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation-rot(16384,0,0)); //+
-	if (s != None)
-	{
-		s.SetDrawScale(drawScale * FClamp(explosionDamage/28, 0.1, 3.0)); //*=
-	}
+    // spawn a mark
+    s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation-rot(16384,0,0)); //+
+    if (s != None)
+    {
+        s.SetDrawScale(drawScale * FClamp(explosionDamage/28, 0.1, 3.0)); //*=
+    }
 
-	for (i=0; i<22; i++) //CyberP: was /1.2
-			{
-				loc.X = (1-2*FRand()) * CollisionRadius;
-				loc.Y = (1-2*FRand()) * CollisionRadius;
-				loc.Z = (1-2*FRand()) * CollisionHeight;
-				loc += Location;
-				spawn(class'BloodDropFlying');
-				chunk = spawn(class'FleshFragment', None,, loc);
+    for (i=0; i<22; i++) //CyberP: was /1.2
+            {
+                loc.X = (1-2*FRand()) * CollisionRadius;
+                loc.Y = (1-2*FRand()) * CollisionRadius;
+                loc.Z = (1-2*FRand()) * CollisionHeight;
+                loc += Location;
+                spawn(class'BloodDropFlying');
+                chunk = spawn(class'FleshFragment', None,, loc);
                 if (chunk != None)
-				{
+                {
                     chunk.Velocity.Z = FRand() * 410 + 410;
-					chunk.bFixedRotationDir = False;
-					chunk.RotationRate = RotRand();
-				}
+                    chunk.bFixedRotationDir = False;
+                    chunk.RotationRate = RotRand();
+                }
        }
-	HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
+    HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
 
-	if (PawnShadow != none)
-	    PawnShadow.Destroy(); // Destroy the shadow projector, otherwise bad things will happen.
+//    if (PawnShadow != none)
+//        PawnShadow.Destroy(); // Destroy the shadow projector, otherwise bad things will happen.
+}
+
+
+function float ModifyDamage(int Damage, Pawn instigatedBy, vector hitLocation, vector offset, class<DamageType> damageType, vector Momentum)
+{
+    if ((damageType == class'DM_Stunned') || (damageType == class'DM_KnockedOut') || (damageType == class'DM_Poison') || (damageType == class'DM_PoisonEffect'))
+        return 0;
+    else
+        return Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType, Momentum);
 }
 
 
@@ -96,9 +111,9 @@ defaultproperties
      bInvincible=True
      CloseCombatMult=0.500000
      BaseAssHeight=-18.000000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=12)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGunInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=12)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnifeInv')
      BurnPeriod=5.000000
      bHasCloak=True
      CloakThreshold=100
@@ -120,4 +135,6 @@ defaultproperties
      //CollisionHeight=47.299999
      CollisionHeight=42.799999
      CollisionRadius=22.0
+
+     LampBone=37
 }

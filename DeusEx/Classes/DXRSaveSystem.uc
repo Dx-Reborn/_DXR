@@ -10,21 +10,9 @@
 
 class DXRSaveSystem extends PlayerControllerEXT;
 
-/* Подсказка (в функцию подставляется не имя а значение флага)
-  LOAD_None			= 0x0000,	// No flags.
-	LOAD_NoFail			= 0x0001,	// Critical error if load fails.
-	LOAD_NoWarn			= 0x0002,	// Don't display warning if load fails.
-	LOAD_Throw			= 0x0008,	// Throw exceptions upon failure.
-	LOAD_Verify			= 0x0010,	// Only verify existance; don't actually load.
-	LOAD_AllowDll		= 0x0020,	// Allow plain DLLs.
-	LOAD_DisallowFiles  = 0x0040,	// Don't load from file.
-	LOAD_NoVerify       = 0x0080,   // Don't verify imports yet.
-	LOAD_Forgiving      = 0x1000,   // Forgive missing imports (set them to NULL).
-	LOAD_Quiet			= 0x2000,   // No log warnings.
-	LOAD_NoRemap        = 0x4000,   // No remapping of packages.*/
+const MAX_SAVE_SLOTS = 100;
+const SAVE_PREFIX = "SAVE_";
 
-CONST MAX_SAVE_SLOTS = 100;
-CONST SAVE_PREFIX = "SAVE_";
 var transient bool bIsQuickLoading; // transient для того чтобы значение переменной никогда не сохранялось.
 
 /*--- Создать каталог Save\Current\ ---*/
@@ -43,22 +31,13 @@ function SetInitialState()
    ConsoleCommand("set System savepath ..\\DxSave");
    SaveConfig();
   }
-
-  super.SetInitialState();
 }
 
-
-/*образец*/
-exec function savelevel()
-{
-	class'GameManager'.static.SaveLevel(Self.XLevel, "xxx1.usa");
-}
-
-event TravelPostAccept()
+/*event TravelPostAccept()
 {
   Super.TravelPostAccept();
   log(self @ "TravelPostAccept()");
-}
+}*/
 
 /*--- Перед тем как покинуть карту, необходимо ее сохранить ---*/
 event PreClientTravel()
@@ -66,7 +45,7 @@ event PreClientTravel()
    Super.PreClientTravel();
 
     if (!bIsQuickLoading)
-    SaveCurrentMap();
+        SaveCurrentMap();
 }
 
 /*--- Похоже что это то, что мне нужно! ---*/
@@ -97,67 +76,95 @@ event ClientTravel(string URL, ETravelType TravelType, bool bItems)
 
 /*---------------------------------
   Быстрое сохранение и загрузка
+  ToDo: Ошибка -- в Current ничего не копировать!
+  Log: Save=3.653415
+  Log: Moving '..\D43k_SAVE\QuickSave\Save.tmp' to '..\D43k_SAVE\QuickSave\SaveInfo.dxs'
+  Init: Shut down moving brush tracker for Level Autoplay.MyLevel
+  Log: Save=21.084093
+  Log: Moving '..\D43k_SAVE\QuickSave\Save.tmp' to '..\D43k_SAVE\QuickSave\08_NYC_Smug.dxs'
+  Init: Initialized moving brush tracker for Level Autoplay.MyLevel
 ---------------------------------*/
 exec function QuickSave()
 {
 //  local Actor A;
   local bool Fsave;
   local string Quick, sd;
-	local DeusExLevelInfo info;
+  local DeusExLevelInfo info;
+  local DeusExGameEngine eng;
 
-	info = GetLevelInfo();
+  // Если ничего нет, то уходим.
+  eng = class'DeusExGameEngine'.static.GetEngine();
+  if (eng == None)
+  {
+     ClientMessage("Can't Save game -- Unable to get pointer to DeusExGameEngine!");
+     return;
+  }
 
-	// Don't allow saving if:
-	//
-	// 1) The player is dead
-	// 2) We're on the logo map
-	// 4) We're interpolating (playing outtro)
-	// 3) A datalink is playing
-	if (((info != None) && (info.MissionNumber < 0)) || ((pawn.IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || (Human(pawn).dataLinkPlay != None))
-	{
-	   ClientMessage("Cannot save right now!");
-	   log("Cannot save right now!",'SaveSystem');
-	   return;
-	}
-	log("Trying to save game...",'SaveSystem');
-	consolecommand("SAVEGAME 9");
+  info = GetLevelInfo();
+  if (info == None)
+  {
+     ClientMessage("Can't Save game -- Unable to find DeusExLevelInfo actor!");
+     return;
+  }
 
-  sd = ConsoleCommand("get System savepath");
-  Quick = sd$"\\QuickSave";
+    // Don't allow saving if:
+    //
+    // 1) The player is dead
+    // 2) We're on the logo map
+    // 4) We're interpolating (playing outtro)
+    // 3) A datalink is playing
+    if (((info != None) && (info.MissionNumber < 0)) || ((pawn.IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || (Human(pawn).dataLinkPlay != None) ||
+         pawn.Physics == PHYS_Falling)
+    {
+       ClientMessage("Cannot save game right now!");
+       log("Cannot save game right now!",'SaveSystem');
+       return;
+    }
+
+  sd = ConsoleCommand("get System savepath"); // Получить путь к сохранениям
+  Quick = sd$"\\QuickSave"; // Соединить строки
   Fsave = class'filemanager'.static.MakeDirectory(Quick, true);
-  if (!FSave) 
-  ClientMessage("Can't create directory!");
-
-  /* Сохранение... */
-
-//  class'GameManager'.static.SaveLevel(Self.XLevel, sd$"\\Current\\"$GetLevelInfo().mapName$".dxs");
-
-//  Fsave = class'filemanager'.static.CopyFile(sd$"\\Current\\"$GetLevelInfo().mapName$".dxs", Quick$"\\"$GetLevelInfo().mapName$".dxs", true, true);
-  Fsave = class'filemanager'.static.CopyFile(sd$"\\Save9.usa", Quick$"\\"$GetLevelInfo().mapName$".dxs", true, true);
   if (!FSave)
-  ClientMessage("Can't copy savefile!");
+  {
+     ClientMessage("Can't create"@Quick@"directory!"); // Каталог не был создан, выходим.
+     return;
+  }
+
+//  eng.SaveGameEx(sd$"\\Current\\"$GetLevelInfo().mapName$".dxs"); // Сохраняем...
+  eng.SaveGameEx(sd$"\\QuickSave\\"$GetLevelInfo().mapName$".dxs"); // Сохраняем...
+  if (class'FileManager'.static.FileSize(sd$"\\QuickSave\\"$GetLevelInfo().mapName$".dxs") == -1)   // Проверяем что файл существует.
+  {
+     ClientMessage("SaveGame failed! Aborting."); // Нет? Выходим.
+     return;
+  }
 
   ClientMessage("яSaved:  яяя"$GetLevelInfo().mapName);
+  Saveflags(); // Сохранить флаги...
   CreateSaveInfoQuick(); // Записать информацию...
 
+
   FSave = class'filemanager'.static.CopyFile("..\\Saves\\SaveInfo.uvx",Quick$"\\"$"SaveInfo.dxs" , true, true); // Скопировать её...
-  if (!FSave) 
-  ClientMessage("Can't copy saveinfo!");
+  if (!FSave)
+  {
+     ClientMessage("Can't copy saveinfo!");
+     return;
+  }
 
   FSave = class'filemanager'.static.CopyFile("..\\Saves\\DXRPlayerData.uvx",Quick$"\\"$"DXRPlayerData.uvx" , true, true); // Скопировать данные игрока (заметки, переписки)
   if (!FSave) 
-  ClientMessage("Can't copy DXRPlayerData !");
+  {
+     ClientMessage("Can't copy DXRPlayerData!");
+     return;
+  }
 
   // Скриншот...
   class'DxUtil'.static.PrepareShotForSaveGame(self.XLevel, Quick);
 
   CopyCurrentFiles(Quick);
-
-//  if (!FSave) //else
-//  ClientMessage("Saving map яFAILED яяя"$GetLevelInfo().mapName);
 }
 
 //  ClientTravel("?loadgame=" $ saveIndex, TRAVEL_Absolute, False);
+/* Быстрая загрузка */
 exec function QuickLoad()
 {
   local string path, whatMap, sd;
@@ -171,14 +178,12 @@ exec function QuickLoad()
   {
     ds = dxs.DynamicLoadObject("SaveInfo.MyDeusExSaveInfo", class'DeusExSaveInfo');
     whatMap = DeusExSaveInfo(ds).mapName;
-//    class'PackageManager'.static.ReleasePackage(path);
 
     CopyToCurrent(sd$"\\QuickSave\\*.dxs", sd$"\\QuickSave\\", true);
 
     bIsQuickLoading = true;
-//    ClientTravel(sd$"\\Current\\"$whatMap$".dxs?load", TRAVEL_Partial, false);
-    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load", TRAVEL_Absolute, false);
-//    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load", TRAVEL_Partial, false);
+    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load?", TRAVEL_Absolute, false);
+    return;
   }
   else
   ClientMessage(path$" not found!");
@@ -189,28 +194,28 @@ exec function SaveSlot(string slot, string desc)
 {
   local bool Fsave;
   local string Save, sd;
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-/*	if ((slot > MAX_SAVE_SLOTS) || (slot < 0))
-	{
-	  clientMessage("ERROR : SaveSlot must be in range from 0 to "$MAX_SAVE_SLOTS);
-	  log("SaveSlot must be in range from 0 to "$MAX_SAVE_SLOTS,'SaveSystem');
+/*  if ((slot > MAX_SAVE_SLOTS) || (slot < 0))
+    {
+      clientMessage("ERROR : SaveSlot must be in range from 0 to "$MAX_SAVE_SLOTS);
+      log("SaveSlot must be in range from 0 to "$MAX_SAVE_SLOTS,'SaveSystem');
     return;
-	}*/
+    }*/
 
-	info = GetLevelInfo();
+    info = GetLevelInfo();
   sd = ConsoleCommand("get System savepath");
-	Save = sd$"\\"$SAVE_PREFIX$slot;
+    Save = sd$"\\"$SAVE_PREFIX$slot;
 
-	if (((info != None) && (info.MissionNumber < 0)) || ((pawn.IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || (Human(pawn).dataLinkPlay != None))
-	{
-	   ClientMessage("Cannot save right now!");
-	   log("Cannot save right now!",'SaveSystem');
-	   return;
-	}
-	CreateSaveInfo(slot, desc);
+    if (((info != None) && (info.MissionNumber < 0)) || ((pawn.IsInState('Dying')) || (IsInState('Paralyzed')) || (IsInState('Interpolating'))) || (Human(pawn).dataLinkPlay != None))
+    {
+       ClientMessage("Cannot save right now!");
+       log("Cannot save right now!",'SaveSystem');
+       return;
+    }
+    CreateSaveInfo(slot, desc);
 
-	consoleCommand("SaveGame 10");
+    consoleCommand("SaveGame 10");
   class'GameManager'.static.SaveLevel(Self.XLevel, sd$"\\Current\\"$GetLevelInfo().mapName$".dxs");
 
   Fsave = class'filemanager'.static.MakeDirectory(Save, true);
@@ -346,17 +351,18 @@ exec function SaveCurrentMap()
 {
   local bool Fsave;
   local string Quick, sd;
-	local DeusExLevelInfo info;
-	local Augmentation aug;
-	local Skill skl;
-	local beam lt;
-//	local inventory inv;
-	local Ammunition amm;
-//	local GameReplicationInfo gri;
+    local DeusExLevelInfo info;
+    local Augmentation aug;
+    local Skill skl;
+    local beam lt;
+    local Inventory anItem;
+    local LightProjector lp;
 
-	info = GetLevelInfo();
-	/* Исключает информацию из сохранения */
-  class'ObjectManager'.static.SetObjectFlags(Human(pawn), RF_Transient); // исключить игрока
+    info = GetLevelInfo();
+    gl = class'DeusExGlobals'.static.GetGlobals();
+
+    /* Исключает информацию из сохранения */
+  class'ObjectManager'.static.SetObjectFlags(pawn, RF_Transient); // исключить игрока
   class'ObjectManager'.static.SetObjectFlags(PlayerReplicationInfo, RF_Transient); // исключить PlayerReplicationInfo
   class'ObjectManager'.static.SetObjectFlags(self, RF_Transient); // исключить контроллер
 
@@ -369,23 +375,23 @@ exec function SaveCurrentMap()
   if (human(pawn).SkillSystem != none)
   class'ObjectManager'.static.SetObjectFlags(Human(pawn).SkillSystem, RF_Transient);
 
-  foreach AllActors(class'Ammunition', amm)//inv)
+  for (anItem=pawn.Inventory; anItem!=None; anItem=anItem.Inventory)
   {
-//    if ((inv != none) && (inv.owner.IsA('DeusExPlayer')))
-    if ((amm != none) && (amm.Owner != none) && (amm.owner.IsA('DeusExPlayer')))
-    {
-      log("Transient inventory:"@amm);
-      DeusExAmmoInv(amm).SaveAmmoAmount(); // :)
-      class'ObjectManager'.static.SetObjectFlags(amm, RF_Transient);
-      amm.Destroy();
-    }
+//    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
+//    class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
+    log("setting RF_Transient for "$anItem);
+    //pawn.DeleteInventory(anItem);
   }
 
-/*  foreach AllActors(class'GameReplicationInfo', gri)
+/*  foreach AllActors(class'Inventory', inv)
   {
-    if (gri != none)
-    class'ObjectManager'.static.SetActorFlags(gri, RF_Transient);
+    if (inv.owner.IsA('DeusExPlayer'))
+    {
+      log("Transient inventory:"@amm);
+      class'ObjectManager'.static.SetObjectFlags(inv, RF_Transient);
+    }
   }*/
+
   foreach AllActors(class'Augmentation', aug)
   {
     if (aug != none)
@@ -401,10 +407,14 @@ exec function SaveCurrentMap()
     if (lt != none)
     class'ObjectManager'.static.SetObjectFlags(lt, RF_Transient);
   }
+  foreach AllActors(class'LightProjector', lp)
+  {
+    if (lt != none)
+    class'ObjectManager'.static.SetObjectFlags(lp, RF_Transient);
+  }
 
 
-	consolecommand("SAVEGAME 100");
-//  class'filemanager'.static.SetActorFlags(Actor A, int NewFlags);
+  consolecommand("SAVEGAME 100");
 
   sd = ConsoleCommand("get System savepath");
   Quick = sd$"\\Current";
@@ -442,7 +452,7 @@ exec function bool CheckSavedVersion(string whatMap, optional out string SaveWit
 // log(whatWasFound[i]);
     if (whatWasFound[i] ~= ts)
     {
-//    	ClientMessage(whatWasFound[i]);
+//      ClientMessage(whatWasFound[i]);
       SaveWithPath=ds;
 //    ClientMessage(ts);
 //    ClientMessage(ds@"= True");
@@ -451,7 +461,7 @@ exec function bool CheckSavedVersion(string whatMap, optional out string SaveWit
     }
     if (whatWasFound[i] != ts)
     {
-//  	ClientMessage(whatWasFound[i]);
+//      ClientMessage(whatWasFound[i]);
 //    ClientMessage(ts@"=False");
       log("Saved version of "$whatMap$" not found",'SaveSystem');
       return false;
@@ -475,17 +485,17 @@ exec function CreateSaveInfoQuick()
 
   dx = hx.CreateDataObject(class'DeusExSaveInfo', "MyDeusExSaveInfo", "SaveInfo");
   dx.MapName=GetLevelInfo().mapName;
-  dx.Description="Quick Save";		// User entered description
-  dx.MissionLocation=GetLevelInfo().MissionLocation;	// Mission Location
-  dx.saveCount = Human(pawn).saveCount++;			// По логике так должно быть
-  dx.saveTime = Human(pawn).savetime;			// Duration of play, in seconds. Берется из DeusExPlayer
-  dx.bCheatsEnabled=DeusExPlayerController(level.getlocalPlayerController()).bCheatsEnabled;    // Set to TRUE If Cheats were enabled!!
-  dx.Year = level.Year;				// Year.
-  dx.Month = level.Month;				// Month.
-  dx.Day = level.Day;				// Day of month.
-  dx.Hour = level.Hour;				// Hour.
-  dx.Minute =	level.Minute;			// Minute.
-  dx.Second = level.Second;				// Second.
+  dx.Description="Quick Save";      // User entered description
+  dx.MissionLocation=GetLevelInfo().MissionLocation;    // Mission Location
+  dx.saveCount = Human(pawn).saveCount++;           // По логике так должно быть
+  dx.saveTime = Human(pawn).savetime;           // Duration of play, in seconds. Берется из DeusExPlayer
+  dx.bCheatsEnabled = bCheatsEnabled;    // Set to TRUE If Cheats were enabled!!
+  dx.Year = level.Year;             // Year.
+  dx.Month = level.Month;               // Month.
+  dx.Day = level.Day;               // Day of month.
+  dx.Hour = level.Hour;             // Hour.
+  dx.Minute =   level.Minute;           // Minute.
+  dx.Second = level.Second;             // Second.
 
   hx.SavePackage("SaveInfo");
   hx.SavePlayerData();
@@ -504,19 +514,19 @@ exec function CreateSaveInfo(string slot, optional string desc)
 
   dx = hx.CreateDataObject(class'DeusExSaveInfo', "MyDeusExSaveInfo", "SaveInfo");
   dx.MapName=GetLevelInfo().mapName;
-  dx.Description=desc;		// User entered description
+  dx.Description=desc;      // User entered description
      if (desc == "")
         dx.Description = GetLevelInfo().MissionLocation; // Чтобы описание не было пустым :)
-  dx.MissionLocation=GetLevelInfo().MissionLocation;	// Mission Location
-  dx.saveCount = Human(pawn).saveCount++;			// По логике так должно быть
-  dx.saveTime = Human(pawn).savetime;			// Duration of play, in seconds. Берется из DeusExPlayer
-  dx.bCheatsEnabled=DeusExPlayerController(level.getlocalPlayerController()).bCheatsEnabled;    // Set to TRUE If Cheats were enabled!!
-  dx.Year = level.Year;				// Year.
-  dx.Month = level.Month;				// Month.
-  dx.Day = level.Day;				// Day of month.
-  dx.Hour = level.Hour;				// Hour.
-  dx.Minute =	level.Minute;			// Minute.
-  dx.Second = level.Second;				// Second.
+  dx.MissionLocation=GetLevelInfo().MissionLocation;    // Mission Location
+  dx.saveCount = Human(pawn).saveCount++;           // По логике так должно быть
+  dx.saveTime = Human(pawn).savetime;           // Duration of play, in seconds. Берется из DeusExPlayer
+  dx.bCheatsEnabled = bCheatsEnabled;    // Set to TRUE If Cheats were enabled!!
+  dx.Year = level.Year;             // Year.
+  dx.Month = level.Month;               // Month.
+  dx.Day = level.Day;               // Day of month.
+  dx.Hour = level.Hour;             // Hour.
+  dx.Minute =   level.Minute;           // Minute.
+  dx.Second = level.Second;             // Second.
 
   hx.SavePackage("SaveInfo");
 }
@@ -525,13 +535,13 @@ exec function CreateSaveInfo(string slot, optional string desc)
 //exec function loadflags()
 event PostLoadSavedGame()
 {
-  class'GameFlags'.static.ImportFlagsFromArray(PlayerPawn(Pawn).RawByteFlags);
+  class'GameFlags'.static.ImportFlagsFromArray(class'DeusExGlobals'.static.GetGlobals().RawByteFlags);
   SetInitialState();
 }
 
 exec function saveflags()
 {
-  PlayerPawn(Pawn).RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
+  class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
 }
 
 

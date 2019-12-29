@@ -35,4 +35,6 @@ defaultproperties
      CollisionRadius=20.000000
      CollisionHeight=43.000000
 //     CollisionHeight=47.500000
+     bHasFlashLight=true
+     LampBone=172
 }

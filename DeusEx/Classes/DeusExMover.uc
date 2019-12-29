@@ -3,9 +3,6 @@
 //=============================================================================
 class DeusExMover extends Mover;
 
-var() bool bBlockSight;
-var() bool bOwned;
-
 // DEUS_EX AMSD Added to make vision aug run faster.  If true, the vision aug needs to check this object more closely.
 // Used for heat sources as well as things that blind.
 var bool bVisionImportant;
@@ -59,6 +56,7 @@ var localized string    msgPicking;             // message when the door is bein
 var localized string    msgAlreadyUnlocked;     // message when the door is already unlocked
 var localized string    msgNoNanoKey;           // message when the player doesn't have the right nanokey
 
+// Actor
 final function bool GetBoundingBox(out vector MinVect, out vector MaxVect)
 {
   local box korobka;
@@ -70,7 +68,7 @@ final function bool GetBoundingBox(out vector MinVect, out vector MaxVect)
 
   return (korobka.IsValid > 0);
 }
-
+// Mover
 private final function bool GetBoundingBoxForAI(out vector MinVect, out vector MaxVect)
 {
   local box korobka;
@@ -98,8 +96,8 @@ function ComputeMovementArea(out vector center, out vector area)
     if (NumKeys > 0)  // better safe than silly
     {
         // Initialize our bounding box
-//      GetBoundingBoxForAI(box1, box2);
-        GetBoundingBox(box1, box2);
+      GetBoundingBoxForAI(box1, box2);
+//        GetBoundingBox(box1, box2);
 
         // Compute the total area of our bounding box
         for (i=1; i<NumKeys; i++)
@@ -149,7 +147,6 @@ function FinishNotify()
     local vector center, area;
     local float  distX, distY, distZ;
     local float  maxX, maxY, maxZ;
-//  local float  dist;
     local float  maxDist;
     local vector tempVect;
     local bool   bNotify;
@@ -316,7 +313,7 @@ function BlowItUp(Pawn instigatedBy)
     }
 
    //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
-   RemoteRole = ROLE_DumbProxy;
+    RemoteRole = ROLE_DumbProxy;
     SetLocation(Location+vect(0,0,20000));      // move it out of the way
     SetCollision(False, False, False);          // and make it non-colliding
     bDestroyed = True;
@@ -357,7 +354,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 function bool EncroachingOn(actor Other)
 {
     local Pawn P;
-    if ( Other.IsA('Carcass') || Other.IsA('Decoration') )
+    if (Other.IsA('Carcass') || Other.IsA('Decoration'))
     {
         Other.TakeDamage(10000, None, Other.Location, vect(0,0,0), class'Crushed');
         return false;

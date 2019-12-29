@@ -9,13 +9,13 @@ var int defaultFlagExpiration;
 
 enum EFlagType
 {
-	FLAG_Bool,
-	FLAG_Byte,
-	FLAG_Int,
-	FLAG_Float,
-	FLAG_Name,
-	FLAG_Vector,
-	FLAG_Rotator,
+    FLAG_Bool,
+    FLAG_Byte,
+    FLAG_Int,
+    FLAG_Float,
+    FLAG_Name,
+    FLAG_Vector,
+    FLAG_Rotator,
 };
 
 event InitGame(string Options, out string Error)
@@ -38,9 +38,9 @@ function ClearCurrentDirectory()
 
    if (!Globals.CurrentSaveDirectoryCleared)
    {
-     log(globals$Globals.CurrentSaveDirectoryCleared);
+//   log(globals @ Globals.CurrentSaveDirectoryCleared);
      Globals.CurrentSaveDirectoryCleared = true;
-     log(globals$Globals.CurrentSaveDirectoryCleared);
+//   log(globals @ Globals.CurrentSaveDirectoryCleared);
      c = class'filemanager'.static.FindFiles(current$"*.dxs", true, false);
 
      if (c.length > 0)
@@ -96,7 +96,7 @@ final function bool SetBool(coerce String flagName, bool newValue, optional bool
    else if (!newValue)
     Flag.Value = 0;
 
-	Flag.ExpireLevel = expiration;
+    Flag.ExpireLevel = expiration;
 
   class'GameFlags'.static.SetFlag(Flag);
   log("SetFlag="$flagName$", value="$newValue$", expires at mission "$expiration,'FlagSystem');
@@ -124,12 +124,12 @@ final function bool SetBool(coerce String flagName, bool newValue, optional bool
 }*/
 
 final function bool GetBool(coerce String flagName) {
-	local GameFlags.Flag Flag;
-	local bool bResult;
+    local GameFlags.Flag Flag;
+    local bool bResult;
 
-	bResult = class'GameFlags'.static.GetFlag(flagName, Flag) && flag.value == 1;
-//	log("GetBool for flag "$flagName$" result = "$bResult);
-	return bResult;
+    bResult = class'GameFlags'.static.GetFlag(flagName, Flag) && flag.value == 1;
+//  log("GetBool for flag "$flagName$" result = "$bResult);
+    return bResult;
 }
 
 final function bool CheckFlag(coerce String flagName, optional EFlagType flagType)
@@ -164,7 +164,7 @@ final function SetExpiration(coerce String flagName, EFlagType flagType, int exp
 
   if (class'GameFlags'.static.GetFlag(flagname, Flag))
   {
-   	Flag.ExpireLevel = expiration;
+    Flag.ExpireLevel = expiration;
     class'GameFlags'.static.SetFlag(Flag);
   }
 }
@@ -175,7 +175,7 @@ final function int GetExpiration(coerce String flagName, EFlagType flagType)
 
   if (class'GameFlags'.static.GetFlag(flagname, Flag))
   {
-   	return Flag.ExpireLevel;
+    return Flag.ExpireLevel;
   }
   return 0;
 }
@@ -183,20 +183,20 @@ final function int GetExpiration(coerce String flagName, EFlagType flagType)
 /* Теперь обрабатывается в C++ */
 final function DeleteExpiredFlags(int criteria)
 {
-  local array<string> myFlags;
-	local int i;
+/*  local array<string> myFlags;
+    local int i;
 
-	myFlags = class'GameFlags'.static.GetAllFlagIds(true); // True -- вернуть в регистре "как есть"
+    myFlags = class'GameFlags'.static.GetAllFlagIds(true); // True -- вернуть в регистре "как есть"
 
-	for (i=0; i<myFlags.Length; i++)
-	{
-	  if (Getexpiration(myFlags[i], FLAG_Bool) >= criteria)
+    for (i=0; i<myFlags.Length; i++)
+    {
+      if (Getexpiration(myFlags[i], FLAG_Bool) >= criteria)
         DeleteFlag(myFlags[i]);
-	}
+    }*/
     //log(myFlags[i],'ExpiredFlag');
 
-//  class'GameFlags'.static.DeleteExpiredFlags(criteria); // Вылет?
-  log("Deleted expired flags up to "$criteria);
+  class'GameFlags'.static.DeleteExpiredFlags(criteria);
+  log("Deleted expired flags up to "$criteria,'FlagSystem');
 }
 
 final function SetDefaultExpiration(int expiration)
@@ -207,34 +207,34 @@ final function SetDefaultExpiration(int expiration)
 final function DeleteAllFlags()
 {
   local array<string> myFlags;
-	local int i;
+    local int i;
 
-	myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
+    myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
 
-	for (i=0; i<myFlags.Length; i++)
-	{
-   class'GameFlags'.static.DeleteFlag(myFlags[i]);
-	}
-	log("All flags removed",'FlagSystem');
+    for (i=0; i<myFlags.Length; i++)
+    {
+      class'GameFlags'.static.DeleteFlag(myFlags[i]);
+    }
+    log("All flags removed",'FlagSystem');
 }
 
 // Delete Almost All flags!
 final function DeleteAlmostAllFlags()
 {
   local array<string> myFlags;
-	local int i;
+    local int i;
 
-	myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
-	for (i=0; i<myFlags.Length; i++)
-	{
-	  if (myFlags[i] ~= "SKTemp_SkillPointsAvail")
-	  continue;
-	  if (myFlags[i] ~= "SKTemp_SkillPointsTotal")
-	  continue;
+    myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
+    for (i=0; i<myFlags.Length; i++)
+    {
+      if (myFlags[i] ~= "SKTemp_SkillPointsAvail")
+      continue;
+      if (myFlags[i] ~= "SKTemp_SkillPointsTotal")
+      continue;
 
    class'GameFlags'.static.DeleteFlag(myFlags[i]);
-	}
-	log("Almost all flags removed )))",'FlagSystem');
+    }
+    log("Almost all flags removed !",'FlagSystem');
 }
 
 function ResetFlags()
@@ -246,6 +246,10 @@ function ResetFlags()
 // Do nothing.
 function DiscardInventory(Pawn Other);
 function ScoreKill(Controller Killer, Controller Other);
+function AddDefaultInventory(pawn PlayerPawn)
+{
+   // do nothing
+}
 
 // 
 // Установка правильной скорости игры.
@@ -255,32 +259,32 @@ function SetGameSpeed(Float T)
 {
     local float OldSpeed;
 
-	if (!AllowGameSpeedChange())
-	{
-		Level.TimeDilation = 1.0;
-		GameSpeed = 1.0;
-		Default.GameSpeed = GameSpeed;
-	}
-	else
-	{
-		OldSpeed = GameSpeed;
-		GameSpeed = FMax(T, 0.1);
-		Level.TimeDilation = 1.0 * GameSpeed;
-		if ( GameSpeed != OldSpeed )
-		{
-			Default.GameSpeed = GameSpeed;
-			class'GameInfo'.static.StaticSaveConfig();
-		}
-	}
+    if (!AllowGameSpeedChange())
+    {
+        Level.TimeDilation = 1.0;
+        GameSpeed = 1.0;
+        Default.GameSpeed = GameSpeed;
+    }
+    else
+    {
+        OldSpeed = GameSpeed;
+        GameSpeed = FMax(T, 0.1);
+        Level.TimeDilation = 1.0 * GameSpeed;
+        if ( GameSpeed != OldSpeed )
+        {
+            Default.GameSpeed = GameSpeed;
+            class'GameInfo'.static.StaticSaveConfig();
+        }
+    }
     SetTimer(Level.TimeDilation, true);
 }
 
 function bool AllowGameSpeedChange()
 {
-	if (Level.NetMode == NM_Standalone)
-		return true;
-	else
-		return false;
+    if (Level.NetMode == NM_Standalone)
+        return true;
+    else
+        return false;
 }
 
 function bool ShouldRespawn(Pickup Other)

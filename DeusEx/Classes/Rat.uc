@@ -3,31 +3,54 @@
 //=============================================================================
 class Rat extends Animal;
 
-var(AI) float MinLightLevel;
-var(AI) float MaxLightLevel;
-var(AI) float ReactionTime;
-var(AI) float MaxWaitTime;
-var float     ComputedSpeed;
-var float     LastAgitation;
-var float     CurrentAgitation;
+var float myTime;
 
-var float time;
+function bool ShouldBeStartled(Pawn startler)
+{
+    local float speed;
+    local float time;
+    local float dist;
+    local float dist2;
+    local bool  bPh33r;
+
+    bPh33r = false;
+    if (startler != None)
+    {
+        speed = VSize(startler.Velocity);
+        if (speed >= 20)
+        {
+            dist = VSize(Location - startler.Location);
+            time = dist/speed;
+            if (time <= 3.0)
+            {
+                dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
+                if (dist2 < speed*1.5)
+                    bPh33r = true;
+            }
+        }
+    }
+
+    return bPh33r;
+}
 
 
+function Tick(float deltaTime)
+{
+    Super.Tick(deltaTime);
 
+    myTime += deltaTime;
 
-// ----------------------------------------------------------------------
-// state Wandering
-// ----------------------------------------------------------------------
-
-// Ripped right out of ScriptedPawn and modified -- need to make this generic?
+    // check for random noises
+    if (myTime > 1.0)
+    {
+        myTime = 0;
+        if (FRand() < 0.05)
+            PlaySound(sound'RatSqueak2', SLOT_None);
+    }
+}
 
 defaultproperties
 {
-     MinLightLevel=0.030000
-     MaxLightLevel=0.080000
-     ReactionTime=0.500000
-     MaxWaitTime=10.000000
      bFleeBigPawns=True
      HealthHead=5
      HealthTorso=5
@@ -49,19 +72,25 @@ defaultproperties
      AirSpeed=150.000000
      AccelRate=500.000000
      JumpZ=0.000000
-     // MaxStepHeight=8.000000
+     MaxiStepHeight=8.000000
      BaseEyeHeight=1.000000
      Health=5
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Fear
+     bCrawler=true
      HitSound1=Sound'DeusExSounds.Animal.RatSqueak1'
      HitSound2=Sound'DeusExSounds.Animal.RatSqueak3'
      die=Sound'DeusExSounds.Animal.RatDie'
      Mesh=mesh'DeusExCharacters.Rat'
      CollisionRadius=16.000000
-     CollisionHeight=3.500000
-     bBlockActors=False
+     CollisionHeight=1.75
+
+     CrouchRadius=16.000000
+     CrouchHeight=1.75
+
+//     CollisionHeight=3.500000
+//     bBlockActors=False
      Mass=2.000000
      Buoyancy=2.000000
      RotationRate=(Yaw=65530)
+     ControllerClass=class'RatController'
 }

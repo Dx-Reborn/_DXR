@@ -10,9 +10,9 @@ defaultproperties
      UnfamiliarName="Thug"
      CarcassType=Class'DeusEx.ThugMale2Carcass'
      WalkingSpeed=0.296000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=6)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbar')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistolInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mmInv',Count=6)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbarInv')
      walkAnimMult=0.800000
      GroundSpeed=200.000000
      Mesh=mesh'DeusExCharacters.GM_DressShirt'
@@ -27,4 +27,6 @@ defaultproperties
      CollisionRadius=20.000000
      CollisionHeight=43.000000
 //     CollisionHeight=47.500000
+//     bHasFlashLight=true
+//     LampBone='172'
 }

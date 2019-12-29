@@ -6,51 +6,39 @@ class AirBubble extends Effects;
 var() float RiseRate;
 var vector OrigVel;
 
-auto state flying
+event Tick(float deltaTime)
 {
-	simulated function Tick(float deltaTime)
-	{
-		Velocity.X = OrigVel.X + 8 - FRand() * 17;
-		Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
-		Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
+   local WaterVolume wat;
 
-    if (!TouchingWaterVolume())
-        Destroy();
-	}
+   Velocity.X = OrigVel.X + 8 - FRand() * 17;
+   Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
+   Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
 
-	simulated function BeginState()
-	{
-		Super.BeginState();
-
-		OrigVel = Velocity;
-		SetDrawScale(FRand() * 0.1);
-		LifeSpan = 1 + 2 * FRand();
-	}
-
-
-  function bool TouchingWaterVolume()
-  {
-	  local PhysicsVolume V;
-
-	  ForEach TouchingActors(class'PhysicsVolume',V)
-		  if (V.bWaterVolume)
-			     return true;
-
-	     return false;
-   }
+   foreach RadiusActors(class'WaterVolume', wat, 10000) // DXR: Что это такое?
+        if (!wat.Encompasses(self))
+        {
+            bHidden = true;
+            Destroy();
+        }
 }
+
+event BeginPlay()
+{
+    OrigVel = Velocity;
+    SetDrawScale(FRand() * 0.1);
+    LifeSpan = 1 + 2 * FRand();
+}
+
 
 
 
 defaultproperties
 {
      RiseRate=50.000000
+     Physics=PHYS_Projectile
      LifeSpan=10.000000
-     Style=STY_Translucent
      DrawType=DT_Sprite
+     Style=STY_Translucent
      Texture=Texture'DeusExItems.Skins.FlatFXTex45'
      DrawScale=0.050000
-		 CollisionRadius=1.00000
-		 CollisionHeight=1.00000
-     Buoyancy=5.000000
 }

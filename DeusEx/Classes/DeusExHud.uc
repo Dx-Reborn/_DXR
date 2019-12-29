@@ -16,11 +16,35 @@ var transient string DebugConString, DebugConString2;
 
 var bool bRenderMover;
 
-//var DeusExMover dxMover;
+var inventory objects[10]; // for toolbelt
+
+var float vis;
+
+exec function ShowDebug()
+{
+    bShowDebugInfo = !bShowDebugInfo;
+    cubemapmode = bShowDebugInfo;
+}
+
+event Tick(float dt)
+{
+   Super.Tick(dt);
+
+   if (PlayerOwner != None && PlayerOwner.Pawn != None)
+   RefreshHUDDisplay(dt);
+}
+
+function RefreshHUDDisplay(float DT)
+{
+    ClearBelt();
+    PopulateBelt();
+//    UpdateInHand();
+}
 
 function SetInitialState()
 {
    LoadColorTheme();
+   PopulateBelt();
 
 //  foreach AllActors(class'DeusExMover', DxMover)
 //  break;
@@ -82,7 +106,7 @@ function LoadColorTheme()
 event PostLoadSavedGame()
 {
   if (dxc == none)
-  	dxc = new(none) class'DxCanvas';
+    dxc = new(none) class'DxCanvas';
 }
 
 exec function ExtraHUDDebugInfo()
@@ -95,15 +119,15 @@ exec function ExtraHUDDebugInfo()
 
 simulated event PostRender(canvas C)
 {
-	super.postrender(C);
+    super.postrender(C);
 
-	if (PlayerOwner.pawn == none)
-	    return;
+    if (PlayerOwner.pawn == none)
+        return;
 
-//	TrackActors(C);
+//  TrackActors(C);
 
-	if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
-	RenderDebugInfo(C);
+    if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
+    RenderDebugInfo(C);
 
   if (bUseBinocularView)
   {
@@ -119,12 +143,12 @@ simulated event PostRender(canvas C)
 /*- Converted from ActorDisplayWindow. Used to check mover bounds. ----------------------*/
 /*final function RenderMover(Canvas C)
 {
-	local int         i;
-	local vector      topCircle[8];
-	local vector      bottomCircle[8];
-	local int         numPoints;
-	local vector      center, area;
-	local vector pp;
+    local int         i;
+    local vector      topCircle[8];
+    local vector      bottomCircle[8];
+    local int         numPoints;
+    local vector      center, area;
+    local vector pp;
 
   if (DxMover == none)
   return;
@@ -134,34 +158,34 @@ simulated event PostRender(canvas C)
   c.SetDrawColor(255,0,0);
   C.DrawText("+");
 
-		dxMover.ComputeMovementArea(center, area);
+        dxMover.ComputeMovementArea(center, area);
 
-		topCircle[0] = center+area*vect(1,1,1);
-		topCircle[1] = center+area*vect(1,-1,1);
-		topCircle[2] = center+area*vect(-1,-1,1);
-		topCircle[3] = center+area*vect(-1,1,1);
-		bottomCircle[0] = center+area*vect(1,1,-1);
-		bottomCircle[1] = center+area*vect(1,-1,-1);
-		bottomCircle[2] = center+area*vect(-1,-1,-1);
-		bottomCircle[3] = center+area*vect(-1,1,-1);
-		numPoints = 4;
+        topCircle[0] = center+area*vect(1,1,1);
+        topCircle[1] = center+area*vect(1,-1,1);
+        topCircle[2] = center+area*vect(-1,-1,1);
+        topCircle[3] = center+area*vect(-1,1,1);
+        bottomCircle[0] = center+area*vect(1,1,-1);
+        bottomCircle[1] = center+area*vect(1,-1,-1);
+        bottomCircle[2] = center+area*vect(-1,-1,-1);
+        bottomCircle[3] = center+area*vect(-1,1,-1);
+        numPoints = 4;
 
-	for (i=0; i<numPoints; i++)
-		DrawLineA(c, topCircle[i], bottomCircle[i]);
-	for (i=0; i<numPoints-1; i++)
-	{
-		DrawLineA(c, topCircle[i], topCircle[i+1]);
-		DrawLineA(c, bottomCircle[i], bottomCircle[i+1]);
-	}
-	DrawLineA(c, topCircle[i], topCircle[0]);
-	DrawLineA(c, bottomCircle[i], bottomCircle[0]);
+    for (i=0; i<numPoints; i++)
+        DrawLineA(c, topCircle[i], bottomCircle[i]);
+    for (i=0; i<numPoints-1; i++)
+    {
+        DrawLineA(c, topCircle[i], topCircle[i+1]);
+        DrawLineA(c, bottomCircle[i], bottomCircle[i+1]);
+    }
+    DrawLineA(c, topCircle[i], topCircle[0]);
+    DrawLineA(c, bottomCircle[i], bottomCircle[0]);
 }*/
 
 /*function DrawLineA(Canvas c, vector point1, vector point2)
 {
-	local float toX, toY;
-	local float fromX, fromY;
-	local vector tVect1, tVect2;
+    local float toX, toY;
+    local float fromX, fromY;
+    local vector tVect1, tVect2;
 
   tVect1 = c.WorldToScreen(point1);
   tVect2 = c.WorldToScreen(point2);
@@ -173,67 +197,34 @@ simulated event PostRender(canvas C)
 
     c.Style=ERenderStyle.STY_Normal;
 
-		c.SetDrawColor(120, 250,150);
-		DrawPoint(c, fromX, fromY);
-		DrawPoint(c, toX, toY);
+        c.SetDrawColor(120, 250,150);
+        DrawPoint(c, fromX, fromY);
+        DrawPoint(c, toX, toY);
 
-		c.SetDrawColor(0, 250, 250);
-		Interpolate(c, fromX, fromY, toX, toY, 8);
-}
-
-
-exec function rmover()
-{
-  bRenderMover =!bRenderMover;
-} */
+        c.SetDrawColor(0, 250, 250);
+        Interpolate(c, fromX, fromY, toX, toY, 8);
+}*/
 
 
-function TrackActors(Canvas C)
-{
-	local /*DeusExDecoration*/ actor Tdeco;
-//	local pawn Tpawn;
-
-	if ((PlayerOwner.pawn != none) && (bUseCameraTrick))// && (Level.TimeSeconds % 1.5 > 0.75))
-	{
-		foreach DynamicActors(class'actor', Tdeco)
-		{
-		 if (TDeco != none)
-		 {
-		    if ((AutoTurretGun(TDeco) != none) || (AutoTurret(TDeco) != none) || (SecurityCamera(TDeco) != none) || (AlarmLight(TDeco) != none))
-//		       TDeco.LastRenderTime = Level.TimeSeconds;
-//      if ((Tdeco.bStatic == false) && (Level.TimeSeconds - tDeco.LastRenderTime > 4) ||
-//      (Tdeco.IsA('AutoTurretGun')) || (Tdeco.IsA('AutoTurret'))
-//   || (Tdeco.IsA('SecurityCamera') || (Tdeco.IsA('AlarmLight'))))
-//   || (tDeco.IsA('conplay'))))
-      {
-       //C.DrawActor(Tdeco, false, false, 0);
-              C.DrawActor(Tdeco, true, true, 0);
-      }                        /*wireframe, clearZ, angle*/
-		 }
-		}
-	}
-	else
-	return;
-}
 
 
 simulated function DisplayMessages(Canvas C)
 {
   local int i, j, /*XPos, YPos,*/ MessageCount;
-	local float w,h;
-	local texture border;//, ico;
-//	local DxCanvas dxc;
-//	local int x;
+    local float w,h;
+    local texture border;//, ico;
+//  local DxCanvas dxc;
+//  local int x;
 
   if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
   return;
 
-	    for(i = 0; i<ConsoleMessageCount; i++)
-  	  {
+        for(i = 0; i<ConsoleMessageCount; i++)
+      {
        if (TextMessages[i].Text == "")
            break;
-	        else if (TextMessages[i].MessageLife < Level.TimeSeconds)
-  	      {
+            else if (TextMessages[i].MessageLife < Level.TimeSeconds)
+          {
             TextMessages[i].Text = "";
 
             if(i < ConsoleMessageCount - 1)
@@ -249,8 +240,8 @@ simulated function DisplayMessages(Canvas C)
       }
 
 
-	if ((messageCount > 0) && (DeusExPlayer(playerowner.pawn).DataLinkPlay == none))
-	{
+    if ((messageCount > 0) && (DeusExPlayer(playerowner.pawn).DataLinkPlay == none))
+    {
         if (dxc != none)
          dxc.SetCanvas(C);
 
@@ -270,7 +261,7 @@ simulated function DisplayMessages(Canvas C)
 
                 if (messageCount > 3)
                 {
-	                c.SetClip(w, (14 * messagecount));
+                    c.SetClip(w, (14 * messagecount));
                 }
        // Фон
 //        c.Style=ERenderStyle.STY_Translucent;
@@ -281,7 +272,6 @@ simulated function DisplayMessages(Canvas C)
 
         c./*Set*/DrawColor = MessageBG;//(64,64,64); // Что за--?
 
-//        c.SetDrawColor(255,255,255);
 
         //TL
         c.SetPos(-13,-16);
@@ -311,7 +301,7 @@ simulated function DisplayMessages(Canvas C)
         c.SetOrigin(c.OrgX+c.ClipX-1,c.OrgY-16);
         if (messageCount <= 3)
         c.SetClip(32,h+32);
-				if (messageCount > 3)
+                if (messageCount > 3)
         c.SetClip(32,(14 * messagecount)+32);
         //TR
         c.SetPos(0,0);
@@ -319,7 +309,7 @@ simulated function DisplayMessages(Canvas C)
         //R
         c.SetPos(0,16);
         if (messageCount <= 3)
-				c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
+                c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
         if (messageCount > 3)
         c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,(14 * messagecount), 1,0,31,8);
         //BR
@@ -355,7 +345,7 @@ simulated function DisplayMessages(Canvas C)
         border = texture'DeusExUI.HUDWindowBorder_Left';
         if (messageCount > 3)
         c.DrawTile(border,64,(14 * messagecount), 0,0,64,8);
-				if (messageCount <= 3)
+                if (messageCount <= 3)
         c.DrawTile(border,64,h, 0,0,64,8);
 
 
@@ -401,17 +391,17 @@ simulated function DisplayMessages(Canvas C)
 
         c.SetPos(40,0); //x,y
 
-		    for(i=0; i<MessageCount; i++)
-    		{
-		        if (TextMessages[i].Text == "")
+            for(i=0; i<MessageCount; i++)
+            {
+                if (TextMessages[i].Text == "")
             break;
-		        //c.SetDrawColor(255,255,255);
-		        // Текст
-		        c.DrawColor = MessageText;
-		        dxc.DrawText(TextMessages[i].Text); // текст
-		        c.SetPos(c.CurX, c.CurY);
+                //c.SetDrawColor(255,255,255);
+                // Текст
+                c.DrawColor = MessageText;
+                dxc.DrawText(TextMessages[i].Text); // текст
+                c.SetPos(c.CurX, c.CurY);
             c.SetClip(w, h+=22);
-		    }
+            }
 
   c.reset();
   c.SetClip(c.SizeX, c.SizeY);
@@ -422,6 +412,7 @@ function RenderDebugInfo(Canvas c)
 {
     local Actor target;
     local vector StartTrace, EndTrace, HitLoc, HitNormal;
+    local DXRAiController control;
 
     c.Font = font'DXFonts.EU_9';
     c.DrawColor = GoldColor; 
@@ -437,7 +428,8 @@ function RenderDebugInfo(Canvas c)
        c.SetPos(c.SizeX/3, c.CurY);
        if ((target != none) && (target.isA('pawn')))
        {
-          if (pawn(target).controller != none)
+         control = DXRAiController(Pawn(Target).Controller);
+          if (control != none)
           {
              c.DrawText(target $ " controller in state "$pawn(target).controller.GetStateName()$" ");
              c.SetPos(c.SizeX/3, c.CurY);
@@ -462,23 +454,47 @@ function RenderDebugInfo(Canvas c)
                c.DrawText("TurnDirection = _яяTURNING_None");
                break;
              }
-            
+            // $ 
+//            c.DrawText("я EnemyTimer = " $ ScriptedPawn(target).EnemyTimer $ ", PotentialEnemyTimer = " $ ScriptedPawn(target).PotentialEnemyTimer $
+//                           ", AiVisibility = " $ class'DeusExPawn'.static.AiVisibility(ScriptedPawn(target), false) $ 
+//                           ", AICanSeeActor = " $ ScriptedPawn(target).AICanSeeActor $ 
+//                           ", Enemy = "$ScriptedPawn(target).Controller.Enemy);
+
+//            c.DrawText("я ActorAvoiding = "$ScriptedPawn(target).ActorAvoiding @ "AvoidWallTimer = "$ ScriptedPawn(target).AvoidWallTimer @ 
+//                       "AvoidBumpTimer = "$ ScriptedPawn(target).AvoidBumpTimer @ "ObstacleTimer = "$ScriptedPawn(target).ObstacleTimer);
           }
 
        }
        else
-       c.DrawText(target $ " in state "$target.GetStateName());
+       {
+         c.SetPos(c.SizeX/3, c.CurY);
+         c.DrawText(target $ " in state "$target.GetStateName());
+         //c.SetPos(c.SizeX/3, c.CurY);
+         //c.DrawText(target $ " StandingCount() = "$target.StandingCount());
+       }
     }
     c.DrawColor = WhiteColor;
-    c.SetPos(c.SizeX/3, c.CurY);
-    c.DrawText("CrouchHeight:"$PlayerOwner.pawn.CrouchHeight);
+    if (Human(PlayerOwner.pawn).CarriedDecoration != none)
+    {
+      c.SetPos(c.SizeX/3, c.CurY);
+      c.DrawText("CarriedDecoration + location = "$Human(PlayerOwner.pawn).CarriedDecoration @ Human(PlayerOwner.pawn).CarriedDecoration.location);
+    }
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText("BaseEyeHeight:"$PlayerOwner.pawn.BaseEyeHeight);
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText("InHand:"$DeusExPlayer(PlayerOwner.pawn).InHand);
     c.SetPos(c.SizeX/3, c.CurY);
-    c.DrawText("CheckConversationInvokeRadius ="$DebugConString2);
-//    c.DrawText(MAXSTEPHEIGHT);
+    c.DrawText("bDuck ? "$PlayerOwner.bDuck$ "    bForceDuck ? "$Human(playerOwner.Pawn).bForceDuck $" StandingCount = "$ PlayerOwner.pawn.StandingCount());
+    c.SetPos(c.SizeX/3, c.CurY);
+    c.DrawText("__ "$DebugConString2);
+
+    c.SetPos(c.SizeX/3, c.CurY);
+    vis = class'DeusExPawn'.static.AiVisibility(PlayerOwner.Pawn, false);
+    c.DrawText(" AIVisibility = " $ vis);
+
+    c.SetPos(c.SizeX/5, c.CurY);
+    c.DrawText(PlayerOwner.Location @ PlayerOwner.Pawn.Location);
+
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText(DebugConString);
       if (DeusExPlayer(playerOwner.pawn).conPlay != none)
@@ -495,8 +511,7 @@ function Timer()
 
 function SafeRestore()
 {
-	SetTimer( 0.5,false);
-	Level.bPlayersOnly=false;
+    SetTimer(0.5,false);
 }
 
 
@@ -505,39 +520,39 @@ function SafeRestore()
 // Вид из бинокля: расстояние до цели.
 function DrawBinocularsView(Pawn Target, Canvas C)
 {
-	local String str;
-	local float boxCX, boxCY;
-	local float x, y, w, h, mult;
-	local vector sp1, EyePos;
+    local String str;
+    local float boxCX, boxCY;
+    local float x, y, w, h, mult;
+    local vector sp1, EyePos;
 
-	if (Target != None)
-	{
+    if (Target != None)
+    {
     c.Font = font'DXFonts.EU_9';
-		mult = VSize(Target.Location - Playerowner.pawn.Location);
-		str = msgRange @ (mult/52) @ strMeters;
+        mult = VSize(Target.Location - Playerowner.pawn.Location);
+        str = msgRange @ (mult/52) @ strMeters;
 
-		EyePos = Human(Playerowner.pawn).Location;
-  	EyePos.Z += Human(Playerowner.pawn).EyeHeight;
+        EyePos = Human(Playerowner.pawn).Location;
+    EyePos.Z += Human(Playerowner.pawn).EyeHeight;
 
     // Расстояние до Pawn
-		sp1 = C.WorldToScreen(Target.Location);
-		boxCX = sp1.X;
-		boxCY = sp1.Y;
+        sp1 = C.WorldToScreen(Target.Location);
+        boxCX = sp1.X;
+        boxCY = sp1.Y;
 
-		c.TextSize(str, w, h);
-		x = boxCX - w/2;
-		y = boxCY - h;
-		c.DrawColor = RedColor;
+        c.TextSize(str, w, h);
+        x = boxCX - w/2;
+        y = boxCY - h;
+        c.DrawColor = RedColor;
 
-		c.SetPos(x,y);
+        c.SetPos(x,y);
     c.Style=ERenderStyle.STY_Normal;
-		c.DrawText(str);
+        c.DrawText(str);
 
-		c.SetPos(x-4,y-4);
+        c.SetPos(x-4,y-4);
     c.Style=ERenderStyle.STY_Translucent;
-		c.drawTileStretched(texture'ItemNameBox', w+4,h+4);
-	}
-	c.reset();
+        c.drawTileStretched(texture'ItemNameBox', w+4,h+4);
+    }
+    c.reset();
 }
 
 function RenderBinoculars(Canvas C)
@@ -551,13 +566,13 @@ function RenderBinoculars(Canvas C)
   if (playerOwner.pawn != none)
   {
 
-   	C.ColorModulate.X = 2;
+    C.ColorModulate.X = 2;
     C.ColorModulate.Y = 2;
     C.ColorModulate.Z = 2;
-	  C.ColorModulate.W = 2;
+      C.ColorModulate.W = 2;
 
-  	// Вид из бинокля...
-  	c.setPos(c.sizeX / 2 - 512,c.sizeY / 2 - 256);
+    // Вид из бинокля...
+    c.setPos(c.sizeX / 2 - 512,c.sizeY / 2 - 256);
     c.Style=ERenderStyle.STY_Modulated;
     c.DrawTileJustified(bg, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
     c.Style=ERenderStyle.STY_Normal;
@@ -598,18 +613,18 @@ function renderScopeView(canvas u)
 
   if (playerOwner.pawn != none)
   {
-   	u.ColorModulate.X = 4;
+    u.ColorModulate.X = 4;
     u.ColorModulate.Y = 4;
     u.ColorModulate.Z = 4;
-	  u.ColorModulate.W = 4;
+      u.ColorModulate.W = 4;
 
-  	// Вид из прицела...
-  	u.SetDrawColor(255,255,255,255);
-  	u.setPos(u.sizeX / 2 - 256,u.sizeY / 2 - 256);
+    // Вид из прицела...
+    u.SetDrawColor(255,255,255,255);
+    u.setPos(u.sizeX / 2 - 256,u.sizeY / 2 - 256);
     u.Style = ERenderStyle.STY_Modulated;
     u.DrawTileJustified(bg, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
     u.Style = ERenderStyle.STY_Normal;
-  	u.SetDrawColor(255,255,255,255);
+    u.SetDrawColor(255,255,255,255);
     u.DrawTileJustified(cr, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
 
     // Заполнители
@@ -630,10 +645,430 @@ function renderScopeView(canvas u)
   }
 }
 
+/*---------------------------------------------------------------------------*/
+
+function bool IsValidPos(int pos)
+{
+    // Don't allow NanoKeySlot to be used
+    if ((pos >= 0) && (pos < 10))
+        return true;
+    else
+        return false;
+}
+
+function ClearPosition(int pos)
+{
+    if (IsValidPos(pos))
+        objects[pos] = None;
+}
+
+exec function ClearBelt()
+{
+    local int beltPos;
+                //0
+    for(beltPos=1; beltPos<10; beltPos++)
+        ClearPosition(beltPos);
+}
+
+function RemoveObjectFromBelt(Inventory item)
+{
+   local int i;
+   local int StartPos;
+
+   StartPos = 1;
+
+    for (i=StartPos; IsValidPos(i); i++)
+    {
+        if (objects[i] == item)
+        {
+            objects[i] = None;
+            if (item.IsA('RuntimePickup'))
+            {
+                RuntimePickup(item).bInObjectBelt = false;
+                RuntimePickup(item).beltPos = -1;
+            }
+            if (item.IsA('RuntimeWeapon'))
+            {
+                RuntimeWeapon(item).bInObjectBelt = false;
+                RuntimeWeapon(item).beltPos = -1;
+            }
+            break;
+        }
+    }
+}
+
+function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
+{
+    local int  i;
+    local bool retval;
+
+    retval = true;
+
+    if ((newItem != None) && (newItem.GetIcon() != None))
+    {
+        // If this is the NanoKeyRing, force it into slot 0
+        if (newItem.IsA('NanoKeyRingInv'))
+        {
+            ClearPosition(0);
+            pos = 0;
+        }
+
+        if (!IsValidPos(pos))
+        {
+         for (i=1; IsValidPos(i); i++)
+            if (objects[i] == None)
+                    break;
+
+            if (!IsValidPos(i))
+            {
+                if (bOverride)
+                    pos = 1;
+            }
+            else
+            {
+                pos = i;
+            }
+        }
+
+        if (IsValidPos(pos))
+        {
+            // If there's already an object here, remove it
+            if (objects[pos] != None)
+                RemoveObjectFromBelt(objects[pos]);
+
+            objects[pos] = newItem;
+        }
+        else
+        {
+            retval = false;
+        }
+    }
+    else
+        retval = false;
+
+    // The inventory item needs to know it's in the object
+    // belt, as well as the location inside the belt.  This is used
+    // when traveling to a new map.
+
+    if ((retVal) && (PlayerOwner.Pawn.Role == ROLE_Authority))
+    {
+       if (newItem.IsA('RuntimeWeapon'))
+       {
+          RuntimeWeapon(newItem).bInObjectBelt = true;
+          RuntimeWeapon(newItem).beltPos = pos;
+       }
+       if (newItem.IsA('RuntimePickup'))
+       {
+          RuntimePickup(newItem).bInObjectBelt = true;
+          RuntimePickup(newItem).beltPos = pos;
+       }
+
+    }
+
+    //UpdateInHand();
+
+    return (retval);
+}
+
+// ----------------------------------------------------------------------
+// Adds an item to the object belt.  There are several types of 
+// items that should *NOT* get added to the object belt, we'll 
+// check for those here.
+// ----------------------------------------------------------------------
+function AddInventory(inventory item)
+{
+    if ((item != None) && !item.IsA('DataVaultImageInv'))
+         AddObjectToBelt(item, -1, false);
+}
+
+function DeleteInventory(inventory item)
+{
+    if (item != None)
+        RemoveObjectFromBelt(item);
+}
+
+// ----------------------------------------------------------------------
+// Looks through the player's inventory and rebuilds the object belt
+// based on the inventory items.  This needs to be done after a load
+// game
+// ----------------------------------------------------------------------
+exec function PopulateBelt()
+{
+    local Inventory anItem;
+    local DeusExPlayer myPlayer;
+
+    // Get a pointer to the player
+    myPlayer = DeusExPlayer(PlayerOwner.Pawn);
+
+    for (anItem=myPlayer.Inventory; anItem!=None; anItem=anItem.Inventory)
+    {
+        if (anItem.IsA('RuntimePickup'))
+          if (RuntimePickup(anItem).bInObjectBelt)
+            AddObjectToBelt(anItem, RuntimePickup(anItem).beltPos, True);
+
+        if (anItem.IsA('RuntimeWeapon'))
+          if (RuntimeWeapon(anItem).bInObjectBelt)
+            AddObjectToBelt(anItem, RuntimeWeapon(anItem).beltPos, True);
+    }
+}
+
+function bool ActivateObjectInBelt(int pos)
+{
+    local Inventory item;
+    local DeusExPlayer myPlayer;
+    local bool retval;
+
+    retval = false;
+
+    item = GetObjectFromBelt(pos);
+    myPlayer = DeusExPlayer(PlayerOwner.pawn);
+    if (myPlayer != None)
+    {
+       // if the object is an ammo box, load the correct ammo into
+       // the gun if it is the current weapon
+//       if ((item != None) && item.IsA('Ammo') && (player.Weapon != None))
+//            DeusExWeapon(player.Weapon).LoadAmmoType(Ammo(item));
+//       else
+//       {
+          myPlayer.PutInHand(item);
+          if (item != None)
+          retval = true;
+//       }
+    }
+    return retval;
+}
+
+function Inventory GetObjectFromBelt(int pos)
+{
+    if (IsValidPos(pos))
+        return (objects[pos]);
+    else
+        return (None);
+}
+
+
+function RenderToolBelt(Canvas C)
+{
+  local float holdX, holdY, w, h;
+  local int beltIt;
+  local SkilledToolInv sitem;
+
+  if (dxc != none)
+      dxc.SetCanvas(C);
+
+    c.Font=Font'DXFonts.DPix_7';
+
+    c.DrawColor = ToolBeltBG;//(127,127,127);
+    C.SetPos(C.SizeX-544,C.SizeY-62);
+    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+        c.Style = ERenderStyle.STY_Translucent;
+            else
+               c.Style = ERenderStyle.STY_Normal;
+    C.DrawIcon(Texture'HUDObjectBeltBackground_Left',1.0);
+
+    C.SetPos(C.CurX-7,C.CurY);
+
+    for(beltIt=1; beltIt<10; beltIt++)
+    {
+        holdX = C.CurX;
+        holdY = C.CurY;
+
+        c.Font=Font'DXFonts.DPix_7';
+        c.DrawColor = ToolBeltBG;
+        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+               else
+            c.Style = ERenderStyle.STY_Normal;
+        C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
+        C.SetPos(C.CurX-13,C.CurY);
+
+        if ((Objects[beltIt] != none) && Objects[beltIt].GetInObjectBelt())
+        {
+            if (Objects[beltIt].IsA('DeusExWeaponInv'))
+            {
+            c.SetDrawColor(255,255,255);
+            C.Style = ERenderStyle.STY_Masked;
+            C.SetPos(holdX,holdY+3);
+            C.DrawIcon(DeusExWeaponInv(Objects[beltIt]).Icon,1.0);
+            c.DrawColor = ToolBeltText;
+
+            w = C.CurX;
+            h = C.CurY-3;
+
+//                  c.Font=Font'DXFonts.FontTiny';
+            c.DrawTextJustified(DeusExWeaponInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+
+            C.SetPos(w-13,h);
+ //                 c.Font=Font'DXFonts.FontMenuSmall_DS';
+            }
+            if (Objects[beltIt].IsA('SkilledToolInv'))
+            {
+            c.SetDrawColor(255,255,255);
+            C.Style = ERenderStyle.STY_Masked;
+            C.SetPos(holdX,holdY+3);
+                        //SkilledToolInv(p.belt[beltIt]).Icon.bMasked=true;
+            C.DrawIconEx(SkilledToolInv(Objects[beltIt]).Icon,1.0);
+            c.DrawColor = ToolBeltText; //
+
+            w = C.CurX;
+            h = C.CurY-3;
+
+//                  c.Font=Font'DXFonts.FontTiny';
+            c.DrawTextJustified(SkilledToolInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+
+            C.SetPos(w-13,h);
+//                  c.Font=Font'DXFonts.FontMenuSmall_DS';
+            }
+            if (Objects[beltIt].IsA('DeusExPickupInv'))
+            {
+            c.SetDrawColor(255,255,255);
+            C.Style = ERenderStyle.STY_Masked;
+            C.SetPos(holdX,holdY+3);
+                        //DeusExPickupInv(p.belt[beltIt]).Icon.bMasked=true;
+            C.DrawIconEx(DeusExPickupInv(Objects[beltIt]).Icon,1.0);
+            c.DrawColor = ToolBeltText; //
+
+            w = C.CurX;
+            h = C.CurY-3;
+
+                    //c.Font=Font'DXFonts.FontTiny';
+//                  c.Font=Font'DXFonts.EUX_7';
+            c.DrawTextJustified(DeusExPickupInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+
+            if (DeusExPickupInv(Objects[beltIt]).CanHaveMultipleCopies())
+                dxc.DrawTextJustified(strUses $ DeusExPickupInv(Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
+
+            C.SetPos(w-13,h);
+//                  c.Font=Font'DXFonts.FontMenuSmall_DS';
+            }
+        }
+         c.DrawColor = ToolBeltText;
+         C.Style = 1;
+         c.SetPos(holdX, holdY);
+         dxc.DrawTextJustified(string(beltIt), 2, holdX, holdY+2, holdX+42, holdY+13);
+
+        sitem = SkilledToolInv(Objects[beltIt]);
+        if((sitem != none) && (!sitem.isA('NanoKeyRingInv')))
+        {
+            dxc.DrawTextJustified(strUses $ sitem.NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
+        }
+        c.SetPos(holdX+51, holdY);
+    }
+
+    c.Font=Font'DXFonts.DPix_7';
+
+   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+       c.Style = ERenderStyle.STY_Translucent;
+          else
+       c.Style = ERenderStyle.STY_Normal;
+
+    c.DrawColor = ToolBeltBG;
+    C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
+    C.SetPos(C.CurX-13,C.CurY);
+    C.DrawIcon(Texture'HUDObjectBeltBackground_Right',1.0);
+//    c.SetPos(holdX, holdY);
+
+    if ((Objects[0] != none) && (Objects[0].IsA('NanoKeyRingInv')))
+    {
+        c.SetPos(holdX + 51, holdY);
+        C.Style = ERenderStyle.STY_Normal;
+        c.DrawColor = ToolBeltText;
+        c.DrawTextJustified(Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
+//        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+43,holdY+53);
+
+        c.SetPos(holdX + 51, holdY);
+        c.SetDrawColor(255,255,255);
+        c.DrawIcon(Objects[0].GetIcon(), 1);
+        c.DrawColor = ToolBeltText;
+        dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
+    }
+
+    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+    {
+      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         c.Style = ERenderStyle.STY_Translucent;
+          else
+           c.Style = ERenderStyle.STY_Alpha;
+
+          C.SetPos(C.SizeX-544,C.SizeY-68);
+          c.DrawColor = ToolBeltFrame;
+          C.DrawIcon(Texture'HUDObjectBeltBorder_1',1.0);
+          C.DrawIcon(Texture'HUDObjectBeltBorder_2',1.0);
+          C.DrawIcon(Texture'HUDObjectBeltBorder_3',1.0);
+    }
+
+  c.ReSet();
+  renderToolBeltSelection(c);
+}
+
+function renderToolBeltSelection(canvas u)
+{
+  local DeusExPlayer p;
+
+  p=Human(PlayerOwner.Pawn);
+  if (p == none) // || (p.InHand == none));
+      return;
+
+  if (p.inHand != none)
+  {
+   u.DrawColor = ToolBeltHighlight;
+   if (p.InHand == Objects[1])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[2])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[2].positionX,u.SizeY-toolbeltSelPos[2].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[3])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[3].positionX,u.SizeY-toolbeltSelPos[3].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[4])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[4].positionX,u.SizeY-toolbeltSelPos[4].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[5])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[5].positionX,u.SizeY-toolbeltSelPos[5].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[6])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[6].positionX,u.SizeY-toolbeltSelPos[6].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[7])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[7].positionX,u.SizeY-toolbeltSelPos[7].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[8])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[8].positionX,u.SizeY-toolbeltSelPos[8].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[9])
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[9].positionX,u.SizeY-toolbeltSelPos[9].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+   else if (p.InHand == Objects[0]) // NanoKeyringInv
+   {
+     u.SetPos(u.SizeX-toolbeltSelPos[0].positionX,u.SizeY-toolbeltSelPos[0].positionY);
+     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+   }
+  }
+}
+
 
 defaultproperties
 {
-	bUseCameraTrick=true
+    bUseCameraTrick=true
   BinocularsMaxRange=2000
   strMeters="meters"
 

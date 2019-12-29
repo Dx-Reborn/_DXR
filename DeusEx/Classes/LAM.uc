@@ -6,36 +6,39 @@ class LAM extends ThrownProjectile;
 
 simulated function Tick(float deltaTime)
 {
-	local float blinkRate;
+    local float blinkRate;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bDisabled)
-	{
-		Skins[1] = Texture'BlackMaskTex';
-		return;
-	}
+    if (bDisabled)
+    {
+        Skins[0] = Texture'BlackMaskTex';
+        return;
+    }
 
-	// flash faster as the time expires
-	if (fuseLength - time <= 0.75)
-		blinkRate = 0.1;
-	else if (fuseLength - time <= fuseLength * 0.5)
-		blinkRate = 0.3;
-	else
-		blinkRate = 0.5;
+    // flash faster as the time expires
+    if (fuseLength - time <= 0.75)
+        blinkRate = 0.1;
+    else if (fuseLength - time <= fuseLength * 0.5)
+        blinkRate = 0.3;
+    else
+        blinkRate = 0.5;
 
    if ((Level.NetMode == NM_Standalone) || (Role < ROLE_Authority) || (Level.NetMode == NM_ListenServer))
    {
       if (Abs((fuseLength - time)) % blinkRate > blinkRate * 0.5)
-         Skins[1] = Texture'BlackMaskTex';
+         Skins[0] = Texture'BlackMaskTex';
       else
-         Skins[1] = Texture'LAM3rdtex1';
+         Skins[0] = Texture'LAM3rdtex1';
    }
 }
 
 
 defaultproperties
 {
+     Skins[0]=Shader'DeusExItemsEx.ExSkins.Unlit_Red'
+     Skins[1]=Texture'DeusExItems.Skins.LAM3rdTex1'
+
      fuseLength=3.000000
      proxRadius=128.000000
      blastRadius=384.000000

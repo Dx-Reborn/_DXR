@@ -8,6 +8,21 @@ class PlayerControllerEXT extends DeusExPlayerControllerExt
 
 #exec OBJ LOAD FILE=DeusExSounds
 
+enum EMusicMode {
+    MUS_Ambient,
+    MUS_Combat,
+    MUS_Conversation,
+    MUS_Outro,
+    MUS_Dying
+};
+
+var EMusicMode musicMode;
+var float savedSongPos;
+var float musicCheckTimer;
+var float musicChangeTimer;
+var int CombatMusicId;
+
+
 var private editconst float savedMusicVolume, savedSpeechVolume, savedSoundVolume;
 var config  bool bIsAmericanWeek; // влияет только на первый день недели.
 var config int MenuThemeIndex;
@@ -42,6 +57,124 @@ var bool bCheatsEnabled;
 
 var(flashFineTuning) float deltaStep, flashFogMult;
 
+function UpdateDynamicMusic(float deltaTime)
+{
+    local bool bCombat;
+    local ScriptedPawn npc;
+    local Controller CurPawn;
+    local DeusExLevelInfo info;
+
+    if (Level.Song == "")
+        return;
+
+    musicCheckTimer += deltaTime;
+    musicChangeTimer += deltaTime;
+
+    info = GetLevelInfo();
+
+    if (IsInState('Interpolating'))
+    {
+        // don't mess with the music on any of the intro maps
+        if ((info != None) && (info.MissionNumber < 0))
+        {
+            musicMode = MUS_Outro;
+            return;
+        }
+
+        if (musicMode != MUS_Outro)
+        {
+            ClientSetMusic(info.OutroMusic, MTRAN_FastFade);
+            musicMode = MUS_Outro;
+        }
+    }
+    else if (IsInState('Conversation'))
+    {
+        if (musicMode != MUS_Conversation)
+        {
+            // save our place in the ambient track
+            /*if (musicMode == MUS_Ambient)
+                savedSection = SongSection;
+            else
+                savedSection = 255;*/
+
+            ClientSetMusic(info.ConvoMusic, MTRAN_Fade);
+            musicMode = MUS_Conversation;
+        }
+    }
+    else if (IsInState('Dead'))
+    {
+        if (musicMode != MUS_Dying)
+        {
+            ClientSetMusic(info.DeadMusic, MTRAN_Fade);
+            musicMode = MUS_Dying;
+        }
+    }
+    else
+    {
+        // only check for combat music every second
+        if (musicCheckTimer >= 1.0)
+        {
+            musicCheckTimer = 0.0;
+            bCombat = False;
+
+         // check a 100 foot radius around me for combat
+         for (CurPawn = Level.ControllerList; CurPawn != None; CurPawn = CurPawn.NextController)
+         {
+            npc = ScriptedPawn(CurPawn.Pawn);
+            if ((npc != None) && (VSize(npc.Location - Location) < (1600 + npc.CollisionRadius)))
+            {
+               if ((npc.Controller.GetStateName() == 'Attacking') && (npc.Controller.Enemy == Pawn))
+               {
+                  bCombat = True;
+                  break;
+               }
+            }
+         }
+
+            if (bCombat)
+            {
+                musicChangeTimer = 0.0;
+
+                if (musicMode != MUS_Combat)
+                {
+                    // save our place in the ambient track
+                    /*if (musicMode == MUS_Ambient)
+                        savedSection = SongSection;
+                    else
+                        savedSection = 255;*/
+
+                    //ClientSetMusic(info.CombatMusic, MTRAN_FastFade);
+                    CombatMusicId = PlayMusic(info.CombatMusic, 2.0);
+                    musicMode = MUS_Combat;
+                }
+            }
+            else if (musicMode != MUS_Ambient)
+            {
+                // wait until we've been out of combat for 5 seconds before switching music
+                if (musicChangeTimer >= 5.0)
+                {
+                    // use the default ambient section for this map
+                    /*if (savedSection == 255)
+                        savedSection = Level.SongSection;*/
+
+                    // fade slower for combat transitions
+                    if (musicMode == MUS_Combat)
+                        ClientSetMusic(info.AmbientMusic, MTRAN_SlowFade);
+                     else
+                        ClientSetMusic(info.AmbientMusic, MTRAN_Fade);
+
+
+                    //savedSection = 255;
+                    musicMode = MUS_Ambient;
+                    musicChangeTimer = 0.0;
+                }
+            }
+        }
+    }
+}
+
+
+
 /*-- Color themes for Interface (menus, windows...) ----------------------------------*/
 exec function AllMenuThemes()
 {
@@ -51,9 +184,7 @@ exec function AllMenuThemes()
   themes = class'DXR_Menu'.static.GetAllThemes();
 
     for (x = 0; x < themes.Length; x++)
-    {
-     log(themes[x]);
-    }
+         log(themes[x]);
 }
 
 exec function SetMenuTheme(int index)
@@ -83,9 +214,7 @@ exec function AllHUDThemes()
   themes = class'DXR_HUD'.static.GetAllHUDThemes();
 
     for (x = 0; x < themes.Length; x++)
-    {
-     log(themes[x]);
-    }
+         log(themes[x]);
 }
 
 exec function HudColor(int index)
@@ -234,8 +363,12 @@ function HighlightCenterObject()
     // use the last traced object as the target...this will handle
     // smaller items under larger items for example
     // ScriptedPawns always have precedence, though
-    foreach pawn.TraceActors(class'Actor', mytarget, HitLoc, HitNormal, EndTrace, StartTrace)
+    foreach TraceActors(class'Actor', mytarget, HitLoc, HitNormal, EndTrace, StartTrace)
     {
+      //log(self@"mytarget = "$mytarget);
+      if (mytarget.bWorldGeometry)
+      break;
+
       if (IsFrobbable(mytarget) && (mytarget != Human(pawn).CarriedDecoration))
       {
         if (mytarget.IsA('ScriptedPawn'))
@@ -289,7 +422,7 @@ function DeusExLevelInfo GetLevelInfo()
 
 function HandleWalking()
 {
-    Super.HandleWalking();
+//    Super.HandleWalking();
 
   if (pawn != none) // To avoid spamlog if player is dead )))))
   {
@@ -325,6 +458,7 @@ function HandleWalking()
         }
         PlayerPawn(pawn).lastbDuck = bDuck;
     }
+
     if (Human(pawn) != none)
        Human(pawn).p_HandleWalking();
   }
@@ -503,6 +637,16 @@ function LookAtVector(vector lookTo, bool bRotate,
 // STATES
 //
 
+state Dead
+{
+   event PlayerTick(float DeltaTime)
+   {
+       Super.PlayerTick(DeltaTime);
+       UpdateDynamicMusic(deltaTime);
+   }
+}
+
+
 // Player movement.
 // Player Standing, walking, running, falling.
 state PlayerWalking
@@ -512,17 +656,17 @@ ignores SeePlayer, HearNoise, Bump;
         function PlayerTick(float DeltaTime)
         {
             HighlightCenterObject();
-        FrobTime += deltaTime;
+            FrobTime += deltaTime;
 
-       if (Human(pawn) != none)
-       {
+          if (Human(pawn) != none)
+          {
             Human(pawn).MaintainEnergy(deltaTime);
-      Human(pawn).UpdateInHand();
+            Human(pawn).UpdateInHand();
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdatePoison(deltaTime);
-        Human(pawn).Bleed(deltaTime);
-        Human(pawn).UpdateDynamicMusic(deltaTime);
-        Human(pawn).RepairInventory();//
+            Human(pawn).Bleed(deltaTime);
+            UpdateDynamicMusic(deltaTime);
+            Human(pawn).RepairInventory();//
         
 
             if (Human(pawn).bOnFire)
@@ -535,7 +679,7 @@ ignores SeePlayer, HearNoise, Bump;
             // save some texture info
             //FloorMaterial = GetFloorMaterial();
             //WallMaterial = GetWallMaterial(WallNormal);
-      Human(pawn).UpdateTimePlayed(DeltaTime);
+            Human(pawn).UpdateTimePlayed(DeltaTime);
 
             // Check if player has walked outside a first-person convo.
             Human(pawn).CheckActiveConversationRadius();
@@ -543,17 +687,17 @@ ignores SeePlayer, HearNoise, Bump;
             // Check if all the people involved in a conversation are 
             // still within a reasonable radius.
             Human(pawn).CheckActorDistances();
-     }
-            Super.PlayerTick(DeltaTime);
+          }
+        Super.PlayerTick(DeltaTime);
         }
 
-    function bool NotifyPhysicsVolumeChange( PhysicsVolume NewVolume )
+    function bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
     {
         if (NewVolume.bWaterVolume)
-                {
-                        Human(pawn).DropDecoration(); // бросить переносимый предмет
-                GotoState(Human(pawn).WaterMovementState);
-            }
+        {
+            GotoState(pawn.WaterMovementState);
+            Human(pawn).DropDecoration(); // бросить переносимый предмет
+        }
         return false;
     }
 
@@ -576,11 +720,11 @@ ignores SeePlayer, HearNoise, Bump;
 
                 Human(pawn).H_ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
 
-                if (Human(pawn).bToggleWalk)
+/*                if (Human(pawn).bToggleWalk)
                 {
                   bRun = 0;
                   Human(pawn).SetWalking(true);
-                }
+                }*/
 
                 // if the spy drone augmentation is active
                     if (DeusExHud(myHUD).bSpyDroneActive)
@@ -618,7 +762,7 @@ ignores SeePlayer, HearNoise, Bump;
                 {
                     Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16); //
                     bRun=0;
-                    Human(pawn).SetWalking(true); // Перейти в режим ходьбы
+                    //Human(pawn).SetWalking(true); // Перейти в режим ходьбы
 
                 // check to see if we could stand up if we wanted to
                     checkpoint = Human(pawn).Location;
@@ -682,8 +826,8 @@ ignores SeePlayer, HearNoise, Bump;
                 else if (Human(pawn).bIsCrouching || Human(pawn).bForceDuck)
                 {
                     //newSpeed = defSpeed * 1.8;        // DEUS_EX CNN - uncomment to speed up crouch
-                    Human(pawn).bIsWalking = True;
-                    bRun=-1;
+                    Human(pawn).bIsWalking = true;
+                    //bRun=-1;
                 }
 
                 // slow the player down if he's carrying something heavy
@@ -720,15 +864,15 @@ ignores SeePlayer, HearNoise, Bump;
 ////////// if we are moving or crouching, we can't lean
                 // uncomment below line to disallow leaning during crouch
                 if ((Human(pawn).VSize(Velocity) < 10) && (aForward == 0))      // && !bIsCrouching && !bForceDuck)
-                    /*Human(pawn).*/bCanLean = True;
+                    bCanLean = True;
                 else
-                    /*Human(pawn).*/bCanLean = False;
+                    bCanLean = False;
 
                 // check leaning buttons (axis aExtra0 is used for leaning)
                 maxLeanDist = 40;
                 if (Human(pawn).IsLeaning())
                 { //            ViewRotation.Roll = curLeanDist * 20;
-                    Lr=Human(pawn).GetViewRotation();
+                    Lr = Human(pawn).GetViewRotation();
                     Lr.Roll = /*Human(pawn).*/curLeanDist * 20;
                     Human(pawn).SetViewRotation(Lr);
 
@@ -736,7 +880,7 @@ ignores SeePlayer, HearNoise, Bump;
                     Human(pawn).SetBasedPawnSize(Human(pawn).CollisionRadius, Human(pawn).GetDefaultCollisionHeight() - Abs(/*Human(pawn).*/curLeanDist) / 3.0);
                 }
 
-                if (/*Human(pawn).*/bCanLean && (aExtra0 != 0))
+                if (bCanLean && (aExtra0 != 0))
                 {
                 // lean
                 Human(pawn).DropDecoration();       // drop the decoration that we are carrying
@@ -746,7 +890,7 @@ ignores SeePlayer, HearNoise, Bump;
                 alpha = maxLeanDist * aExtra0 * 2.0 * DeltaTime;
                 loc = vect(0,0,0);
                 loc.Y = alpha;
-                  if (Abs(/*Human(pawn).*/curLeanDist + alpha) < maxLeanDist)
+                  if (Abs(curLeanDist + alpha) < maxLeanDist)
                   {
                    // check to make sure the destination not blocked
                     checkpoint = (loc >> Human(pawn).GetViewRotation()) + Human(pawn).Location;
@@ -761,11 +905,11 @@ ignores SeePlayer, HearNoise, Bump;
                    if ((HitActor == None) && (HitActorDown != None))
                    {
                        Human(pawn).SetLocation(checkpoint);
-                       /*Human(pawn).*/curLeanDist += alpha;
+                       curLeanDist += alpha;
                    }
                 }
                 else
-                    /*Human(pawn).*/curLeanDist = aExtra0 * maxLeanDist;
+                       curLeanDist = aExtra0 * maxLeanDist;
                 }
                 else if (Human(pawn).IsLeaning())   //if (!bCanLean && IsLeaning()) // uncomment this to not hold down lean
                 {
@@ -888,6 +1032,7 @@ ignores SeePlayer, HearNoise, Bump;
             ProcessMove(DeltaTime, NewAccel, DoubleClickMove, OldRotation - Rotation);
         bPressedJump = bSaveJump;
     }
+
     function BeginState()
     {
         DoubleClickDir = DCLICK_None;
@@ -921,7 +1066,7 @@ ignores SeePlayer, HearNoise, Bump;
 
     function bool WantsSmoothedView()
     {
-        return (!Human(pawn).bJustLanded);
+        return (!pawn.bJustLanded);
     }
 
     function GrabDecoration()
@@ -929,194 +1074,119 @@ ignores SeePlayer, HearNoise, Bump;
         // перенесено в DeusExPlayer
     }
 
-    event bool NotifyLanded(vector HitNormal)
-    {
-        if (Human(pawn).PhysicsVolume.bWaterVolume)
-            Human(pawn).SetPhysics(PHYS_Swimming);
-        else
-        {
-           GotoState(Human(pawn).LandMovementState);   
-        }
-        return bUpdating;
-    }
-
     event bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
     {
-        local actor HitActor;
-        local vector HitLocation, HitNormal, checkpoint;
+        // if we jump into water, empty our hands
+        if (NewVolume.bWaterVolume)
+        {
+            Human(pawn).DropDecoration();
+            if (Human(pawn).bOnFire)
+                Human(pawn).ExtinguishFire();
+        }
 
-        if (!NewVolume.bWaterVolume)
-        {
-            Pawn.SetPhysics(PHYS_Falling);
-            if ((Human(pawn).Velocity.Z > 0) || Human(pawn).bWaterStepup)
-            {
-                    if (Human(pawn).bUpAndOut && Human(pawn).CheckWaterJump(HitNormal)) //check for waterjump
-                            {
-                               Human(pawn).velocity.Z = FMax(Human(pawn).JumpZ,420) + 2 * Human(pawn).CollisionRadius; //set here so physics uses this for remainder of tick
-                               GotoState(Human(pawn).LandMovementState);
-                            }
-                            else if ((Human(pawn).Velocity.Z > 160) || !Human(pawn).TouchingWaterVolume())
-                            GotoState(Human(pawn).LandMovementState);
-                            else //check if in deep water
-                            {
-                                checkpoint = Human(pawn).Location;
-                                checkpoint.Z -= (Human(pawn).CollisionHeight + 6.0);
-                                HitActor = Trace(HitLocation, HitNormal, checkpoint, Human(pawn).Location, false);
-                                if (HitActor != None)
-                                    GotoState(Human(pawn).LandMovementState);
-                                    else
-                                    {
-                                        Enable('Timer');
-                                        SetTimer(0.7,false);
-                                    }
-                                }
-            }
-        }
-        else
-        {
-            Disable('Timer');
-            Human(pawn).SetPhysics(PHYS_Swimming);
-        }
+        Super.NotifyPhysicsVolumeChange(NewVolume);
         return false;
     }
+
     function ProcessMove(float DeltaTime, vector NewAccel, eDoubleClickDir DoubleClickMove, rotator DeltaRot)
     {
         local vector X,Y,Z, OldAccel;
-                local bool bUpAndOut;
+        local bool bUpAndOut;
 
         GetAxes(Rotation,X,Y,Z);
-        OldAccel = Human(pawn).Acceleration;
-
-        if (Human(pawn).Acceleration != NewAccel)
-                    Human(pawn).Acceleration = NewAccel;
-            bUpAndOut = ((X Dot Human(pawn).Acceleration) > 0) && ((Human(pawn).Acceleration.Z > 0) || (Rotation.Pitch > 4096)); // 
-
-                    if ( Human(pawn).bUpAndOut != bUpAndOut )
-                    Human(pawn).bUpAndOut = bUpAndOut;
-
-            if (!Human(pawn).PhysicsVolume.bWaterVolume) //check for waterjump
-            NotifyPhysicsVolumeChange(Human(pawn).PhysicsVolume);
-    }
-
-    function PlayerMove(float DeltaTime)
-    {
-        local rotator oldRotation;
-        local vector X,Y,Z, NewAccel;
-
-        GetAxes(Rotation,X,Y,Z);
-
-        NewAccel = aForward*X + aStrafe*Y + aUp*vect(0,0,1);
-//        if ( VSize(NewAccel) < 1.0 )
-//            NewAccel = vect(0,0,0);
-
-        //add bobbing when swimming
-        Human(pawn).CheckBob(DeltaTime, Y);
-
-        // Update rotation.
-        oldRotation = Rotation;
-        UpdateRotation(DeltaTime, 2);
-
-        if ( Role < ROLE_Authority ) // then save this move and replicate it
-            ReplicateMove(DeltaTime, NewAccel, DCLICK_None, OldRotation - Rotation);
-        else
-            ProcessMove(DeltaTime, NewAccel, DCLICK_None, OldRotation - Rotation);
-        bPressedJump = false;
-    }
-
-    function Timer()
-    {
-        Human(pawn).bIsWalking = True;
-
-        if ( !Human(pawn).PhysicsVolume.bWaterVolume && (Role == ROLE_Authority) )
-            GotoState(Human(pawn).LandMovementState);
-                  Disable('Timer');
+        OldAccel = Pawn.Acceleration;
+        if ( Pawn.Acceleration != NewAccel )
+            Pawn.Acceleration = NewAccel;
+        bUpAndOut = ((X Dot Pawn.Acceleration) > 0) && ((Pawn.Acceleration.Z > 0) || (Rotation.Pitch > 4096));
+        if ( Pawn.bUpAndOut != bUpAndOut )
+            Pawn.bUpAndOut = bUpAndOut;
+        if ( !Pawn.PhysicsVolume.bWaterVolume ) //check for waterjump
+            NotifyPhysicsVolumeChange(Pawn.PhysicsVolume);
     }
 
         event PlayerTick(float DeltaTime)
         {
-                local vector loc;
+           local vector loc;
 
-                HighlightCenterObject();
-            FrobTime += deltaTime;
+           HighlightCenterObject();
+           FrobTime += deltaTime;
 
-        if (Human(pawn) != none)
-        {
-                Human(pawn).MaintainEnergy(deltaTime);
-                Human(pawn).UpdateInHand();
-                Human(pawn).DrugEffects(deltaTime);
-        Human(pawn).UpdateTimePlayed(DeltaTime);
-        Human(pawn).UpdateDynamicMusic(deltaTime);
-            Human(pawn).RepairInventory(); //
+         if (Human(pawn) != none)
+         {
+            Human(pawn).MaintainEnergy(deltaTime);
+            Human(pawn).UpdateInHand();
+            Human(pawn).DrugEffects(deltaTime);
+            Human(pawn).UpdateTimePlayed(DeltaTime);
+            UpdateDynamicMusic(deltaTime);
+            Human(pawn).RepairInventory();
     
-                Human(pawn).SetWalking(true); // Перейти в режим ходьбы
-                bRun=-1;
+            pawn.SetWalking(true); // Перейти в режим ходьбы
+            bRun=-1;
 
-                if (Human(pawn).bOnFire)
+            if (Human(pawn).bOnFire)
                 Human(pawn).ExtinguishFire();
 
                 // update our swimming info
-                Human(pawn).swimTimer -= deltaTime;
-                Human(pawn).swimTimer = FMax(0, Human(pawn).swimTimer);
-                if (Human(pawn).swimTimer > 0)           // Human(pawn).PainTime = Human(pawn).swimTimer;
-                    Human(pawn).LastPainTime = Human(pawn).swimTimer;
-                Human(pawn).swimBubbleTimer += deltaTime;
-                Human(pawn).swimSoundTimer += deltaTime;
+            Human(pawn).swimTimer -= deltaTime;
+            Human(pawn).swimTimer = FMax(0, Human(pawn).swimTimer);
+            if (Human(pawn).swimTimer > 0)           // Human(pawn).PainTime = Human(pawn).swimTimer;
+                Human(pawn).LastPainTime = Human(pawn).swimTimer;
 
-                    if (Human(pawn).swimSoundTimer >= 1.0)
-                    {
-                        Human(pawn).swimSoundTimer = 0;
-                        if (FRand() < 0.4)
-                        Human(pawn).inWaterLeft();
-                        else
-                        Human(pawn).inWaterRight();
-                    }
-
-                  if (Human(pawn).swimBubbleTimer >= 0.2)
-                    {
-                    Human(pawn).swimBubbleTimer = 0;
-                    if (FRand() < 0.4)
-                        {
-                            loc = Human(pawn).Location + VRand() * 4;
-                            loc += Vector(Human(pawn).GetViewRotation()) * Human(pawn).CollisionRadius * 2;
-                            loc.Z += Human(pawn).CollisionHeight * 0.9;
-                            Spawn(class'AirBubble', Human(pawn),, loc);
-                        }
-                    }
-                    Human(pawn).CheckActiveConversationRadius();
-                    Human(pawn).CheckActorDistances();
+            Human(pawn).swimBubbleTimer += deltaTime;
+            Human(pawn).swimSoundTimer += deltaTime;//
+  
+            if (Human(pawn).swimBubbleTimer >= 0.2)
+            {
+                 Human(pawn).swimBubbleTimer = 0;
+                 if (FRand() < 0.4)
+                 {
+                    loc = pawn.Location + VRand() * 4;
+                    loc += vector(GetViewRotation()) * pawn.CollisionRadius * 2;
+                    loc.Z += pawn.CollisionHeight * 0.9;
+                    Spawn(class'AirBubble', pawn,, loc);
+                 }
             }
+                Human(pawn).CheckActiveConversationRadius();
+                Human(pawn).CheckActorDistances();
+         }
             Super.PlayerTick(deltaTime);
         }
         //-------------------
+
+    event bool NotifyHeadVolumeChange(PhysicsVolume NewVolume)
+    {
+        Human(pawn).SetBasedPawnSize(pawn.default.CollisionRadius, 16);
+
+        return false;
+    }
+
     function BeginState()
     {
-            local float mult;
+        local float mult;
 
-                SavedBRun=bRun;
+        SavedBRun = bRun;
 
-                // set us to be two feet high
-                Human(pawn).SetBasedPawnSize(Human(pawn).Default.CollisionRadius, 16);
+        // set us to be two feet high
+        Human(pawn).SetBasedPawnSize(pawn.default.CollisionRadius, 16);
 
-                // get our skill info
-                mult = Human(pawn).SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-                Human(pawn).swimDuration = Human(pawn).UnderWaterTime * mult;
-                Human(pawn).swimTimer = Human(pawn).swimDuration;
-                Human(pawn).swimBubbleTimer = 0;
-                Human(pawn).WaterSpeed = Human(pawn).Default.WaterSpeed * mult;
+        // get our skill info
+        mult = Human(pawn).SkillSystem.GetSkillLevelValue(class'SkillSwimming');
+        Human(pawn).swimDuration = Human(pawn).UnderWaterTime * mult;
+        Human(pawn).swimTimer = Human(pawn).swimDuration;
+        Human(pawn).swimBubbleTimer = 0;
+        Human(pawn).WaterSpeed = Human(pawn).Default.WaterSpeed * mult;
 
-        Disable('Timer');
-        Human(pawn).SetPhysics(PHYS_Swimming);
-                Super.BeginState();
+        Super.BeginState();
     }
     function EndState()
     {
-            bRun=savedbRun;
+       bRun = savedbRun;
     }
 }
 
 //
 // player is climbing ladder
-// Play ladder step sounds here :)
+// Play ladder step sounds here.
 //
 state PlayerClimbing
 {
@@ -1139,7 +1209,7 @@ ignores SeePlayer, HearNoise, Bump;
         if (Human(pawn).Acceleration != NewAccel)
         {
                         Human(pawn).Acceleration = NewAccel;
-                }
+        }
         if (bPressedJump)
         {
             Human(pawn).DoJump(bUpdating);
@@ -1185,7 +1255,7 @@ ignores SeePlayer, HearNoise, Bump;
                         else
                     Human(pawn).LadderStepSounds();
                     LStepTimer=0;
-                }
+            }
 //        Human(pawn).ForceCrouch();
     }
 
@@ -1196,24 +1266,24 @@ ignores SeePlayer, HearNoise, Bump;
         bPressedJump = false;
     }
 
-    function EndState()
-    {
+//    function EndState()
+//    {
 //        if ( Pawn != None )
 //        Human(pawn).ShouldCrouch(true);
 //        Human(pawn).ShouldCrouch(false);
-    }
+//    }
 
         function PlayerTick( float DeltaTime )
         {
             HighlightCenterObject();
-        FrobTime += deltaTime;
+            FrobTime += deltaTime;
             Human(pawn).MaintainEnergy(deltaTime);
             Human(pawn).UpdateInHand();
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdatePoison(deltaTime);
-        Human(pawn).Bleed(deltaTime);
-      Human(pawn).UpdateTimePlayed(DeltaTime);
-      Human(pawn).RepairInventory(); //
+            Human(pawn).Bleed(deltaTime);
+            Human(pawn).UpdateTimePlayed(DeltaTime);
+            Human(pawn).RepairInventory(); //
 
         if (Human(pawn).bOnFire)
             {
@@ -1280,7 +1350,7 @@ ignores SeePlayer, HearNoise, Bump;
         local float   yawDelta;
 
         Human(pawn).UpdateInHand();
-        Human(pawn).UpdateDynamicMusic(deltaTime);
+        UpdateDynamicMusic(deltaTime);
 
         Human(pawn).DrugEffects(deltaTime);
         Human(pawn).Bleed(deltaTime);
@@ -1383,15 +1453,11 @@ exec function QuickSave();
 
 function ShowMidGameMenu(bool bPause)
 {
-  if ((getFlagBase().missionNumber == -2) || (getFlagBase().missionNumber == -1) ||
-      (getFlagBase().missionNumber == 98) || (getFlagBase().missionNumber == 99))
-  ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
-
-//  if ((DeusExGameInfo(level.game).missionNumber == 98) || (DeusExGameInfo(level.game).missionNumber == 99))
-//  return;
-
+  if ((GetLevelInfo().missionNumber == -2) || (GetLevelInfo().missionNumber == -1) ||
+      (GetLevelInfo().missionNumber == 98) || (GetLevelInfo().missionNumber == 99))
+       ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
    else
-    {
+   {
      class'DxUtil'.static.PrepareShotForSaveGame(self.XLevel, ConsoleCommand("get System savepath"));
 
     // Pause if not already
@@ -1399,7 +1465,7 @@ function ShowMidGameMenu(bool bPause)
        SetPause(true);
      StopForceFeedback();  // jdf - no way to pause feedback
      ClientOpenMenu(MidGameMenuClass);
-    }
+   }
 }
 
 function DeusExGameInfo getFlagBase()
@@ -1434,5 +1500,5 @@ function RestoreSoundVolume()
 defaultproperties
 {
   MaxFrobDistance=112.00
-  bWantsLedgeCheck=false
+//  bWantsLedgeCheck=false
 }

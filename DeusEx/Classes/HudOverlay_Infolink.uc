@@ -28,142 +28,149 @@ var texture winPortrait;
 var Texture speakerPortrait;
 var bool bDrawEffects;
 
-function Render(canvas c)
+function Render(canvas u)
 {
   local float holdX, flicker;
   local texture headIcon, border;
 
-     dxc.SetCanvas(C);
+  if (Level.GetLocalPlayerController().Pawn == None)
+  return;
 
-    c.DrawColor = InfoLinkBG;
+     dxc.SetCanvas(u);
+
+    u.DrawColor = InfoLinkBG;
     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
-        c.Style = ERenderStyle.STY_Translucent;
+        u.Style = ERenderStyle.STY_Translucent;
            else
-             c.Style = ERenderStyle.STY_Normal;
+             u.Style = ERenderStyle.STY_Normal;
 
-		// ‘он и рамки
-    c.SetPos(104,0);
-    c.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_1',1.0);
-    c.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_2',1.0);
+        // ‘он и рамки
+    u.SetPos(104,0);
+    u.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_1',1.0);
+    u.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_2',1.0);
 
 
     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
     {
       if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-         c.Style = ERenderStyle.STY_Translucent;
+         u.Style = ERenderStyle.STY_Translucent;
           else
-           c.Style = ERenderStyle.STY_Alpha;
+           u.Style = ERenderStyle.STY_Alpha;
 
-      c.DrawColor = InfoLinkFrame;
+      u.DrawColor = InfoLinkFrame;
       border = texture'DeusExUI.HUDInfolinkBorder_1';
-      c.SetPos(104,0);
-      c.DrawIcon(border,1.0);
+      u.SetPos(104,0);
+      u.DrawIcon(border,1.0);
       border = texture'DeusExUI.HUDInfolinkBorder_2';
-      c.DrawIcon(border,1.0);
+      u.DrawIcon(border,1.0);
     }
 
-    c.Style=1;
-    c.SetDrawColor(255,255,255);
-		// јватарка
-    c.SetPos(124,25);
+    u.Style=1;
+    u.SetDrawColor(255,255,255);
+        // јватарка
+    u.SetPos(124,25);
     if (portraitStringName != "")
         headIcon = texture(DynamicLoadObject(portraitStringName,class'texture', false));
     if (headicon != none)
-		    c.DrawTile(headIcon,64,64,0,0,headIcon.USize,headIcon.VSize);
-		// Ёффекты
-    c.SetPos(124,25);
-		if (bDrawEffects)
-        c.DrawTile(TexPanner'DeusExControls.Controls.static',64,64,0,0,128,128);
+            u.DrawTile(headIcon,64,64,0,0,headIcon.USize,headIcon.VSize);
+        // Ёффекты
+    u.SetPos(124,25);
+        if (bDrawEffects)
+        u.DrawTile(TexPanner'DeusExControls.Controls.static',64,64,0,0,128,128);
 
-    c.SetPos(124,25);
-		if (bDrawEffects)
-        c.DrawTile(TexPanner'DeusExControls.Controls.scrolling',64,64,0,0,64,64);
+    u.SetPos(124,25);
+        if (bDrawEffects)
+        u.DrawTile(TexPanner'DeusExControls.Controls.scrolling',64,64,0,0,64,64);
 
-   c.Font = Font'DxFonts.Inf_9';//font'FontFixedWidthSmall_DS';
-   c.SetOrigin(199,37);
-   c.SetPos(0,0);
-   c.SetClip(291,c.SizeY);
+  if ((class'GameManager'.static.GetGameLanguage() ~= "frt") || (class'GameManager'.static.GetGameLanguage() ~= "int"))
+   u.Font = font'FontFixedWidthSmall_DS';
+   else
+   u.Font = font'DxFonts.FR_8'; //Font'DxFonts.Inf_9';//font'FontFixedWidthSmall_DS';
 
-     if (buffer != "")
+   u.SetOrigin(199,37);
+   u.SetPos(0,0);
+   u.SetClip(291,u.SizeY);
+
+     if (buffer != "") // Render InfoLink message...
      {
-       c.StrLen(buffer, holdX, ttySize);
-       c.SetClip(291,55);
-       c.SetPos(0,textYStart);
+       u.StrLen(buffer, holdX, ttySize);
+       u.SetClip(291,55);
+       u.SetPos(0,textYStart);
        dxc.TeleTypeTextColor = InfoLinkText;
-       dxc.DrawTextTeletype(buffer,"|", Level.TimeSeconds-ttyCounter,ttyCRate);
+       dxc.DrawTextTeletype(buffer,"|", Level.TimeSeconds - ttyCounter,ttyCRate);
      }
 
     if (datalinkplay.bEndTransmission == false)
     {
-       c.DrawColor = InfoLinkTitles;
-       c.SetOrigin(198,17);
-       c.SetPos(0,0);
-       c.SetClip(293,15);
-       c.Font = Font'DxFonts.HR_9';//FontMenuHeaders_DS';
-       c.DrawTextJustified(winName,0,c.OrgX,c.OrgY,c.OrgX+c.ClipX,c.OrgY+c.ClipY);
+       u.DrawColor = InfoLinkTitles;
+       u.SetOrigin(198,17);
+       u.SetPos(0,0);
+       u.SetClip(293,15);
+       u.Font = Font'DxFonts.HR_9';//FontMenuHeaders_DS';
+       u.DrawTextJustified(winName,0,u.OrgX,u.OrgY,u.OrgX+u.ClipX,u.OrgY+u.ClipY);
     }
 
     //Horizontal line
-    c.SetOrigin(198,0);
-    c.SetPos(0,0);
-    //c.SetDrawColor(255,255,255);
-    c.DrawColor = InfoLinkText;
+    u.SetOrigin(198,0);
+    u.SetPos(0,0);
+    //u.SetDrawColor(255,255,255);
+    u.DrawColor = InfoLinkText;
     dxc.DrawHorizontal(32,294);
 
     if(datalinkplay.dataLinkQueue[0] != none)
     {
-      c.DrawColor = InfoLinkTitles;
-      c.SetOrigin(198,17);
-      c.SetPos(0,0);
-      c.SetClip(293,15);
-      c.Font = Font'DxFonts.HR_9';
-      c.DrawTextJustified(strQueued,2,c.OrgX,c.OrgY,c.OrgX+c.ClipX,c.OrgY+c.ClipY);
+      u.DrawColor = InfoLinkTitles;
+      u.SetOrigin(198,17);
+      u.SetPos(0,0);
+      u.SetClip(293,15);
+      u.Font = Font'DxFonts.HR_9';
+      u.DrawTextJustified(strQueued,2,u.OrgX,u.OrgY,u.OrgX+u.ClipX,u.OrgY+u.ClipY);
     }
 
      if(datalinkplay.bStartTransmission)
      {
-			  c.reset();
-        c.SetPos(124,25);
+        u.reset();
+        u.SetPos(124,25);
         bDrawEffects = false;
-        c.SetDrawColor(255,255,255);
+        u.SetDrawColor(255,255,255);
         headIcon = texture'DeusExUI.UserInterface.DataLinkIcon';
         headIcon.bMasked=true;
 
         flicker = Level.TimeSeconds % 1.0; //1.0;
         if(flicker < 0.5) // 0.5
         {
-        	 if (headIcon != none)
-           c.DrawTile(headIcon,64,64,0,0,headIcon.USize,headIcon.VSize);
+             if (headIcon != none)
+           u.DrawTile(headIcon,64,64,0,0,headIcon.USize,headIcon.VSize);
         }
 
-        c.DrawColor = InfoLinkTitles;
-        c.SetOrigin(199,17);
-        c.SetPos(0,0);
-        c.SetClip(291,58);
-        c.Font = Font'DxFonts.HR_9';
+        u.DrawColor = InfoLinkTitles;
+        u.SetOrigin(199,17);
+        u.SetPos(0,0);
+        u.SetClip(291,58);
+        u.Font = Font'DxFonts.HR_9';
         if (Level.TimeSeconds%1.0 >= 0.5) // ќбеспечивает моргание текста
-        c.DrawText(IncomingTransmission);
+        u.DrawText(IncomingTransmission);
 
-        c.SetPos(0,15);
-        c.DrawColor = InfoLinkText;
+        u.SetPos(0,15);
+        u.DrawColor = InfoLinkText;
         dxc.DrawHorizontal(15, 293);
 
-//			c.reset();
-//			c.SetClip(c.sizeX,c.sizeY);
+//          u.reset();
+//          u.SetClip(u.sizeX,u.sizeY);
      }
-			if (datalinkplay.bEndTransmission == true && (Level.TimeSeconds%1.0 >= 0.5))
-			{
-       c.DrawColor = InfoLinkTitles;
-     	 c.SetOrigin(198,17);
+            if (datalinkplay.bEndTransmission == true && (Level.TimeSeconds%1.0 >= 0.5))
+            {
+       u.DrawColor = InfoLinkTitles;
+         u.SetOrigin(198,17);
 
-       c.SetPos(0,0);
- 	     c.SetClip(293,15);
-       c.Font = Font'DxFonts.FontMenuHeaders_DS';
+       u.SetPos(0,0);
+         u.SetClip(293,15);
+       u.Font = Font'DxFonts.FontMenuHeaders_DS';
        winname="";
-   	   c.DrawTextJustified(endName,0,c.OrgX,c.OrgY,c.OrgX+c.ClipX,c.OrgY+c.ClipY);
-   		}
-			c.reset();
-			c.SetClip(c.sizeX,c.sizeY);
+       u.DrawTextJustified(endName,0,u.OrgX,u.OrgY,u.OrgX+u.ClipX,u.OrgY+u.ClipY);
+        }
+            u.reset();
+            u.SetClip(u.sizeX,u.sizeY);
 }
 
 // ----------------------------------------------------------------------
@@ -173,32 +180,32 @@ function Render(canvas c)
 // ----------------------------------------------------------------------
 function SetSpeaker(String bindName, String displayName)
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	winName = displayName;
+    winName = displayName;
 
-	// Default portrait name based on bind naem
-	portraitStringName = "InfoPortraits." $ Left(bindName, 16);
+    // Default portrait name based on bind naem
+    portraitStringName = "InfoPortraits." $ Left(bindName, 16);
 
-	// Okay, we have a special case for Paul Denton who, like JC, 
-	// has five different portraits based on what the player selected
-	// when starting the game.  Therefore we have to pick the right
-	// portrait.
+    // Okay, we have a special case for Paul Denton who, like JC, 
+    // has five different portraits based on what the player selected
+    // when starting the game.  Therefore we have to pick the right
+    // portrait.
 
-	if (bindName == "PaulDenton")
-		portraitStringName = portraitStringName $ "_" $ Chr(49 + player.PlayerSkin);
+    if (bindName == "PaulDenton")
+        portraitStringName = portraitStringName $ "_" $ Chr(49 + player.PlayerSkin);
 
-	// Another hack for Bob Page, to use a different portrait on Mission15.
-	if (bindName == "BobPage")
-	{
-		info = player.GetLevelInfo();
+    // Another hack for Bob Page, to use a different portrait on Mission15.
+    if (bindName == "BobPage")
+    {
+        info = player.GetLevelInfo();
 
-		if ((info != None) && (info.MissionNumber == 15))
-			portraitStringName = "InfoPortraits.BobPageAug";
-	}
+        if ((info != None) && (info.MissionNumber == 15))
+            portraitStringName = "InfoPortraits.BobPageAug";
+    }
 
-	// Get a pointer to the portrait
-	speakerPortrait = Texture(DynamicLoadObject(portraitStringName, class'Texture', false));
+    // Get a pointer to the portrait
+    speakerPortrait = Texture(DynamicLoadObject(portraitStringName, class'Texture', false));
 }
 
 function MessageQueued(Bool bQueued);
@@ -237,8 +244,8 @@ function SetInitialState()
   local DeusExHUD h;
 
   h = DeusExHUD(level.GetLocalPlayerController().myHUD);
-	dxc = new(Outer) class'DxCanvas';
-	SetTimer(0.25, true);
+    dxc = new(Outer) class'DxCanvas';
+    SetTimer(0.25, true);
   InfoLinkBG = h.InfoLinkBG;
   InfoLinkText = h.InfoLinkText;
   InfoLinkTitles = h.InfoLinkTitles;
@@ -252,7 +259,7 @@ defaultproperties
   ttyRate=0.4 //0.3  // 0.5 1.6 // ћеньше - быстрее ползет текст инфолинка снизу вверх.
   ttyCRate=0.04 // 0.05 // Ѕольше  - быстрее бежит текст за курсором
 
-	IncomingTransmission="Incoming Transmission..."
-	EndTransmission="End transmission..."
-	strQueued="Message waiting..."
+    IncomingTransmission="Incoming Transmission..."
+    EndTransmission="End transmission..."
+    strQueued="Message waiting..."
 }

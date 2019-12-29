@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------------------------------
-   Для хранения данных на время игры. Данные сохраняются при переходах с карты на карту. 
-   При выходе из игры (завершение процесса) данные будут утеряны.
+  Для хранения данных на время игры. Данные сохраняются при переходах с карты на карту. 
+  При выходе из игры (завершение процесса) данные будут утеряны.
    
-   Переменные можно добавлять и свои тоже.
+  Переменные можно добавлять и свои тоже.
 ------------------------------------------------------------------------------------- */
 
 class DeusExGlobals extends Object config (DeusExGlobals);
@@ -21,6 +21,9 @@ var config int HUDThemeIndex; // Store HUD theme index here, so i can read it at
 var config string MenuTheme;
 var config string HUDTheme;
 
+var config int FS_Preset;
+var config string FS_PresetString;
+
 // Использовать эффект текста, появляющегося за курсором?
 var config bool bUseCursorEffects;
 
@@ -30,44 +33,54 @@ var rotator decoRotation; // вращение переносимой декорации
 
 var DeusExPlayer player;
 
+struct SInventoryItem
+{
+  var() int positionX;
+  var() int positionY;
+  var() int BeltPosition;
+  var() bool bInObjectBelt;
+  var() class<Inventory> itemClass;
+};
+var() array<SInventoryItem> InvItems;
+
 /*-- Заметки игрока --*/
 struct SDeusExNote
 {
-  var() String text;				// Note text stored here.
+  var() String text;                // Note text stored here.
   var() array<string> NoteText;
-  var() bool bUserNote;		// True if this is a user-entered note
-  var() name textTag;			// Text tag, used for DataCube notes to prevent the same note fromgetting added more than once
+  var() bool bUserNote;     // True if this is a user-entered note
+  var() name textTag;           // Text tag, used for DataCube notes to prevent the same note fromgetting added more than once
 };
 var() array<SDeusExNote> Notes;
 
 /*-- Цели игрока --*/
 struct SDeusExGoal
 {
-  var() Name goalName;			// Goal name, "GOAL_somestring"
-  var() String text;				// Actual goal text
-  var() bool bPrimaryGoal;		// True if Primary Goal
-  var() bool bCompleted;			// True if Completed
+  var() Name goalName;          // Goal name, "GOAL_somestring"
+  var() String text;                // Actual goal text
+  var() bool bPrimaryGoal;      // True if Primary Goal
+  var() bool bCompleted;            // True if Completed
 };
 var() array<SDeusExGoal> Goals;
 
 /*-- История диалогов --*/
-struct sConHistoryEvent
+/*struct sConHistoryEvent
 {
-  var() String conSpeaker;			// Speaker
-  var() String speech;				// Speech
-  var() /*int soundID;*/ string SoundPath;				// Sound file associated with speech
+  var() String conSpeaker;          // Speaker
+  var() String speech;              // Speech
+  var() string SoundPath;              // Sound file associated with speech
 };
 
 struct sConHistory
 {
-  var() String conOwnerName;		// String name of conversation owner
-  var() String strLocation;			// String description of location
-  var() String strDescription;		// Conversation Description
-  var() bool bInfoLink;			// True if InfoLink
+  var() String conOwnerName;        // String name of conversation owner
+  var() String strLocation;         // String description of location
+  var() String strDescription;      // Conversation Description
+  var() bool bInfoLink;         // True if InfoLink
   var() array<sConHistoryEvent> conHistoryEvents;
 };
 var() array<sConHistory> myConHistory;
-
+*/
 struct sSavedAugs
 {
   var() bool bHasIt;
@@ -79,12 +92,15 @@ struct sSavedAugs
 };
 var() array<sSavedAugs> mySavedAugs;
 
+var ConPlayBase ConPlayBase;
+var ConHistory conHistory;           // Conversation History linked list
+
 // Содержит массив диалогов
 //var(Conversation) transient array<ConDialogue> ArrayOfCons;
 
 
-// На случай если флаги перестанут умещаться в TravelInfo, их нужно будет сохранять в пакет вместе с заметками и т.п.
-//var() array<byte> FlagsArray;
+// Флаги теперь здесь, поскольку в TravelInfo они уже умещаются.
+var() array<byte> RawByteFlags;
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 var() int Ammo10mmInv;
@@ -114,10 +130,79 @@ var() int AmmoShurikenInv;
 var() int AmmoNoneInv;
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+final function ConHistory CreateHistoryObject()
+{
+    local ConHistory ch;
+    ch = new(Outer) class'ConHistory';
+
+    return ch;
+}
+
+final function ConHistoryEvent CreateHistoryEvent()
+{
+    local ConHistoryEvent ce;
+    ce = new(Outer) class'ConHistoryEvent';
+
+    return ce;
+}
+
+function SaveInventoryItem(inventory anItem, int posX, int posY, int beltPos)
+{
+   local int i;
+
+   if (beltPos == 0)
+       beltPos = 1;
+
+   if (InvItems.Length == 0)
+   {
+       AddAnItem(anItem, posX, posY, beltPos);
+       return;
+   }
+
+   for (i=0; i<InvItems.Length;i++)
+   {
+      if (InvItems[i].itemClass == anItem.class) // Перезаписать
+      {
+         log("Overwriting saved item" @ anItem,'SaveInventory');
+         InvItems[i].positionX = posX;
+         InvItems[i].positionY = posY;
+         InvItems[i].BeltPosition = BeltPos;
+         InvItems[i].bInObjectBelt = anItem.GetInObjectBelt();
+         return;
+      }
+      else 
+      {
+        AddAnItem(anItem, posX, posY, beltPos);
+        return;
+      }
+   }
+}
+
+private function AddAnItem(inventory anItem, int posX, int posY, int beltPos)
+{
+  local int i;
+
+  i = InvItems.Length;
+  InvItems.Length = i+1;
+
+    InvItems[i].itemClass = anItem.class;
+    InvItems[i].positionX = posX;
+    InvItems[i].positionY = posY;
+    InvItems[i].BeltPosition = BeltPos;
+    InvItems[i].bInObjectBelt = anItem.GetInObjectBelt();
+
+    log("Added saved item" @ anItem,'SaveInventory');
+}
+
+function RemoveInventoryItem(class<inventory> anItem)
+{
+   //
+}
+
 function resetAll()
 {
  mySavedAugs.length = 0;
- myConHistory.length = 0;
+// myConHistory.length = 0;
  Notes.length = 0;
  Goals.length = 0;
 
@@ -240,8 +325,8 @@ function name AddGoal(Name goalName, bool bPrimaryGoal, optional string goalText
   {
    x = Goals.Length;
    Goals.Length = x + 1; // добавить 1 к длине массива
-   Goals[x].goalName = goalName;			// Goal name, "GOAL_somestring"
-   Goals[x].bPrimaryGoal = bPrimaryGoal;		// True if Primary Goal
+   Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
+   Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
    Goals[x].text = goalText;
 
    if (player.ConPlay.dMsg != none) // DXR: Show these messages later.
@@ -283,7 +368,7 @@ exec function GoalAdd(Name goalName, String goalText, optional bool bPrimaryGoal
   local name newGoal;
 
   if (!player.dxpc.bCheatsEnabled)
-		return;
+        return;
 
   newGoal = FindGoal(goalName);
   if (newGoal == 'none')
@@ -291,8 +376,8 @@ exec function GoalAdd(Name goalName, String goalText, optional bool bPrimaryGoal
    x = Goals.Length;
    Goals.Length = x + 1; // добавить 1 к длине массива
    Goals[x].text = goalText;
-   Goals[x].goalName = goalName;			// Goal name, "GOAL_somestring"
-   Goals[x].bPrimaryGoal = bPrimaryGoal;		// True if Primary Goal
+   Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
+   Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
 
    player.ClientMessage(player.GoalAdded);
    player.PlaySound(Sound'LogGoalAdded');
@@ -304,15 +389,15 @@ exec function GoalAdd(Name goalName, String goalText, optional bool bPrimaryGoal
 // ----------------------------------------------------------------------
 exec function GoalSetPrimary(Name goalName, bool bPrimaryGoal)
 {
-	local name goal;
-	local int x;
+    local name goal;
+    local int x;
 
-	if (!player.dxpc.bCheatsEnabled)
+    if (!player.dxpc.bCheatsEnabled)
       return;
 
-	goal = FindGoal(goalName);
+    goal = FindGoal(goalName);
 
-	if (goal != 'none')
+    if (goal != 'none')
 
   for(x=0; x<Goals.Length; x++)
   {
@@ -330,15 +415,15 @@ exec function GoalSetPrimary(Name goalName, bool bPrimaryGoal)
 // ----------------------------------------------------------------------
 function GoalCompleted(Name goalName)
 {
-	local Name goal;
-	local int x;
+    local Name goal;
+    local int x;
 
-	// Loop through all the goals until we hit the one we're
-	// looking for.
-	goal = FindGoal(goalName);
+    // Loop through all the goals until we hit the one we're
+    // looking for.
+    goal = FindGoal(goalName);
 
-	if (goal != 'none')
-	{
+    if (goal != 'none')
+    {
     for(x=0; x<Goals.Length; x++)
     {
       if (Goals[x].goalName == goal /*goalName*/)
@@ -347,15 +432,15 @@ function GoalCompleted(Name goalName)
         if (!goals[x].bCompleted)
         {
            goals[x].bCompleted = true;
-			     player.PlaySound(Sound'LogGoalCompleted');
+                 player.PlaySound(Sound'LogGoalCompleted');
 
            // Let the player know
-			     if (goals[x].bPrimaryGoal)
-				   player.ClientMessage(player.PrimaryGoalCompleted);
-			       else
-				   player.ClientMessage(player.SecondaryGoalCompleted);
-		    }
-		  }
+                 if (goals[x].bPrimaryGoal)
+                   player.ClientMessage(player.PrimaryGoalCompleted);
+                   else
+                   player.ClientMessage(player.SecondaryGoalCompleted);
+            }
+          }
     }
   }
 }
@@ -387,7 +472,7 @@ function bool DeleteGoal(name goalToDelete)
 // ----------------------------------------------------------------------
 function DeleteAllGoals()
 {
-	Goals.Length = 0;
+    Goals.Length = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -410,16 +495,24 @@ function ResetGoals()
 // --== !Управление задачами ==--
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+//var array LinkConActorsBound[10];
+
 function AssignEvents(Actor LinkedActors[10], Actor invokeActor, levelInfo level, conDialogue con)
 {
-	local DeusExPawn pawn;
-	local DeusExDecoration deco;
+    local DeusExPawn pawn;
+    local PlayerPawn pl;
+    local DeusExDecoration deco;
 
-	foreach level.DynamicActors(class'DeusExPawn',pawn)
-          AssignEventsToActor(LinkedActors, invokeActor, pawn, con);
+    foreach level.AllActors(class'DeusExPawn',pawn)
+          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, pawn, con);
 
-	foreach level.DynamicActors(class'DeusExDecoration',deco)
-          AssignEventsToActor(LinkedActors, invokeActor, deco, con);
+    foreach level.AllActors(class'PlayerPawn',pl)
+          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, pl, con);
+
+    foreach level.AllActors(class'DeusExDecoration',deco)
+          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, deco, con);
+
+
 }
 
 
@@ -427,35 +520,41 @@ function AssignEventsToActor(Actor LinkedActors[10], Actor invokeActor, Actor Li
 {
   local int i;
 
-	if (LinkActor.GetBindName() == "" || (invokeActor != LinkActor && invokeActor != none && invokeActor.GetBindName() == LinkActor.GetBindName()))
-		return;
+    if (LinkActor.GetBindName() == "" || (invokeActor != LinkActor && invokeActor != none && invokeActor.GetBindName() /*==*/ ~= LinkActor.GetBindName()))
+        return;
 
   for (i=0; i<con.EventList.length; i++)
   {
-		if (AssignConEvent(invokeActor,LinkActor,con, con.eventList[i]))
-			AddAssignedActor(LinkedActors, LinkActor);
+        if (AssignConEvent(invokeActor,LinkActor,con, con.eventList[i]))
+        {
+        AddAssignedActor(/*LinkedActors*/ConPlayBase.ConActorsBound, LinkActor);
+        }
   }
+//  log("BindEventsToActor = "$LinkActor);
 }
 
 function AddAssignedActor(Actor LinkedActors[10], Actor LinkActor)
 {
-	local int i;
+    local int i;
 
-	for (i=0; i<10; i++)
-	{
-		if (LinkedActors[i] == LinkActor)
-		{
-			return;
-		}
-		if (LinkedActors[i] != none)
-		{
-			continue;
-		}
-		LinkedActors[i] = LinkActor;
+    for (i=0; i<10; i++)
+    {
+        if (/*LinkedActors[i]*/ConPlayBase.ConActorsBound[i] == LinkActor)
+        {
+            return;
+        }
+        if (/*LinkedActors[i]*/ConPlayBase.ConActorsBound[i] != none)
+        {
+            continue;
+        }
+        //LinkedActors[i] = LinkActor;
+        ConPlayBase.ConActorsBound[i] = LinkActor;
+        log("AddBoundActor = "$LinkActor);
+//      LinkConActorsBound[i] = LinkActor;
     return;
-	}
+    }
 }
-
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 function AssignActorEvents(Actor LinkActor, ConDialogue con)
 {
   local int i;
@@ -475,17 +574,17 @@ function bool AssignConEvent(Actor invokeActor, Actor LinkActor, ConDialogue con
     bResult = false;
 
     if ((LinkActor.GetBarkBindName() == ConEventTransferObject(event).fromName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTransferObject(event).fromName)
-	  {
-		  ConEventTransferObject(event).fromActor = LinkActor;
-		  bResult = true;
-	  }
-	  if ((LinkActor.GetBarkBindName() == ConEventTransferObject(event).toName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTransferObject(event).toName)
-	  {
-		  ConEventTransferObject(event).toActor = LinkActor;
-		  bResult = true;
+      {
+          ConEventTransferObject(event).fromActor = LinkActor;
+          bResult = true;
+      }
+      if ((LinkActor.GetBarkBindName() == ConEventTransferObject(event).toName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTransferObject(event).toName)
+      {
+          ConEventTransferObject(event).toActor = LinkActor;
+          bResult = true;
     }
      ConEventTransferObject(event).giveObject = class<inventory>(DynamicLoadObject(ConEventTransferObject(event).CheckTransferObjectPackage $ ConEventTransferObject(event).objectName$"Inv", class'Class', true));
-	   return bResult;
+       return bResult;
   }
   else if (ConEventCheckObject(event) != none) // Check item
   {
@@ -499,15 +598,15 @@ function bool AssignConEvent(Actor invokeActor, Actor LinkActor, ConDialogue con
   {
      if (LinkActor.GetBindName() == ConEventSpeech(event).speakerName || (invokeActor == LinkActor && LinkActor.GetBarkBindName() == ConEventSpeech(event).speakerName))
      {
-		     ConEventSpeech(event).speaker = LinkActor;
-		     return true;
-	   }
-	   if (LinkActor.GetBindName() == ConEventSpeech(event).speakingToName || (invokeActor == LinkActor && LinkActor.GetBarkBindName() == ConEventSpeech(event).speakingToName))
-	   {
-		     ConEventSpeech(event).speakingTo = LinkActor;
-		     return true;
-	   }
-	   return false;
+             ConEventSpeech(event).speaker = LinkActor;
+             return true;
+       }
+       if (LinkActor.GetBindName() == ConEventSpeech(event).speakingToName || (invokeActor == LinkActor && LinkActor.GetBarkBindName() == ConEventSpeech(event).speakingToName))
+       {
+             ConEventSpeech(event).speakingTo = LinkActor;
+             return true;
+       }
+       return false;
   }
   else if (ConEventAnimation(event) != none) // Play Animation (Not implemented for now)
   {
@@ -524,62 +623,64 @@ function bool AssignConEvent(Actor invokeActor, Actor LinkActor, ConDialogue con
      {
          ConEventTrade(event).eventOwner = LinkActor;
          return true;
-	   }
-	   return false;
+       }
+       return false;
   }
 }
 
 function string GetRandomLabel(ConEventRandom ev)
 {
-	local int labelIndex;
+    local int labelIndex;
 
-	if (ev.labels.Length > 0)
-	{
-		if (ev.cycleIndex == ev.labels.Length)
-			ev.bLabelsCycled = true;
+    if (ev.labels.Length > 0)
+    {
+        if (ev.cycleIndex == ev.labels.Length)
+            ev.bLabelsCycled = true;
 
-		if (!ev.bCycleEvents || ev.bCycleRandom && ev.bLabelsCycled)
-			labelIndex = Rand(ev.labels.Length);
+        if (!ev.bCycleEvents || ev.bCycleRandom && ev.bLabelsCycled)
+            labelIndex = Rand(ev.labels.Length);
 
-		else if (!ev.bCycleOnce || ev.cycleIndex!=(ev.labels.Length -1))
-			labelIndex = ev.cycleIndex++ % ev.labels.Length;
+        else if (!ev.bCycleOnce || ev.cycleIndex!=(ev.labels.Length -1))
+            labelIndex = ev.cycleIndex++ % ev.labels.Length;
 
-		else
-			labelIndex = ev.labels.Length -1;
+        else
+            labelIndex = ev.labels.Length -1;
 
-		return ev.labels[labelIndex];
-	}
-	else
-		return "";
+        return ev.labels[labelIndex];
+    }
+    else
+        return "";
 }
 
 // GetLabel() and GetLabelCount() was used only in The Nameless mod.
 function String GetLabel(int labelIndex, ConEventRandom event)
 {
-	if (labelIndex >= 0 && labelIndex < event.labels.Length)
-		return event.labels[labelIndex];
-	else
-		return "";
+    if (labelIndex >= 0 && labelIndex < event.labels.Length)
+        return event.labels[labelIndex];
+    else
+        return "";
 }
+
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 static function DeusExGlobals GetGlobals() {
-	local GameManager gm;
+    local GameManager gm;
 
-	gm = class'GameManager'.static.GetGameManager();
-	if (gm.GlobalObject == None) {
-		// We fool garbage collector to protect our global object from destruction
-		gm.GlobalObject = new(gm, "", RF_Public | RF_Transient | RF_Native) class'DeusExGlobals';
-	}
-	return DeusExGlobals(gm.GlobalObject);
+    gm = class'GameManager'.static.GetGameManager();
+    if (gm.GlobalObject == None) {
+        // We fool garbage collector to protect our global object from destruction
+        gm.GlobalObject = new(gm, "", RF_Public | RF_Transient | RF_Native) class'DeusExGlobals';
+    }
+    return DeusExGlobals(gm.GlobalObject);
 }
 
 defaultproperties {
-	LevelName = "Intro"
-	CurrentSaveDirectoryCleared = false
-	Flags = 0
+    LevelName = "Intro"
+    CurrentSaveDirectoryCleared = false
+    Flags = 0
 
-	TravelDeco=""
+    TravelDeco=""
+    FS_Preset=0
 }

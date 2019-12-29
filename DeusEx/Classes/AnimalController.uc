@@ -6,190 +6,211 @@ class AnimalController extends DXRAiController;
 
 function GotoDisabledState(class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos)
 {
-	if (!pawn.bCollideActors && !pawn.bBlockActors && !pawn.bBlockPlayers)
-		return;
-	else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas'))
-		GotoState('Fleeing');
-	else if (damageType == class'DM_Stunned')
-		GotoState('Fleeing');
-	else if (Animal(pawn).CanShowPain())
-		Animal(pawn).TakeHit(hitPos);
-	else
-		GotoNextState();
+    if (!pawn.bCollideActors && !pawn.bBlockActors && !pawn.bBlockPlayers)
+        return;
+    else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas'))
+        GotoState('Fleeing');
+    else if (damageType == class'DM_Stunned')
+        GotoState('Fleeing');
+    else if (Animal(pawn).CanShowPain())
+        Animal(pawn).TakeHit(hitPos);
+    else
+        GotoNextState();
 }
 
 state Eating
 {
-	function SetFall()
-	{
-		StartFalling('Eating', 'ContinueEat');
-	}
+    function SetFall()
+    {
+        StartFalling('Eating', 'ContinueEat');
+    }
 
-	event bool NotifyHitWall(vector HitNormal, actor Wall)
-	{
-		if (pawn.Physics == PHYS_Falling)
-			return true;
-		//CheckOpenDoor(HitNormal, Wall);
-	}
+    event bool NotifyHitWall(vector HitNormal, actor Wall)
+    {
+        if (pawn.Physics == PHYS_Falling)
+            return true;
 
-	function AnimEnd(int channel)
-	{
-		pawn.PlayWaiting();
-	}
+        CheckOpenDoor(HitNormal, Wall);
+        return true;
+    }
 
-	function Tick(float deltaSeconds)
-	{
-		Super.Tick(deltaSeconds);
+    event bool NotifyBump(Actor Other)
+    {
+        Global.NotifyBump(other);
+        return false;
+    }
 
-		if (Animal(pawn).bFoodOverridesAttack && (Animal(pawn).checkAggTimer <= 0))
-		{
-			Animal(pawn).checkAggTimer = 0.3;
-			if (Animal(pawn).aggressiveTimer > 0)
-				Animal(pawn).ResetReactions();
-			else
-				Animal(pawn).BlockReactions();
-		}
-	}
+    function AnimEnd(int channel)
+    {
+        pawn.PlayWaiting();
+    }
 
-	function BeginState()
-	{
-		Animal(pawn).StandUp();
-		SetEnemy(None, Animal(pawn).EnemyLastSeen, true);
-		Disable('AnimEnd');
-		Animal(pawn).SetDistress(false);
-		if (!Animal(pawn).bFoodOverridesAttack)
-			Animal(pawn).ResetReactions();
-		else if (Animal(pawn).aggressiveTimer > 0)
-			Animal(pawn).ResetReactions();
-		else
-			Animal(pawn).BlockReactions();
-	}
+    function Tick(float deltaSeconds)
+    {
+        if (Animal(pawn).bFoodOverridesAttack && (Animal(pawn).checkAggTimer <= 0))
+        {
+            Animal(pawn).checkAggTimer = 0.3;
+            if (Animal(pawn).aggressiveTimer > 0)
+                Animal(pawn).ResetReactions();
+            else
+                Animal(pawn).BlockReactions();
+        }
+    }
 
-	function EndState()
-	{
-		Animal(pawn).ResetReactions();
-		Animal(pawn).Food     = None;
-		Animal(pawn).BestFood = None;
-	}
+    function BeginState()
+    {
+        Animal(pawn).StandUp();
+        SetEnemy(None, Animal(pawn).EnemyLastSeen, true);
+        Disable('AnimEnd');
+        Animal(pawn).SetDistress(false);
+        if (!Animal(pawn).bFoodOverridesAttack)
+            Animal(pawn).ResetReactions();
+        else if (Animal(pawn).aggressiveTimer > 0)
+            Animal(pawn).ResetReactions();
+        else
+            Animal(pawn).BlockReactions();
+    }
+
+    function EndState()
+    {
+        Animal(pawn).ResetReactions();
+        Animal(pawn).Food     = None;
+        Animal(pawn).BestFood = None;
+    }
 
 Begin:
-	Animal(pawn).destPoint = None;
-	Animal(pawn).Acceleration = vect(0,0,0);
+    focus = None;
+    Animal(pawn).destPoint = None;
+    Animal(pawn).Acceleration = vect(0,0,0);
 
 GoToFood:
-	WaitForLanding();
-	if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
-		Animal(pawn).FollowOrders();
-	if (!Animal(pawn).GetFeedSpot(Animal(pawn).Food, Animal(pawn).destLoc))
-		FollowOrders();
-	Animal(pawn).PlayRunning();
-	MoveTo(Animal(pawn).destLoc,,false);// MaxDesiredSpeed);
-	if (!Animal(pawn).IsInRange(Animal(pawn).Food))
-		Goto('GoToFood');
+    WaitForLanding();
+    if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
+        Animal(pawn).FollowOrders();
+
+    if (!Animal(pawn).GetFeedSpot(Animal(pawn).Food, Animal(pawn).destLoc))
+        FollowOrders();
+
+    FinishRotation();
+
+    Animal(pawn).PlayRunning();
+    MoveTo(Animal(pawn).destLoc,,false);// MaxDesiredSpeed);
+//    MoveTo(Animal(pawn).food.location,,false);// MaxDesiredSpeed);
+    if (!Animal(pawn).IsInRange(Animal(pawn).Food))
+        Goto('GoToFood');
 
 TurnToFood:
-	Animal(pawn).Acceleration = vect(0,0,0);
-	Animal(pawn).PlayTurning();
-	/*TurnTo*/LookAtActor(Animal(pawn).Food);
-	if (!Animal(pawn).bPauseWhenEating || (FRand() >= 0.4))
-		Goto('StartEating');
+    Animal(pawn).Acceleration = vect(0,0,0);
+    Animal(pawn).PlayTurning();
+    TurnToward(Animal(pawn).Food);
+    FinishRotation();
+    if (!Animal(pawn).bPauseWhenEating || (FRand() >= 0.4))
+        Goto('StartEating');
 
 PauseEating:
-	Animal(pawn).PlayPauseWhenEating();
-	FinishAnim();
+    Animal(pawn).PlayPauseWhenEating();
+    FinishAnim();
 
 StartEating:
-	if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
-		Animal(pawn).FollowOrders();
-	if (!Animal(pawn).IsInRange(Animal(pawn).Food))
-		Goto('GoToFood');
-	Animal(pawn).PlayStartEating();
-	FinishAnim();
+    if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
+        Animal(pawn).FollowOrders();
+    if (!Animal(pawn).IsInRange(Animal(pawn).Food))
+        Goto('GoToFood');
+    Animal(pawn).PlayStartEating();
+    FinishAnim();
 
 Eat:
-	if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
-		Goto('StopEating');
-	if (!Animal(pawn).IsInRange(Animal(pawn).Food))
-		Goto('StopEating');
-	Animal(pawn).PlayEatingSound();
-	Animal(pawn).PlayEating();
-//	if (Animal(pawn).bAnimNotify)
-   if (bControlAnimations) //?
-		FinishAnim();
-	else
-	{
-		FinishAnim();
-		Animal(pawn).Munch(Animal(pawn).Food);
-	}
-	if (!Animal(pawn).bPauseWhenEating || (FRand() > 0.1))
-		Goto('Eat');
+    if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
+        Goto('StopEating');
+    if (!Animal(pawn).IsInRange(Animal(pawn).Food))
+        Goto('StopEating');
+    Animal(pawn).PlayEatingSound();
+    Animal(pawn).PlayEating();
+//  if (Animal(pawn).bAnimNotify)
+//   if (bControlAnimations) //?
+//        FinishAnim();
+  //  else
+//    {
+        FinishAnim();
+        Animal(pawn).Munch(Animal(pawn).Food);
+//    }
+    if (!Animal(pawn).bPauseWhenEating || (FRand() > 0.1))
+        Goto('Eat');
 
 StopEating:
-	Animal(pawn).PlayStopEating();
-	FinishAnim();
-	if (Animal(pawn).IsValidFood(Animal(pawn).Food))
-	{
-		if (!Animal(pawn).IsInRange(Animal(pawn).Food))
-			Goto('GoToFood');
-		else
-			Goto('PauseEating');
-	}
+    Animal(pawn).PlayStopEating();
+    FinishAnim();
+    if (Animal(pawn).IsValidFood(Animal(pawn).Food))
+    {
+        if (!Animal(pawn).IsInRange(Animal(pawn).Food))
+            Goto('GoToFood');
+        else
+            Goto('PauseEating');
+    }
 
 ContinueEat:
 ContinueFromDoor:
-	FollowOrders();
+    FollowOrders();
 }
 
 state Fleeing
 {
-	function PickDestination()
-	{
-		local int     iterations;
-		local float   magnitude;
-		local rotator rot1;
+    function PickDestination()
+    {
+        local int     iterations;
+        local float   magnitude;
+        local rotator rot1;
 
-		iterations = 4;
-		magnitude  = 400*(FRand()*0.4+0.8);  // 400, +/-20%
-		rot1       = Rotator(pawn.Location-Enemy.Location);
-		if (!AIPickRandomDestination(100, magnitude, rot1.Yaw, 0.6, rot1.Pitch, 0.6, iterations,FRand()*0.4+0.35, Animal(pawn).destLoc))
-			Animal(pawn).destLoc = pawn.Location;  // we give up
-	}
+        iterations = 4;
+        magnitude  = 400*(FRand()*0.4+0.8);  // 400, +/-20%
+        rot1       = Rotator(pawn.Location - Enemy.Location);
+        if (!AIPickRandomDestination(100, magnitude, rot1.Yaw, 0.6, rot1.Pitch, 0.6, iterations,FRand()*0.4+0.35, Animal(pawn).destLoc))
+            Animal(pawn).destLoc = pawn.Location;  // we give up
+    }
 }
 
 state Wandering
 {
-/*	function PickDestination()
-	{
-		local int   iterations;
-		local float magnitude;
+    function PickDestination()
+    {
+        local int   iterations;
+        local float magnitude;
 
-		magnitude  = (Animal(pawn).wanderlust*300+100) * (FRand()*0.2+0.9); // 100-400, +/-10%
-		iterations = 5;  // try up to 5 different directions
+        magnitude  = (Animal(pawn).wanderlust*300+100) * (FRand()*0.2+0.9); // 100-400, +/-10%
+        iterations = 5;  // try up to 5 different directions
 
-		if (!AIPickRandomDestination(30, magnitude, 0, 0, 0, 0, iterations, FRand()*0.4+0.35, Animal(pawn).destLoc))
-			Animal(pawn).destLoc = Animal(pawn).Location;
-	}*/
+        if (!AIPickRandomDestination(30, magnitude, 0, 0, 0, 0, iterations, FRand()*0.4+0.35, Animal(pawn).destLoc))
+            Animal(pawn).destLoc = pawn.Location;
+    }
 
-	function Tick(float deltaSeconds)
-	{
-		local pawn fearPawn;
+    function Tick(float deltaSeconds)
+    {
+        local pawn fearPawn;
 
-		Global.Tick(deltaSeconds);
+        Global.Tick(deltaSeconds);
 
-		Animal(pawn).fleePawnTimer += deltaSeconds;
-		if (Animal(pawn).fleePawnTimer > 0.5)
-		{
-			Animal(pawn).fleePawnTimer = 0;
-			fearPawn = Animal(pawn).FrightenedByPawn();
-			if (fearPawn != None)
-				Animal(pawn).FleeFromPawn(fearPawn);
-		}
-	}
+        Animal(pawn).fleePawnTimer += deltaSeconds;
+        if (Animal(pawn).fleePawnTimer > 0.5)
+        {
+            Animal(pawn).fleePawnTimer = 0;
+            fearPawn = Animal(pawn).FrightenedByPawn();
+            if (fearPawn != None)
+                Animal(pawn).FleeFromPawn(fearPawn);
+        }
+    }
 }
 
 
 state RubbingEyes
 {
 Begin:
-	GotoState('Fleeing');
+    GotoState('Fleeing');
 }
+
+
+defaultproperties
+{
+   bCanOpenDoors=false
+   bControlAnimations=false
+}
+

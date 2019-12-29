@@ -23,8 +23,8 @@ function SetInitialState()
   BooksBG = h.BooksBG;
   BooksText = h.BooksText;
   BooksFrame = h.BooksFrame;
-	dxc = new(Outer) class'DxCanvas';
-	Super.SetInitialState();
+  dxc = new(Outer) class'DxCanvas';
+  Super.SetInitialState();
 }
 
 simulated function Render(Canvas C)
@@ -38,9 +38,11 @@ simulated function Render(Canvas C)
 
     if(bDrawInfo == true)
     {
-//        c.SetDrawColor(255,255,255);
-        c.Font = Font'DxFonts.EUX_9';//Font'DxFonts.FontFixedWidthSmall_DS';
-//        c.Style=ERenderStyle.STY_Translucent;
+        if (class'GameManager'.static.GetGameLanguage() ~= "rus")
+        c.font = font'DxFonts.MSS_8';// .FontFixedWidthSmall_DS_Rus';
+        else
+        c.font = font'DxFonts.FontFixedWidthSmall_DS';
+//        c.Font = Font'DxFonts.EUX_9';
 
         c.SetOrigin(0,0);
         c.SetClip(595, c.SizeY);
@@ -51,7 +53,7 @@ simulated function Render(Canvas C)
         for(x=0; x<currentInfo.text.length; x++)
         {
             c.StrLen(currentInfo.text[x], w, h);
-            infoBuffer = infoBuffer$currentInfo.text[x];
+            infoBuffer = infoBuffer $ currentInfo.text[x];
 
             if(w > holdX)
             {
@@ -156,12 +158,12 @@ simulated function Render(Canvas C)
         border = texture'DeusExUI.HUDWindowBorder_BR';
         c.DrawIcon(border,1.0);
    }
-        c.DrawColor = BooksText;
-        c.SetOrigin((c.SizeX-w)/2, (c.SizeY-h)/2);
-        c.SetClip(w, h);
-        c.SetPos(0,0);
-				c.Style=ERenderStyle.STY_Normal;
-        dxc.DrawParseText(infoBuffer);
+   c.DrawColor = BooksText;
+   c.SetOrigin((c.SizeX-w)/2, (c.SizeY-h)/2);
+   c.SetClip(w, h);
+   c.SetPos(0,0);
+   c.Style=ERenderStyle.STY_Normal;
+   dxc.DrawParseText(infoBuffer);
     }
  c.reset();
  c.SetClip(c.SizeX, c.SizeY);

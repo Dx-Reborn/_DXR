@@ -7,25 +7,29 @@ var float spreadTime;
 var float maxDrawScale;
 var float time;
 
+function PostBeginPlay(); // Don't execute this event from parent class.
+
 function BeginPlay()
 {
-	// Gore check
-	if (Level.Game.bLowGore)
-	{
-		Destroy();
-		return;
-	}
-	Super.BeginPlay();
+    // Gore check
+    if (Level.Game.bLowGore)
+    {
+        Destroy();
+        return;
+    }
+    Super.BeginPlay();
 }
 
 function Tick(float deltaTime)
 {
-	time += deltaTime;
-	if (time <= spreadTime)
-	{
-		SetDrawScale(maxDrawScale * time / spreadTime);
-    AttachProjector();
-	}
+    time += deltaTime;
+
+    if (time <= spreadTime)
+    {
+        DetachProjector(true);
+        SetDrawScale((maxDrawScale / 5) * time / spreadTime);
+        AttachProjector();
+    }
 }
 
 
@@ -33,5 +37,5 @@ defaultproperties
 {
      spreadTime=5.000000
      maxDrawScale=1.500000
-     /*Texture=*/ProjTexture=Texture'DeusExItems.Skins.FlatFXTex1'
+     ProjTexture=Texture'DeusExItems.Skins.FlatFXTex1'
 }

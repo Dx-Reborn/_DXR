@@ -5,22 +5,19 @@ class JCDentonMale extends Human config;
 
 var travel class TravelClass;
 var bool bMouseMode;
-var bool bAimValue;
-
-var array<string> testStrings;
 
 event TravelPostAccept()
 {
-	Super.TravelPostAccept();
+    Super.TravelPostAccept();
 
-	switch(PlayerSkin)
-	{
-		case 0:	Skins[0] = Texture'JCDentonTex0'; break;
-		case 1:	Skins[0] = Texture'JCDentonTex4'; break;
-		case 2:	Skins[0] = Texture'JCDentonTex5'; break;
-		case 3:	Skins[0] = Texture'JCDentonTex6'; break;
-		case 4:	Skins[0] = Texture'JCDentonTex7'; break;
-	}
+    switch(PlayerSkin)
+    {
+        case 0: Skins[0] = Texture'JCDentonTex0'; break;
+        case 1: Skins[0] = Texture'JCDentonTex4'; break;
+        case 2: Skins[0] = Texture'JCDentonTex5'; break;
+        case 3: Skins[0] = Texture'JCDentonTex6'; break;
+        case 4: Skins[0] = Texture'JCDentonTex7'; break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -28,32 +25,32 @@ event TravelPostAccept()
 // ----------------------------------------------------------------------
 exec function DumpInventoryGrid()
 {
-	local int slotsCol;
-	local int slotsRow;
-	local String gridRow;
+    local int slotsCol;
+    local int slotsRow;
+    local String gridRow;
 
-	log("DumpInventoryGrid()");
-	log("_____________________________________________________________");
-	
-	log("        1 2 3 4 5");
-	log("-----------------");
+    log("DumpInventoryGrid()");
+    log("_____________________________________________________________");
+    
+    log("        1 2 3 4 5");
+    log("-----------------");
 
 
-	for(slotsRow=0; slotsRow < maxInvRows; slotsRow++)
-	{
-		gridRow = "Row #" $ slotsRow $ ": ";
+    for(slotsRow=0; slotsRow < maxInvRows; slotsRow++)
+    {
+        gridRow = "Row #" $ slotsRow $ ": ";
 
-		for (slotsCol=0; slotsCol < maxInvCols; slotsCol++)
-		{
-			if ( invSlots[(slotsRow * maxInvCols) + slotsCol] == 1)
-				gridRow = gridRow $ "X ";
-			else
-				gridRow = gridRow $ "  ";
-		}
-		
-		log(gridRow);
-	}
-	log("_____________________________________________________________");
+        for (slotsCol=0; slotsCol < maxInvCols; slotsCol++)
+        {
+            if ( invSlots[(slotsRow * maxInvCols) + slotsCol] == 1)
+                gridRow = gridRow $ "X ";
+            else
+                gridRow = gridRow $ "  ";
+        }
+        
+        log(gridRow);
+    }
+    log("_____________________________________________________________");
 }
 
 
@@ -122,13 +119,6 @@ exec function listflags()
   Level.GetLocalPlayerController().ClientOpenMenu("DXRMenu.DXRFlags");
 }
 
-exec function testload()
-{
-  local object wtf;
-
-  wtf = class'PackageManager'.static.LoadUnrealPackage("testContext.u", 0x0080);
-}
-
 exec function listInv()
 {
   local inventory i;
@@ -179,8 +169,8 @@ exec function s2(string Path)
 {
   local sound LastPlayedSound;
 
-	class'SoundManager'.static.LoadSound(Path, LastPlayedSound, Self);
-	PlaySound(LastPlayedSound, SLOT_None, 800, False);
+    class'SoundManager'.static.LoadSound(Path, LastPlayedSound, Self);
+    PlaySound(LastPlayedSound, SLOT_None, 800, False);
 }
 
 
@@ -260,10 +250,10 @@ exec function TestID(int zapros)
 
 exec function debugcon()
 {
-	local HudOverlay_ConWindowThird conwin;
+    local HudOverlay_ConWindowThird conwin;
 
-	conwin = Spawn(class'HudOverlay_ConWindowThird',self);
-	DeusExHUD(level.GetLocalPlayerController().myHUD).AddHudOverlay(conwin);
+    conwin = Spawn(class'HudOverlay_ConWindowThird',self);
+    DeusExHUD(level.GetLocalPlayerController().myHUD).AddHudOverlay(conwin);
 }
 
 exec function invokeCon()
@@ -296,60 +286,17 @@ exec function mTest()
   controller.GoToState('PlayerWalking');
 }
 
-exec function getres(int bits)
-{
-/*	local array<GraphicsManager.Resolution> resl;
-	local bool ret;
-	ret = class'GraphicsManager'.static.GetResolutionList(resl, bits);
-	ClientMessage("Resolution count: " $ resl.Length);
-	if (resl.Length > 0)
-	{
-		ClientMessage("First resolution: " $ resl[0].Width $ "x" $ resl[0].Height);
-	}*/
-	local array<string> res;
-	local int i;
-
-	res = class'DxUtil'.static.GetScreenResolutions(bits);
-
-  for (i=0; i<res.length; i++)
-  {
-     ClientMessage(res[i]);
-  }
-}
-
 
 // Индекс актора
 exec function ActorIdx()
 {
   local pawn can;
   local int CycleIndex;
-  local DXRAiController cn;
 
-  foreach AllActors(class'DXRAiController', cn)
-  break;
-
-  foreach cn.CycleActors(class'Pawn', can, CycleIndex)
+  foreach CycleActors(class'Pawn', can, CycleIndex)
   {
      log("Actor="$can$", Index="$CycleIndex);
   }
-}
-
-exec function reachspec()
-{
-   local reachspec rs;
-
-   foreach AllObjects(class'ReachSpec', rs)
-   {
-    // Ну и как это назвать?
-    // Нужно предусмотреть случай для Гюнтера, поскольку он высокий и больше 44.
-      rs.CollisionHeight = 100;
-      rs.CollisionRadius = 100;
-   }
-}
-
-exec function defColl()
-{
-   SetDefaultCollisionSize(16, 20);
 }
 
 exec function testQ()
@@ -357,8 +304,8 @@ exec function testQ()
   local HudOverlay_EndGameQuotes test;
 
   test = spawn(class'HudOverlay_EndGameQuotes');
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(test);
-	test.message = "Проверка сообщения|Checking message|Message test|Testing messages|Checking the area, possible contact";
+    DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(test);
+    test.message = "Проверка сообщения|Checking message|Message test|Testing messages|Checking the area, possible contact";
   test.StartMessage();
 }
 
@@ -376,45 +323,16 @@ exec function rpd() // RestorePlayerData
 // Отображает информацию без переключения на этот актор
 exec function DebugPawn(name ActorName)
 {
-	local Actor A;
+    local Actor A;
 
-	ForEach AllActors(class'Actor', A)
-		if (A.Name == ActorName)
-		{
-			PlayerController(Controller).SetViewTarget(A);
-			PlayerController(Controller).myHUD.bShowDebugInfo = true;
-			PlayerController(Controller).bBehindView = false;
-			return;
-		}
-}
-
-exec function DxMover()
-{
-   local DeusExMover mv;
-   local vector MinV, MaxV;
-//   local vector extLoc;
-//   local rotator extRot;
-
-   foreach AllActors(class'DeusExMover', mv)
-   {
-//   break;
-
-//   extLoc = mv.KeyPos[0]+mv.BasePos;
-//   extRot = mv.KeyRot[0]+mv.BaseRot;
-
-   mv.GetBoundingBox(MinV, MaxV);//,optional bool bExact,optional vector testLocation,optional rotator testRotation)
-   log("Only first 2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-   log(mv.location);
-   log(MinV);
-   log(MaxV);
-   }
-
-/*   mv.GetBoundingBox(MinV, MaxV, false, extLoc, extRot);
-   log("All  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-   log(mv.location);
-   log(MinV);
-   log(MaxV);
-*/
+    ForEach AllActors(class'Actor', A)
+        if (A.Name == ActorName)
+        {
+            PlayerController(Controller).SetViewTarget(A);
+            PlayerController(Controller).myHUD.bShowDebugInfo = true;
+            PlayerController(Controller).bBehindView = false;
+            return;
+        }
 }
 
 exec function reachPath()
@@ -423,20 +341,24 @@ exec function reachPath()
   local int i;
 
   log("NavPoints within 1000 UU ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-  foreach RadiusActors(class'NavigationPoint', np, 1000, location)
+
+  for (Np=Level.NavigationPointList; Np!=None; Np=Np.NextNavigationPoint )
   {
-    if (controller.actorReachable(np))
+    if (Abs(VSize(NP.Location - Location)) <= 1000)
     {
+      if (controller.PointReachable(np.location))
+      {
        for (i=0; i<np.PathList.Length;i++)
        {
           log(np @ np.pathlist[i]$" distance = " $ np.pathlist[i].distance);
        }
+      }
     }
   }
 }
 
-//ScriptLog: NavPoint and dist = Autoplay.PathNode408 251.000000 227
-//ScriptLog: NavPoint and dist = Autoplay.PathNode28 354.000000 317
+//ScriptLog: NavPoint and dist = Autoplay.PathNode408 251.000000
+//ScriptLog: NavPoint and dist = Autoplay.PathNode28 354.000000
 /*
 ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40265 distance = 227
 ScriptLog: 01_Nyc_UnatcoIsland.PathNode28 01_Nyc_UnatcoIsland.ReachSpec40264 distance = 317
@@ -476,26 +398,94 @@ exec function m09()
    GetFlagBase().SetBool('MS_ShipBreeched', true,, 9);
 }
 
-exec function AimHelp()
+function PostSaveGame()
 {
-  bAimValue = !bAimValue;
-
-  PlayerController(Controller).bAimingHelp = bAimValue;
-
-  ClientMessage("PlayerController(Controller).bAimingHelp = "$PlayerController(Controller).bAimingHelp);
+   ClientMessage("PostSaveGame() from UDxrNativeGameEngine called!");
+      log("PostSaveGame() from UDxrNativeGameEngine called!");
 }
 
-exec function ArrayBound()
+exec function DVect()
 {
- testStrings[999] = "Test String";
+   local vector vc;
+
+   vc = vect(-10.000000,14.000000,22.000000);
+
+   log(vc / 90);
+
+//(X=-10.000000,Y=14.000000,Z=22.000000)
 }
+
+exec function Radar()
+{
+  local HudOverlay_Radar test;
+
+  test = spawn(class'HudOverlay_Radar');
+  DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(test);
+}
+
+exec function audioLog()
+{
+   spawn(class'HUDOverlay_AudioLog');
+}
+
+exec function wtF()
+{
+/*  local inventory anItem;
+
+  for (anItem=Inventory; anItem!=None; anItem=anItem.Inventory)
+       if (!anitem.IsA('Powerups'))
+           anItem.TravelPostAccept();*/
+
+
+    log(class'DeusExGameEngine'.static.GetEngine().GLevel);
+}
+
+exec function SaveTest()
+{
+   local DeusExGameEngine UDXR;
+
+   UDXR = class'DeusExGameEngine'.static.GetEngine();
+   UDXR.SaveGameEx("..\\DXSave\\Test1.dxs");
+}
+
+exec function LoadTest()
+{
+   Level.GetLocalPlayerController().ClientTravel("..\\DXSave\\Test1.dxs?load?", TRAVEL_Absolute, false);
+//       Level.GetLocalPlayerController().ClientTravel( "?load=9", TRAVEL_Absolute, false);
+}
+/*
+RandomBiasedRotation_Yaw( 0, 0.5, 0, 0.5 ) //
+RandomBiasedRotation_Pitch( 0, 0.5, 0, 0.5 ) //
+
+  RandomBiasedRotation_Yaw(0, 0.0, 0, 1.0).txt //
+RandomBiasedRotation_Pitch(0, 0.0, 0, 1.0).txt //
+
+   RandomBiasedRotation_Yaw(0, 1.0, 0, 0.0).txt
+RandomBiasedRotation_Pitch( 0, 1.0, 0, 0.0).txt
+
+
+
+*/
+exec function aWholeBunch()
+{
+  local rotator rt;
+  local int i;
+
+  for (i=0; i<100000; i++)
+  {
+     rt = RandomBiasedRotation(0, 0.0, 0, 1.0);
+     log(rt.Pitch,'Pitch');
+//     log(rt.Yaw,'Yaw');
+  }
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 
 defaultproperties
 {
-		 CarcassType=Class'DeusEx.JCDentonMaleCarcass'
+     CarcassType=Class'DeusEx.JCDentonMaleCarcass'
      JumpSound=Sound'DeusExSounds.Player.MaleJump'
      HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
      HitSound2=Sound'DeusExSounds.Player.MalePainMedium'
@@ -510,7 +500,4 @@ defaultproperties
      skins(5)=Texture'DeusExCharacters.Skins.JCDentonTex2'
      skins(6)=Material'DeusExCharacters.Skins.SH_FramesTex4'
      skins(7)=Material'DeusExCharacters.Skins.FB_LensesTex5'
-
-     bScriptPostRender=false
-     bOnlyOwnerSee=false
 }

@@ -4,23 +4,23 @@
 class LaserTrigger extends DeusExTrigger;
 
 var() bool bIsOn;
-var() bool bNoAlarm;			// if True, does NOT sound alarm
+var() bool bNoAlarm;            // if True, does NOT sound alarm
 var actor LastHitActor;
-var bool bConfused;				// used when hit by EMP
-var float confusionTimer;		// how long until trigger resumes normal operation
-var float confusionDuration;	// how long does EMP hit last?
+var bool bConfused;             // used when hit by EMP
+var float confusionTimer;       // how long until trigger resumes normal operation
+var float confusionDuration;    // how long does EMP hit last?
 var int HitPoints;
 var int minDamageThreshold;
-var float lastAlarmTime;		// last time the alarm was sounded
-var int alarmTimeout;			// how long before the alarm silences itself
-//var actor triggerActor;			// actor which last triggered the alarm
-var vector actorLocation;		// last known location of actor that triggered alarm
+var float lastAlarmTime;        // last time the alarm was sounded
+var int alarmTimeout;           // how long before the alarm silences itself
+//var actor triggerActor;           // actor which last triggered the alarm
+var vector actorLocation;       // last known location of actor that triggered alarm
 var EM_Laserbeam emitter;
 
-event PreBeginPlay()
+/*event PreBeginPlay()
 {
-  	Super.PreBeginPlay();
-}
+    Super.PreBeginPlay();
+} */
 
 singular function Touch(Actor Other)
 {
@@ -216,7 +216,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
                 frag.Instigator = instigatedBy;
                 frag.CalcVelocity(Momentum);
                 frag.SetDrawScale(0.5*FRand());
-                frag.Skins[0] = class'ObjectManager'.static.GetMeshTexture(self);// = Skins[0];
+                frag.Skins[0] = class'ObjectManager'.static.GetActorMeshTexture(self);// = Skins[0];
             }
             Destroy();
         }

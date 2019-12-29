@@ -6,24 +6,10 @@ class PlayerPawn extends DeusExPlayerPawn
                          config (DXRConfig);
 
 // Это для возврата назад, поскольку .default будет заменен нативной функцией.
-const DefaultPlayerHeight = 44.5;
+const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
-const CrouchedPlayerHeight = 16.0;
 
-enum EMusicMode {
-    MUS_Ambient,
-    MUS_Combat,
-    MUS_Conversation,
-    MUS_Outro,
-    MUS_Dying
-};
-
-var EMusicMode musicMode;
-var float savedSongPos;
-var float musicCheckTimer;
-var float musicChangeTimer;
-
-var(Flags) editconst /*travel*/ array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
+var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
 var localized String InventoryFull;
 var localized String TooMuchAmmo;
@@ -100,6 +86,8 @@ var bool bMblurActive;
 
 var() editconst DeusExDecoration carriedDecoration;
 var travel class<DeusExDecoration> carriedDecorationClass;
+var travel rotator carriedDecorationRotation;
+
 var vector savedDecoLocation;
 
 var DeusExGameInfo flagBase;
@@ -119,10 +107,10 @@ final function ConHistory CreateHistoryObject()
 
 final function ConHistoryEvent CreateHistoryEvent()
 {
-    local ConHistoryEvent ce;
-    ce = new(Outer) class'ConHistoryEvent';
+    local ConHistoryEvent che;
+    che = new(Outer) class'ConHistoryEvent';
 
-    return ce;
+    return che;
 }
 
 
@@ -243,17 +231,17 @@ function float RandomPitch()
 */
 simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, optional byte mBlurStrength)
 {
-  local PlayerController PlayerControllerLocal;
+  local PlayerController PC;
   local CameraEffect CameraEffectFound;
   local int i;
  
-  PlayerControllerLocal = Level.GetLocalPlayerController();
-  if (PlayerControllerLocal != None)
+  PC = Level.GetLocalPlayerController();
+  if (PC != None)
   {
-    for (i = 0; i <PlayerControllerLocal.CameraEffects.Length; i++)
-      if ( PlayerControllerLocal.CameraEffects[i].Class == CameraEffectClass)
+    for (i = 0; i <PC.CameraEffects.Length; i++)
+      if ( PC.CameraEffects[i].Class == CameraEffectClass)
       {
-        CameraEffectFound = PlayerControllerLocal.CameraEffects[i];
+        CameraEffectFound = PC.CameraEffects[i];
         break;
       }
     if (CameraEffectFound == None)
@@ -262,7 +250,7 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
     }
     if (CameraEffectFound != None)
     {
-      PlayerControllerLocal.AddCameraEffect(CameraEffectFound);
+      PC.AddCameraEffect(CameraEffectFound);
 
         if (CameraEffectFound.IsA('MotionBlur'))
             motionBlur(CameraEffectFound).BlurAlpha = mBlurStrength;
@@ -316,6 +304,22 @@ exec function unblur()
   if (ce != none)
   RemoveCameraEffect(ce);
   bMblurActive = false;
+}
+
+
+simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
+{
+   Super.DisplayDebug(Canvas, YL, YPos);
+
+    if (SelectedItem == None)
+    {
+        Canvas.SetDrawColor(0,255,0);
+        Canvas.DrawText("NO SelectedItem");
+        YPos += YL;
+        Canvas.SetPos(4,YPos);
+    }
+    else
+        SelectedItem.DisplayDebug(Canvas,YL,YPos);
 }
 
 function ChangedWeapon()
@@ -390,144 +394,6 @@ exec function CheckMusic()
    log("Checking for soundFile "$CheckSong$" result="$fhandle);
 }
 
-function SetMusic(string NewSong, EMusicTransition NewTransition)
-{
-  if (DeusExPlayerController(Controller) != none)
-     DeusExPlayerController(Controller).ClientSetMusic(NewSong, NewTransition);
-}
-
-function float GetCurrentSongPosition(); // Empty for now, maybe use MP3 instead of ogg??
-
-function SetInitialState()
-{
-  DxLevel = GetLevelInfo();
-
-  Super.SetInitialState();
-
-  if(Len(DxLevel.AmbientMusic) > 0)
-     SetMusic(DxLevel.AmbientMusic, MTran_SlowFade);
-    musicMode = MUS_Ambient;
-}
-
-// Some code from DxOgg && Revision DeusEx mods.
-function UpdateDynamicMusic(float deltaTime)
-{
-    local bool bCombat;
-    local ScriptedPawn npc;
-    local Controller CurController;
-    local DeusExLevelInfo info;
-
-    musicCheckTimer += deltaTime;
-    musicChangeTimer += deltaTime;
-
-    if (/*controller.*/IsInState('Interpolating'))
-    {
-        // don't mess with the music on any of the intro maps
-        info = GetLevelInfo();
-        if ((info != None) && (info.MissionNumber < 0))
-        {
-            musicMode = MUS_Outro;
-            return;
-        }
-        if (musicMode != MUS_Outro)
-        {
-            if(Len(DxLevel.OutroMusic) > 0)
-            {
-                SetMusic(DxLevel.OutroMusic, MTRAN_FastFade);
-                musicMode = MUS_Outro;
-            }
-        }
-    }
-    else if (Controller != none && Controller.IsInState('Conversation'))
-    {
-        if (musicMode != MUS_Conversation)
-        {
-            if(Len(DxLevel.ConvoMusic) > 0)
-            {
-                // save our place in the ambient track
-                if (musicMode == MUS_Ambient)
-                    savedSongPos = GetCurrentSongPosition();
-                else
-                    savedSongPos = 0.0;
-
-                SetMusic(DxLevel.ConvoMusic, MTRAN_Fade);
-                musicMode = MUS_Conversation;
-            }
-        }
-    }
-    else if (IsInState('Dying'))
-    {
-        if (musicMode != MUS_Dying)
-        {
-            if(Len(DxLevel.DeadMusic) > 0)
-            {
-                SetMusic(DxLevel.DeadMusic, MTRAN_Fade);
-                musicMode = MUS_Dying;
-            }
-        }
-    }
-    else
-    {
-        // only check for combat music every second
-        if (musicCheckTimer >= 1.0)
-        {
-            musicCheckTimer = 0.0;
-            bCombat = False;
-
-            // check a 100 foot radius around me for combat
-            for (CurController = Level.ControllerList; CurController != None; CurController = CurController.NextController)
-            {
-              npc = ScriptedPawn(CurController.pawn);
-              if ((npc != None) && (npc.Controller != none) && (VSize(npc.Location - Location) < (1600 + npc.CollisionRadius)))
-              {
-                 if ((npc.Controller.GetStateName() == 'Attacking') && (npc.Controller.Enemy == Self))
-                 {
-                    bCombat = True;
-                    break;
-                 }
-              }
-            }
-            if (bCombat)
-            {
-                musicChangeTimer = 0.0;
-                if (musicMode != MUS_Combat)
-                {
-                    if(Len(DxLevel.CombatMusic) > 0)
-                    {
-                        // save our place in the ambient track
-                        if (musicMode == MUS_Ambient)
-                            savedSongPos = GetCurrentSongPosition();
-                        else
-                            savedSongPos = 0.0;
-
-                        SetMusic(DxLevel.CombatMusic, MTRAN_FastFade);
-                        musicMode = MUS_Combat;
-                    }
-                }
-            }
-            else if (musicMode != MUS_Ambient)
-            {
-                // wait until we've been out of combat for 5 seconds before switching music
-                if (musicChangeTimer >= 5.0)
-                {
-                    if(Len(DxLevel.AmbientMusic) > 0)
-                    {
-                        // fade slower for combat transitions
-                        if (musicMode == MUS_Combat)
-                            SetMusic(DxLevel.AmbientMusic, MTRAN_SlowFade);
-                            //SetCurrentOgg(AmbientIntroOggFile, AmbientOggFile, savedSongPos, MTRAN_SlowFade);
-                        else
-                            SetMusic(DxLevel.AmbientMusic, MTRAN_Fade);
-
-                        savedSongPos = 0.0;
-                        musicMode = MUS_Ambient;
-                        musicChangeTimer = 0.0;
-                    }
-                }
-            }
-        }
-    }
-}
 
 
 function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool bLeadTarget, bool bWarnTarget)
@@ -547,7 +413,7 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
     }
 
     bestAim = FMin(0.93, MyAutoAim);
-    BestTarget = controller.PickTarget(bestAim, bestDist, FireDir, projStart, 4000);
+    BestTarget = controller.PickTarget(bestAim, bestDist, FireDir, projStart, 14000);
 
     if (bWarnTarget && (Pawn(BestTarget) != None))
         Pawn(BestTarget).WarnTarget(self, projSpeed, FireDir);  
@@ -569,13 +435,106 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
 
     return rotator(AimSpot - projStart);
 }
-// ue2
-/*native(531) final function pawn PickTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart, float MaxRange);
-native(534) final function actor PickAnyTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
 
-native(531) final function pawn PickTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
-native(534) final function actor PickAnyTarget(out float bestAim, out float bestDist, vector FireDir, vector projStart);
+function bool AddInventory( inventory NewItem )
+{
+    // Skip if already in the inventory.
+    local inventory Inv;
+    
+    // The item should not have been destroyed if we get here.
+    if (NewItem == None)
+        log("tried to add none inventory to "$self);
+
+    for(Inv=Inventory; Inv!=None; Inv=Inv.Inventory)
+        if(Inv == NewItem)
+            return false;
+
+    // DEUS_EX AJY
+    // Update the previous owner's inventory chain
+    if (NewItem.Owner != None)
+        Pawn(NewItem.Owner).DeleteInventory(NewItem);
+
+    // Add to front of inventory chain.
+    NewItem.SetOwner(Self);
+    NewItem.Inventory = Inventory;
+    Inventory = NewItem;
+
+    return true;
+}
+
+/*
+   Code from Postal2. Fixes a bug,
+   when inventory items are duplicated 
+   after traveling to new map.
 */
+/*function bool AddInventory(inventory NewItem)
+{
+    // Skip if already in the inventory.
+    local inventory Inv;
+    local Inventory currinv;
+    local actor Last;
+
+    Last = self;
+    
+    // The item should not have been destroyed if we get here.
+    if (NewItem ==None)
+    {
+        Warn("PlayerPawn.AddInventory(): tried to add none inventory to "$self);
+        return false;
+    }
+
+    for(Inv=Inventory; Inv!=None; Inv=Inv.Inventory)
+    {
+        if(Inv == NewItem)
+            return false;
+        Last = Inv;
+    }
+
+    //log("addinventory "$NewItem);
+    // Check if we already have a class of this type in our inventory.
+    // If so, try to just add more of it
+    currinv = FindInventoryType(NewItem.class);
+//    log(self@"currInv ="@currinv);
+    // You'll only have this in your inventory *and* have this function
+    // get called if you've just done a level warp. Normally after a pickup
+    // this function won't get called if you already have ammo.
+    if(Ammunition(currinv) != None)
+    {
+        // This is touchy and may not work. This was a work around for the
+        // original ammo bug from Epic in here. The problem was if you picked
+        // up a weapon and then warped to a new level, it duplicated the ammo
+        // in your inventory.
+        // Now, the pickup adds ammo to the weapon, and then when you warp
+        // your weapon is added, and ammo (from the inventory which also travelled)
+        // is added THEN to your weapon. Before both was happening, so you'd
+        // get both things in a warp.
+        currinv.Destroy();
+        return false;
+
+        // Trying to figure out why ammo is added again when you warp 
+        //  between levels.
+        Ammunition(currinv).AddAmmo(Ammunition(NewItem).AmmoAmount);
+//        log("tried to add me again, even though i'm already here "$currinv);
+//        currinv.Destroy();
+//        return false;
+
+    }
+    else
+    {
+        // Add to back of inventory chain (so minimizes net replication effect).
+        NewItem.SetOwner(Self);
+        NewItem.Inventory = None;
+        Last.Inventory = NewItem;
+
+        if (Controller != None)
+            Controller.NotifyAddInventory(NewItem);
+
+    log("Added inventory item --"@NewItem);
+    }
+
+    return true;
+}*/
+
 
 defaultproperties
 {

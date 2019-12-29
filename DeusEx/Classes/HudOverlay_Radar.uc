@@ -88,7 +88,7 @@ function DrawObjects(canvas u)
         {
             Dist = VSize(Start - P.Location);
 
-            vis = P.AiVisibility(False);
+            vis = class'DeusExPawn'.static.AiVisibility(P, false);
             if (Dist < 3000)
             {
                 if (P != None)

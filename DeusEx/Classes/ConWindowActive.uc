@@ -19,8 +19,8 @@ var EMoveModes moveMode;
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;                     // Number of choice buttons
-var() ConChoiceWindow conChoices[10];   // Maximum of ten buttons
-var  ConPlay conplay;
+var() transient ConChoiceWindow conChoices[10];   // Maximum of ten buttons
+var transient ConPlay conplay;
 var DeusExPlayer player;
 var bool bRestrictInput;
 var bool bTickEnabled;

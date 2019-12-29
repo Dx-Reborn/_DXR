@@ -3,8 +3,28 @@
 //=============================================================================
 class WeaponRifleInv extends DeusExWeaponInv;
 
+function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
+{
+    local ShellCasing s;
+    local coords K;
+
+    K = GetBoneCoords('127');
+
+     Super.ProcessTraceHit(Other, HitLocation, HitNormal, X, Y, Z);
+
+     s = Spawn(class'ShellCasing',, '', K.Origin);
+     if (S != None)
+     {
+         s.SetRotation(rot(0,0,32768));
+         s.SetDrawScale3D(vect(1, 2, 1));
+         s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
+         s.Velocity.Z += 200;
+     }
+}        
+
 defaultproperties
 {
+     AttachmentClass=class'WeaponRifleAtt'
      PickupClass=class'WeaponRifle'
      PickupViewMesh=VertMesh'DXRPickups.SniperRiflePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.SniperRifle'

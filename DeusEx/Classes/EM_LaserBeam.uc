@@ -1,17 +1,17 @@
-//=========================================
-// A laser beam. Used for LaserTrigger
-//=========================================
+/*
+   A laser beam. Used for LaserTrigger and laser sight.
+*/
 
 class EM_LaserBeam extends DeusExEmitter;
 
 var LaserSpot spot[2];          // max of 2 reflections
 var bool bIsOn;
 var actor HitActor;
-var bool bFrozen;               // are we out of the player's sight?
+//var bool bFrozen;               // are we out of the player's sight?
 var bool bRandomBeam;
 var bool bBlueBeam;             // is this beam blue?
 var bool bHiddenBeam;           // is this beam hidden?
-var float InitDist; // 5000
+var float InitDist;
 
 function SetBeamLength(int Length)
 {
@@ -36,7 +36,7 @@ function CalcTrace(float deltaTime)
             {
                 // do nothing - keep on tracing
             }
-            else if ((target == Level) || target.IsA('Mover'))// || target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
+            else if ((target == Level) || target.IsA('Mover') || (target.bWorldGeometry)) //target.IsA('StaticMeshActor') || target.IsA('TerrainInfo'))
             {
                 break;
             }
@@ -49,6 +49,20 @@ function CalcTrace(float deltaTime)
 
       }
       SetBeamLength(Abs(vSize(Location - HitLocation)));
+
+        if (spot[0] == None)
+        {
+            spot[0] = Spawn(class'LaserSpot', Self, , HitLocation, Rotator(HitNormal));
+            if (bBlueBeam && (spot[0] != None))
+                spot[0].Texture = Texture'LaserSpot2';
+        }
+        else
+        {
+            spot[0].SetLocation(HitLocation);
+            spot[0].SetRotation(Rotator(HitNormal));
+        }
+
+
 }
 
 function TurnOn()
@@ -58,16 +72,18 @@ function TurnOn()
         bIsOn = True;
         HitActor = None;
         CalcTrace(0.0);
+
         if (!bHiddenBeam)
             BeamEmitter(Emitters[0]).Opacity=1.0;
+
         SoundVolume = 128;
-//        Resume(self);
+        Emitters[0].Disabled = false;
     }
 }
 
 function TurnOff()
 {
- local int i;
+   local int i;
 
     if (bIsOn)
     {
@@ -85,7 +101,8 @@ function TurnOff()
         if (!bHiddenBeam)
             BeamEmitter(Emitters[0]).Opacity=0.1;
         SoundVolume = 0;
-//        Pause(self);
+
+        Emitters[0].Disabled = true;
     }
 }
 
@@ -111,10 +128,10 @@ function SetBlueBeam()
 function SetHiddenBeam(bool bHide)
 {
     bHiddenBeam = bHide;
-//    if (bHiddenBeam)
-//    BeamEmitter(Emitters[0]).Opacity=0.1;
-  //  else
-    //    BeamEmitter(Emitters[0]).Opacity=1.0;
+    if (bHiddenBeam)
+        BeamEmitter(Emitters[0]).Opacity = 0.0;
+    else
+        BeamEmitter(Emitters[0]).Opacity = 1.0;
 /*  if (proxy != None)
         proxy.bHidden = bHide;*/
 }

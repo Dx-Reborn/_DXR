@@ -5,16 +5,16 @@ class MedicalBot extends Robot;
 
 var int healAmount;
 var int healRefreshTime;
-var Float lastHealTime;
+var float lastHealTime;
 // ----------------------------------------------------------------------
 // PostBeginPlay()
 // ----------------------------------------------------------------------
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	lastHealTime = -healRefreshTime;
+    lastHealTime = -healRefreshTime;
 }
 
 // ----------------------------------------------------------------------
@@ -23,8 +23,8 @@ function PostBeginPlay()
 
 function StandStill()
 {
-	Controller.GotoState('Idle', 'Idle');
-	Acceleration=Vect(0, 0, 0);
+    Controller.GotoState('Idle', 'Idle');
+    Acceleration=Vect(0, 0, 0);
 }
 
 // ----------------------------------------------------------------------
@@ -35,39 +35,39 @@ function StandStill()
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local DeusExPlayer player;
-	local DeusExPlayerController pc;
-	local Object mi;
-	local AugmentationCannisterInv augCan;
-	local DeusExGlobals gl;
+    local DeusExPlayer player;
+    local DeusExPlayerController pc;
+    local Object mi;
+    local AugmentationCannisterInv augCan;
+    local DeusExGlobals gl;
 
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    gl = class'DeusExGlobals'.static.GetGlobals();
 
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	pc = DeusExPlayerController(level.GetLocalPlayerController());
-	player = DeusExPlayer(pc.pawn);
-	
-	if (player != None)
-	{
-	// First check to see if the player has any augmentation cannisters.
-	// If so, then we'll pull up the Add Augmentations screen.  
-	// Otherwise pull up the Health screen first.
+    pc = DeusExPlayerController(level.GetLocalPlayerController());
+    player = DeusExPlayer(pc.pawn);
+    
+    if (player != None)
+    {
+    // First check to see if the player has any augmentation cannisters.
+    // If so, then we'll pull up the Add Augmentations screen.  
+    // Otherwise pull up the Health screen first.
 
-	augCan = AugmentationCannisterInv(player.FindInventoryType(Class'AugmentationCannisterInv'));
+    augCan = AugmentationCannisterInv(player.FindInventoryType(Class'AugmentationCannisterInv'));
 
-	if (augCan != None)
-	{
-		gl.lastMedBot = self;
-		mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "AUGS");
-		MedBotInterface(mi).SetMedicalBot(Self, True);
-	}
-	else
-	{
-		gl.lastMedBot = self;
-		mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "HEALTH");
-		MedBotInterface(mi).SetMedicalBot(Self, True);
-	}
+    if (augCan != None)
+    {
+        gl.lastMedBot = self;
+        mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "AUGS");
+        MedBotInterface(mi).SetMedicalBot(Self, True);
+    }
+    else
+    {
+        gl.lastMedBot = self;
+        mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "HEALTH");
+        MedBotInterface(mi).SetMedicalBot(Self, True);
+    }
  }
 }
 
@@ -77,15 +77,15 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function int HealPlayer(DeusExPlayer player)
 {
-	local int healedPoints;
+    local int healedPoints;
 
-	if (player != None)
-	{
-		healedPoints = player.HealPlayer(healAmount);
-		lastHealTime = Level.TimeSeconds;
-	}
+    if (player != None)
+    {
+        healedPoints = player.HealPlayer(healAmount);
+        lastHealTime = Level.TimeSeconds;
+    }
 
-	return healedPoints;
+    return healedPoints;
 }
 
 // ----------------------------------------------------------------------
@@ -95,8 +95,8 @@ function int HealPlayer(DeusExPlayer player)
 // ----------------------------------------------------------------------
 
 function bool CanHeal()
-{	
-	return (Level.TimeSeconds - lastHealTime > healRefreshTime);
+{   
+    return (Level.TimeSeconds - lastHealTime > healRefreshTime);
 }
 
 // ----------------------------------------------------------------------
@@ -105,15 +105,16 @@ function bool CanHeal()
 
 function float GetRefreshTimeRemaining()
 {
-	return healRefreshTime - (Level.TimeSeconds - lastHealTime);
+    return healRefreshTime - (Level.TimeSeconds - lastHealTime);
 }
 
+// Mesh notify
 function MedBotHoldArm()
 {
   freezeAnimAt(7);
 }
 
-
+// Mesh notify
 function HoldUpAndScan()
 {
   freezeAnimAt(6);
@@ -133,7 +134,7 @@ defaultproperties
      AirSpeed=144.000000
      AccelRate=500.000000
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
+     bFullVolume=true // WHAT?
      AmbientSound=Sound'DeusExSounds.Robot.MedicalBotMove'
      Mesh=mesh'DeusExCharacters.MedicalBot'
      SoundRadius=16

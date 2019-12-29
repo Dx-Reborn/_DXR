@@ -6,15 +6,15 @@ class LightProjector extends DynamicProjector;
 
 defaultproperties
 {
-    ProjTexture=Texture'DeusExStaticMeshes.Misc.FlashLightGlow'
+    ProjTexture=Texture'DXR_FX.Effects.flashlight5'
     MaterialBlendingOp=PB_Modulate
     FrameBufferBlendingOp=PB_Add
-    MaxTraceDistance=1600
+    MaxTraceDistance=2600
     bClipBSP=True
     bProjectOnUnlit=false //True
     bGradient=True
     bProjectOnAlpha=false //True
     bProjectOnParallelBSP=True
-    bLightChanged=false //True
-    FOV=2 //32
+    bProjectActor=false // 
+    FOV=3 //32
 }

@@ -1,29 +1,52 @@
-//
-// DeusExPickupInv : все съедобные и используемые предметы инвентаря.
-// Поскольку Powerups нативные, то я не знаю, как они работают на уровне C++. 
-// Броня и подобные предметы будут переделаны под этот класс.
-//
+/*
+   DeusExPickupInv : все съедобные и используемые предметы инвентаря.
+*/
 
 class DeusExPickupInv extends RuntimePickup abstract;
 
+function FixTheInventoryBug()
+{
+   local DeusExGlobals gl;
+   local int i;
+
+   gl = class'DeusExGlobals'.static.GetGlobals();
+
+   for(i=0; i<gl.InvItems.Length; i++)
+   {
+      if (gl.InvItems[i].itemClass == class)
+      {
+         invPosX = gl.InvItems[i].positionX;
+         invPosY = gl.InvItems[i].positionY;
+         beltPos = gl.InvItems[i].beltPosition;
+         bInObjectBelt = gl.InvItems[i].bInObjectBelt;
+      }
+   }
+}
+
+function TravelPostAccept()
+{
+    Super.TravelPostAccept();
+    FixTheInventoryBug();
+}
+
 function bool UpdateInfo(Object winInfo)
 {
-	local string str;
+    local string str;
 
-	if (winInfo == None)
-		return false;
+    if (winInfo == None)
+        return false;
 
-	GUIScrollTextBox(winInfo).SetContent("");
-//	winInfo.SetTitle(itemName);
-	GUIScrollTextBox(winInfo).SetContent(Description $ "||");
+    GUIScrollTextBox(winInfo).SetContent("");
+//  winInfo.SetTitle(itemName);
+    GUIScrollTextBox(winInfo).SetContent(Description $ "||");
 
-	if (bCanHaveMultipleCopies)
-	{
-		// Print the number of copies
-		str = CountLabel @ String(NumCopies);
-		GUIScrollTextBox(winInfo).AddText(str);
-	}
-	return true;
+    if (bCanHaveMultipleCopies)
+    {
+        // Print the number of copies
+        str = CountLabel @ String(NumCopies);
+        GUIScrollTextBox(winInfo).AddText(str);
+    }
+    return true;
 }
 
 
@@ -33,62 +56,62 @@ function bool UpdateInfo(Object winInfo)
 // ----------------------------------------------------------------------
 function UseOnce()
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	player = DeusExPlayer(Owner);
-	NumCopies--;
+    player = DeusExPlayer(Owner);
+    NumCopies--;
 
-	if (!IsA('SkilledTool'))
-		GotoState('DeActivated');
+    if (!IsA('SkilledTool'))
+        GotoState('DeActivated');
 
-	if (NumCopies <= 0)
-	{
-		if (player.inHand == Self)
-			player.PutInHand(None);
-		Destroy();
-	}
-	else
-	{
-		UpdateBeltText();
-	}
+    if (NumCopies <= 0)
+    {
+        if (player.inHand == Self)
+            player.PutInHand(None);
+        Destroy();
+    }
+    else
+    {
+        UpdateBeltText();
+    }
 }
 
 function UpdateBeltText()
 {
-	// Stub for now...
+    // Stub for now...
 }
 
 simulated function BreakItSmashIt(class<fragment> FragType, float size) 
 {
-	local int i;
-	local DeusExFragment s;
+    local int i;
+    local DeusExFragment s;
 
-	for (i=0; i<Int(size); i++) 
-	{
-		s = DeusExFragment(Spawn(FragType, Owner));
-		if (s != None)
-		{
-			s.Instigator = Instigator;
-			s.CalcVelocity(Velocity,0);
-			s.SetDrawScale(((FRand() * 0.05) + 0.05) * size);
-			s.Skins[0] = GetMeshTexture();
+    for (i=0; i<Int(size); i++) 
+    {
+        s = DeusExFragment(Spawn(FragType, Owner));
+        if (s != None)
+        {
+            s.Instigator = Instigator;
+            s.CalcVelocity(Velocity,0);
+            s.SetDrawScale(((FRand() * 0.05) + 0.05) * size);
+            s.Skins[0] = GetMeshTexture();
 
-			// play a good breaking sound for the first fragment
-			if (i == 0)
-				s.PlaySound(sound'GlassBreakSmall', SLOT_None,,, 768);
-		}
-	}
+            // play a good breaking sound for the first fragment
+            if (i == 0)
+                s.PlaySound(sound'GlassBreakSmall', SLOT_None,,, 768);
+        }
+    }
 
-	Destroy();
+    Destroy();
 }
 
 singular function BaseChange()
 {
-	Super.BaseChange();
+    Super.BaseChange();
 
-	// Make sure we fall if we don't have a base
-	if ((base == None) && (Owner == None))
-		SetPhysics(PHYS_Falling);
+    // Make sure we fall if we don't have a base
+    if ((base == None) && (Owner == None))
+        SetPhysics(PHYS_Falling);
 }
 
 
@@ -101,68 +124,66 @@ singular function BaseChange()
 
 function bool HandlePickupQuery(inventory Item)
 {
-	local DeusExPlayer player;
-	local Inventory anItem;
-//	local Bool bAlreadyHas;
-	local Bool bResult;
+    local DeusExPlayer player;
+    local Inventory anItem;
+    local Bool bResult;
 
-	if (Item.class == class)
-	{
-		player = DeusExPlayer(Owner);
-		bResult = False;
+    if (Item.class == class)
+    {
+        player = DeusExPlayer(Owner);
+        bResult = False;
 
-		// Check to see if the player already has one of these in 
-		// his inventory
-		anItem = player.FindInventoryType(Item.class);
-		log("found in inventory ? = "$anItem);
+        // Check to see if the player already has one of these in 
+        // his inventory
+        anItem = player.FindInventoryType(Item.class);
+        log("found in inventory ? = "$anItem);
 
-		if ((anItem != None) && (bCanHaveMultipleCopies))
-		{
-			// don't actually put it in the hand, just add it to the count
-			NumCopies += DeusExPickupInv(item).NumCopies;
-		player.ClientMessage("NumCopies="@NumCopies);
+        if ((anItem != None) && (bCanHaveMultipleCopies))
+        {
+            // don't actually put it in the hand, just add it to the count
+            NumCopies += DeusExPickupInv(item).NumCopies;
 
-			if ((MaxCopies > 0) && (NumCopies > MaxCopies))
-			{
-				NumCopies -= DeusExPickupInv(item).NumCopies;
-				player.ClientMessage(msgTooMany);
+            if ((MaxCopies > 0) && (NumCopies > MaxCopies))
+            {
+                NumCopies -= DeusExPickupInv(item).NumCopies;
+                player.ClientMessage(msgTooMany);
 
-				// abort the pickup
-				return True;
-			}
-			bResult = True;
-		}
+                // abort the pickup
+                return True;
+            }
+            bResult = True;
+        }
 
-		if (bResult)
-		{
-			player.ClientMessage(PickupMessage @ Item.itemName, 'Pickup');
+        if (bResult)
+        {
+            player.ClientMessage(PickupMessage @ Item.itemName, 'Pickup');
 
-			// Destroy me!
-			Item.Destroy();
-		}
-		else
-		{
-			bResult = Super.HandlePickupQuery(Item);
-		}
+            // Destroy me!
+            Item.Destroy();
+        }
+        else
+        {
+            bResult = Super.HandlePickupQuery(Item);
+        }
 
-		// Update object belt text
-		if (bResult)			
-			UpdateBeltText();	
+        // Update object belt text
+        if (bResult)            
+            UpdateBeltText();   
 
-		return bResult;
-	}
+        return bResult;
+    }
 
-	if ( Inventory == None )
-		return false;
+    if (Inventory == None)
+        return false;
 
-	return Inventory.HandlePickupQuery(Item);
+    return Inventory.HandlePickupQuery(Item);
 }
 
 event RenderOverlays(canvas Canvas)
 {
-	if ( (Instigator == None) || (Instigator.Controller == None))
-		return;
- 	super.RenderOverlays(Canvas);
+    if ((Instigator == None) || (Instigator.Controller == None))
+        return;
+    super.RenderOverlays(Canvas);
   bDrawingFirstPerson = true;
   Canvas.DrawActor(self, false, true);
   bDrawingFirstPerson = false;
@@ -170,14 +191,14 @@ event RenderOverlays(canvas Canvas)
 
 function PlayLandingSound()
 {
-	if (LandSound != None)
-	{
-		if (Velocity.Z <= -200)
-		{
-			PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
-			class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
-		}
-	}
+    if (LandSound != None)
+    {
+        if (Velocity.Z <= -200)
+        {
+            PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
+            class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
+        }
+    }
 }
 
 function material GetMeshTexture(optional int texnum)
@@ -188,15 +209,15 @@ function material GetMeshTexture(optional int texnum)
 
 auto state Pickup
 {
-	// if we hit the ground fast enough, break it, smash it!!!
-	function Landed(Vector HitNormal)
-	{
-		Super.Landed(HitNormal);
+    // if we hit the ground fast enough, break it, smash it!!!
+    function Landed(Vector HitNormal)
+    {
+        Super.Landed(HitNormal);
 
-		if (bBreakable)
-			if (VSize(Velocity) > 400)
-				BreakItSmashIt(fragType, (CollisionRadius + CollisionHeight) / 2);
-	}
+        if (bBreakable)
+            if (VSize(Velocity) > 400)
+                BreakItSmashIt(fragType, (CollisionRadius + CollisionHeight) / 2);
+    }
 }
 
 
@@ -210,11 +231,14 @@ function int GetinvSlotsX()         // Number of horizontal inv. slots this item
 function int GetinvSlotsY()         // Number of vertical inv. slots this item takes
 {return invSlotsY;}
 
-function bool	GetInObjectBelt()     // Is this object actually in the object belt?
+function bool   GetInObjectBelt()     // Is this object actually in the object belt?
 {return bInObjectBelt;}
 
 function SetToObjectBelt(optional int position)     // Is this object actually in the object belt?
 {bInObjectBelt = true;}
+
+function RemoveFromObjectBelt()
+{bInObjectBelt = false;}
 
 function int GetbeltPos()           // Position on the object belt
 {return beltPos;}

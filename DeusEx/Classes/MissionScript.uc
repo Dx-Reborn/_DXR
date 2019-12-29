@@ -4,8 +4,8 @@
 // объявлен как Transient.
 //=============================================================================
 class MissionScript extends Info
-	transient
-	abstract;
+    transient
+    abstract;
 
 //
 // State machine for each mission
@@ -28,10 +28,8 @@ var bool bFirstFrame;
 // ----------------------------------------------------------------------
 function SetInitialState()
 {
-	// start the script
-	SetTimer(checkTime, True);
-
-//	CorrectWaterVolumes(); // ToDo: Проверить, нужно ли это теперь.
+    // start the script
+    SetTimer(checkTime, True);
 }
 
 // ----------------------------------------------------------------------
@@ -41,46 +39,47 @@ function SetInitialState()
 // ----------------------------------------------------------------------
 function InitStateMachine()
 {
-	local DeusExLevelInfo info;
+    local DeusExLevelInfo info;
 
-	Player = DeusExPlayer(Level.GetLocalPlayerController().Pawn);
+    Player = DeusExPlayer(Level.GetLocalPlayerController().Pawn);
 
-	foreach AllActors(class'DeusExLevelInfo', info)
-		dxInfo = info;
+    foreach AllActors(class'DeusExLevelInfo', info)
+        dxInfo = info;
 
-	if (Player != None)
-	{
-		flags = DeusExGameInfo(Level.Game);
+    if (Player != None)
+    {
+        flags = DeusExGameInfo(Level.Game);
 
-		// Get the mission number by extracting it from the
-		// DeusExLevelInfo and then delete any expired flags.
-		//
-		// Also set the default mission expiration so flags
-		// expire in the next mission unless explicitly set
-		// differently when the flag is created.
+        // Get the mission number by extracting it from the
+        // DeusExLevelInfo and then delete any expired flags.
+        //
+        // Also set the default mission expiration so flags
+        // expire in the next mission unless explicitly set
+        // differently when the flag is created.
 
-		if (flags != None)
-		{
-			// Don't delete expired flags if we just loaded
-			// a savegame
-			if (flags.GetBool('PlayerTraveling'))
-				flags.DeleteExpiredFlags(dxInfo.MissionNumber);
+        if (flags != None)
+        {
+            // Don't delete expired flags if we just loaded
+            // a savegame
+            if (flags.GetBool('PlayerTraveling'))
+                flags.DeleteExpiredFlags(dxInfo.MissionNumber);
 
-			flags.SetDefaultExpiration(dxInfo.MissionNumber + 1);
+            flags.SetDefaultExpiration(dxInfo.MissionNumber + 1);
 
-			localURL = Caps(dxInfo.mapName);
+            localURL = Caps(dxInfo.mapName);
 
-			log("**** InitStateMachine() -"@player@"started mission state machine for"@localURL);
-		}
-		else
-		{
-			log("**** InitStateMachine() - flagBase not set - mission state machine NOT initialized!");
-		}
-	}
-	else
-	{
-		log("**** InitStateMachine() - player not set - mission state machine NOT initialized!");
-	}
+            log("**** InitStateMachine() -"@player@"started mission state machine for"@localURL);
+        }
+        else
+        {
+            log("**** InitStateMachine() - flagBase not set - mission state machine NOT initialized!");
+        }
+    }
+    else
+    {
+        log("**** InitStateMachine() - player not set - mission state machine NOT initialized!");
+    }
+//  RandomizePathNodesCost();
 }
 
 
@@ -93,53 +92,52 @@ function InitStateMachine()
 // ----------------------------------------------------------------------
 function FirstFrame()
 {
-	local hudOverlay_StartupMessage StartUp;
-	local string flagName;
-	local ScriptedPawn P;
-	local int i;
+    local hudOverlay_StartupMessage StartUp;
+    local string flagName;
+    local ScriptedPawn P;
+    local int i;
 
-	flags.DeleteFlag('PlayerTraveling', FLAG_Bool);
+    flags.DeleteFlag('PlayerTraveling', FLAG_Bool);
 
-	// Check to see which NPCs should be dead from prevous missions
-	foreach AllActors(class'ScriptedPawn', P)
-	{
-		if (P.bImportant)
-		{
-			flagName = P.BindName$"_Dead";
-			if (flags.GetBool(flagName))
-				P.Destroy();
-		}
-	}
+    // Check to see which NPCs should be dead from prevous missions
+    foreach AllActors(class'ScriptedPawn', P)
+    {
+        if (P.bImportant)
+        {
+            flagName = P.BindName$"_Dead";
+            if (flags.GetBool(flagName))
+                P.Destroy();
+        }
+    }
 
-	// print the mission startup text only once per map
-	flagName = "M"$Caps(dxInfo.mapName)$"_StartupText";
-	if (!flags.GetBool(flagName) && (dxInfo.startupMessage[0] != ""))
-	{
-		StartUp = Spawn(class'hudOverlay_StartupMessage', self);
-		StartUp.message = "";
-		DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(StartUp);
+    // print the mission startup text only once per map
+    flagName = "M"$Caps(dxInfo.mapName)$"_StartupText";
+    if (!flags.GetBool(flagName) && (dxInfo.startupMessage[0] != ""))
+    {
+        StartUp = Spawn(class'hudOverlay_StartupMessage', self);
+        StartUp.message = "";
+        DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(StartUp);
 
-		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
-		  StartUp.message $= dxInfo.StartUpMessage[i] $"|";
+        for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
+          StartUp.message $= dxInfo.StartUpMessage[i] $"|";
 
-		  StartUp.StartMessage();
-			//StartUp.StartUpMessage[i] = dxInfo.startupMessage[i];
-			flags.SetBool(flagName, True);
-	}
+          StartUp.StartMessage();
+            //StartUp.StartUpMessage[i] = dxInfo.startupMessage[i];
+            flags.SetBool(flagName, True);
+    }
 
-	flagName = "M"$dxInfo.MissionNumber$"MissionStart";
-	if (!flags.GetBool(flagName))
-	{
-		// Remove completed Primary goals and all Secondary goals
-		Player.ResetGoals();
+    flagName = "M"$dxInfo.MissionNumber$"MissionStart";
+    if (!flags.GetBool(flagName))
+    {
+        // Remove completed Primary goals and all Secondary goals
+        Player.ResetGoals();
 
-		// Remove any Conversation History.
-		Player.ResetConversationHistory();
+        // Remove any Conversation History.
+        Player.ResetConversationHistory();
 
-		// Set this flag so we only get in here once per mission.
-		flags.SetBool(flagName, True);
-	}
-//  FixSceneManager(); // Вызвать BeginPlay() для SceneManager, поскольку длительность сцены не сохраняется (объявлена как Transient).
+        // Set this flag so we only get in here once per mission.
+        flags.SetBool(flagName, True);
+    }
 }
 
 
@@ -150,12 +148,12 @@ function FirstFrame()
 // ----------------------------------------------------------------------
 function PreTravel()
 {
-	// turn off the timer
-	SetTimer(0, False);
-	Log("PreTravel() : Timer STOPPED");
+    // turn off the timer
+    SetTimer(0, False);
+    Log("PreTravel() : Timer STOPPED");
 
-	// zero the flags so FirstFrame() gets executed at load
-	flags = None;
+    // zero the flags so FirstFrame() gets executed at load
+    flags = None;
 }
 
 
@@ -167,23 +165,23 @@ function PreTravel()
 // ----------------------------------------------------------------------
 function Timer()
 {
-	// make sure our flags are initialized correctly
-	if (flags == None)
-	{
-		InitStateMachine();
+    // make sure our flags are initialized correctly
+    if (flags == None)
+    {
+        InitStateMachine();
 
-		// Don't want to do this if the user just loaded a savegame
-		if ((player != None) && (flags.GetBool('PlayerTraveling')))
-		{
-			FirstFrame();
-		}
+        // Don't want to do this if the user just loaded a savegame
+        if ((player != None) && (flags.GetBool('PlayerTraveling')))
+        {
+            FirstFrame();
+        }
 
-		if(bFirstFrame == false)
-		{
-			FirstFrame();
-			bFirstFrame = true;
-		}
-	}
+        if(bFirstFrame == false)
+        {
+            FirstFrame();
+            bFirstFrame = true;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -192,24 +190,24 @@ function Timer()
 // ----------------------------------------------------------------------
 function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 {
-	local PatrolPoint aPoint;
+    local PatrolPoint aPoint;
 
-	aPoint = None;
+    aPoint = None;
 
-	while(aPoint == None)
-	{
-		foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
-		{
-			if (bRandom)
-			{
-				if(FRand() < 0.5)
-					break;
-			}
-			else
-				break;
-		}
-	}
-	return aPoint;
+    while(aPoint == None)
+    {
+        foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
+        {
+            if (bRandom)
+            {
+                if(FRand() < 0.5)
+                    break;
+            }
+            else
+                break;
+        }
+    }
+    return aPoint;
 }
 
 // ----------------------------------------------------------------------
@@ -218,46 +216,33 @@ function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
 // ----------------------------------------------------------------------
 function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 {
-	local SpawnPoint aPoint;
+    local SpawnPoint aPoint;
 
-	aPoint = None;
+    aPoint = None;
 
-	while(aPoint == None)
-	{
-		foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
-		{
-			if (bRandom)
-			{
-				if(FRand() < 0.5)
-					break;
-			}
-			else
-				break;
-		}
-	}
-	return aPoint;
+    while(aPoint == None)
+    {
+        foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
+        {
+            if (bRandom)
+            {
+                if(FRand() < 0.5)
+                    break;
+            }
+            else
+                break;
+        }
+    }
+    return aPoint;
 }
 
-/*
-  Проблема: Кат-сцены работают неправильно при возвращении на карту.
-*/
-function FixSceneManager()
+function RandomizePathNodesCost()
 {
-  local SceneManager sm;
+    local NavigationPoint N;
 
-  foreach AllActors(class'SceneManager', sm)
-  sm.BeginPlay();
-}
-
-function CorrectWaterVolumes()
-{
-	local watervolume water;
-
-	foreach allactors(class'WaterVolume', water)
-	{
-		water.EntrySound=Sound'DeusExSounds.Generic.SplashMedium';
-		water.ExitSound=Sound'DeusExSounds.Generic.WaterOut';
-	}
+    for (N=Level.NavigationPointList; N!=None; N=N.NextNavigationPoint)
+         if (N.IsA('PathNode'))
+             N.ExtraCost += Rand(5000);
 }
 
 function DeusExGameInfo getFlagBase()

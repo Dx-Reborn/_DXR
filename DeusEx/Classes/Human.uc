@@ -536,18 +536,32 @@ function p_HandleWalking()
     }
 }
 
+function TakeDrowningDamage()
+{
+    // DEUS_EX CNN - make drowning damage happen from center
+    TakeDamage(5, None, Location, vect(0,0,0), class'DM_Drowned');
+}
+
 defaultproperties
 {
      humanAnimRate=1.000000
      WaterSpeed=300.000000
+     GroundSpeed=320.00
      AirSpeed=4000.000000
      AccelRate=1000.000000
      JumpZ=300.000000
      BaseEyeHeight=40.000000
      UnderWaterTime=20.000000
      CollisionRadius=20.000000
-     CollisionHeight=43.500000
+     CollisionHeight=45.500000
      Mass=150.000000
      Buoyancy=155.000000
-     RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
+//     RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
+     RotationRate=(Pitch=0,Yaw=20000,Roll=2048)
+     bMuffledHearing=true
+
 }
+
+
+
+

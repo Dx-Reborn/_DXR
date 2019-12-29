@@ -5,21 +5,23 @@
 // + Информация выводится на оверлей.
 //=============================================================================
 class InformationDevices extends DeusExDecoration
-	hidecategories(Karma,Force,Object)
-	abstract;
+    hidecategories(Karma,Force)
+    abstract;
 
-var() name					textTag;
-var() string				TextPackage;
+var() name                  textTag;
+var() string                TextPackage;
 var() class <DataVaultImageInv> imageClass;
+//var() localized string CustomMessage[10];
 
-var Bool bSetText;
-var Bool bAddToVault;					// True if we need to add this text to the DataVault
+// 20/08/2019: added Localized for strings.
+var bool bSetText;
+var bool bAddToVault;                   // True if we need to add this text to the DataVault
 var String vaultString;
-var DeusExPlayer aReader;				// who is reading this?
-var String msgNoText;
-var Bool bFirstParagraph;
-var String ImageLabel;
-var String AddedToDatavaultLabel;
+var DeusExPlayer aReader;               // who is reading this?
+var localized String msgNoText;
+var bool bFirstParagraph;
+var localized String ImageLabel;
+var localized String AddedToDatavaultLabel;
 
 var HudOverlay_info info;
 
@@ -45,31 +47,31 @@ function Frob(Actor Frobber, Inventory frobWith)
     es = ExtString(DynamicLoadObject(TextPackage$"."$textTag, class'Extension.ExtString'));
     if (es == none)
       {
-				p.ClientMessage(msgNoText);
-				return;
-			} 
-			else
-			if (info != none)
-			{
-				p.ClientMessage("Debug: already have"@info);
-				info.Destroy();
-				return;
-			}
-			else
-    	info = spawn(class'HudOverlay_info', PC);
-			PC.myHUD.AddHudOverlay(info);
-				DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDrawInfo=true;
-			info.currentInfo=es;
-			info.bDrawInfo=true;
+                p.ClientMessage(msgNoText);
+                return;
+            } 
+            else
+            if (info != none)
+            {
+                p.ClientMessage("Debug: already have"@info);
+                info.Destroy();
+                return;
+            }
+            else
+        info = spawn(class'HudOverlay_info', PC);
+            PC.myHUD.AddHudOverlay(info);
+                DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDrawInfo=true;
+            info.currentInfo=es;
+            info.bDrawInfo=true;
 
       if (bAddToVault)
-			{
-				checkNote = aReader.GetNote(textTag);
-				if (checkNote == 'None')
-				{
-				  log(checkNote);
-					aReader.AddNote(es.text,, True, textTag);
-				}
+            {
+                checkNote = aReader.GetNote(textTag);
+                if (checkNote == 'None')
+                {
+                  log(checkNote);
+                    aReader.AddNote(es.text,, True, textTag);
+                }
       }
 
       if ((imageClass != None) && (aReader != None))
@@ -78,21 +80,21 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 function GivePlayerImage()
 {
-	local Inventory image;
+    local Inventory image;
 
   if (aReader.FindInventoryType(imageClass) != none)
   {
-  log (aReader.FindInventoryType(imageClass));
-  return;
+    log (aReader.FindInventoryType(imageClass));
+    return;
   }
   else
-	image = spawn(imageClass, aReader);
+    image = spawn(imageClass, aReader);
 
-	if (image != None)
-	{
-   image.GiveTo(aReader);//Frob(aReader, none);
-   aReader.ClientMessage(Sprintf(AddedToDatavaultLabel, image.GetDescription()));
-  }
+    if (image != None)
+    {
+      image.GiveTo(aReader);//Frob(aReader, none);
+      aReader.ClientMessage(Sprintf(AddedToDatavaultLabel, image.GetDescription()));
+    }
 }
 
 // Удаляет оверлей из массива.
@@ -110,10 +112,10 @@ function tick(float deltatime)
     if ((pc != none) || (player != none)) // Если игрок погиб, не спамить в лог.
     {
       if ((player.frobtarget != self) && (pc != none) && (info != none))
-    	{
-				DeusExHud(pc.myHUD).bDrawInfo = false;
-				info.Destroy();
-    	}
+        {
+                DeusExHud(pc.myHUD).bDrawInfo = false;
+                info.Destroy();
+        }
     }
   super.tick(deltatime);
 }

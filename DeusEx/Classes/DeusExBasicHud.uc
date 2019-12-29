@@ -329,7 +329,8 @@ function DrawTargetAugmentation(Canvas C)
     // draw targetting reticle information based on the weapon's accuracy
     // reticle size is based on accuracy - larger box = higher (worse) accuracy value
     // reticle shrinks as accuracy gets better (value decreases)
-    if ((target != None) && !target.IsA('StaticMeshActor')) // Ах-ох
+//    if ((target != None) && (!target.IsA('StaticMeshActor'))) // Ах-ох
+    if (Target != None)
     {
         // get friend/foe color info
         if (target.IsA('ScriptedPawn'))
@@ -413,6 +414,9 @@ function DrawTargetAugmentation(Canvas C)
         {
             target = lastTarget;
             bUseOldTarget = True;
+
+            if (target.IsA('ScriptedPawn')) // DXR: Set back to default if pawn is not our target.
+               ScriptedPawn(Target).bOwnerNoSee = ScriptedPawn(Target).default.bOwnerNoSee;
         }
         else
         {
@@ -506,12 +510,12 @@ function DrawTargetAugmentation(Canvas C)
                         v1 = Playerowner.pawn.Location;
                         v1.Z += Playerowner.pawn.BaseEyeHeight;
                         v2 = 1.5 * Playerowner.pawn.Normal(target.Location - v1);
-                        // Скорее всего здесь нужно будет нарисовать портал в мою бессонницу...
 
-                        //winZoom.SetViewportLocation(target.Location - mult * v2);
-                        //winZoom.SetWatchActor(target);
-//                      c.setPos(boxTLX, boxTLY);
                         C.DrawActor(None, false, true); // Clear the z-buffer here
+
+                        if (target.IsA('ScriptedPawn'))
+                            ScriptedPawn(Target).bOwnerNoSee = false;
+
                         c.DrawPortal(boxTLX, boxTLY, w,h, target, target.Location - mult * v2, Playerowner.pawn.GetViewRotation(), 75);
                         DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
                 }
@@ -972,13 +976,31 @@ function Actor TraceLOS(float checkDist, out vector HitLocation)
     // find the object that we are looking at
     // make sure we don't select the object that we're carrying
     DXR = Human(PlayerOwner.pawn);
-    foreach DXR.TraceActorsExt(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace,,)
+    foreach DXR.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
     {
-        if (target.IsA('Pawn') || target.IsA('DeusExDecoration') || target.IsA('ThrownProjectile') || 
-           (target.IsA('DeusExMover') && DeusExMover(target).bBreakable) || target.IsA('StaticMeshActor')) // Ах-ох!
-        {
-            if (target != Human(PlayerOwner.Pawn).CarriedDecoration)
+      if (target.bWorldGeometry) //DXR: Not StaticMeshes.
+      {
+         target = none;
+         break;
+      }
+        //G-Flex: allow remote viewing of corpses too
+        //G-Flex: don't allow viewing of trash
+        //Bjorn: View pickups that are projectile targets.
+        if (target.IsA('Pawn') || target.IsA('DeusExCarcass') || (target.IsA('DeusExDecoration') && !target.IsA('Trash')) || target.IsA('ThrownProjectile') ||
+            (target.IsA('DeusExMover') || (target.IsA('Inventory') && Inventory(target).bProjTarget)))
+        {                                                              
+            //== Y|y: don't find hidden objects
+            if (target.bHidden)
+                target = None;
+            else if (target != DXR.CarriedDecoration)
             {
+                //G-Flex: disallow viewing of invincible, no-highlight decorations like trees
+                if (target.IsA('DeusExDecoration'))
+                {
+                    if (!DeusExDecoration(target).bInvincible || DeusExDecoration(target).bHighlight)
+                        break;
+                }
+                else
                     break;
             }
         }
@@ -1335,8 +1357,6 @@ function SetInitialState()
 // Стоит использовать переменные из оригинала.
 simulated event PostRender(canvas C)
 {
-//  local texture s;
-
     super.postrender(C);
     if ((cubemapmode) || (playerOwner.pawn == none))
     return;
@@ -1381,12 +1401,13 @@ simulated event PostRender(canvas C)
             DrawDefenseAugmentation(C);
         }
         if (bSpyDroneActive)
-    {
+        {
             DrawSpyDroneAugmentation(C);
         }
+
         RenderPoisonEffectGray(C);
         RenderPoisonEffectGreen(C);
-    RenderFrobTarget(C);
+        RenderFrobTarget(C);
         RenderSmallHUDHitDisplay(C);
 
         //if (bTargetActive)
@@ -1403,6 +1424,8 @@ simulated event PostRender(canvas C)
     DrawTargetAugmentation(C);
     RenderChargedPickups(C);
 
+// DrawActor( Actor A, bool WireFrame, optional bool ClearZ, optional float DisplayFOV ) 
+//    c.DrawActor(None, false, true); // Clear the z-buffer here
 }
 
 function DrawHud(Canvas C)
@@ -1541,16 +1564,12 @@ function RenderSmallHUDHitDisplay(Canvas C)
             else
            C.SetDrawColor(0,0,0);
         }
-   C.DrawText("o2");
+     C.DrawText("o2");
 
-   C.SetPos(o2BarPosX,o2BarPosY * o2cr - (0.55 * breathPercent)); // Позиция для индикатора
+     C.SetPos(o2BarPosX,o2BarPosY * o2cr - (0.55 * breathPercent)); // Позиция для индикатора
      C.DrawColor=GetColorScaled(0.01 * breathPercent); // Градация от зеленого к красному...
      C.DrawColor.A=255;
-//
-//   if (bUseAltVBarTexture) // из материала...
-//    C.DrawTilePartialStretched(TexScaler'EpicParticles.Shaders.TexScaler2', 5, breathPercent * 0.55);
-//    else  // ...или на основе обычного белого квадратика.
-        C.DrawTileStretched(texture'Solid', 5, breathPercent * 0.55);
+     C.DrawTileStretched(texture'Solid', 5, breathPercent * 0.55);
      }
 }
 
@@ -2077,237 +2096,8 @@ function RenderCompass(Canvas C)
       C.DrawIcon(Texture'HUDCompassTickBox',1.0);
 }
 
-function RenderToolBelt(Canvas C)
-{
-//  local DxCanvas dxc;
-  local float holdX, holdY, w, h;//, offset, width;
-  local DeusExPlayer p;
-    local int beltIt;
-  local SkilledToolInv sitem;
-//  local array<string> bindKeyNames, localizedBindKeyNames;
-
-    p=Human(PlayerOwner.Pawn);
-    if(p == none)
-    {
-        return;
-    }
-
-//    c.Font=Font'DXFonts.FontMenuSmall_DS';
-
-    if (dxc != none)
-     dxc.SetCanvas(C);
-
-    c.Font=Font'DXFonts.DPix_7';
-
-    c.DrawColor = ToolBeltBG;//(127,127,127);
-    C.SetPos(C.SizeX-544,C.SizeY-62);
-    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
-        c.Style = ERenderStyle.STY_Translucent;
-            else
-               c.Style = ERenderStyle.STY_Normal;
-    C.DrawIcon(Texture'HUDObjectBeltBackground_Left',1.0);
-
-    C.SetPos(C.CurX-7,C.CurY);
-
-    //for(beltIt=0; beltIt<10; beltIt++)
-    for(beltIt=1; beltIt<10; beltIt++)
-    {
-        holdX = C.CurX;
-        holdY = C.CurY;
-
-//        c.Font=Font'DXFonts.EUX_7';
-        c.Font=Font'DXFonts.DPix_7';
-        c.DrawColor = ToolBeltBG;//(127,127,127);
-        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
-            c.Style = ERenderStyle.STY_Translucent;
-               else
-                 c.Style = ERenderStyle.STY_Normal;
-        C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
-        C.SetPos(C.CurX-13,C.CurY);
-
-        if(p.belt[beltIt] != none)
-        {
-            if (p.belt[beltIt].IsA('DeusExWeaponInv'))
-            {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
-                        //DeusExWeaponInv(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIcon(DeusExWeaponInv(p.belt[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText;
-
-            w = C.CurX;
-            h = C.CurY-3;
-
-//                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(DeusExWeaponInv(p.belt[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
-
-            C.SetPos(w-13,h);
- //                 c.Font=Font'DXFonts.FontMenuSmall_DS';
-          }
-            if (p.belt[beltIt].IsA('SkilledToolInv'))
-            {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
-                        //SkilledToolInv(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(SkilledToolInv(p.belt[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText; //
-
-            w = C.CurX;
-            h = C.CurY-3;
-
-//                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(SkilledToolInv(p.belt[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
-
-            C.SetPos(w-13,h);
-//                  c.Font=Font'DXFonts.FontMenuSmall_DS';
-          }
-          if (p.belt[beltIt].IsA('DeusExPickupInv'))
-            {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
-                        //DeusExPickupInv(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(DeusExPickupInv(p.belt[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText; //
-
-            w = C.CurX;
-            h = C.CurY-3;
-
-                    //c.Font=Font'DXFonts.FontTiny';
-//                  c.Font=Font'DXFonts.EUX_7';
-            c.DrawTextJustified(DeusExPickupInv(p.belt[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
-
-            if (DeusExPickupInv(p.belt[beltIt]).CanHaveMultipleCopies())
-                dxc.DrawTextJustified(strUses $ DeusExPickupInv(p.belt[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
-
-            C.SetPos(w-13,h);
-//                  c.Font=Font'DXFonts.FontMenuSmall_DS';
-          }
-        }
-         c.DrawColor = ToolBeltText;//c.SetDrawColor(255,255,255);
-         C.Style = 1;
-         c.SetPos(holdX, holdY);
-         dxc.DrawTextJustified(string(beltIt), 2, holdX, holdY+2, holdX+42, holdY+13);
-
-        sitem = SkilledToolInv(DeusExPlayer(PlayerOwner.Pawn).belt[beltIt]);
-        if((sitem != none) && (!sitem.isA('NanoKeyRingInv')))
-        {
-            dxc.DrawTextJustified(strUses $ sitem.NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
-        }
-        c.SetPos(holdX+51, holdY);
-    }
-
-    c.Font=Font'DXFonts.DPix_7';
-
-//    C.Style = ERenderStyle.STY_Translucent;
-   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
-       c.Style = ERenderStyle.STY_Translucent;
-          else
-             c.Style = ERenderStyle.STY_Normal;
-    c.DrawColor = ToolBeltBG;
-    C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
-    C.SetPos(C.CurX-13,C.CurY);
-    C.DrawIcon(Texture'HUDObjectBeltBackground_Right',1.0);
-//    c.SetPos(holdX, holdY);
-
-    if ((p.belt[0] != none) && (p.belt[0].IsA('NanoKeyRingInv')))
-    {
-        c.SetPos(holdX + 51, holdY);
-        C.Style = ERenderStyle.STY_Normal;
-        c.DrawColor = ToolBeltText;
-        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
-//        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+43,holdY+53);
-
-        c.SetPos(holdX + 51, holdY);
-        c.SetDrawColor(255,255,255);
-        c.DrawIcon(p.belt[0].GetIcon(), 1);
-        c.DrawColor = ToolBeltText;
-        dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
-    }
-
-    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
-    {
-      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-         c.Style = ERenderStyle.STY_Translucent;
-          else
-           c.Style = ERenderStyle.STY_Alpha;
-
-          C.SetPos(C.SizeX-544,C.SizeY-68);
-          c.DrawColor = ToolBeltFrame;
-          C.DrawIcon(Texture'HUDObjectBeltBorder_1',1.0);
-          C.DrawIcon(Texture'HUDObjectBeltBorder_2',1.0);
-          C.DrawIcon(Texture'HUDObjectBeltBorder_3',1.0);
-    }
-
-  c.ReSet();
-  renderToolBeltSelection(c);
-}
-
-function renderToolBeltSelection(canvas u)
-{
-  local DeusExPlayer p;
-
-  p=Human(PlayerOwner.Pawn);
-  if (p == none) // || (p.InHand == none));
-      return;
-
-  if (p.inHand != none)
-  {
-   u.DrawColor = ToolBeltHighlight;
-   if (p.InHand == p.belt[1])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[2])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[2].positionX,u.SizeY-toolbeltSelPos[2].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[3])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[3].positionX,u.SizeY-toolbeltSelPos[3].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[4])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[4].positionX,u.SizeY-toolbeltSelPos[4].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[5])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[5].positionX,u.SizeY-toolbeltSelPos[5].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[6])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[6].positionX,u.SizeY-toolbeltSelPos[6].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[7])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[7].positionX,u.SizeY-toolbeltSelPos[7].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[8])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[8].positionX,u.SizeY-toolbeltSelPos[8].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[9])
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[9].positionX,u.SizeY-toolbeltSelPos[9].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-   else if (p.InHand == p.belt[0]) // NanoKeyringInv
-   {
-     u.SetPos(u.SizeX-toolbeltSelPos[0].positionX,u.SizeY-toolbeltSelPos[0].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
-   }
-  }
-}
+function RenderToolBelt(Canvas C);
+function renderToolBeltSelection(canvas u);
 
 function RenderAugsBelt(Canvas C)
 {
@@ -2529,9 +2319,20 @@ function RenderAmmoDisplay(Canvas c)
                     c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
+/*            c.DrawColor = AmmoDisplayFrame;
+            C.SetPos(0,C.SizeY-77);
+            C.DrawIcon(Texture'HUDAmmoDisplayBorder_1',1.0);*/
+           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+           {
+            if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+              c.Style = ERenderStyle.STY_Translucent;
+              else
+              c.Style = ERenderStyle.STY_Alpha;
+
             c.DrawColor = AmmoDisplayFrame;
             C.SetPos(0,C.SizeY-77);
             C.DrawIcon(Texture'HUDAmmoDisplayBorder_1',1.0);
+           }
 
             c.Style = ERenderStyle.STY_Normal;
             C.SetPos(21,C.SizeY-58);

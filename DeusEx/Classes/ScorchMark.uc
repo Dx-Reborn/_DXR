@@ -5,5 +5,6 @@ class ScorchMark extends DeusExDecal;
 
 defaultproperties
 {
-     /*Texture=*/ProjTexture=Texture'DeusExItems.Skins.FlatFXTex39'
+    ProjTexture=Texture'DeusExItems.Skins.FlatFXTex39'
+    DrawScale=0.5
 }

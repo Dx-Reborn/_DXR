@@ -15,115 +15,120 @@ function Pawn GetPlayerPawn()
     return Level.GetLocalPlayerController().Pawn;
 }
 
+function DeusExGameInfo GetFlagBase()
+{
+    return DeusExGameInfo(Level.Game);
+}
+
 
 function Touch(Actor Other)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	if (IsRelevant(Other))
-	{
-		player = DeusExPlayer(GetPlayerPawn());
-		if (player != None)
-		{
-			if (bSetFlag)
-			{
-				if (flagExpiration == -1)
-					player.getFlagBase().SetBool(flagName, flagValue);
-				else
-					player.getFlagBase().SetBool(flagName, flagValue,, flagExpiration);
-			}
+    if (IsRelevant(Other))
+    {
+        player = DeusExPlayer(GetPlayerPawn());
+        if (player != None)
+        {
+            if (bSetFlag)
+            {
+                if (flagExpiration == -1)
+                    player.getFlagBase().SetBool(flagName, flagValue);
+                else
+                    player.getFlagBase().SetBool(flagName, flagValue,, flagExpiration);
+            }
 
-			if (bTrigger)
-				if (player.getFlagBase().GetBool(flagName) == flagValue)
-					Super.Touch(Other);
-		}
-	}
+            if (bTrigger)
+                if (player.getFlagBase().GetBool(flagName) == flagValue)
+                    Super.Touch(Other);
+        }
+    }
 }
 
 function UnTouch(Actor Other)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	if (bWhileStandingOnly)
-	{
-		if (IsRelevant(Other))
-		{
-			player = DeusExPlayer(GetPlayerPawn());
-			if (player != None)
-			{
-				if (bTrigger)
-					if (player.getFlagBase().GetBool(flagName) == flagValue)
-						Super.UnTouch(Other);
+    if (bWhileStandingOnly)
+    {
+        if (IsRelevant(Other))
+        {
+            player = DeusExPlayer(GetPlayerPawn());
+            if (player != None)
+            {
+                if (bTrigger)
+                    if (player.getFlagBase().GetBool(flagName) == flagValue)
+                        Super.UnTouch(Other);
 
-				if (bSetFlag)
-				{
-					if (flagExpiration == -1)
-						player.getFlagBase().SetBool(flagName, !flagValue);
-					else
-						player.getFlagBase().SetBool(flagName, !flagValue,, flagExpiration);
-				}
-			}
-		}
-	}
+                if (bSetFlag)
+                {
+                    if (flagExpiration == -1)
+                        player.getFlagBase().SetBool(flagName, !flagValue);
+                    else
+                        player.getFlagBase().SetBool(flagName, !flagValue,, flagExpiration);
+                }
+            }
+        }
+    }
 }
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	local DeusExPlayer player;
-	local Actor A;
+    local DeusExPlayer player;
+    local Actor A;
 
-	player = DeusExPlayer(GetPlayerPawn());
-	if (player != None)
-	{
-		if (bSetFlag)
-		{
-			if (flagExpiration == -1)
-				player.getFlagBase().SetBool(flagName, flagValue);
-			else
-				player.getFlagBase().SetBool(flagName, flagValue,, flagExpiration);
-		}
+    player = DeusExPlayer(GetPlayerPawn());
+    if (player != None)
+    {
+        if (bSetFlag)
+        {
+            if (flagExpiration == -1)
+                player.getFlagBase().SetBool(flagName, flagValue);
+            else
+                player.getFlagBase().SetBool(flagName, flagValue,, flagExpiration);
+        }
 
-		if (bTrigger)
-			if (player.getFlagBase().GetBool(flagName) == flagValue)
-			{
-				if (Event != '')
-					foreach AllActors(class 'Actor', A, Event)
-						A.Trigger(player, Instigator);
+        if (bTrigger)
+            if (player.getFlagBase().GetBool(flagName) == flagValue)
+            {
+                if (Event != '')
+                    foreach AllActors(class 'Actor', A, Event)
+                        A.Trigger(player, Instigator);
 
-				Super.Trigger(Other, Instigator);
-			}
-	}
+                Super.Trigger(Other, Instigator);
+            }
+    }
 }
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-	local DeusExPlayer player;
-	local Actor A;
+    local DeusExPlayer player;
+    local Actor A;
 
-	if (bWhileStandingOnly)
-	{
-		player = DeusExPlayer(GetPlayerPawn());
-		if (player != None)
-		{
-			if (bTrigger)
-				if (player.getFlagBase().GetBool(flagName) == flagValue)
-				{
-					if (Event != '')
-						foreach AllActors(class 'Actor', A, Event)
-							A.UnTrigger(player, Instigator);
+    if (bWhileStandingOnly)
+    {
+        player = DeusExPlayer(GetPlayerPawn());
+        if (player != None)
+        {
+            if (bTrigger)
+                if (player.getFlagBase().GetBool(flagName) == flagValue)
+                {
+                    if (Event != '')
+                        foreach AllActors(class 'Actor', A, Event)
+                            A.UnTrigger(player, Instigator);
 
-					Super.UnTrigger(Other, Instigator);
-				}
+                    Super.UnTrigger(Other, Instigator);
+                }
 
-			if (bSetFlag)
-			{
-				if (flagExpiration == -1)
-					player.getFlagBase().SetBool(flagName, !flagValue);
-				else
-					player.getFlagBase().SetBool(flagName, !flagValue,, flagExpiration);
-			}
-		}
-	}
+            if (bSetFlag)
+            {
+                if (flagExpiration == -1)
+                    player.getFlagBase().SetBool(flagName, !flagValue);
+                else
+                    player.getFlagBase().SetBool(flagName, !flagValue,, flagExpiration);
+            }
+        }
+    }
 }
 
 

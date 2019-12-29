@@ -7,7 +7,7 @@ class ParticleGenerator extends Effects;
 
 defaultproperties
 {
- 		 drawType=DT_Sprite
+     drawType=DT_Sprite
      bDirectional=true
      bHidden=true
      Texture=Texture'Engine.S_Inventory'

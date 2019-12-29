@@ -5,195 +5,200 @@ class Greasel extends Animal;
 
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation, Vector offset, class<damageType> damageType)
 {
-	if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas') || (damageType == class'DM_PoisonGas'))
-		return false;
-	else
-		return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+    if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas') || (damageType == class'DM_PoisonGas'))
+        return false;
+    else
+        return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
 }
 
 function vector GetSwimPivot()
 {
-	// THIS IS A HIDEOUS, UGLY, MASSIVELY EVIL HACK!!!!
-	return (vect(0,0,1)*CollisionHeight);
+    // THIS IS A HIDEOUS, UGLY, MASSIVELY EVIL HACK!!!!
+    return (vect(0,0,1)*CollisionHeight);
 }
 
 function TweenToAttack(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Attack', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Attack', tweentime);
 }
 
 function PlayAttack()
 {
-	PlayAnimPivot('Attack');
+    PlayAnimPivot('Attack');
 }
 
 function PlayPanicRunning()
 {
-	PlayRunning();
+    PlayRunning();
 }
 
 function PlayTurning()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', 0.1);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', 0.1);
 }
 
 function TweenToWalking(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Walk', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Walk', tweentime);
 }
 
 function PlayWalking()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', , 0.15);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', , 0.15);
 }
 
 function TweenToRunning(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		LoopAnimPivot('Run',, tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        LoopAnimPivot('Run',, tweentime);
 }
 
 function PlayRunning()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',1.5,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Run', 1.5);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',1.5,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Run', 1.5);
 }
+
 function TweenToWaiting(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('BreatheLight', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('BreatheLight', tweentime);
 }
+
 function PlayWaiting()
 {
  if (Acceleration != vect(0, 0, 0))
  return;
 
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',1.5,,, GetSwimPivot());
-	else
-		LoopAnimPivot('BreatheLight', , 0.3);
+ if (Controller.IsInState('Paralyzed') || Controller.IsInState('Eating') || bSitting || bDancing || bStunned)
+ return;
+
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',1.5,,, GetSwimPivot());
+    else
+        LoopAnimPivot('BreatheLight', , 0.3);
 }
 
 function PlayTakingHit(EHitLocation hitPos)
 {
-	local vector pivot;
-	local name   animName;
+    local vector pivot;
+    local name   animName;
 
-	animName = '';
-	if (!PhysicsVolume.bWaterVolume)
-	{
-		switch (hitPos)
-		{
-			case HITLOC_HeadFront:
-			case HITLOC_TorsoFront:
-			case HITLOC_LeftArmFront:
-			case HITLOC_RightArmFront:
-			case HITLOC_LeftLegFront:
-			case HITLOC_RightLegFront:
-				animName = 'HitFront';
-				break;
+    animName = '';
+    if (!PhysicsVolume.bWaterVolume)
+    {
+        switch (hitPos)
+        {
+            case HITLOC_HeadFront:
+            case HITLOC_TorsoFront:
+            case HITLOC_LeftArmFront:
+            case HITLOC_RightArmFront:
+            case HITLOC_LeftLegFront:
+            case HITLOC_RightLegFront:
+                animName = 'HitFront';
+                break;
 
-			case HITLOC_HeadBack:
-			case HITLOC_TorsoBack:
-			case HITLOC_LeftArmBack:
-			case HITLOC_RightArmBack:
-			case HITLOC_LeftLegBack:
-			case HITLOC_RightLegBack:
-				animName = 'HitBack';
-				break;
-		}
-		pivot = vect(0,0,0);
-	}
+            case HITLOC_HeadBack:
+            case HITLOC_TorsoBack:
+            case HITLOC_LeftArmBack:
+            case HITLOC_RightArmBack:
+            case HITLOC_LeftLegBack:
+            case HITLOC_RightLegBack:
+                animName = 'HitBack';
+                break;
+        }
+        pivot = vect(0,0,0);
+    }
 
-	if (animName != '')
-		PlayAnimPivot(animName, , 0.1, pivot);
+    if (animName != '')
+        PlayAnimPivot(animName, , 0.1, pivot);
 
 }
 
 function vector GetChompPosition()
 {
-	return (Location+Vector(Rotation)*(CollisionRadius+10)+vect(0,0,-10));
+    return (Location+Vector(Rotation)*(CollisionRadius+10)+vect(0,0,-10));
 }
 
 function PlayEating()
 {
-	PlayAnimPivot('Eat', 2.0, 0.2);
+    PlayAnimPivot('Eat', 2.0, 0.2);
 }
 
 function SpewBlood(vector Position)
 {
-	local float         size;
-	local FleshFragment chunk;
+    local float         size;
+    local FleshFragment chunk;
 
-	size = (CollisionRadius + CollisionHeight) / 2;  // yes, we *are* using the Greasel's size...  :)
-	if ((FRand() < 0.5) && (size > 10.0))
-	{
-		chunk = spawn(class'FleshFragment', None,, Position);
-		if (chunk != None)
-		{
-			chunk.SetDrawScale(size / 25);
-			chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
-			chunk.bFixedRotationDir = True;
-			chunk.RotationRate = RotRand(false);
-			chunk.Velocity = VRand()*100;
-			chunk.Velocity.Z = chunk.Velocity.Z + 250;
-		}
-	}
-	else
-		Super.SpewBlood(Position);
+    size = (CollisionRadius + CollisionHeight) / 2;  // yes, we *are* using the Greasel's size...  :)
+    if ((FRand() < 0.5) && (size > 10.0))
+    {
+        chunk = spawn(class'FleshFragment', None,, Position);
+        if (chunk != None)
+        {
+            chunk.SetDrawScale(size / 25);
+            chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
+            chunk.bFixedRotationDir = True;
+            chunk.RotationRate = RotRand(false);
+            chunk.Velocity = VRand()*100;
+            chunk.Velocity.Z = chunk.Velocity.Z + 250;
+        }
+    }
+    else
+        Super.SpewBlood(Position);
 }
 
 // sound functions
 function PlayEatingSound()
 {
-	PlaySound(sound'GreaselEat', SLOT_None,,, 384);
+    PlaySound(sound'GreaselEat', SLOT_None,,, 128); // 384
 }
 
 function PlayIdleSound()
 {
-	if (FRand() < 0.5)
-		PlaySound(sound'GreaselIdle', SLOT_None);
-	else
-		PlaySound(sound'GreaselIdle2', SLOT_None);
+    if (FRand() < 0.5)
+        PlaySound(sound'GreaselIdle', SLOT_None);
+    else
+        PlaySound(sound'GreaselIdle2', SLOT_None);
 }
 
 function PlayScanningSound()
 {
-	if (FRand() < 0.3)
-	{
-		if (FRand() < 0.5)
-			PlaySound(sound'GreaselIdle', SLOT_None);
-		else
-			PlaySound(sound'GreaselIdle2', SLOT_None);
-	}
+    if (FRand() < 0.3)
+    {
+        if (FRand() < 0.5)
+            PlaySound(sound'GreaselIdle', SLOT_None);
+        else
+            PlaySound(sound'GreaselIdle2', SLOT_None);
+    }
 }
 
 function PlayTargetAcquiredSound()
 {
-	PlaySound(sound'GreaselAlert', SLOT_None);
+    PlaySound(sound'GreaselAlert', SLOT_None);
 }
 
 function PlayCriticalDamageSound()
 {
-	PlaySound(sound'GreaselFlee', SLOT_None);
+    PlaySound(sound'GreaselFlee', SLOT_None);
 }
 
 defaultproperties
@@ -203,13 +208,12 @@ defaultproperties
      FoodDamage=5
      FoodHealth=2
      bMessyEater=True
-     bCanGlide=False
      Alliance=Greasel
      BindName="Greasel"
      FamiliarName="Greasel"
      UnfamiliarName="Greasel"
      MinHealth=20.000000
-		 CarcassType=Class'DeusEx.GreaselCarcass'
+         CarcassType=Class'DeusEx.GreaselCarcass'
      WalkingSpeed=0.080000
      bCanBleed=True
      ShadowScale=1.000000

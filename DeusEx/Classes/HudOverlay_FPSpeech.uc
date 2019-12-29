@@ -7,7 +7,7 @@ class HudOverlay_FPSpeech extends HUDOverlay;
 var() string Speaker;
 var() string fpsSpeech;
 
-var ConPlay conPlay;	// Pointer into current conPlay object
+var ConPlay conPlay;    // Pointer into current conPlay object
 var transient DxCanvas dxc;
 var() font TitleFont, SpeechFont;
 
@@ -18,8 +18,8 @@ function SetInitialState()
 {
   local DeusExHUD h;
 
-	dxc = new(Outer) class'DxCanvas';
-	Super.SetInitialState();
+  dxc = new(Outer) class'DxCanvas';
+  Super.SetInitialState();
 
   h = DeusExHUD(level.GetLocalPlayerController().myHUD);
   InfoLinkBG = h.InfoLinkBG;
@@ -30,19 +30,19 @@ function SetInitialState()
 
 function Timer()
 {
-	Destroy();
+    Destroy();
 }
 
 // == Прорисовка диалогов == //
 simulated function Render(Canvas C)
 {
-	local float w,h,holdX,holdY;
-	local texture border;
+    local float w,h,holdX,holdY;
+    local texture border;
 
-//	if (!bIsVisible)
-//	    return;
+//  if (!bIsVisible)
+//      return;
 
-//	if (fpsSpeech=="")
+//  if (fpsSpeech=="")
 //      return;
 
     if(bIsVisible == true)
@@ -50,7 +50,11 @@ simulated function Render(Canvas C)
      dxc.SetCanvas(C);
 
         c.DrawColor = InfoLinkBG;
-        c.Font = TitleFont;
+
+        if (class'GameManager'.static.GetGameLanguage() ~= "rus")
+           c.Font = TitleFont;
+        else
+           c.Font = font'DxFonts.FontConversationBold';
 //        c.Style=ERenderStyle.STY_Translucent;
 
         c.SetOrigin(0,0);
@@ -68,13 +72,10 @@ simulated function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-        //c.SetDrawColor(127,127,127);
-        //c.Style=3;
-
         if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
               else
-               c.Style = ERenderStyle.STY_Normal;
+            c.Style = ERenderStyle.STY_Normal;
 
         //TL
         c.SetPos(-13,-16);
@@ -163,9 +164,9 @@ simulated function Render(Canvas C)
 
         c.DrawColor = InfoLinkTitles;
         dxc.DrawText(Speaker); // кто
-				
-				//Нарисовать линию с тенью
-	      dxc.DrawHorizontal(int(c.CurY)+3,596);
+                
+                //Нарисовать линию с тенью
+          dxc.DrawHorizontal(int(c.CurY)+3,596);
         c.SetDrawColor(0,0,0);
         dxc.DrawHorizontal(int(c.CurY)+4,596);
         c.SetDrawColor(255,255,255);
@@ -173,32 +174,37 @@ simulated function Render(Canvas C)
         //c.SetPos(c.CurX, c.CurY + 8);
         c.SetPos(c.CurX, c.CurY + 6);
 
-        c.font=SpeechFont;
+        if (class'GameManager'.static.GetGameLanguage() ~= "rus")
+            c.font=SpeechFont;
+        else
+            c.Font = font'DxFonts.fontConversation';
+
+
         c.DrawColor = InfoLinkText;
         dxc.DrawText(fpsSpeech); // текст
-	      c.reset();
+          c.reset();
         c.SetClip(c.SizeX, c.SizeY);
     }
 }
 
 function bool isVisible()
 {
-	return bIsVisible;
+    return bIsVisible;
 }
 
 function DisplayName(string text)
 {
-	Speaker = text;
+    Speaker = text;
 }
 
 function DisplayText(string text, Actor speakingActor)
 {
-	fpsSpeech = text;
+    fpsSpeech = text;
 }
 
 function AppendText(string text)
 {
-	fpsSpeech = text $= fpsSpeech;
+    fpsSpeech = text $= fpsSpeech;
 }
 
 function Close()
@@ -208,23 +214,23 @@ function Close()
 
 function Show()
 {
-	bIsVisible=true;
+    bIsVisible=true;
 }
 
 function Hide()
 {
-	bIsVisible=false;
+    bIsVisible=false;
 }
 
 function Clear()
 {
-	Speaker = "test";
-	fpsSpeech="test";
+    Speaker = "test";
+    fpsSpeech="test";
 }
 
 function RestrictInput(bool bNewRestrictInput)
 {
-	bRestrictInput = bNewRestrictInput;
+    bRestrictInput = bNewRestrictInput;
 }
 
 function DisplaySkillChoice(ConChoice choice)
@@ -239,10 +245,10 @@ function DisplayChoice(ConChoice choice)
 
 defaultProperties
 {
-//	TitleFont= Font'DxFonts.FontMenuTitle'
-//	SpeechFont=Font'DxFonts.FontMenuHeaders_DS'
+//  TitleFont= Font'DxFonts.FontMenuTitle'
+//  SpeechFont=Font'DxFonts.FontMenuHeaders_DS'
 
-	TitleFont = Font'DxFonts.EUX_9B'
-	SpeechFont= Font'DxFonts.EU_10'
-	bIsVisible=false
+    TitleFont = Font'DxFonts.EUX_9B'
+    SpeechFont= Font'DxFonts.EU_10'
+    bIsVisible=false
 }

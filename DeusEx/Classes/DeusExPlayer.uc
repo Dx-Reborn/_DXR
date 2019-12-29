@@ -3,6 +3,7 @@
 
   Uses code from the following mods:
   GMDX
+  Deus Ex V2
   Vanilla Matters
 -----------------------------------------------------------------------------*/
 
@@ -15,13 +16,12 @@ class DeusExPlayer extends PlayerPawn;
 //                           config;
 
 
-const maxAmountOfFire = 4;
+const maxAmountOfFire = 1;
 var const string DefaultStartMap;
 
 var() travel int itemFovCorrection;
 
 var() editconst Actor FrobTarget;
-//var float MaxFrobDistance;
 var float FrobTime;
 
 var class<carcass> CarcassType;
@@ -32,10 +32,6 @@ var() float ReducedDamagePct;
 
 // shake variables
 var float JoltMagnitude;  // magnitude of bounce imposed by heavy footsteps
-
-//var travel Inventory SelectedItem;    // currently selected inventory item
-var(ToolBelt) travel inventory belt[10];
-var(ToolBelt) travel int currentBeltNum;
 
 // Name and skin assigned to PC by player on the Character Generation screen
 var travel String   TruePlayerName;
@@ -48,6 +44,8 @@ var travel float CombatDifficulty;
 
 var() travel AugmentationManager AugmentationSystem; // Augmentation system vars
 var() travel SkillManager SkillSystem; // Skill system vars
+
+var() travel int beltPositions[9];
 
 // Used to keep track of # of saves
 var() travel int saveCount;
@@ -107,9 +105,9 @@ var() travel byte               invSlots[30];       // 5x6 grid of inventory slo
 var editconst int   maxInvRows;         // Maximum number of inventory rows
 var editconst int   maxInvCols;         // Maximum number of inventory columns
 
-var travel Inventory        inHand;             // The current object in hand
-var travel Inventory        inHandPending;      // The pending item waiting to be put in hand
-var travel Inventory        ClientinHandPending; // Client temporary inhand pending, for mousewheel use.
+var() travel Inventory        inHand;             // The current object in hand
+var() travel Inventory        inHandPending;      // The pending item waiting to be put in hand
+var() travel Inventory        ClientinHandPending; // Client temporary inhand pending, for mousewheel use.
 var travel bool             bInHandTransition;  // The inHand is being swapped out
 
 var travel Inventory VM_lastInHand;             // Last item in hand before PutInHand(None).
@@ -206,18 +204,22 @@ final function DeleteSaveGameFiles(optional String saveDirectory)
  -------------------------------------------------------------------------------------------*/
 function SaveTravelData()
 {
-  RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
+  class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
 }
 /* -------------------------------------------------------------------------------------------
    ¬осстановить флаги из массива байт.
  -------------------------------------------------------------------------------------------*/
 function RestoreTravelData()
 {
-  class'GameFlags'.static.ImportFlagsFromArray(RawByteFlags);
+  class'GameFlags'.static.ImportFlagsFromArray(class'DeusExGlobals'.static.GetGlobals().RawByteFlags);
 }
 
 function DeleteInventory(inventory item)
 {
+    local DeusExHUD hud;
+
+    hud = DeusExHUD(level.GetLocalPlayerController().myHUD);
+
     // Vanilla Matters: Make sure VM_lastInHand is deleted properly.
   if (item == VM_lastInHand)
       VM_lastInHand = None;
@@ -236,10 +238,10 @@ function DeleteInventory(inventory item)
     {
         // If the inventory screen is active, we need to send notification
         // that the item is being removed
-           winInv.InventoryDeleted(item);
+        winInv.InventoryDeleted(item);
     }
     // Remove the item from the object belt
-    RemoveObjectFromBelt(item);
+    hud.RemoveObjectFromBelt(item);
 
     Super.DeleteInventory(item);
 }
@@ -247,6 +249,10 @@ function DeleteInventory(inventory item)
 function bool AddInventory(inventory item)
 {
     local bool retval;
+    local DeusExHUD root;
+
+    if (item == none) //CyberP: Patches up a really terrible bug. Origin: Unknown
+       return(false);
 
     retval = super.AddInventory(item);
 
@@ -257,147 +263,31 @@ function bool AddInventory(inventory item)
 
     if ((item != None) && !item.IsA('Ammunition') && (!item.IsA('DataVaultImageInv')) && (!item.IsA('Credits')))
     {
-        if (item.GetInObjectBelt())
-            AddObjectToBelt(item, item.GetbeltPos(), true);
+        root = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+
+        if ((item.IsA('RuntimePickup')) && (RuntimePickup(item).bInObjectBelt))
+        {
+            if (root != None)
+                root.AddObjectToBelt(item, RuntimePickup(item).beltPos, True);
+        }
+
+        if ((item.IsA('RuntimeWeapon')) && (RuntimeWeapon(item).bInObjectBelt))
+        {
+            if (root != None)
+                root.AddObjectToBelt(item, RuntimeWeapon(item).beltPos, True);
+        }
 
         if (retval)
-            AddToBelt(item);
-
-    }
-
-    return (retval);
-}
-
-function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
-{
-    local int  i;
-    local int FirstPos;
-    local bool retval;
-
-    retval = true;
-
-    if ((newItem != None ) && (newItem.GetIcon() != None))
-    {
-        // If this is the NanoKeyRing, force it into slot 0
-        if (newItem.IsA('NanoKeyRingInv'))
         {
-            ClearPosition(0);
-            pos = 0;
-        }
-
-        if (!IsValidPos(pos))
-        {
-         FirstPos = 1;
-         for (i=FirstPos; IsValidPos(i); i++)
+            if (root != None)
          {
-            if (belt[i] == None)
-            {
-                    break;
-            }
+                root.AddInventory(item);
          }
-            if (!IsValidPos(i))
-            {
-                if (bOverride)
-                    pos = 1;
-            }
-            else
-            {
-                pos = i;
-            }
-        }
-
-        if (IsValidPos(pos))
-        {
-            // If there's already an object here, remove it
-            if (belt[pos] != None)
-                RemoveObjectFromBelt(belt[pos]);
-
-            belt[pos] = newItem;
-        }
-        else
-        {
-            retval = false;
         }
     }
-    else
-        retval = false;
-
-    // The inventory item needs to know it's in the object
-    // belt, as well as the location inside the belt.  This is used
-    // when traveling to a new map.
-
-    if ((retVal) && (Role == ROLE_Authority))
-    {
-        newItem.SetToObjectBelt();
-        newItem.SetbeltPos(pos);
-    }
-
-//    UpdateInHand();
 
     return (retval);
 }
-
-
-function bool IsValidPos(int pos)
-{
-    // Don't allow NanoKeySlot to be used
-    if ((pos >= 0) && (pos < 10))
-        return true;
-    else
-        return false;
-}
-
-function RemoveObjectFromBelt(Inventory item)
-{
-   local int i;
-   local int StartPos;
-
-   StartPos = 1;
-
-    for (i=StartPos; IsValidPos(i); i++)
-    {
-        if (belt[i].class == item.class)
-        {
-            belt[i] = None;
-            item.RemoveFromObjectBelt();
-            item.SetbeltPos(-1);
-
-            break;
-        }
-    }
-}
-
-function ClearPosition(int pos)
-{
-    if (IsValidPos(pos))
-        belt[pos] = None;
-}
-
-function ClearBelt()
-{
-    local int beltPos;
-
-    for(beltPos=0; beltPos<10; beltPos++)
-        ClearPosition(beltPos);
-}
-
-// ----------------------------------------------------------------------
-// AddInventory()
-//
-// Adds an item to the object belt.  There are several types of 
-// items that should *NOT* get added to the object belt, we'll 
-// check for those here.
-// ----------------------------------------------------------------------
-
-function AddToBelt(inventory item)
-{
-    if ((item != None) && !item.IsA('DataVaultImageInv'))
-                AddObjectToBelt(item, -1, false);
-}
-
-
-
-
 
 // TODO: Add HUD icons for this
 function AddChargedDisplay(ChargedPickupInv item)
@@ -482,16 +372,6 @@ simulated function bool CanThrowWeapon()
     return true;// ((Weapon != None) && Weapon.CanThrow());
 }
 
-exec function ActivateBelt(int objectNum)
-{
-    if ((DeusExPlayerController(controller)).RestrictInput())
-        return;
-
-    if (CarriedDecoration == None)
-    {
-      ActivateObjectInBelt(objectNum);
-    }
-}
 
 
 
@@ -681,10 +561,10 @@ final function UpdateTimePlayed(float deltaTime)
 // Find out what mission we're in.
 // return the current mission number
 //
-function int getMissionNum()
+/*function int getMissionNum()
 {
     return DeusExGameInfo(Level.Game).missionNumber;
-}
+}*/
 
 //
 // Stores an image in the player's data vault.
@@ -829,6 +709,9 @@ function PlaceItemInSlot(Inventory anItem, int col, int row)
     anItem.SetinvPosY(row);
 
     SetInvSlots(anItem, 1);
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
 }
 
 // ----------------------------------------------------------------------
@@ -1140,7 +1023,7 @@ exec function ParseRightClick()
             // TODO: This logic may have to get more involved if/when 
             // we start allowing other types of objects to get stacked.
 
-      if (HandleItemPickup(FrobTarget, True) == False)
+            if (HandleItemPickup(FrobTarget, True) == false)
                 return;
 
             // if the frob succeeded, put it in the player's inventory
@@ -1185,7 +1068,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local bool bSlotSearchNeeded;
     local Inventory foundItem;
 
-    log("HandleItemPickup received "$FrobTarget);
+    log("HandleItemPickup() received "$FrobTarget);
 
     bSlotSearchNeeded = True;
     bCanPickup = True;
@@ -1236,19 +1119,17 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 
             // If this is a grenade or LAM (what a pain in the ass) then also check
             // to make sure we don't have too many grenades already
-            else if ((foundItem.IsA('WeaponEMPGrenadeInv')) || (foundItem.IsA('WeaponGasGrenadeInv')) || (foundItem.IsA('WeaponNanoVirusGrenadeInv')) || (foundItem.IsA('WeaponLAMInv')))
+            //((foundItem.IsA('WeaponEMPGrenadeInv')) || (foundItem.IsA('WeaponGasGrenadeInv')) || (foundItem.IsA('WeaponNanoVirusGrenadeInv')) || (foundItem.IsA('WeaponLAMInv')))
+            else if (foundItem.IsA('GrenadeWeaponInv'))
             {
-                if (DeusExWeaponInv(foundItem).AmmoType.AmmoAmount >= DeusExWeaponInv(foundItem).AmmoType.MaxAmmo)
+                if (GrenadeWeaponInv(foundItem).AmmoType.AmmoAmount >= GrenadeWeaponInv(foundItem).AmmoType.MaxAmmo)
                 {
                     ClientMessage(TooMuchAmmo);
-                    bCanPickup = False;
+                    bCanPickup = false;
                 }
             }
-
-
             // Otherwise, if this is a single-use weapon, prevent the player
             // from picking up
-
             else if (foundItem.IsA('DeusExWeaponInv'))
             {
                 // If these fields are set as checked, then this is a 
@@ -1275,10 +1156,10 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     if (bCanPickup)
     {
         DoFrob(Self, inHand);
-        log("bCanPickup="$bCanPickup);
+//        log("bCanPickup="$bCanPickup);
     }
 
-    log("HandleItemPickup return value is "$bCanPickup);
+//    log("HandleItemPickup return value is "$bCanPickup);
     return bCanPickup;
 }
 
@@ -1317,7 +1198,7 @@ function DoFrob(Actor Frobber, Inventory frobWith)
         return;
 
     // alert NPCs that I'm messing with stuff
-    if (FrobTarget.isOwned())
+    if (FrobTarget.bOwned)
         class'EventManager'.static.AISendEvent(self,'Futz', EAITYPE_Visual);
 
     // play an animation
@@ -1327,6 +1208,7 @@ function DoFrob(Actor Frobber, Inventory frobWith)
     if (FrobTarget.IsA('Inventory'))
         FrobTarget.SetBase(Frobber);
 }
+
 
 // ----------------------------------------------------------------------
 // PickupNanoKey()
@@ -1403,12 +1285,12 @@ function SkillPointsAdd(int numPoints)
         SkillPointsAvail += numPoints;
         SkillPointsTotal += numPoints;
 
-        if (ConPlay.dMsg != none) // DXR: Show these messages later.
-        ConPlay.dMsg.AddMessage(Sprintf(SkillPointsAward, numPoints), sound'DeusExSounds.UserInterface.LogSkillPoints');
+        if ((ConPlay != none) && (ConPlay.dMsg != none)) // DXR: Show these messages later.
+            ConPlay.dMsg.AddMessage(Sprintf(SkillPointsAward, numPoints), sound'DeusExSounds.UserInterface.LogSkillPoints');
         else
         {
-        ClientMessage(Sprintf(SkillPointsAward, numPoints));
-        PlaySound(sound'DeusExSounds.UserInterface.LogSkillPoints');
+          ClientMessage(Sprintf(SkillPointsAward, numPoints));
+          PlaySound(sound'DeusExSounds.UserInterface.LogSkillPoints');
         }
     }
 }
@@ -1419,23 +1301,24 @@ function SkillPointsAdd(int numPoints)
 // PreClientTravel происходит только в контроллере, поэтому вызов
 // этой функции происходит из DeusExPlayerController.
 // ----------------------------------------------------------------------
-function preTravel() //PreClientTravel()
+function PreTravel()
 {
-  SaveTravelDecoration();
+    // DXR: save a pointer to carried deco, to restore it later.
+    SaveTravelDecoration();
 
-  // Set a flag designating that we're traveling,
-  // so MissionScript can check and not call FirstFrame() for this map.
+    // Set a flag designating that we're traveling,
+    // so MissionScript can check and not call FirstFrame() for this map.
     GetflagBase().SetBool("PlayerTraveling", True, True, 0);
-  SaveSkillPoints();
+    SaveSkillPoints();
 
 
   if (dataLinkPlay != None)
-    dataLinkPlay.AbortAndSaveHistory();
+      dataLinkPlay.AbortAndSaveHistory();
 
-  // If the player is burning (Fire! Fire!), extinguish him
-  // before the map transition.  This is done to fix stuff 
-  // that's fucked up.
-  ExtinguishFire();
+     // If the player is burning (Fire! Fire!), extinguish him
+     // before the map transition.  This is done to fix stuff 
+     // that's fucked up.
+     ExtinguishFire();
 }
 
 function InitializeSubSystems()
@@ -1477,23 +1360,26 @@ function InitializeSubSystems()
 
 function CreateKeyRing()
 {
+  local DeusExHUD hud;
+
+  hud = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+
   KeyRing = NanoKeyRingInv(FindInventoryType(class'NanoKeyRingInv'));
   if (KeyRing != None)
   {
-    //belt[9]=KeyRing;
-    belt[0]=KeyRing;
-   return;
+     hud.objects[0] = KeyRing;
+     return;
   }
 
-    if (KeyRing == None)
-    {
-        KeyRing = Spawn(class'NanoKeyRingInv', Self);
-        KeyRing.SetBase(Self);
-        KeyRing.InitialState='Idle2';
-        KeyRing.Frob(Self, none);
-//      KeyRing.giveto(Self);
-        belt[0]=KeyRing;
-    }
+  if (KeyRing == None)
+  {
+      KeyRing = Spawn(class'NanoKeyRingInv', Self);
+      KeyRing.SetBase(Self);
+      KeyRing.InitialState='Idle2';
+      KeyRing.Frob(Self, none);
+//  KeyRing.giveto(Self);
+      hud.objects[0] = KeyRing;
+  }
 }
 
 event TravelPostAccept()
@@ -1502,14 +1388,20 @@ event TravelPostAccept()
     local MissionScript scr;
     local bool bScriptRunning;
     local augmentation aug;
+    local DeusExHUD hud;
 
     dxpc = DeusExPlayerController(Controller);
+    hud = DeusExHUD(dxpc.myHUD);
 
-if (!bTPA_OnlyOnce)
+ if (!bTPA_OnlyOnce)
  {
-  log(self@"TravelPostAccept()");
+    log(self@"TravelPostAccept()");
 
-    // reset the keyboard
+//    hud.ClearBelt();
+//    hud.PopulateBelt();
+
+    // reset the keyboard // DXR: For what purpose? This screws up everything...
+
 //  DeusExPlayerController(Level.GetLocalPlayerController()).ResetKeyboard();
     info = GetLevelInfo();
 
@@ -1548,7 +1440,7 @@ if (!bTPA_OnlyOnce)
     // If the player was carrying a decoration, make sure
     // it's placed back in his hand (since the location
     // info won't properly travel)
-//  PutCarriedDecorationInHand();
+    PutCarriedDecorationInHand();
 
     // Reset FOV
     SetFOVAngle(DeusExPlayerController(controller).Default.DesiredFOV);
@@ -1571,7 +1463,7 @@ if (!bTPA_OnlyOnce)
     // make sure the player's eye height is correct
     BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
 
-  belt[0]=FindInventoryType(Class'nanokeyringinv');
+    hud.objects[0] = FindInventoryType(Class'nanokeyringinv');
 
   bTPA_OnlyOnce = true;
  }
@@ -1774,6 +1666,8 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
     local float  deltaEyeHeight;
     local Decoration savedDeco;
 
+//    log(self@"SetBasedPawnSize()");
+
     if (newRadius < 0)
         newRadius = 0;
     if (newHeight < 0)
@@ -1819,15 +1713,15 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
         {
            savedDeco.SetPhysics(PHYS_None);
            savedDeco.SetBase(Self);
-            savedDeco.SetCollision(False, False, False);
+           savedDeco.SetCollision(False, False, False);
 
             // reset the decoration's location
-            lookDir = Vector(Rotation);
-            lookDir.Z = 0;              
-            upDir = vect(0,0,0);
-            upDir.Z = CollisionHeight / 2;      // put it up near eye level
-            savedDecoLocation = Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir;
-            savedDeco.SetLocation(savedDecoLocation);
+           lookDir = Vector(Rotation);
+           lookDir.Z = 0;              
+           upDir = vect(0,0,0);
+           upDir.Z = CollisionHeight / 2;      // put it up near eye level
+           savedDecoLocation = Location + upDir + (0.5 * CollisionRadius + CarriedDecoration.CollisionRadius) * lookDir;
+           savedDeco.SetLocation(savedDecoLocation);
         }
 
 //      PrePivotOffset  = vect(0, 0, 1)*(GetDefaultCollisionHeight()-newHeight);
@@ -1847,6 +1741,7 @@ function bool SetBasedPawnSize(float newRadius, float newHeight)
 
 function bool ResetBasedPawnSize()
 {
+//    log(self@"RESETBasedPawnSize()");
     return SetBasedPawnSize(DefaultPlayerRadius, GetDefaultCollisionHeight());
 }
 
@@ -1875,8 +1770,6 @@ function float GetCrouchHeight()
 
 function bool DoJump(bool bUpdating)
 {
-    local float scaleFactor, augLevel;
-
     if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
         return false;
     else if (bForceDuck || IsLeaning())
@@ -1917,14 +1810,6 @@ function PlayPickupAnim(Vector locPickup)
 }
 
 
-event Tick(float dt)
-{
-  super.Tick(dt);
-
-//  if ((CarriedDecoration != none) && (savedDecoLocation != vect(0,0,0)))
-//      CarriedDecoration.SetLocation(savedDecoLocation + Location);
-}
-
 // ----------------------------------------------------------------------
 // event HeadZoneChange
 // ----------------------------------------------------------------------
@@ -1934,19 +1819,17 @@ event HeadVolumeChange(PhysicsVolume newHeadVolume)
 
     if (Controller == None)
         return;
-    if (HeadVolume.bWaterVolume)
+    
+    // hack to get the zone's ambientsound working until Tim fixes it
+    if (newHeadVolume.AmbientSound != None)
+        newHeadVolume.SoundRadius = 255;
+    if (HeadVolume.AmbientSound != None)
+        HeadVolume.SoundRadius = 0;
+
+    if (newHeadVolume.bWaterVolume && !HeadVolume.bWaterVolume)
     {
-        if (!newHeadVolume.bWaterVolume)
-        {
-            if ( Controller.bIsPlayer && (BreathTime > 0) && (BreathTime < 8) )
-                Gasp();
-            BreathTime = -1.0;
-        }
-    }
-    else if (newHeadVolume.bWaterVolume)
-    {
-        BreathTime = UnderWaterTime;
-//      bIsCrouching = False;
+        // make sure we're not crouching when we start swimming
+        bIsCrouching = False;
         bCrouchOn = False;
         bWasCrouchOn = False;
         Controller.bDuck = 0;
@@ -1956,39 +1839,10 @@ event HeadVolumeChange(PhysicsVolume newHeadVolume)
         mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
         swimDuration = UnderWaterTime * mult;
         swimTimer = swimDuration;
-        WaterSpeed = Default.WaterSpeed * mult;
+        WaterSpeed = default.WaterSpeed * mult;
     }
+    Super.HeadVolumeChange(newHeadVolume);
 }
-
-/*event HeadZoneChange(ZoneInfo newHeadZone)
-{
-    if ( Level.NetMode == NM_Client )
-        return;
-
-    // hack to get the zone's ambientsound working until Tim fixes it
-    if (newHeadZone.AmbientSound != None)
-        newHeadZone.SoundRadius = 255;
-    if (HeadRegion.Zone.AmbientSound != None)
-        HeadRegion.Zone.SoundRadius = 0;
-
-    if (newHeadZone.bWaterZone && !HeadRegion.Zone.bWaterZone)
-    {
-        // make sure we're not crouching when we start swimming
-        bIsCrouching = False;
-        bCrouchOn = False;
-        bWasCrouchOn = False;
-        bDuck = 0;
-        lastbDuck = 0;
-        Velocity = vect(0,0,0);
-        Acceleration = vect(0,0,0);
-        mult = SkillSystem.GetSkillLevelValue(class'SkillSwimming');
-        swimDuration = UnderWaterTime * mult;
-        swimTimer = swimDuration;
-        WaterSpeed = Default.WaterSpeed * mult;
-    }
-
-    Super.HeadZoneChange(newHeadZone);
-}*/
 
 // пригодитс€...
 function bool TouchingWaterVolume()
@@ -2406,7 +2260,7 @@ function SetMovementPhysics()
 {
     if (Physics == PHYS_Falling)
         return;
-    if ( PhysicsVolume.bWaterVolume )
+    if (PhysicsVolume.bWaterVolume)
         SetPhysics(PHYS_Swimming);
     else
         SetPhysics(PHYS_Walking);
@@ -2449,7 +2303,7 @@ function CatchFire()
             // turn on/off extra fire and smoke
             if (FRand() < 0.5)
                 f.smokeGen.kill(); //Destroy();
-            if (FRand() < 0.5)
+//            if (FRand() < 0.5)
                 f.AddFire();
         }
     }
@@ -2733,13 +2587,11 @@ function ExtinguishFire()
 {
     local Fire f;
 
-    foreach BasedActors(class'Fire', f)
-        {
-            if (f != none)
-            {
-              f.Destroy();
-      }
-        }
+//    foreach BasedActors(class'Fire', f)
+    foreach RadiusActors(class'Fire',f,100)
+      if (f.Owner == Self)
+         f.Destroy();
+
 
     bOnFire = False;
     burnTimer = 0;
@@ -3147,17 +2999,39 @@ function RepairInventory()
 }
 
 
+exec function ActivateBelt(int objectNum)
+{
+    local DeusExHUD root;
+
+    dxpc = DeusExPlayerController(Controller);
+
+    if (dxpc.RestrictInput())
+        return;
+
+    if (CarriedDecoration == None)
+    {
+        root = DeusExHUD(dxpc.myHUD);
+        if (root != None)
+            root.ActivateObjectInBelt(objectNum);
+    }
+}
+
 exec function NextBeltItem()
 {
+    local DeusExHUD root;
     local int slot, startSlot;
 
-  if (DeusExPlayerController(Controller).RestrictInput())
-      return;
+    dxpc = DeusExPlayerController(Controller);
+
+    if (dxpc.RestrictInput())
+        return;
 
     if (CarriedDecoration == None)
     {
         slot = 0;
-
+        root = DeusExHUD(dxpc.myHUD);
+        if (root != None)
+        {
             if (inHandPending != None)
                 slot = inHandPending.GetbeltPos();
             else if (inHand != None)
@@ -3169,21 +3043,27 @@ exec function NextBeltItem()
                 if (++slot >= 10)
                     slot = 0;
             }
-            until (ActivateObjectInBelt(slot) || (startSlot == slot));
+            until (root.ActivateObjectInBelt(slot) || (startSlot == slot));
         }
+    }
 }
 
 exec function PrevBeltItem()
 {
+    local DeusExHUD root;
     local int slot, startSlot;
 
-  if (DeusExPlayerController(Controller).RestrictInput())
-      return;
+    dxpc = DeusExPlayerController(Controller);
+
+    if (dxpc.RestrictInput())
+        return;
 
     if (CarriedDecoration == None)
     {
         slot = 1;
-
+        root = DeusExHUD(dxpc.myHUD);
+        if (root != None)
+        {
             if (inHandPending != None)
                 slot = inHandPending.GetbeltPos();
             else if (inHand != None)
@@ -3195,37 +3075,10 @@ exec function PrevBeltItem()
                 if (--slot <= -1)
                     slot = 9;
             }
-            until (ActivateObjectInBelt(slot) || (startSlot == slot));
+            until (root.ActivateObjectInBelt(slot) || (startSlot == slot));
+        }
     }
 }
-
-function bool ActivateObjectInBelt(int pos)
-{
-    local Inventory item;
-    local bool retval;
-
-    retval = False;
-
-            item = belt[pos];
-                // if the object is an ammo box, load the correct ammo into
-                // the gun if it is the current weapon
-/*              if ((item != None) && item.IsA('Ammo') && (Weapon != None))
-                    DeusExWeaponInv(Weapon).LoadAmmoType(Ammo(item));
-                else
-                {*/
-                    PutInHand(item);
-                    if (item != None)
-                    {
-                        currentBeltNum=item.GetbeltPos();
-                        log("currentBeltNum="$currentBeltNum);
-                        retval = True;
-                    }
-                //}
-
-    return retval;
-}
-
-
 
 // ----------------------------------------------------------------------
 // PutInHand()
@@ -3234,11 +3087,15 @@ function bool ActivateObjectInBelt(int pos)
 // ----------------------------------------------------------------------
 exec function PutInHand(optional Inventory inv)
 {
+    local DeusExHUD hud;
+
     if (DeusExPlayerController(Controller).RestrictInput())
         return;
 
+    hud = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+
     // can't put anything in hand if you're using a spy drone
-    if ((inHand == None) && DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bSpyDroneActive)
+    if ((inHand == None) && hud.bSpyDroneActive)
         return;
 
     // can't do anything if you're carrying a corpse
@@ -3252,13 +3109,12 @@ exec function PutInHand(optional Inventory inv)
             return;
 
         // Can't put an active charged item in hand
-//      if ((inv.IsA('ChargedPickup')) && (ChargedPickup(inv).IsActive()))DeusExPowerups
-        if ((inv.IsA('DeusExPickupInv')) && (DeusExPickupInv(inv).IsActive()))
+        if ((inv.IsA('ChargedPickupInv')) && (ChargedPickupInv(inv).IsActive()))
             return;
     }
 
     // Vanilla Matters: If putting None in hand then saves the previous inHand item.
-    else if ( inHand != None )
+    else if (inHand != None)
         VM_lastInHand = inHand;
 
     if (CarriedDecoration != None)
@@ -3298,6 +3154,9 @@ function UpdateInHand()
         bSwitch = False;
         if (inHand != None)
         {
+            if (inHand.IsA('BinocularsInv')) 
+                BinocularsInv(inHand).Activate();
+
             // turn it off if it is on
             if (inHand.IsActive())
                 inHand.Activate();
@@ -3305,13 +3164,13 @@ function UpdateInHand()
             if (inHand.IsA('SkilledToolInv'))
             {
                 if (inHand.IsInState('Idle'))
-         {
+                {
                   SkilledToolInv(inHand).PutDown();
-         }
+                }
                 else if (inHand.IsInState('Idle2'))
-             {
-                          bSwitch = True;
-             }
+                {
+                   bSwitch = True;
+                }
             }
             else if (inHand.IsA('DeusExWeaponInv'))
             {
@@ -3404,89 +3263,6 @@ function UpdateInHand()
     UpdateCarcassEvent();
 }
 
-/*function UpdateInHand()
-{
-    local bool bSwitch;
-
-    if (inHand != inHandPending)
-    {
-        bInHandTransition = True;
-        bSwitch = False;
-        if (inHand != None)
-        {
-            // turn it off if it is on
-            if (Powerups(InHand).bActive)
-                Powerups(InHand).Activate();
-
-            if (inHand.IsA('SkilledToolInv'))
-            {
-                if (inHand.IsInState('Idle'))
-                    SkilledToolInv(inHand).PutDown();
-                else if (inHand.IsInState('Idle2'))
-                    bSwitch = True;
-            }
-            else if (inHand.IsA('DeusExWeaponInv'))
-            {
-                if (inHand.IsInState('Idle') || inHand.IsInState('Reloading'))
-                {
-                    DeusExWeaponInv(inHand).PutDown();
-                }
-                else if ((inHand.IsInState('DownWeapon') && (Weapon == None)))
-                    bSwitch = True;
-            }
-            else
-            {
-                bSwitch = True;
-            }
-        }
-        else
-        {
-            bSwitch = True;
-        }
-
-        // OK to actually switch?
-        if (bSwitch)
-        {
-            SetInHand(inHandPending);
-            SelectedItem = DeusExPickupInv(inHandPending);//
-
-            if (inHand != None)
-            {
-                if (inHand.IsA('SkilledToolInv'))
-                    SkilledToolInv(inHand).BringUp();
-                else if (inHand.IsA('DeusExWeaponInv'))
-                    SwitchWeapon(DeusExWeaponInv(inHand).InventoryGroup);
-            }
-        }
-    }
-    else
-    {
-        bInHandTransition = False;
-
-        // Added this code because it's now possible to reselect an in-hand
-        // item while we're putting it down, so we need to bring it back up...
-
-        if (inHand != None)
-        {
-            // if we put the item away, bring it back up
-            if (inHand.IsA('SkilledToolInv'))
-            {
-                if (inHand.IsInState('Idle2'))
-                    SkilledToolInv(inHand).BringUp();
-            }
-            else if (inHand.IsA('DeusExWeaponInv'))
-            {
-                if (inHand.IsInState('DownWeapon') && (Weapon == None))
-                    SwitchWeapon(DeusExWeaponInv(inHand).InventoryGroup);
-            }
-        }
-    }
-    UpdateCarcassEvent();
-}*/
-
-
-
-
 // ----------------------------------------------------------------------
 // MakePlayerIgnored()
 // ----------------------------------------------------------------------
@@ -3523,9 +3299,9 @@ function float CalculatePlayerVisibility(ScriptedPawn P)
         // go through the actor list looking for owned AdaptiveArmor
         // since they aren't in the inventory anymore after they are used
       if (UsingChargedPickup(class'AdaptiveArmorInv'))
-            {
-                vis = 0.0;
-            }
+      {
+         vis = 0.0;
+      }
     }
     return vis;
 }
@@ -3915,10 +3691,10 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 
     if ((bRemovedFromSlots) && (item != None) && (!bDropped))
     {
-        item.SetinvPosX(itemPosX);
+/*        item.SetinvPosX(itemPosX);
         item.SetinvPosY(itemPosY);
-        SetInvSlots(item, 1);
-//    PlaceItemInSlot(item, itemPosX, itemPosY);
+        SetInvSlots(item, 1);*/
+    PlaceItemInSlot(item, itemPosX, itemPosY);
     }
 
     if (bDropped)
@@ -4219,7 +3995,7 @@ function FootStepping(int Side)
         speedFactor = VSize(Velocity)/180.0;
 
     massFactor  = Mass/150.0;
-    radius      = 375.0;
+    radius      = 128; //375.0;
     volume      = (speedFactor+0.2) * massFactor;
     range       = radius * volume;
     pitch       = (volume+0.5);
@@ -4388,8 +4164,8 @@ function name GetFloorMaterial()
     local name texName, texGroup;
     local material mat;
 
-    // trace down to our feet           //* 2.0
-    EndTrace = Location - CollisionHeight * 1.5 * vect(0,0,1);
+    // trace down to our feet           //* 1.5
+    EndTrace = Location - CollisionHeight * 2.0 * vect(0,0,1);
 
     foreach class'ActorManager'.static.TraceTexture(self, class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
     {
@@ -4422,33 +4198,26 @@ function CheckBob(float DeltaTime, vector Y)
     OldBobTime = BobTime;
     Super.CheckBob(DeltaTime,Y);
 
+    if (Physics == PHYS_Swimming)
+        return;
+
     if (((Physics != PHYS_Walking) && (Physics != PHYS_Ladder)) || (VSize(Velocity) < 10) || ((PlayerController(Controller) != None) && PlayerController(Controller).bBehindView)) // !-add
         return;
 
     m = int(0.5 * Pi + 9.0 * OldBobTime/Pi);
     n = int(0.5 * Pi + 9.0 * BobTime/Pi);
 
-    if ((m != n)  && !bIsCrouched)
-        {
-            FootStepping(0);
-        }
+    if ((m != n)  && !bIsCrouching)
+    {
+       FootStepping(0);
+    }
 }
 
 function PlayFootStep(int Side)
 {
-        FootStepping(Side);
-        return;
+    FootStepping(Side);
+    return;
 }
-
-/*simulated function PlayFootStepLeft()
-{
-    PlayFootStep(-1);
-}
-
-simulated function PlayFootStepRight()
-{
-    PlayFootStep(1);
-}*/
 
 function name GetWeaponBoneFor(Inventory I)
 {
@@ -4458,24 +4227,24 @@ function name GetWeaponBoneFor(Inventory I)
 
 function inWaterRight()
 {
-    local float rnd;
+/*    local float rnd;
 
     rnd = Frand();
     if (rnd < 0.5)
     PlaySound(sound'Swimming', SLOT_Interact,,,, RandomPitch());
         else
-    PlaySound(sound'Treading', SLOT_Interact,,,, RandomPitch());
+    PlaySound(sound'Treading', SLOT_Interact,,,, RandomPitch());*/
 }
 
 function inWaterLeft()
 {
-    local float rnd;
+/*    local float rnd;
 
     rnd = Frand();
     if (rnd < 0.5)
     PlaySound(sound'Swimming', SLOT_Interact,,,, RandomPitch());
         else
-    PlaySound(sound'Treading', SLOT_Interact,,,, RandomPitch());
+    PlaySound(sound'Treading', SLOT_Interact,,,, RandomPitch());*/
 }
 
 exec function ToggleWalk()
@@ -4533,11 +4302,6 @@ function ResetConversationHistory()
 
 
 function PlayTurning();
-
-simulated function bool ForceDefaultCharacter()
-{
-    return false;
-}
 
 exec function ShowInventoryWindow()
 {
@@ -4642,7 +4406,7 @@ function ResetPlayerToDefaults()
     // reset the image linked list
 //  FirstImage = None;
 
-  getFlagBase().DeleteAlmostAllFlags();
+    getFlagBase().DeleteAlmostAllFlags();
 
     // Remove all the keys from the keyring before
     // it gets destroyed
@@ -4661,9 +4425,8 @@ function ResetPlayerToDefaults()
     }
 
     // Clear object belt
-
-/*  if (DeusExRootWindow(rootWindow) != None)
-        DeusExRootWindow(rootWindow).hud.belt.ClearBelt();*/
+  if (DeusExHUD(level.GetLocalPlayerController().myHUD) != None)
+      DeusExHUD(level.GetLocalPlayerController().myHUD).ClearBelt();
 
     // clear the notes and the goals
     DeleteAllNotes();
@@ -4739,39 +4502,44 @@ exec function SaveTravelDecoration()
 {
   if (carriedDecoration != none)
   {
-    gl = class'DeusExGlobals'.static.GetGlobals();
+/*    gl = class'DeusExGlobals'.static.GetGlobals();
     gl.TravelDeco = "DeusEx."$CarriedDecoration.GetHumanReadableName();
-    gl.decoRotation = CarriedDecoration.rotation;
+    gl.decoRotation = CarriedDecoration.rotation;*/
+    carriedDecorationClass = carriedDecoration.class;
+    carriedDecorationRotation = carriedDecoration.Rotation;
+
+    log("carriedDecorationRotation = "$carriedDecorationRotation);
   }
 }
 
 /* ¬осстановить переносимый предмет */
 exec function RestoreTravelDecoration()
 {
-    local class<DeusExDecoration> myDeco;
     local DeusExDecoration finalDeco;
-  local vector lookDir, upDir;
-/*  local vector loc;
+    // DXR: There is two ways to save information about traveling
+    // decoration: DeusExClobals and "var travel class".
+    // I gonna use second variant, but first one works fine too.
 
-    loc = location;
-    loc.Z = CollisionHeight / 2.5;*/
-
-  gl = class'DeusExGlobals'.static.GetGlobals();
+/*  gl = class'DeusExGlobals'.static.GetGlobals();
 
   if (gl.TravelDeco != "")
       myDeco = class<DeusExDecoration>(DynamicLoadObject(gl.TravelDeco, class'Class'));
+  if (myDeco != none)*/
 
-  if (myDeco != none)
+  if (carriedDecorationClass != none)  // != none? Then spawn it...
   {
-  log("********* Restoring travelDeco...");
-    gl.TravelDeco = "";
-    finalDeco = Spawn(myDeco, self);
-        lookDir = Vector(Rotation);
-        lookDir.Z = 0;              
-        upDir = vect(0,0,0);
-        upDir.Z = CollisionHeight / 2;      // put it up near eye level
-    finalDeco.SetLocation(Location + upDir + (0.5 * CollisionRadius + finalDeco.CollisionRadius) * lookDir);
-    Frob(self, none);
+    finalDeco = Spawn(carriedDecorationClass, self);
+    log("carriedDecorationRotation = "$carriedDecorationRotation);
+    finalDeco.SetPhysics(PHYS_None);                  // So it does not fall on the ground...
+    frobTarget = finalDeco;                           // Set it as frobTarget...
+    ParseRightClick();                                // Grab it...
+    finalDeco.SetRotation(carriedDecorationRotation); // Rotate it...
+
+    // Now we have deco in our hands, now we need to clear 
+    // variables, used to restore rotation and class.
+    carriedDecorationClass = None;
+//    carriedDecorationRotation = rot(0,0,0);
+//  gl.TravelDeco = "";
   }
 }
 
@@ -5108,7 +4876,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 
     // If we don't have a valid invokeActor or the flagbase
     // hasn't yet been initialized, immediately abort.
-    if ((invokeActor == None) || (GetflagBase() == None))
+    if ((invokeActor == None) || (GetflagBase() == None) || (ConList.length == 0))
         return None;
 
     bAbortConversation = True;
@@ -5134,13 +4902,13 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
         //
         // ConversationOwner_Bark
 
-        if (Left(con.Name, Len(con.OwnerName) + 5) == (con.OwnerName $ "_Bark"))
+        if (Left(con.Name, Len(con.OwnerName) + 5) ~= (con.OwnerName $ "_Bark"))
             bAbortConversation = true;
 
             // ‘ильтр диалога
-        if (CAPS(con.OwnerName) != CAPS(invokeActor.GetBindName())) //
+//        if (CAPS(con.OwnerName) != CAPS(invokeActor.GetBindName())) //
 //      if (con.OwnerName != invokeActor.GetBindName()) //
-        bAbortConversation = true;                      //
+//        bAbortConversation = true;                      //
 
         if (!bAbortConversation)
         {
@@ -5183,7 +4951,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
                         if ((!bAbortConversation) && ((Level.TimeSeconds - lastThirdPersonConvoTime) < 10) && (lastThirdPersonConvoActor == invokeActor))
                         {
                             bAbortConversation = True;
-              //log("GetActiveConversation = "$bAbortConversation);
+                        //    log("GetActiveConversation = "$bAbortConversation);
                         }
 
                         // Now check if this conversation ended in the last ten seconds or so
@@ -5193,7 +4961,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
                         if ((!bAbortConversation) && (con.lastPlayedTime > 0))
                         {
                             bAbortConversation = ((Level.TimeSeconds - con.lastPlayedTime) < 10);
-              //log("GetActiveConversation = "$bAbortConversation);
+                        //    log("GetActiveConversation = "$bAbortConversation);
                         }
 
                         // Now check to see if the player just ended a radius, third-person
@@ -5203,10 +4971,10 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
                         if ((!bAbortConversation) && ((Level.TimeSeconds - lastFirstPersonConvoTime) < 5) && (lastFirstPersonConvoActor == invokeActor))
                         {
                             bAbortConversation = True;
-              //log("GetActiveConversation = "$bAbortConversation);
+                        //    log("GetActiveConversation = "$bAbortConversation);
                         }
 //           DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString = "InvokerActor = €€_"$invokeActor$"___, ConDialogue = €€_"$con;
-  //         DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString2 = "bAbortConversation?="$bAbortConversation @"con.radiusDistance = _€€"$con.radiusDistance;
+//           DeusExHUD(level.GetLocalPlayerController().myHUD).DebugConString2 = "bAbortConversation?="$bAbortConversation @"con.radiusDistance = _€€"$con.InvokeRadius;
                     }
                     else
                     {
@@ -5398,7 +5166,7 @@ function ConDialogue GetActiveDataLink(String datalinkName)
 
             if (con.bDisplayOnce)
             {
-                flagName = class'DxUtil'.static.StringToName(con.Name $ "_Played");
+                flagName = class'ObjectManager'.static.StringToName(con.Name $ "_Played");
                 bAbortDataLink = (getFlagBase().GetBool(flagName) == true);
             }
 
@@ -5606,66 +5374,48 @@ function RemoveItemDuringConversation(Inventory item)
 /* ----------------------------------------------------------------- */
 defaultproperties
 {
-        bCanWalkOffLedges=true
-        bAvoidLedges=false      // don't get too close to ledges
-        bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+    bCanWalkOffLedges=true
+    bAvoidLedges=false      // don't get too close to ledges
+    bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
 
     TruePlayerName="JC Denton"
-        BarkBindName="JCDenton"
+    BarkBindName="JCDenton"
     BindName="JCDenton"
     FamiliarName="JC Denton"  // CodeName is FamiliarName
     UnfamiliarName="JC Denton"
 
-
     Bob=0.00096
     strStartMap="01_NYC_UNATCOIsland"
-      Mesh=SkeletalMesh'DeusExCharacters.GM_Trench'
-      DrawType=DT_Mesh
-        itemFovCorrection=75
-      GroundSpeed=320.0
-        WaterSpeed=300.00
-//    AirSpeed=4000.000000
-    AccelRate=1000.000000
-//     AccelRate=2048.000000
-    JumpZ=300.000000
-//    BaseEyeHeight=32.000000
-    BaseEyeHeight=40.000000
-    UnderWaterTime=20.000000
-    Mass=150.000000
-    Buoyancy=155.000000
-
-    DodgeSpeedFactor=1.500000
-    DodgeSpeedZ=210.000000
-    AirControl=0.050000
+    Mesh=SkeletalMesh'DeusExCharacters.GM_Trench'
+    DrawType=DT_Mesh
+    itemFovCorrection=75
 
     CrouchRadius=20.00
     CrouchHeight=16.0
 
-    CollisionRadius=20.00
-    CollisionHeight=43.5
-
     bUseCylinderCollision=true
     bCanPickupInventory=true
     bCanStrafe=True
-      DrawScale=1.0
-      bPhysicsAnimUpdate=false
+    DrawScale=1.0
+    bPhysicsAnimUpdate=false
     bCanSwim=true
-      bActorShadows=true
-      bCanClimbLadders=true
-      LadderSpeed=80.0
+    bActorShadows=true
+    bCanClimbLadders=true
+    LadderSpeed=80.0
+    bStasis=false
 
-      Skins(0)=Texture'DeusExCharacters.Skins.JCDentonTex0'
-      Skins(1)=Texture'DeusExCharacters.Skins.JCDentonTex2'
-      Skins(2)=Texture'DeusExCharacters.Skins.JCDentonTex3'
-      Skins(3)=Texture'DeusExCharacters.Skins.JCDentonTex0'
-      Skins(4)=Texture'DeusExCharacters.Skins.JCDentonTex1'
-      Skins(5)=Texture'DeusExCharacters.Skins.JCDentonTex2'
-      Skins(6)=Material'DeusExCharacters.Skins.SH_FramesTex4'
-      Skins(7)=Material'DeusExCharacters.Skins.FB_LensesTex5'
+    Skins(0)=Texture'DeusExCharacters.Skins.JCDentonTex0'
+    Skins(1)=Texture'DeusExCharacters.Skins.JCDentonTex2'
+    Skins(2)=Texture'DeusExCharacters.Skins.JCDentonTex3'
+    Skins(3)=Texture'DeusExCharacters.Skins.JCDentonTex0'
+    Skins(4)=Texture'DeusExCharacters.Skins.JCDentonTex1'
+    Skins(5)=Texture'DeusExCharacters.Skins.JCDentonTex2'
+    Skins(6)=Material'DeusExCharacters.Skins.SH_FramesTex4'
+    Skins(7)=Material'DeusExCharacters.Skins.FB_LensesTex5'
 
     JumpSound=Sound'DeusExSounds.Player.MaleJump'
 
-      bDetectable=true
+    bDetectable=true
 
     HealthHead=100
     HealthTorso=100
@@ -5673,13 +5423,13 @@ defaultproperties
     HealthLegRight=100
     HealthArmLeft=100
     HealthArmRight=100
-        Health=100
+    Health=100
 
-      SkillPointsTotal=5000
-      SkillPointsAvail=5000
-      Credits=500
-      Energy=100.00
-      EnergyMax=100.00
+    SkillPointsTotal=5000
+    SkillPointsAvail=5000
+    Credits=500
+    Energy=100.00
+    EnergyMax=100.00
     CombatDifficulty=1.00
     SoundVolume=64
 
@@ -5704,23 +5454,22 @@ defaultproperties
 
     ControllerClass=class'DeusEx.DeusExPlayerController'
 
-        bObjectNames=true                   // Object names on/off
-        bNPCHighlighting=true               // NPC highlighting when new convos
-        bSubtitles=true                 // True if Conversation Subtitles are on
-        logTimeout=10                   // Log Timeout Value
-        maxLogLines=8                   // Maximum number of log lines visible
+    bObjectNames=true                   // Object names on/off
+    bNPCHighlighting=true               // NPC highlighting when new convos
+    bSubtitles=true                 // True if Conversation Subtitles are on
+    logTimeout=10                   // Log Timeout Value
+    maxLogLines=8                   // Maximum number of log lines visible
 
     maxInvRows=6
     maxInvCols=5
 
-    bUseCompressedPosition=false
     bAutoActivate=false
 
-        fireDamage=1 // дл€ тестировани€ пока 1
+    fireDamage=1 // дл€ тестировани€ пока 1
     Alliance=Player
 
-    currentBeltNum=0
-    bLOSHearing=false// true
+//    currentBeltNum=0
+//    bLOSHearing=false// true
 
     DefaultStartMap="01_NYC_UNATCOIsland"
 }

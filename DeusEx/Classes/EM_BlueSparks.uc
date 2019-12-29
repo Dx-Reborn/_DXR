@@ -27,7 +27,6 @@ defaultproperties
         UseRegularSizeScale=False
         UniformSize=True
         AutomaticInitialSpawning=False
-//        Name="SpriteEmitter1251"
     End Object
     Emitters(0)=SpriteEmitter'SpriteEmitter1251'
     Begin Object Class=SpriteEmitter Name=SpriteEmitter1252
@@ -58,7 +57,6 @@ defaultproperties
         UseRegularSizeScale=False
         UniformSize=True
         AutomaticInitialSpawning=False
-//        Name="SpriteEmitter1252"
     End Object
     Emitters(1)=SpriteEmitter'SpriteEmitter1252'
     Begin Object Class=SpriteEmitter Name=SpriteEmitter1580
@@ -84,7 +82,6 @@ defaultproperties
         AutoDestroy=True
         UseRegularSizeScale=False
         AutomaticInitialSpawning=False
-//        Name="SpriteEmitter1580"
     End Object
     Emitters(2)=SpriteEmitter'SpriteEmitter1580'
     Begin Object Class=SpriteEmitter Name=SpriteEmitter1581
@@ -113,7 +110,6 @@ defaultproperties
         UseSizeScale=True
         UniformSize=True
         AutomaticInitialSpawning=False
-//        Name="SpriteEmitter1581"
     End Object
     Emitters(3)=SpriteEmitter'SpriteEmitter1581'
     Begin Object Class=SpriteEmitter Name=SpriteEmitter1596

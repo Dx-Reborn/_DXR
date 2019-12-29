@@ -9,21 +9,21 @@ var float size;
 
 simulated function Tick(float deltaTime)
 {
-	SetDrawScale(size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan);
-	ScaleGlow = LifeSpan / Default.LifeSpan;
+    SetDrawScale(size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan);
+    ScaleGlow = LifeSpan / Default.LifeSpan;
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	if (size > 5)
-		Skins[0] = Shader'FlatFX43_SH';
+    if (size > 5)
+        Skins[0] = Shader'FlatFX43_SH';
 }
 
 defaultproperties
 {
-		 drawType=DT_Mesh
+     drawType=DT_Mesh
      size=5.000000
      LifeSpan=0.500000
      Style=STY_Translucent // Задается в материале

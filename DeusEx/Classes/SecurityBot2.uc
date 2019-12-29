@@ -5,21 +5,21 @@ class SecurityBot2 extends Robot;
 
 enum ESkinColor
 {
-	SC_UNATCO,
-	SC_Chinese
+    SC_UNATCO,
+    SC_Chinese
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_UNATCO:		Skins[1] = Texture'SecurityBot2Tex1'; break;
-		case SC_Chinese:	Skins[1] = Texture'SecurityBot2Tex2'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_UNATCO:     Skins[1] = Texture'SecurityBot2Tex1'; break;
+        case SC_Chinese:    Skins[1] = Texture'SecurityBot2Tex2'; break;
+    }
 }
 
 
@@ -36,16 +36,19 @@ function SecBot2StepRight()
 
 function PlayDisabled()
 {
-	local int rnd;
+    local int rnd;
 
-	rnd = Rand(3);
-	if (rnd == 0)
-		TweenAnimPivot('Disabled1', 0.2);
-	else if (rnd == 1)
-		TweenAnimPivot('Disabled2', 0.2);
-	else
-		TweenAnimPivot('Still', 0.2);
+    rnd = Rand(3);
+    if (rnd == 0)
+        TweenAnimPivot('Disabled1', 0.2);
+    else if (rnd == 1)
+        TweenAnimPivot('Disabled2', 0.2);
+    else
+        TweenAnimPivot('Still', 0.2);
 }
+
+// 178 177
+
 
 
 defaultproperties
@@ -64,7 +67,7 @@ defaultproperties
      WalkingSpeed=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponRobotMachinegun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=50)
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=50)
      WalkSound=Sound'DeusExSounds.Robot.SecurityBot2Walk'
      GroundSpeed=95.000000
      WaterSpeed=50.000000
@@ -72,7 +75,6 @@ defaultproperties
      AccelRate=500.000000
      Health=250
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SecurityBot2'
      CollisionRadius=62.000000
      CollisionHeight=53.78

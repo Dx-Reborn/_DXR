@@ -6,12 +6,6 @@
 class DXCanvas extends Object;
 
 var Canvas c;
-
-/*event Created()
-{
- log(self$" created",'DxCanvas');
-} */
-
 var color TeleTypeTextColor;
 var string CursorChar;
 
@@ -111,69 +105,6 @@ function DrawTextTeletype(string text, string newline, float time, float rate)
         c.SetPos(holdx,holdy+ystep);
     }
 }
-
-function DrawTextTeletypeEx(string text, string newline, float time, float rate, optional bool bShowCursor)
-{
-    local float holdx, holdy, holdxclip, xstep, ystep, alpha;
-    local int x, y, z, strlen;
-    local array<string> mytext;
-    local string temp;
-
-    if(time <= 0.0)
-    {
-        return;
-    }
-
-    holdxclip = c.ClipX;
-
-    c.ReplaceText(text,newline,"|");
-    c.WrapStringToArray(text,mytext,c.ClipX-c.CurX,"|");
-
-
-    z=0;
-    for(x=0; x<mytext.length; x++)
-    {
-        c.TextSize(mytext[x],xstep,ystep);
-        strlen = Len(mytext[x]);
-        xstep /= strlen;
-
-        holdx=c.CurX;
-        holdy=c.CurY;
-
-        for(y=0; y<strlen; y++)
-        {
-						temp = Mid(mytext[x],y,1);
-            if(time-(z*rate) > 0)
-            {
-                alpha = time-(z*rate);
-                alpha = FClamp(alpha, 0.0, 1.0);
-                alpha *= 255;
-                c.SetDrawColor(alpha,alpha,alpha);
-                c.DrawTextClipped(temp);
-                c.SetPos(c.CurX+xstep,holdy);
-
-            }
-            else
-            {
-                c.SetDrawColor(255,255,255);
-                c.DrawTextClipped(CursorChar);
-                c.SetPos(c.CurX+xstep,holdy);
-                return;
-            }
-            z++;
-        }
-
-        if (((x+1) == mytext.length && time%0.5 >= 0.25) && (bShowCursor == true))
-        {
-            c.SetDrawColor(255,255,255);
-            c.DrawTextClipped(CursorChar);
-            c.SetPos(c.CurX+xstep,holdy);
-        }
-
-        c.SetPos(holdx,holdy+ystep);
-    }
-}
-
 
 function Vector DrawText(string text, optional string newline)
 {
@@ -347,9 +278,9 @@ function DrawTileClipped( Material Mat, float XL, float YL, float U, float V, fl
 
 function DrawVertical(float X, float height)
 {
-	local float cX,cY;
+    local float cX,cY;
 
-	cx = c.CurX;
+    cx = c.CurX;
     cy = c.CurY;
     c.SetPos(X,cy);
     c.DrawRect(texture'solid',1,height);
@@ -358,27 +289,27 @@ function DrawVertical(float X, float height)
 
 function DrawLine(int direction, float size)
 {
-	local float cx,cy;
-	CX = c.CurX;
+    local float cx,cy;
+    CX = c.CurX;
     CY = c.CurY;
 
-	switch (direction)
-	{
-		case 0:
-			c.CurY-=Size;
-			c.DrawVertical(c.CurX,size);
-			break;
-		case 1:
-			c.DrawVertical(c.CurX,size);
-			break;
-		case 2:
-			c.CurX-=Size;
-			c.DrawHorizontal(c.CurY,size);
-			break;
-		case 3:
-			c.DrawHorizontal(c.CurY,size);
-			break;
-	}
+    switch (direction)
+    {
+        case 0:
+            c.CurY-=Size;
+            c.DrawVertical(c.CurX,size);
+            break;
+        case 1:
+            c.DrawVertical(c.CurX,size);
+            break;
+        case 2:
+            c.CurX-=Size;
+            c.DrawHorizontal(c.CurY,size);
+            break;
+        case 3:
+            c.DrawHorizontal(c.CurY,size);
+            break;
+    }
     c.CurX = CX;
     c.CurY = CY;
 }

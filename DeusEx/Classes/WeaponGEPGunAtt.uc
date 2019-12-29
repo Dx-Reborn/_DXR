@@ -1,12 +1,29 @@
-/* */
-class WeaponGEPGunAtt extends WeaponAttachment;
+class WeaponGEPGunAtt extends DXRWeaponAttachment;
+
+event Tick(float dt)
+{
+   local DeusExPawn own;
+
+   own = DeusExPawn(owner);
+
+   if (own != none)
+   {
+      if (own.GetAnimSequence() == 'Shoot')
+          SetRelativeRotation(ShootRotation);
+
+      else
+          SetRelativeRotation(default.relativerotation);
+   }
+}
+
 
 defaultproperties
 {
-		 bBlockActors=false
-		 bBlockPlayers=false
+     ShootRotation=(roll=20000,pitch=0,yaw=-2200)
+     bBlockActors=false
+     bBlockPlayers=false
      Mesh=Mesh'DeusExItems.GEPGun3rd'
-     relativerotation=(roll=20000,pitch=-10000,yaw=-2200)
-     relativelocation=(x=0,y=0,z=0)
-     bHardAttach=true
+     relativerotation=(pitch=0,roll=-3333,yaw=32768)
+     relativelocation=(x=5,y=0,z=-4)
+     bHardAttach=false
 }

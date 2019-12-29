@@ -18,12 +18,6 @@ var int AmountOfFire;
 #exec obj load file=DeusExDeco_EX.utx // двухсторонние шейдеры
 
 
-var(Advanced) bool        bBlockSight;   // True if pawns can't see through this actor.
-var(Advanced) bool        bDetectable;   // True if this actor can be detected (by sight, sound, etc).
-var(Advanced) bool        bTransient;    // True if this actor should be destroyed when it goes into stasis
-var           bool        bIgnore;       // True if this actor should be generally ignored; compliance is voluntary
-
-
 // Conversation Related Variables - DEUS_EX AJY
 var(Conversation) String BindName;                  // Used to bind conversations
 var(Conversation) String BarkBindName;              // Used to bind Barks!
@@ -33,8 +27,6 @@ var travel   float       LastConEndTime;            // Time when last conversati
 var(Conversation) float  ConStartInterval;          // Amount of time required between two convos.
 var(Conversation) editconst transient array<ConDialogue> conlist; // Диалоги хранятся здесь.
 
-
-var(Advanced) bool            bOwned;
 var bool                                            bOnlyTriggerable;
 // End additional variables - DEUS_EX STM
 
@@ -52,7 +44,6 @@ var() bool bInvincible;
 // information for floating/bobbing decorations
 var() bool bFloating;
 var rotator origRot;
-//var bool bSplash;
 var bool bBobbing;
 var bool bWasCarried;
 
@@ -160,18 +151,16 @@ function Frob(Actor Frobber, Inventory frobWith)
                 A.Trigger(Self, P);
 }
 
-
+// if (abs(Location.Z-Other.Location.Z) < (CollisionHeight+Other.CollisionHeight-1)) // Проверить что объект не находится снизу или сверху
+// Log(Self@"StandingCount"@count);
 function int StandingCount()
 {
     local int count;
     local actor a;
 
-        foreach BasedActors(class'Actor', A)
-//      if (abs(Location.Z-Other.Location.Z) < (CollisionHeight+Other.CollisionHeight-1)) // Проверить что объект не находится снизу или сверху
-        count++;
-//      Log(Self@"StandingCount"@count);
-
-        return count;
+    foreach BasedActors(class'Actor', A)
+    count++;
+    return count;
 }
 
 // ----------------------------------------------------------------------
@@ -246,17 +235,6 @@ function BeginPlay()
     }
 }
 
-/* Воссоздана "чечётка" из оригинала :) */
-event Attach(Actor Other)
-{
-   SupportActor(Other);
-}
-
-/*event Detach(Actor Other)
-{
-  SupportActor(Other);
-}*/
-
 // ----------------------------------------------------------------------
 // Landed()
 // 
@@ -313,7 +291,7 @@ function Landed(vector HitNormal)
                 hitSound = sound'PaperHit2';
         }
 
-        if (hitSound != None)
+        if ((hitSound != None) && (Level.TimeSeconds > 2)) //DXR: Не воспроизводить звук падения сразу после загрузки.
             PlaySound(hitSound, SLOT_None);
 
         // alert NPCs that I've landed
@@ -335,7 +313,7 @@ singular function SupportActor(Actor standingActor)
     local float  baseMass;
     local float  standingMass;
 
-    standingActor.SetBase(self);
+//    standingActor.SetBase(self);
 
     /* Исправлена жуткая ошибка: турели отваливались от основания и проваливались сквозь уровень ((( 
      возможно нужно будет добавить еще исключения */
@@ -412,7 +390,6 @@ singular function BaseChange()
     SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
     Style = Default.Style;
     bUnlit = Default.bUnlit;
-//    ResetScaleGlow();
 }
 
 
@@ -479,12 +456,11 @@ simulated function Tick(float deltaTime)
 
 
 // ----------------------------------------------------------------------
-// ZoneChange()
 // this decoration will now float with cool bobbing if it is
 // buoyant enough
 // Note: PhysicsVolumeChange replaces old ZoneChange().
 // ----------------------------------------------------------------------
-simulated function PhysicsVolumeChange(PhysicsVolume Volume)
+event PhysicsVolumeChange(PhysicsVolume Volume)
 {
 //Super.PhysicsVolumeChange(Volume);
 
@@ -602,7 +578,7 @@ function Timer()
 {
     if (bPushSoundPlaying)
     {
-    class'DxUtil'.static.StopSound(self, PushSoundId);
+        class'DxUtil'.static.StopSound(self, PushSoundId);
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
     }
@@ -716,6 +692,8 @@ function Explode(vector HitLocation)
     local ScorchMark s;
     local int i;
 
+//    log("__________ Exploded by "$Instigator);
+
     // make sure we wake up when taking damage
     bStasis = False;
 
@@ -757,13 +735,11 @@ function Explode(vector HitLocation)
         ring.size = explosionRadius / 32.0;
 
     // spawn a mark
-    s = spawn(class'ScorchMark',,, vect(0,0,0));//Location-vect(0,0,1)*CollisionHeight, Rotation+rot(16384,0,0));
-    log("ScorchMark = "$s);
-    if (s != None)
+    s = spawn(class'ScorchMark', Base,, Location, rot(-16384,0,0));
+/*    if (s != None)
     {
-        s.SetDrawScale(FClamp(explosionDamage/30, 0.1, 3.0));
-//        s.ReattachDecal();
-    }
+       s.SetDrawScale(FClamp(explosionDamage/30, 0.1, 3.0)); // Похоже это ничего не дает
+    }*/
 
     // spawn some rocks
     for (i=0; i<explosionDamage/30+1; i++)
@@ -784,10 +760,6 @@ state Exploding
 
     function Timer()
     {
-//      local Pawn apawn;
-//      local float damageRadius;
-//      local Vector dist;
-
         HurtRadius
         (
             (2 * explosionDamage) / gradualHurtSteps,
@@ -977,7 +949,7 @@ state Burning
     {
         if (bPushSoundPlaying)
         {
-      class'DxUtil'.static.StopSound(self, PushSoundId);
+            class'DxUtil'.static.StopSound(self, PushSoundId);
             class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
             bPushSoundPlaying = False;
         }
@@ -1040,7 +1012,7 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
     if (Event!='')
         foreach AllActors( class 'Actor', A, Event )
             A.Trigger( Toucher, pawn(Toucher) );
-    if ( PhysicsVolume.bDestructive )
+    if (PhysicsVolume.bDestructive)
     {
         Destroy();
         return;
@@ -1071,32 +1043,25 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
 
 function Destroyed()
 {
-//  local inventory dropped;
     local DeusExPlayer Player;
-
-/*      if( (Contents!=None) && !Level.bStartup)
-        {
-            dropped = Spawn(Contents);
-            dropped.DropFrom(Location);
-        }   */
 
     if (bPushSoundPlaying)
     {
-    class'DxUtil'.static.StopSound(self, PushSoundId);
+        class'DxUtil'.static.StopSound(self, PushSoundId);
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
     }
 // from GMDX mod
     if (fragType == class'GlassFragment')
-    PlaySound(sound'GlassBreakSmall',SLOT_Interact,2.0,,1024);
+    PlaySound(sound'GlassBreakSmall',SLOT_Interact,1.0,,1024);
 
 
-//  if (flyGen != None)
-//  {
-//      flyGen.Burst();
-//      flyGen.StopGenerator();
-//      flyGen = None;
-//  }
+  if (flyGen != None)
+  {
+      flyGen.Burst();
+      flyGen.StopGenerator();
+      flyGen = None;
+  }
 
     // Pass a message to conPlay, if it exists in the player, that 
     // this object has been destroyed.  This is used to prevent 
@@ -1237,14 +1202,6 @@ function float GetLastConEndTime()  // Time when last conversation ended
 {
     return LastConEndTime;
 }
-
-function bool IsOwned()
-{
-  return bOwned;
-}
-
-function bool BlockSight()
-{ return bBlockSight;}
 
 // ----------------------------------------------------------------------
 

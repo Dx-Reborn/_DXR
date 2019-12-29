@@ -3,6 +3,14 @@
 //=============================================================================
 class FlyGenerator extends PawnGenerator;
 
+event PhysicsVolumeChange(PhysicsVolume NewZone)
+{
+    Super.PhysicsVolumeChange(NewZone);
+
+    if (NewZone.bWaterVolume)
+        StopGenerator();
+}
+
 defaultproperties
 {
      PawnClasses(0)=(Count=8,PawnClass=Class'DeusEx.Fly')

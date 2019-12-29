@@ -15,8 +15,8 @@ var localized string KeysAvailableLabel;
 
 struct SNanoKeyStruct
 {
-	var() name             KeyID;
-	var() localized String Description;
+    var() name             KeyID;
+    var() localized String Description;
 };
 
 var() array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
@@ -26,7 +26,7 @@ var() array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
 // ----------------------------------------------------------------------
 function DeusExPlayer GetPlayer()
 {
-	return DeusExPlayer(Owner);
+    return DeusExPlayer(Owner);
 }
 
 // ----------------------------------------------------------------------
@@ -36,10 +36,10 @@ function DeusExPlayer GetPlayer()
 // ----------------------------------------------------------------------
 function bool HasKey(Name KeyToLookFor)
 {
-	local Bool bHasKey;
-	local int x;
+    local Bool bHasKey;
+    local int x;
 
-	bHasKey = False;
+    bHasKey = False;
 
   for(x=0; x<NanoKeys.Length; x++)
   {
@@ -48,7 +48,7 @@ function bool HasKey(Name KeyToLookFor)
           bHasKey=true;
       }
   }
-	return bHasKey;
+    return bHasKey;
 }
 
 // ----------------------------------------------------------------------
@@ -60,11 +60,11 @@ function GiveKey(Name newKeyID, String newDescription)
 {
     local int x, a;
 
-	if (GetPlayer() != None)
-	{
-		// First check to see if the player already has this key
-		if (HasKey(newKeyID))
-			return;
+    if (GetPlayer() != None)
+    {
+        // First check to see if the player already has this key
+        if (HasKey(newKeyID))
+            return;
 
     x = NanoKeys.Length;
     NanoKeys.Length = x + 1; // добавить 1 к длине массива
@@ -75,7 +75,7 @@ function GiveKey(Name newKeyID, String newDescription)
     GetPlayer().NanoKeys.Length = a + 1; // добавить 1 к длине массива
     GetPlayer().NanoKeys[a].KeyID = newKeyID; // присвоить данные к элементу массива
     GetPlayer().NanoKeys[a].Description = newDescription;
-	}
+    }
 }
 
 
@@ -87,15 +87,15 @@ function RemoveKey(Name KeyToRemove)
 {
   local int x;
 
-	if (GetPlayer() != None)
-	{
-	 for (x=0; x<NanoKeys.Length; x++)
+    if (GetPlayer() != None)
+    {
+     for (x=0; x<NanoKeys.Length; x++)
    { 
-		if (NanoKeys[x].KeyID == KeyToRemove)
-		{
-			NanoKeys.Remove(x,1);
+        if (NanoKeys[x].KeyID == KeyToRemove)
+        {
+            NanoKeys.Remove(x,1);
     }
-	 }
+     }
   }
 }
 
@@ -105,7 +105,7 @@ function RemoveKey(Name KeyToRemove)
 
 function RemoveAllKeys()
 {
-	NanoKeys.Length = 0;
+    NanoKeys.Length = 0;
 }
 
 
@@ -115,7 +115,7 @@ function RemoveAllKeys()
 
 function int GetKeyCount()
 {
-	return NanoKeys.Length;
+    return NanoKeys.Length;
 }
 
 
@@ -123,35 +123,40 @@ function int GetKeyCount()
 // ----------------------------------------------------------------------
 state UseIt
 {
-	function PutDown()
-	{
-		
-	}
+    function PutDown()
+    {
+        
+    }
 
 Begin:
-	PlaySound(useSound, SLOT_None);
-	PlayAnim('UseBegin',, 0.1);
-	FinishAnim();
-	LoopAnim('UseLoop',, 0.1);
-	GotoState('StopIt');
+    PlaySound(useSound, SLOT_None);
+    PlayAnim('UseBegin',, 0.1);
+    FinishAnim();
+    LoopAnim('UseLoop',, 0.1);
+    GotoState('StopIt');
 }
 // ----------------------------------------------------------------------
 state StopIt
 {
-	function PutDown()
-	{
-		
-	}
+    function PutDown()
+    {
+        
+    }
 
 Begin:
-	PlayAnim('UseEnd',, 0.1);
-	GotoState('Idle', 'DontPlaySelect');
+    PlayAnim('UseEnd',, 0.1);
+    GotoState('Idle', 'DontPlaySelect');
 }
 
 event TravelPostAccept()
 {
-	super.TravelPostAccept();
-	GiveTo(Pawn(Owner));
+    if (Pawn(Owner).FindInventoryType(class) != None)
+    {
+        destroy();
+        return;
+    }
+   super.TravelPostAccept();
+   GiveTo(Pawn(Owner));
 }
 
 function GetKeysFromPockets()
@@ -165,14 +170,14 @@ function GetKeysFromPockets()
    {
       NanoKeys[x].KeyID = DeusExPlayer(Owner).NanoKeys[x].KeyID; // присвоить данные к элементу массива
       NanoKeys[x].Description = DeusExPlayer(Owner).NanoKeys[x].Description;
-	 }
+     }
 }
 
 function BringUp()
 {
   GetKeysFromPockets();
-	if (!IsInState('Idle'))
-		GotoState('Idle');
+    if (!IsInState('Idle'))
+        GotoState('Idle');
 }
 
 function string GetDescription()
@@ -182,35 +187,35 @@ function string GetDescription()
 
 function bool UpdateInfo(Object winInfo)
 {
-	local int keyCount, i;
+    local int keyCount, i;
 
-	if (winInfo == None)
-		return False;
+    if (winInfo == None)
+        return False;
 
-//	winInfo.SetTitle(itemName);
-	GUIScrollTextBox(winInfo).SetContent(KeysAvailableLabel);
+//  winInfo.SetTitle(itemName);
+    GUIScrollTextBox(winInfo).SetContent(KeysAvailableLabel);
   GUIScrollTextBox(winInfo).AddText("_____________________________________");
 
-	if (GetPlayer() != None)
-	{
+    if (GetPlayer() != None)
+    {
     for (i=0;i<NanoKeys.Length;i++)
     {
        GUIScrollTextBox(winInfo).AddText("  " $ NanoKeys[i].Description);
        keyCount++;
     }
   }
-	if (keyCount > 0)
-	{
+    if (keyCount > 0)
+    {
     GUIScrollTextBox(winInfo).AddText("_____________________________________");
-		GUIScrollTextBox(winInfo).AddText(Description);
-	}
-	else
-	{
-		GUIScrollTextBox(winInfo).SetContent("");
-//		winInfo.SetTitle(itemName);
-		GUIScrollTextBox(winInfo).AddText(NoKeys);
-	}
-	return true;
+        GUIScrollTextBox(winInfo).AddText(Description);
+    }
+    else
+    {
+        GUIScrollTextBox(winInfo).SetContent("");
+//      winInfo.SetTitle(itemName);
+        GUIScrollTextBox(winInfo).AddText(NoKeys);
+    }
+    return true;
 }
 
 

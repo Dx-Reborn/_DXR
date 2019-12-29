@@ -4,8 +4,16 @@
 
 class invisibleFireball extends Fireball;
 
+function SpawnEffects(vector HitLocation, vector HitNormal, Actor Other)
+{
+   Super.SpawnEffects(HitLocation, HitNormal, Other);
+   if (Other.bWorldGeometry || Other == Level)
+       spawn(class'EM_StickyFire',,,HitLocation);
+
+}
+
 defaultproperties
 {
    drawtype=DT_none
-   ExplosionDecal=class'DeusEx.BurnMark'
+   ExplosionDecal=class'DeusEx.FlameThrowerMark'
 }

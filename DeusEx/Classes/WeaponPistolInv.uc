@@ -3,48 +3,76 @@
 //=============================================================================
 class WeaponPistolInv extends DeusExWeaponInv;
 
-var() rotator smokeBoneRotator;
 var EM_PistolSmoke extrapuff;
 var int amountOfShots;
 
-const FirstThreshold = 10;
-const SecondThreshold = 20;
+const SmokeThreshold = 10;
 
-// Called from AnimNotify_script (bone 166)
-// 163 STR_assualt_muzzleflash
+// Spawn an emitter!
+function AddParticles()
+{
+    extrapuff = Spawn(class'EM_PistolSmoke');
+    AttachToBone(extrapuff, '163');
+}
+
 function WeaponPistolSmoke()
 {
   amountOfShots++;
 
-  if (amountOfShots > FirstThreshold)
+  if (amountOfShots > SmokeThreshold)
   {
-    extrapuff = Spawn(class'EM_PistolSmoke');
+    AddParticles();
     extrapuff.Emitters[0].opacity = 0.1;
   }
+  BoneRefresh();
+}
 
-  if (amountOfShots > SecondThreshold)
-  {
-    extrapuff = Spawn(class'EM_PistolSmoke');
-    extrapuff.Emitters[0].opacity = 0.3;
-    BoneRefresh();
-  }
+// Called from mesh notify (shooting animation)
+function PistolFireStart()
+{
+  if (FRand() > 0.5)
+      Skins[2] = Shader'FlatFXTex31_SH';
+    else
+      Skins[2] = Shader'FlatFXTex34_SH';
+}
+
+function PistolFireEnd()
+{
+    Skins[2] = texture'PinkMaskTex'; //class'ObjectManager'.static.GetActorMeshTexture(self, 2);
 }
 
 function WeaponTick(float dt)
 {
-  super.WeaponTick(dt);
   if (extrapuff != none)
-  {
-    AttachToBone(extrapuff, '163'); // ближайшая косточка
-  }
+     AttachToBone(extrapuff, '163'); // ближайшая косточка
+
+  Super.WeaponTick(dt);
 }
+
+function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
+{
+    local ShellCasing10mm s;
+    local coords K;
+
+    K = GetBoneCoords('177');
+
+     Super.ProcessTraceHit(Other, HitLocation, HitNormal, X, Y, Z);
+
+     s = Spawn(class'ShellCasing10mm',, '', K.Origin);
+     if (S != None)
+     {
+         s.SetDrawScale(0.1);
+         s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
+         s.Velocity.Z += 200;
+     }
+}        
+
 
 
 defaultproperties
 {
-     smokeBoneRotator=(Roll=15000,Pitch=0,Yaw=0)
-
-		 PickupClass=class'WeaponPistol'
+     AttachmentClass=class'WeaponPistolAtt'
+     PickupClass=class'WeaponPistol'
      PickupViewMesh=VertMesh'DXRPickups.GlockPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.Glock'
      Mesh=VertMesh'DXRPickups.GlockPickup'
@@ -88,4 +116,6 @@ defaultproperties
      Icon=Texture'DeusExUI.Icons.BeltIconPistol'
      CollisionRadius=7.000000
      CollisionHeight=1.000000
+
+     IconCoords=(X1=-1)
 }

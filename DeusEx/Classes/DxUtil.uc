@@ -8,12 +8,12 @@ class DxUtil extends actor;
 #exec obj load file=DeusExControls.utx
 
 const bDebug = false;
-const JpgQuality = 95;
+const JPG_QUALITY = 95;
 
 struct HtmlChar
 {
-	var string Plain;
-	var string Coded;
+    var string Plain;
+    var string Coded;
 };
 var array<HtmlChar> SpecialChars;
 
@@ -23,104 +23,104 @@ var localized string Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sun
 /* Взято из The Nameless Mod SDK */
 static final function string GetMonthStr(int Month)
 {
-	switch(Month)
-	{
-	case 1:
-		return default.January;
-		break;
-	case 2:
-		return default.February;
-		break;
-	case 3:
-		return default.March;
-		break;
-	case 4:
-		return default.April;
-		break;
-	case 5:
-		return default.May;
-		break;
-	case 6:
-		return default.June;
-		break;
-	case 7:
-		return default.July;
-		break;
-	case 8:
-		return default.August;
-		break;
-	case 9:
-		return default.September;
-		break;
-	case 10:
-		return default.October;
-		break;
-	case 11:
-		return default.November;
-		break;
-	case 12:
-		return default.December;
-		break;
-	}
-	return "";
+    switch(Month)
+    {
+    case 1:
+        return default.January;
+        break;
+    case 2:
+        return default.February;
+        break;
+    case 3:
+        return default.March;
+        break;
+    case 4:
+        return default.April;
+        break;
+    case 5:
+        return default.May;
+        break;
+    case 6:
+        return default.June;
+        break;
+    case 7:
+        return default.July;
+        break;
+    case 8:
+        return default.August;
+        break;
+    case 9:
+        return default.September;
+        break;
+    case 10:
+        return default.October;
+        break;
+    case 11:
+        return default.November;
+        break;
+    case 12:
+        return default.December;
+        break;
+    }
+    return "";
 }
 
 static final function string GetDayOfWeekStr(int dayofWeek)
 {
-	switch(DayOfWeek)
-	{
-	case 1:
-		return default.Sunday;
-		break;
-	case 2:
-		return default.Monday;
-		break;
-	case 3:
-		return default.Tuesday;
-		break;
-	case 4:
-		return default.Wednesday;
-		break;
-	case 5:
-		return default.Thursday;
-		break;
-	case 6:
-		return default.Friday;
-		break;
-	case 7:
-		return default.Saturday;
-		break;
-	}
-	return "";
+    switch(DayOfWeek)
+    {
+    case 1:
+        return default.Sunday;
+        break;
+    case 2:
+        return default.Monday;
+        break;
+    case 3:
+        return default.Tuesday;
+        break;
+    case 4:
+        return default.Wednesday;
+        break;
+    case 5:
+        return default.Thursday;
+        break;
+    case 6:
+        return default.Friday;
+        break;
+    case 7:
+        return default.Saturday;
+        break;
+    }
+    return "";
 }
 
 static final function string GetDayOfWeekRus(int dayofWeek)
 {
-	switch(DayOfWeek)
-	{
-	case 1:
-		return default.Monday;
-		break;
-	case 2:
-		return default.Tuesday;
-		break;
-	case 3:
-		return default.Wednesday;
-		break;
-	case 4:
-		return default.Thursday;
-		break;
-	case 5:
-		return default.Friday;
-		break;
-	case 6:
-		return default.Saturday;
-		break;
-	case 7:
-		return default.Sunday; // последний день недели - воскресенье
-		break;
-	}
-	return "";
+    switch(DayOfWeek)
+    {
+    case 1:
+        return default.Monday;
+        break;
+    case 2:
+        return default.Tuesday;
+        break;
+    case 3:
+        return default.Wednesday;
+        break;
+    case 4:
+        return default.Thursday;
+        break;
+    case 5:
+        return default.Friday;
+        break;
+    case 6:
+        return default.Saturday;
+        break;
+    case 7:
+        return default.Sunday; // последний день недели - воскресенье
+        break;
+    }
+    return "";
 }
 
 /*-------------------------------------------------------------
@@ -140,7 +140,7 @@ static function texture Jpg2Tex(string file)
 
 static function material GetMeshTexture(Actor A, optional int TexNum)
 {
-  return class'ObjectManager'.static.GetMeshTexture(A, TexNum);
+  return class'ObjectManager'.static.GetActorMeshTexture(A, TexNum);
 }
 
 static function bool StopSound(Actor A, Sound S)
@@ -149,32 +149,26 @@ static function bool StopSound(Actor A, Sound S)
    return class'SoundManager'.static.StopSound(A, S);
 }
 
-static function bool LoadSoundFromFile(string Path, out Sound Sound, optional Object Outer)
-{
-   return class'SoundManager'.static.LoadSound(Path, Sound, Outer);
-}
-
-
 /*-------------------------------------------------------------
   ConvertSpaces()
   Преобразовать пробелы в подчеркивание (_)
 -------------------------------------------------------------*/
 static function String ConvertSpaces(coerce String inString)
 {
-	local int index;
-	local String outString;
+    local int index;
+    local String outString;
 
-	outString = "";
+    outString = "";
 
-	for(index=0; index<Len(inString); index++)
-	{
-		if (Mid(inString, index, 1) == " ")
-			outString = outString $ "_";
-		else
-			outString = outString $ Mid(inString, index, 1); 
-	}
+    for(index=0; index<Len(inString); index++)
+    {
+        if (Mid(inString, index, 1) == " ")
+            outString = outString $ "_";
+        else
+            outString = outString $ Mid(inString, index, 1); 
+    }
 
-	return outString;
+    return outString;
 }
 
 /*-------------------------------------------------------------
@@ -195,29 +189,29 @@ static function string GetFileTime(string file)
 
 static function String TrimSpaces(String trimString)
 {
-	local int trimIndex;
-	local int trimLength;
+    local int trimIndex;
+    local int trimLength;
 
-	if ( trimString == "" ) 
-		return trimString;
+    if ( trimString == "" ) 
+        return trimString;
 
-	trimIndex = Len(trimString) - 1;
-	while ((trimIndex >= 0) && (Mid(trimString, trimIndex, 1) == " ") )
-		trimIndex--;
+    trimIndex = Len(trimString) - 1;
+    while ((trimIndex >= 0) && (Mid(trimString, trimIndex, 1) == " ") )
+        trimIndex--;
 
-	if ( trimIndex < 0 )
-		return "";
+    if ( trimIndex < 0 )
+        return "";
 
-	trimString = Mid(trimString, 0, trimIndex + 1);
+    trimString = Mid(trimString, 0, trimIndex + 1);
 
-	trimIndex = 0;
-	while((trimIndex < Len(trimString) - 1) && (Mid(trimString, trimIndex, 1) == " "))
-		trimIndex++;
+    trimIndex = 0;
+    while((trimIndex < Len(trimString) - 1) && (Mid(trimString, trimIndex, 1) == " "))
+        trimIndex++;
 
-	trimLength = len(trimString) - trimIndex;
-	trimString = Right(trimString, trimLength);
+    trimLength = len(trimString) - trimIndex;
+    trimString = Right(trimString, trimLength);
 
-	return trimString;
+    return trimString;
 }
 
 
@@ -227,34 +221,34 @@ static function String TrimSpaces(String trimString)
 -------------------------------------------------------------*/
 static final function string SecondsToTime(float TimeSeconds, optional bool bNoSeconds)
 {
-	local int Hours, Minutes, Seconds;
-	local string HourString, MinuteString, SecondString;
-	
-	Seconds = int(TimeSeconds);
-	Minutes = Seconds / 60;
-	Hours   = Minutes / 60;
-	Seconds = Seconds - (Minutes * 60);
-	Minutes = Minutes - (Hours * 60);
-	
-	if( Seconds < 10 )
-		SecondString = "0"$Seconds;
-	else
-		SecondString = string(Seconds);
+    local int Hours, Minutes, Seconds;
+    local string HourString, MinuteString, SecondString;
+    
+    Seconds = int(TimeSeconds);
+    Minutes = Seconds / 60;
+    Hours   = Minutes / 60;
+    Seconds = Seconds - (Minutes * 60);
+    Minutes = Minutes - (Hours * 60);
+    
+    if( Seconds < 10 )
+        SecondString = "0"$Seconds;
+    else
+        SecondString = string(Seconds);
 
-	if( Minutes < 10 )
-		MinuteString = "0"$Minutes;
-	else
-		MinuteString = string(Minutes);
+    if( Minutes < 10 )
+        MinuteString = "0"$Minutes;
+    else
+        MinuteString = string(Minutes);
 
-	if( Hours < 10 )
-		HourString = "0"$Hours;
-	else
-		HourString = string(Hours);
+    if( Hours < 10 )
+        HourString = "0"$Hours;
+    else
+        HourString = string(Hours);
 
-	if( bNoSeconds )
-		return HourString$":"$MinuteString;
-	else
-		return HourString$":"$MinuteString$":"$SecondString;
+    if( bNoSeconds )
+        return HourString$":"$MinuteString;
+    else
+        return HourString$":"$MinuteString$":"$SecondString;
 }
 
 /*-------------------------------------------------------------
@@ -263,29 +257,29 @@ static final function string SecondsToTime(float TimeSeconds, optional bool bNoS
 -------------------------------------------------------------*/
 static function string StripPathFromFileName(string InName)
 {
-	local string FileName;
-	local int Index, InLen, LastPos;
+    local string FileName;
+    local int Index, InLen, LastPos;
 
-	if( Instr( InName, "\\" ) != -1 )
-	{
-		// find last slash
-		InLen = Len(InName);
-		for( Index=0; Index<InLen; Index++ )
-		{
-			if( Mid(InName, Index, 1) == "\\" )
-				LastPos = Index;
-		}
-		if( LastPos > 0 )
-			LastPos++;
+    if( Instr( InName, "\\" ) != -1 )
+    {
+        // find last slash
+        InLen = Len(InName);
+        for( Index=0; Index<InLen; Index++ )
+        {
+            if( Mid(InName, Index, 1) == "\\" )
+                LastPos = Index;
+        }
+        if( LastPos > 0 )
+            LastPos++;
 
-		FileName = Mid( InName, LastPos );
+        FileName = Mid( InName, LastPos );
 
-		return FileName;
-	}
-	else
-	{
-		return InName;
-	}
+        return FileName;
+    }
+    else
+    {
+        return InName;
+    }
 }
 
 /*-------------------------------------------------------------
@@ -293,30 +287,30 @@ static function string StripPathFromFileName(string InName)
 -------------------------------------------------------------*/
 static function string StripMapPath(string s)
 {
-	local int p;
+    local int p;
 
-	p = len(s);
-	while (p>0)
-	{
-		if ( mid(s,p,1) == "." )
-		{
-			s = left(s,p);
-			break;
-		}
-		else
-		 p--;
-	}
+    p = len(s);
+    while (p>0)
+    {
+        if (mid(s,p,1) == ".")
+        {
+            s = left(s,p);
+            break;
+        }
+        else
+         p--;
+    }
 
-	p = len(s);
-	while (p>0)
-	{
-		if ( mid(s,p,1) == "\\" || mid(s,p,1) == "/" || mid(s,p,1) == ":" )
-			return Right(s,len(s)-p-1);
-		else
-		 p--;
-	}
+    p = len(s);
+    while (p>0)
+    {
+        if ( mid(s,p,1) == "\\" || mid(s,p,1) == "/" || mid(s,p,1) == ":" )
+            return Right(s,len(s)-p-1);
+        else
+         p--;
+    }
 
-	return s;
+    return s;
 }
 
 /*-------------------------------------------------------------
@@ -390,14 +384,6 @@ static function Color SGetColorScaled(float percent, optional byte A)
 }
 
 /*-------------------------------------------------------------
-  Для упрощения
--------------------------------------------------------------*/
-static function name StringToName(string newName)
-{
-   return class'ObjectManager'.static.StringToName(newName);
-}
-
-/*-------------------------------------------------------------
   Created by Kaiser
   throwing this out there incase its useful for someone, and i
   thought its a function DX really should have had to
@@ -432,13 +418,14 @@ static function string USplit(string Original, string LeftCut, string RightCut, 
 -------------------------------------------------------------*/
 static function string URepl(string Original, string Target, string ReplaceWith)
 {
-		local string TempLeft, TempRight, OutMessage;
+    local string TempLeft, TempRight, OutMessage;
+
     OutMessage=Original;
     while (instr(caps(outmessage), Target) != -1)
     {
         tempRight=(right(OutMessage, (len(OutMessage)-instr(caps(OutMessage), Target))-Len(Target)));
         tempLeft=(left(OutMessage, instr(caps(OutMessage), Target)) );
-        OutMessage=TempLeft$ReplaceWith$TempRight;
+        OutMessage=TempLeft $ ReplaceWith $ TempRight;
     }
     return OutMessage;
 }
@@ -446,45 +433,39 @@ static function string URepl(string Original, string Target, string ReplaceWith)
 
 static function String CR()
 {
-	return Chr(13) $ Chr(10);
+    return Chr(13) $ Chr(10);
 }
 
-/*-------------------------------------------------------------
-
--------------------------------------------------------------*/
 static final function String BuildPercentString(Float value)
 {
-	local string str;
+    local string str;
 
-	str = String(Int(Abs(value * 100.0)));
-	if (value < 0.0)
-		str = "-" $ str;
-	else
-		str = "+" $ str;
+    str = String(Int(Abs(value * 100.0)));
+    if (value < 0.0)
+        str = "-" $ str;
+    else
+        str = "+" $ str;
 
-	return ("(" $ str $ "%)");
+    return ("(" $ str $ "%)");
 }
 
-/*-------------------------------------------------------------
-
--------------------------------------------------------------*/
 static function String FormatFloatString(float value, float precision)
 {
-	local string str;
+    local string str;
 
-	if (precision == 0.0)
-		return "ERR";
+    if (precision == 0.0)
+        return "ERR";
 
-	// build integer part
-	str = String(Int(value));
+    // build integer part
+    str = String(Int(value));
 
-	// build decimal part
-	if (precision < 1.0)
-	{
-		value -= Int(value);
-		str = str $ "." $ String(Int((0.5 * precision) + value * (1.0 / precision)));
-	}
-	return str;
+    // build decimal part
+    if (precision < 1.0)
+    {
+        value -= Int(value);
+        str = str $ "." $ String(Int((0.5 * precision) + value * (1.0 / precision)));
+    }
+    return str;
 }
 
 /*-------------------------------------------------------------
@@ -503,7 +484,7 @@ static function name GetMaterialGroup(Material hitMaterial)
         if (bDebug)
         log("GetMaterialGroup return None from "$hitMaterial);
 
-        return 'none';
+        return 'None';
     }
     else
     {
@@ -530,7 +511,7 @@ static function name GetMaterialName(Material hitMaterial)
        if (bDebug)
        log("GetMaterialGroup return None from "$hitMaterial);
 
-       return 'none';
+       return 'None';
     }
     else
     {
@@ -553,12 +534,12 @@ static function PrepareShotForSaveGame(Level Level, string path)
 
   gl = class'DeusExGlobals'.static.GetGlobals();
 
-	class'GraphicsManager'.static.TakeScreenShot(Level, shot);
-	class'GraphicsManager'.static.ScaleTexture(shot, 512, 256, ScaleStretch);
-	class'GraphicsManager'.static.SaveTexture(path$"\\ScreenShot.jpg", shot, JpgQuality);
+    class'GraphicsManager'.static.TakeScreenShot(Level, shot);
+    class'GraphicsManager'.static.ScaleTexture(shot, 512, 256, ScaleStretch);
+    class'GraphicsManager'.static.SaveTexture(path$"\\ScreenShot.jpg", shot, JPG_QUALITY);
 
-	gl.default.lastScreenShot = shot;
-	//log(shot @ gl.default.lastScreenShot, 'ScreenShot');
+    gl.default.lastScreenShot = shot;
+    //log(shot @ gl.default.lastScreenShot, 'ScreenShot');
 }
 
 /*-------------------------------------------------------------
@@ -566,22 +547,22 @@ static function PrepareShotForSaveGame(Level Level, string path)
 -------------------------------------------------------------*/
 static function string HtmlStrip(string src)
 {
-	local int i;
+    local int i;
 
   for (i=0; i<default.SpecialChars.Length; i++)
   {
     src = Repl(src, default.SpecialChars[i].Plain, default.SpecialChars[i].Coded);
-  }	
+  } 
   src = Repl(src, "<PLAYERNAME>", class'DeusExPlayer'.static.GetTruePlayerName());
   src = Repl(src, "<PLAYERFIRSTNAME>", class'DeusExPlayer'.static.GetPlayerFirstName());
-	return src;
+    return src;
 }
 
 static function string HtmlStripB(string src)
 {
   src = Repl(src, "<", "");
   src = Repl(src, ">", "");
-	return src;
+    return src;
 }
 
 /*-------------------------------------------------------------
@@ -605,20 +586,17 @@ simulated final static function Vector VDiskRand2D(float DiskRadius)
    return Point;
 }
 
-// Sth strange?
-static function rotator RandomBiasedRotation(INT centralYaw, FLOAT yawDistribution, INT centralPitch, FLOAT pitchDistribution);
-
 /*-------------------------------------------------------------
   Return file as array of bytes.
 -------------------------------------------------------------*/
 static function array<byte> GetFileAsArray(string path)
 {
-  local array<byte> bt;
-  local int fileSize, handle;
+    local array<byte> bt;
+    local int fileSize, handle;
 
 //  log("Processing file: "$path);
 
-  fileSize = class'FileManager'.static.FileSize(path);
+    fileSize = class'FileManager'.static.FileSize(path);
       if (fileSize == -1)
       {
          log("ERROR: File Not found!");
@@ -626,7 +604,7 @@ static function array<byte> GetFileAsArray(string path)
          return bt;
       }
 //  log("fileSize of "$path$" = "$fileSize);
-  handle = class'FileManager'.static.FileOpen(path, false, false);
+    handle = class'FileManager'.static.FileOpen(path, false, false);
       if (handle == 0)
       {
          log("ERROR: Invalid handle!");
@@ -641,44 +619,36 @@ static function array<byte> GetFileAsArray(string path)
 }
 
 /*-------------------------------------------------------------
-
--------------------------------------------------------------*/
-static function DestroyObject(Object obj)
-{
-   class'ObjectManager'.static.Destroy(obj);
-}
-
-/*-------------------------------------------------------------
   Returns array of screen resolutions.
 -------------------------------------------------------------*/
 static function array<string> GetScreenResolutions(int bits)
 {
-	local array<GraphicsManager.Resolution> resl;
-	local array<string> resolutions;
-	local bool ret;
-	local int i;
+    local array<GraphicsManager.Resolution> resl;
+    local array<string> resolutions;
+    local bool ret;
+    local int i;
 
-	ret = class'GraphicsManager'.static.GetResolutionList(resl, bits);
+    ret = class'GraphicsManager'.static.GetResolutionList(resl, bits);
 
-	if ((ret) && (resl.Length > 0))
-	{
-	  resolutions.length = resl.length;
+    if ((ret) && (resl.Length > 0))
+    {
+      resolutions.length = resl.length;
 
-	  for (i=0; i<resl.length; i++)
-	  {
+      for (i=0; i<resl.length; i++)
+      {
       resolutions[i] = resl[i].Width $ "x" $ resl[i].Height;
-	    if (bDebug)
+        if (bDebug)
           log(resolutions[i]);
-	  }
-	  return resolutions;
-	}
-	else
-	{
-	  resolutions.length = 0;
-	  resolutions[0]="800x600";
+      }
+      return resolutions;
+    }
+    else
+    {
+      resolutions.length = 0;
+      resolutions[0]="800x600";
 
-	  return resolutions;
-	}
+      return resolutions;
+    }
 }
 
 

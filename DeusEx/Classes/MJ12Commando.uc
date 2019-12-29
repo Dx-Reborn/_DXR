@@ -20,9 +20,9 @@ defaultproperties
      bCanCrouch=False
      CloseCombatMult=0.500000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponMJ12Commando')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=24)
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=24)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponMJ12Rocket')
-     InitialInventory(3)=(Inventory=Class'DeusEx.AmmoRocketMini',Count=10)
+     InitialInventory(3)=(Inventory=Class'DeusEx.AmmoRocketMiniInv',Count=10)
      BurnPeriod=0.000000
      GroundSpeed=200.000000
      Mesh=mesh'DeusExCharacters.GM_ScaryTroop'
