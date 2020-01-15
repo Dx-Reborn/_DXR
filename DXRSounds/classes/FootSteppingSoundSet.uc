@@ -1,29 +1,28 @@
 /*
    All possible footstepping sounds.
+   10/07/2019: Replaced to String, so now DynamicLoadObject is used.
 */
 class FootSteppingSoundSet extends DXRSoundBase;
 
-var() sound StepWater[4];
-var() sound StepTextile[4];
-var() sound StepPaper[4];
+var() String StepWater[4];
+var() String StepTextile[4];
+var() String StepPaper[4];
 
-//var() sound GrassStep[4];
+var() String FoliageStep[4];
+var() String EarthStep[4];
+var() String MetalStep[4];
 
-var() sound FoliageStep[4];
-var() sound EarthStep[4];
-var() sound MetalStep[4];
+var() String LadderStep[4];
+var() String WoodLadderStep[4];
 
-var() sound LadderStep[4];
-var() sound WoodLadderStep[4];
+var() String CeramicStep[4];
+var() String GlassStep[4];
+var() String TilesStep[4];
+var() String WoodStep[4];
 
-var() sound CeramicStep[4];
-var() sound GlassStep[4];
-var() sound TilesStep[4];
-var() sound WoodStep[4];
-
-var() sound BrickStep[4];
-var() sound ConcreteStep[4];
-var() sound StoneStep[4];
-var() sound StuccoStep[4];
-var() sound DefaultStep[4];
+var() String BrickStep[4];
+var() String ConcreteStep[4];
+var() String StoneStep[4];
+var() String StuccoStep[4];
+var() String DefaultStep[4];
 var() string CollectionName;
