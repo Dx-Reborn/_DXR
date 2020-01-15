@@ -14,4 +14,5 @@ defaultproperties
      CollisionHeight=23.400000
      Mass=200.000000
      Buoyancy=50.000000
+     Skins[0]=Texture'DeusExDeco.Skins.RoadBlockTex1'
 }

@@ -3,16 +3,63 @@
 //=============================================================================
 class Fly extends Animal;
 
+function bool IsNearHome(vector position)
+{
+	local bool bNear;
+
+	bNear = true;
+	if (bUseHome)
+		if (VSize(HomeLoc-position) > HomeExtent)
+			bNear = false;
+
+	return bNear;
+}
 
 
+function ReactToInjury(Pawn instigatedBy, class<damageType> damageType, EHitLocation hitPos);
 
-
-
-
+function PlayWalking()
+{
+	LoopAnimPivot('Still');
+}
+function TweenToWalking(float tweentime)
+{
+	TweenAnimPivot('Still', tweentime);
+}
 
 
 
 // Approximately five million stubbed out functions...
+function PlayRunningAndFiring();
+function TweenToShoot(float tweentime);
+function PlayShoot();
+function TweenToAttack(float tweentime);
+function PlayAttack();
+function PlayPanicRunning();
+function PlaySittingDown();
+function PlaySitting();
+function PlayStandingUp();
+function PlayRubbingEyesStart();
+function PlayRubbingEyes();
+function PlayRubbingEyesEnd();
+function PlayStunned();
+function PlayFalling();
+function PlayLanded(float impactVel);
+function PlayDuck();
+function PlayRising();
+function PlayCrawling();
+function PlayPushing();
+function PlayFiring(optional float Rate, optional name FiringMode);
+function PlayTakingHit(EHitLocation hitPos);
+
+function PlayTurning();
+function TweenToRunning(float tweentime);
+function PlayRunning();
+function TweenToWaiting(float tweentime);
+function PlayWaiting();
+function TweenToSwimming(float tweentime);
+function PlaySwimming();
+
 
 defaultproperties
 {
@@ -30,7 +77,7 @@ defaultproperties
      AirSpeed=100.000000
      AccelRate=500.000000
      JumpZ=0.000000
-     // MaxStepHeight=1.000000
+     MaxiStepHeight=1.000000
      //  MinHitWall=0.000000
      BaseEyeHeight=1.000000
      Health=1
@@ -51,4 +98,5 @@ defaultproperties
      Mass=0.100000
      Buoyancy=0.100000
      RotationRate=(Pitch=16384,Yaw=100000)
+     ControllerClass=class'FlyController'
 }

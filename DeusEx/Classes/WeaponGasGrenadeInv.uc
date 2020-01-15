@@ -5,27 +5,62 @@ class WeaponGasGrenadeInv extends GrenadeWeaponInv;
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the GasGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			AmmoType.UseAmmo(1);
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
+    // if facing a wall, affix the GasGrenade to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            AmmoType.UseAmmo(1);
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
 
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // otherwise, throw as usual
+    Super.Fire(Value);
+}
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGasGrenadeSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGasGrenadeFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
 }
 
 defaultproperties
 {
-		 PickupClass=class'WeaponGasGrenade'
+     AttachmentClass=class'WeaponGasGrenadeAtt'
+     PickupClass=class'WeaponGasGrenade'
      PickupViewMesh=VertMesh'DXRPickups.GasGrenadePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.GasGrenade'
      Mesh=VertMesh'DXRPickups.GasGrenadePickup'

@@ -13,4 +13,5 @@ defaultproperties
      CollisionHeight=21.000000
      Mass=400.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.HKTableTex1'
 }

@@ -6,32 +6,102 @@ class WeaponMiniCrossbowInv extends DeusExWeaponInv;
 // pinkmask out the arrow when we're out of ammo or the clip is empty
 state NormalFire
 {
-	function BeginState()
-	{
-		if (ClipCount >= ReloadCount)
-			Skins[3] = Texture'PinkMaskTex';
+    function BeginState()
+    {
+        if (ClipCount >= ReloadCount)
+            Skins[3] = Texture'PinkMaskTex';
 
-		if ((AmmoType != None) && (AmmoType.AmmoAmount <= 0))
-			Skins[3] = Texture'PinkMaskTex';
-	
-		Super.BeginState();
-	}
+        if ((AmmoType != None) && (AmmoType.AmmoAmount <= 0))
+            Skins[3] = Texture'PinkMaskTex';
+    
+        Super.BeginState();
+    }
 }
 
 // unpinkmask the arrow when we reload
 function WeaponTick(float deltaTime)
 {
-	if (Skins[3] != None)
-		if ((AmmoType != None) && (AmmoType.AmmoAmount > 0) && (ClipCount < ReloadCount))
-			Skins[3] = default.skins[3];
+    if (Skins[3] != None)
+        if ((AmmoType != None) && (AmmoType.AmmoAmount > 0) && (ClipCount < ReloadCount))
+            Skins[3] = default.skins[3];
 
-	Super.WeaponTick(deltaTime);
+    Super.WeaponTick(deltaTime);
 }
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMiniCrossbowSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetSilencedSound()//GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMiniCrossbowFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Sound'MiniCrossbowFire';
+    }
+    else return Sound'MiniCrossbowFire';//Super.GetSilencedSound();
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMiniCrossbowReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMiniCrossbowReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
 
 
 defaultproperties
 {
-		 PickupClass=class'WeaponMiniCrossbow'
+     AttachmentClass=class'WeaponMiniCrossbowAtt'
+     PickupClass=class'WeaponMiniCrossbow'
      PickupViewMesh=VertMesh'DXRPickups.MiniCrossbowPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.MiniCrossbow'
      Mesh=VertMesh'DXRPickups.MiniCrossbowPickup'
@@ -72,7 +142,7 @@ defaultproperties
      PickupAmmoCount=4
      //FireOffset=(X=-25.000000,Y=8.000000,Z=14.000000)
 
-     ProjSpawnOffset=(X=25.000000,Y=8.000000,Z=-14.000000) //(X=-15.00,Y=8.00,Z=-5.00) // (X=-25.000000,Y=8.000000,Z=14.000000)
+     ProjSpawnOffset=(X=25.000000,Y=8.000000,Z=-14.000000) //(X=-15.00,Y=8.00,Z=-5.00) // (X=-25.000000,Y=8.000000,Z=16.000000)
      ProjectileClass=Class'DeusEx.DartPoison'
      FireSound=Sound'DeusExSounds.Weapons.MiniCrossbowFire'
      ReloadEndSound=Sound'DeusExSounds.Weapons.MiniCrossbowReloadEnd'

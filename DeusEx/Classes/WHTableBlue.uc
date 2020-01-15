@@ -13,4 +13,5 @@ defaultproperties
      CollisionHeight=24.000000
      Mass=100.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.WHTableBlueTex1'
 }

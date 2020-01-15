@@ -11,9 +11,9 @@ defaultproperties
      CarcassType=Class'DeusEx.JordanSheaCarcass'
      WalkingSpeed=0.296000
      bImportant=True
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSawedOffShotgun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoShell',Count=12)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSawedOffShotgunInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoShellInv',Count=12)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnifeInv')
      walkAnimMult=1.000000
      bIsFemale=True
      GroundSpeed=200.000000

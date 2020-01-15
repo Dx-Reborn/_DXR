@@ -8,10 +8,62 @@ function class<DamageType> WeaponDamageType()
    return class'DM_KnockedOut';
 }
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetBatonSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetBatonFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetFleshHitSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetBatonHitFlesh(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFleshHitSound();
+    }
+    else return Super.GetFleshHitSound();
+}
+
+
 defaultproperties
 {
-		 PickupClass=class'WeaponBaton'
-		 AttachmentClass=class'WeaponBatonAtt'
+     PickupClass=class'WeaponBaton'
+     AttachmentClass=class'WeaponBatonAtt'
      PickupViewMesh=VertMesh'DXRPickups.BatonPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.Baton'
      Mesh=VertMesh'DXRPickups.BatonPickup'
@@ -34,7 +86,7 @@ defaultproperties
      bHandToHand=True
      bFallbackWeapon=True
      bEmitWeaponDrawn=False
-     AmmoName=Class'DeusEx.AmmoNone'
+     AmmoName=Class'DeusEx.AmmoNoneInv'
      ReloadCount=0
      bInstantHit=True
      FireOffset=(X=-24.000000,Y=14.000000,Z=17.000000)
@@ -46,7 +98,7 @@ defaultproperties
      Misc3Sound=Sound'DeusExSounds.Weapons.BatonHitSoft'
      InventoryGroup=24
      ItemName="Baton"
-		 PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
+     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) // Развернуть модель
      PlayerViewOffset=(X=24.000000,Y=14.000000,Z=-17.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconBaton'

@@ -42,7 +42,9 @@ var bool bIgnoresNanoDefense; //True if the aggressive defense aug does not blow
 var bool bAggressiveExploded; //True if exploded by Aggressive Defense 
 
 var localized string itemName;      // human readable name
-var localized string    itemArticle;    // article much like those for weapons
+var localized string itemArticle;    // article much like those for weapons
+var bool bUseExplosionEffects; // Добавлять эффекты взрыва или нет?
+var bool bAddRings;
 
 var sound MiscSound;
 
@@ -207,41 +209,48 @@ function DrawExplosionEffects(vector HitLocation, vector HitNormal)
     local ExplosionLight light;
     local EM_UWExplosion waterExplosion;
 
-    // draw a pretty explosion
-    light = Spawn(class'ExplosionLight',,, HitLocation);
-    // DXR: Added if exploded under water.
-    if (PhysicsVolume.bWaterVolume)
+    if (bUseExplosionEffects)
     {
-       waterExplosion = Spawn(class'EM_UWExplosion',,, HitLocation);
-       light.size = 4;
-    }
+      // draw a pretty explosion
+      light = Spawn(class'ExplosionLight',,, HitLocation);
+      // DXR: Added if exploded under water.
+      if (PhysicsVolume.bWaterVolume)
+      {
+         waterExplosion = Spawn(class'EM_UWExplosion',,, HitLocation);
+         light.size = 4;
+      }
 
-    if (blastRadius < 128)
-    {
-        Spawn(class'ExplosionSmall',,, HitLocation);
-        light.size = 2;
-    }
-    else if (blastRadius < 256)
-    {
-        Spawn(class'ExplosionMedium',,, HitLocation);
-        light.size = 4;
-    }
-    else
-    {
-        Spawn(class'ExplosionLarge',,, HitLocation);
-        light.size = 8;
-    }
+      if (blastRadius < 128)
+      {
+          Spawn(class'ExplosionSmall',,, HitLocation);
+          light.size = 2;
+      }
+      else if (blastRadius < 256)
+      {
+          Spawn(class'ExplosionMedium',,, HitLocation);
+          light.size = 4;
+      }
+      else
+      {
+          Spawn(class'ExplosionLarge',,, HitLocation);
+          light.size = 8;
+      }
 
-    // draw a pretty shock ring
-    ring = Spawn(class'ShockRing',,, HitLocation, rot(16384,0,0));
-    if (ring != None)
-        ring.size = blastRadius / 32.0;
-    ring = Spawn(class'ShockRing',,, HitLocation, rot(0,0,0));
-    if (ring != None)
-        ring.size = blastRadius / 32.0;
-    ring = Spawn(class'ShockRing',,, HitLocation, rot(0,16384,0));
-    if (ring != None)
-        ring.size = blastRadius / 32.0;
+        if (bAddRings) // draw a pretty shock ring
+        {
+           ring = Spawn(class'ShockRing',,, HitLocation, rot(16384,0,0));
+           if (ring != None)
+               ring.size = blastRadius / 32.0;
+
+           ring = Spawn(class'ShockRing',,, HitLocation, rot(0,0,0));
+           if (ring != None)
+               ring.size = blastRadius / 32.0;
+
+           ring = Spawn(class'ShockRing',,, HitLocation, rot(0,16384,0));
+           if (ring != None)
+               ring.size = blastRadius / 32.0;
+      }
+    }
 }
 
 //
@@ -363,16 +372,6 @@ auto state Flying
     }
 }
 
-function Correct(vector correctVel)
-{
-   Velocity.x += correctVel.x;// += x;
-   Velocity.y += correctVel.y;
-   Velocity.z += correctVel.z;
-}
-
-
-
-
 defaultproperties
 {
      AccurateRange=800
@@ -384,5 +383,7 @@ defaultproperties
      ItemArticle="Error"
      RemoteRole=ROLE_SimulatedProxy
      LifeSpan=60.000000
+     bUseExplosionEffects=true
+     bAddRings=false
 //     RotationRate=(Pitch=65536,Yaw=65536)
 }

@@ -3,11 +3,45 @@
 //=============================================================================
 class WeaponHideAGunInv extends DeusExWeaponInv;
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetHideAGunSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetHideAGunFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
 defaultproperties
 {
-		 PickupClass=class'WeaponHideAGun'
+     PickupClass=class'WeaponHideAGun'
      PickupViewMesh=VertMesh'DXRPickups.HideAGunPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.HideAGun'
+     FirstPersonViewMesh=Mesh'DeusExItems.HideAGun'
      Mesh=VertMesh'DXRPickups.HideAGunPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconHideAGun'

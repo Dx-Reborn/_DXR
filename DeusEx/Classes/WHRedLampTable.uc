@@ -13,4 +13,5 @@ defaultproperties
      CollisionHeight=24.750000
      Mass=50.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.WHRedLampTableTex1'
 }

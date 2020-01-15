@@ -5,27 +5,27 @@ class CouchLeather extends Seat;
 
 enum ESkinColor
 {
-	SC_Black,
-	SC_Blue,
-	SC_Brown,
-	SC_LitGray,
-	SC_Tan
+    SC_Black,
+    SC_Blue,
+    SC_Brown,
+    SC_LitGray,
+    SC_Tan
 };
 
 var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Black:		Skins[0] = Texture'CouchLeatherTex1'; break;
-		case SC_Blue:			Skins[0] = Texture'CouchLeatherTex2'; break;
-		case SC_Brown:		Skins[0] = Texture'CouchLeatherTex3'; break;
-		case SC_LitGray:	Skins[0] = Texture'CouchLeatherTex4'; break;
-		case SC_Tan:			Skins[0] = Texture'CouchLeatherTex5'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Black:      Skins[0] = Texture'CouchLeatherTex1'; break;
+        case SC_Blue:       Skins[0] = Texture'CouchLeatherTex2'; break;
+        case SC_Brown:      Skins[0] = Texture'CouchLeatherTex3'; break;
+        case SC_LitGray:    Skins[0] = Texture'CouchLeatherTex4'; break;
+        case SC_Tan:        Skins[0] = Texture'CouchLeatherTex5'; break;
+    }
 }
 
 
@@ -39,4 +39,5 @@ defaultproperties
      CollisionHeight=23.250000
      Mass=100.000000
      Buoyancy=110.000000
+     Skins[0]=Texture'CouchLeatherTex1'
 }

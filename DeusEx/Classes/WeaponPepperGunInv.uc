@@ -3,10 +3,79 @@
 //=============================================================================
 class WeaponPepperGunInv extends DeusExWeaponInv;
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPepperGunSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPepperGunFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPepperGunReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPepperGunReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
+
 defaultproperties
 {
-		 PickupClass=class'WeaponPepperGun'
-		 AttachmentClass=class'WeaponPepperGunAtt'
+     PickupClass=class'WeaponPepperGun'
+     AttachmentClass=class'WeaponPepperGunAtt'
      PickupViewMesh=VertMesh'DXRPickups.PepperGunPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.PepperGun'
      Mesh=VertMesh'DXRPickups.PepperGunPickup'
@@ -36,7 +105,8 @@ defaultproperties
      AmmoName=Class'DeusEx.AmmoPepperInv'
      ReloadCount=100
      PickupAmmoCount=100
-     FireOffset=(X=8.000000,Y=4.000000,Z=14.000000)
+     ProjSpawnOffset=(X=8.000000,Y=4.000000,Z=0.000000)
+//     FireOffset=(X=8.000000,Y=4.000000,Z=14.000000)
      ProjectileClass=Class'DeusEx.TearGas'
      FireSound=Sound'DeusExSounds.Weapons.PepperGunFire'
      ReloadEndSound=Sound'DeusExSounds.Weapons.PepperGunReloadEnd'

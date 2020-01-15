@@ -1,11 +1,11 @@
 //=============================================================================
 // WeaponNanoVirusGrenade.
 //=============================================================================
-class WeaponNanoVirusGrenade extends DeusExWeapon;
+class WeaponNanoVirusGrenade extends Grenades;
 
 defaultproperties
 {
-		 InventoryType=class'WeaponNanoVirusGrenadeInv'
+         InventoryType=class'WeaponNanoVirusGrenadeInv'
      ItemName="Scramble Grenade"
      Mesh=Mesh'DeusExItems.NanoVirusGrenadePickup'
      CollisionRadius=3.000000

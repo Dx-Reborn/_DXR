@@ -9,6 +9,8 @@ class PlayerPawn extends DeusExPlayerPawn
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
 
+var travel inventory objects[10]; // for toolbelt
+
 var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
 var localized String InventoryFull;

@@ -20,4 +20,6 @@ defaultproperties
      LightRadius=4
      Mass=80.000000
      Buoyancy=90.000000
+     Skins[0]=Texture'DeusExDeco.Skins.BarrelAmbrosiaTex1'
+     Skins[1]=FireTexture'Effects.liquid.ambrosia_SFX'
 }

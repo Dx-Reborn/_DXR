@@ -1,37 +1,36 @@
 /**/
 
-class flareActual extends DeusExDecoration
-                         /*not*/Placeable;
+class flareActual extends DeusExDecoration;
 
 var EM_FlareSmoke gen;
 
 function PhysicsVolumeChange(PhysicsVolume NewVolume)
 {
-	if (NewVolume.bWaterVolume)
+    if (NewVolume.bWaterVolume)
       ExtinguishFlare();
 
-		Super.PhysicsVolumeChange(NewVolume);
+        Super.PhysicsVolumeChange(NewVolume);
 }
 
 function ExtinguishFlare()
 {
-	LightType = LT_None;
-	AmbientSound = None;
-	if (gen != None)
-		gen.Kill();
+    LightType = LT_None;
+    AmbientSound = None;
+    if (gen != None)
+        gen.Kill();
 }
 
 event Destroyed()
 {
   super.Destroyed();
-	if (gen != None)
-		gen.Kill();
+    if (gen != None)
+        gen.Kill();
 }
 
-function int StandingCount()
+/*function int StandingCount()
 {
   return 1;
-}
+} */
 
 defaultproperties
 {

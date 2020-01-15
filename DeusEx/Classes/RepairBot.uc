@@ -10,44 +10,44 @@ var Float lastchargeTime;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	lastChargeTime = -chargeRefreshTime;
+    lastChargeTime = -chargeRefreshTime;
 }
 
 function StandStill()
 {
-	Controller.GotoState('Idle', 'Idle');
-	Acceleration=Vect(0, 0, 0);
+    Controller.GotoState('Idle', 'Idle');
+    Acceleration=Vect(0, 0, 0);
 }
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-	local DeusExPlayer Player;
-	local DeusExPlayerController pc;
-	local RepairBotInterfaceA interface;
+    local DeusExPlayer Player;
+    local DeusExPlayerController pc;
+    local RepairBotInterfaceA interface;
 
-	Player = DeusExPlayer(Frobber);
-	pc = DeusExPlayerController(level.GetLocalPlayerController());
+    Player = DeusExPlayer(Frobber);
+    pc = DeusExPlayerController(level.GetLocalPlayerController());
 
-	if (player != None)	
-	{
-    interface = RepairBotInterfaceA(pc.OpenMenuEx("DXRMenu.RepairBotInterface"));
-    interface.SetRepairBot(self); // :)
-  }
+    if (player != None) 
+    {
+      interface = RepairBotInterfaceA(pc.OpenMenuEx("DXRMenu.RepairBotInterface"));
+      interface.SetRepairBot(self); // :)
+    }
 }
 
 function int ChargePlayer(DeusExPlayer player)
 {
-	local int chargedPoints;
+    local int chargedPoints;
 
-	if (player != None)
-	{
-		chargedPoints = player.ChargePlayer(chargeAmount);
-		lastChargeTime = Level.TimeSeconds;
-	}
+    if (player != None)
+    {
+        chargedPoints = player.ChargePlayer(chargeAmount);
+        lastChargeTime = Level.TimeSeconds;
+    }
 
-	return chargedPoints;
+    return chargedPoints;
 }
 
 // ----------------------------------------------------------------------
@@ -55,21 +55,21 @@ function int ChargePlayer(DeusExPlayer player)
 // Returns whether or not the bot can charge the player
 // ----------------------------------------------------------------------
 function bool CanCharge()
-{	
-	return (Level.TimeSeconds - lastChargeTime > chargeRefreshTime);
+{   
+    return (Level.TimeSeconds - lastChargeTime > chargeRefreshTime);
 }
 
 function float GetRefreshTimeRemaining()
 {
-	return chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
+    return chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
 }
 
 function int GetAvailableCharge()
 {
-	if (CanCharge())
-		return chargeAmount; 
-	else
-		return 0;
+    if (CanCharge())
+        return chargeAmount; 
+    else
+        return 0;
 }
 
 /* Anim notify, so bot will keep arm raised until interface is closed */

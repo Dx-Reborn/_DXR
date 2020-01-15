@@ -1,11 +1,11 @@
 //=============================================================================
 // WeaponEMPGrenade.
 //=============================================================================
-class WeaponEMPGrenade extends DeusExWeapon;
+class WeaponEMPGrenade extends Grenades;
 
 defaultproperties
 {
-		 InventoryType=class'WeaponEMPGrenadeInv'
+     InventoryType=class'WeaponEMPGrenadeInv'
      ItemName="Electromagnetic Pulse (EMP) Grenade"
      Mesh=Mesh'DeusExItems.EMPGrenadePickup'
      CollisionRadius=3.000000

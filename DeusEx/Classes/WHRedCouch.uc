@@ -13,4 +13,5 @@ defaultproperties
      CollisionHeight=26.000000
      Mass=200.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.WHRedCouchTex1'
 }

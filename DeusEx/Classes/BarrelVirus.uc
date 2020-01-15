@@ -11,6 +11,7 @@ defaultproperties
      bFlammable=False
      ItemName="NanoVirus Storage Container"
      mesh=mesh'DeusExDeco.BarrelAmbrosia'
+     Skins(0)=Texture'DeusExDeco.Skins.BarrelAmbrosiaTex1'
      skins(1)=FireTexture'Effects.liquid.Virus_SFX'
      CollisionRadius=16.000000
      CollisionHeight=28.770000

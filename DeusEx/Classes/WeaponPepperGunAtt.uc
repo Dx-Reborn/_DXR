@@ -1,7 +1,4 @@
-//=============================================================================
-// WeaponPepperGun.
-//=============================================================================
-class WeaponPepperGunAtt extends WeaponAttachment;
+class WeaponPepperGunAtt extends DXRWeaponAttachment;
 
 defaultproperties
 {

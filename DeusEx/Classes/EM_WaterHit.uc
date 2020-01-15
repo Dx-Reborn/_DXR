@@ -1,7 +1,19 @@
 class EM_WaterHit extends DeusExEmitter;
 
+var sound Sounds[4];
+
+event SetInitialState()
+{
+   PlaySound(Sounds[Rand(4)], SLOT_None,1.1 - 0.2 * FRand() ,,);
+}
+
 defaultproperties
 {
+    Sounds[0]=sound'DXR_Impact.water_impact1'
+    Sounds[1]=sound'DXR_Impact.water_impact2'
+    Sounds[2]=sound'DXR_Impact.water_impact3'
+    Sounds[3]=sound'DXR_Impact.water_impact4'
+
     Begin Object Class=MeshEmitter Name=MeshEmitter1
         StaticMesh=StaticMesh'BallisticHardware2.Effects.VolumetricA4'
         UseMeshBlendMode=False
@@ -55,6 +67,8 @@ defaultproperties
         SecondsBeforeInactive=0.000000
         LifetimeRange=(Min=1.000000,Max=1.000000)
         StartVelocityRange=(X=(Min=-100.000000),Y=(Min=-8.000000,Max=8.000000),Z=(Min=-8.000000,Max=8.000000))
+
+        Disabled=true
     End Object
     Emitters(1)=SpriteEmitter'SpriteEmitter5'
 

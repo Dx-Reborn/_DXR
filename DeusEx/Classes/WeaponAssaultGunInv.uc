@@ -22,8 +22,12 @@ event AnimEnd(int channel)
 // Spawn an emitter!
 function AddParticles()
 {
-    extrapuff = Spawn(class'EM_PistolSmoke');
-    AttachToBone(extrapuff, '211');
+    local coords K;
+
+    K = GetBoneCoords('211');
+
+    extrapuff = Spawn(class'EM_PistolSmoke',, '', K.Origin);
+//    AttachToBone(extrapuff, '211');
 }
 
 
@@ -77,13 +81,13 @@ function AssaultGunFireEnd()
     Skins[2] = texture'PinkMaskTex';
 }
 
-function WeaponTick(float dt)
+/*function WeaponTick(float dt)
 {
   if (extrapuff != none)
      AttachToBone(extrapuff, '211');
 
   Super.WeaponTick(dt);
-}
+}*/
 
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
 {
@@ -101,7 +105,81 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }
-}        
+}
+
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultGunSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        if (AmmoName != default.AmmoName)
+        return Get20mmFireSound();
+        else
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultGunFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultGunReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultGunReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
 
 
 defaultproperties

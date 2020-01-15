@@ -85,7 +85,7 @@ defaultproperties
     maxRange=1280
     AccurateRange=640
     BaseAccuracy=0.00
-    AmmoName=Class'AmmoBattery'
+    AmmoName=Class'AmmoBatteryInv'
     PickupAmmoCount=20
     bInstantHit=True
     FireSound=Sound'DeusExSounds.Weapons.ProdFire'

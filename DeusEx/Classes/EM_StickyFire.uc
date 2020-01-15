@@ -24,6 +24,8 @@ defaultproperties
         TextureVSubdivisions=2
         LifetimeRange=(Min=5.000000,Max=8.000000)
         RespawnDeadParticles=false
+          InitialParticlesPerSecond=200.00
+                  AutomaticInitialSpawning=false
     End Object
     Emitters(0)=SpriteEmitter'SpriteEmitter64'
     AutoDestroy=True

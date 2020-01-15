@@ -75,11 +75,11 @@ defaultproperties
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=12)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponPlasmaRifle')
-     InitialInventory(3)=(Inventory=Class'DeusEx.AmmoPlasma')
-     InitialInventory(4)=(Inventory=Class'DeusEx.WeaponSword')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGunInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=12)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponPlasmaRifleInv')
+     InitialInventory(3)=(Inventory=Class'DeusEx.AmmoPlasmaInv')
+     InitialInventory(4)=(Inventory=Class'DeusEx.WeaponSwordInv')
      BurnPeriod=0.000000
      bHasCloak=True
      CloakThreshold=100

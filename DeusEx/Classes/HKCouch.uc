@@ -12,4 +12,5 @@ defaultproperties
      CollisionHeight=15.500000
      Mass=200.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.HKCouchTex1'
 }

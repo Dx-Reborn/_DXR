@@ -11,8 +11,12 @@ const SmokeThreshold = 10;
 // Spawn an emitter!
 function AddParticles()
 {
-    extrapuff = Spawn(class'EM_PistolSmoke');
-    AttachToBone(extrapuff, '18');
+    local coords K;
+
+    K = GetBoneCoords('18');
+
+    extrapuff = Spawn(class'EM_PistolSmoke',, '', K.Origin);
+//    AttachToBone(extrapuff, '18');
 }
 
 // Called from mesh notify
@@ -25,17 +29,16 @@ function SPSmoke()
     AddParticles();
     extrapuff.Emitters[0].opacity = 0.1;
   }
-//  BoneRefresh();
 }
 
 // Works only while weapon is in hand.
-function WeaponTick(float dt)
+/*function WeaponTick(float dt)
 {
   if (extrapuff != none)
      AttachToBone(extrapuff, '18');
 
   Super.WeaponTick(dt);
-}
+}*/
 
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
 {
@@ -53,7 +56,60 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }
-}        
+}
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetStealthPistolSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetStealthPistolFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetStealthPistolReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+
 
 
 defaultproperties

@@ -3,10 +3,43 @@
 //=============================================================================
 class WeaponLAWInv extends DeusExWeaponInv;
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
 
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetLAWSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetLAWFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
 
 defaultproperties
 {
+     AttachmentClass=class'WeaponLAWAtt'
      PickupClass=class'WeaponLAW'
      PickupViewMesh=VertMesh'DXRPickups.LAWPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.LAW'

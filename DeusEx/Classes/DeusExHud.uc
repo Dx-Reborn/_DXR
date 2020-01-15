@@ -16,8 +16,6 @@ var transient string DebugConString, DebugConString2;
 
 var bool bRenderMover;
 
-var inventory objects[10]; // for toolbelt
-
 var float vis;
 
 exec function ShowDebug()
@@ -647,6 +645,11 @@ function renderScopeView(canvas u)
 
 /*---------------------------------------------------------------------------*/
 
+function PlayerPawn GetPlayer()
+{
+   return PlayerPawn(level.GetLocalPlayerController().pawn);
+}
+
 function bool IsValidPos(int pos)
 {
     // Don't allow NanoKeySlot to be used
@@ -659,7 +662,7 @@ function bool IsValidPos(int pos)
 function ClearPosition(int pos)
 {
     if (IsValidPos(pos))
-        objects[pos] = None;
+        GetPlayer().objects[pos] = None;
 }
 
 exec function ClearBelt()
@@ -679,9 +682,9 @@ function RemoveObjectFromBelt(Inventory item)
 
     for (i=StartPos; IsValidPos(i); i++)
     {
-        if (objects[i] == item)
+        if (GetPlayer().objects[i] == item)
         {
-            objects[i] = None;
+            GetPlayer().objects[i] = None;
             if (item.IsA('RuntimePickup'))
             {
                 RuntimePickup(item).bInObjectBelt = false;
@@ -716,7 +719,7 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
         if (!IsValidPos(pos))
         {
          for (i=1; IsValidPos(i); i++)
-            if (objects[i] == None)
+            if (GetPlayer().objects[i] == None)
                     break;
 
             if (!IsValidPos(i))
@@ -733,10 +736,10 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
         if (IsValidPos(pos))
         {
             // If there's already an object here, remove it
-            if (objects[pos] != None)
-                RemoveObjectFromBelt(objects[pos]);
+            if (GetPlayer().objects[pos] != None)
+                RemoveObjectFromBelt(GetPlayer().objects[pos]);
 
-            objects[pos] = newItem;
+            GetPlayer().objects[pos] = newItem;
         }
         else
         {
@@ -841,7 +844,7 @@ function bool ActivateObjectInBelt(int pos)
 function Inventory GetObjectFromBelt(int pos)
 {
     if (IsValidPos(pos))
-        return (objects[pos]);
+        return (GetPlayer().objects[pos]);
     else
         return (None);
 }
@@ -882,50 +885,50 @@ function RenderToolBelt(Canvas C)
         C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
         C.SetPos(C.CurX-13,C.CurY);
 
-        if ((Objects[beltIt] != none) && Objects[beltIt].GetInObjectBelt())
+        if ((GetPlayer().Objects[beltIt] != none) && GetPlayer().Objects[beltIt].bInObjectBelt)
         {
-            if (Objects[beltIt].IsA('DeusExWeaponInv'))
+            if (GetPlayer().Objects[beltIt].IsA('DeusExWeaponInv'))
             {
             c.SetDrawColor(255,255,255);
             C.Style = ERenderStyle.STY_Masked;
             C.SetPos(holdX,holdY+3);
-            C.DrawIcon(DeusExWeaponInv(Objects[beltIt]).Icon,1.0);
+            C.DrawIcon(DeusExWeaponInv(GetPlayer().Objects[beltIt]).Icon,1.0);
             c.DrawColor = ToolBeltText;
 
             w = C.CurX;
             h = C.CurY-3;
 
 //                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(DeusExWeaponInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+            c.DrawTextJustified(DeusExWeaponInv(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
             C.SetPos(w-13,h);
  //                 c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
-            if (Objects[beltIt].IsA('SkilledToolInv'))
+            if (GetPlayer().Objects[beltIt].IsA('SkilledToolInv'))
             {
             c.SetDrawColor(255,255,255);
             C.Style = ERenderStyle.STY_Masked;
             C.SetPos(holdX,holdY+3);
                         //SkilledToolInv(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(SkilledToolInv(Objects[beltIt]).Icon,1.0);
+            C.DrawIconEx(SkilledToolInv(GetPlayer().Objects[beltIt]).Icon,1.0);
             c.DrawColor = ToolBeltText; //
 
             w = C.CurX;
             h = C.CurY-3;
 
 //                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(SkilledToolInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+            c.DrawTextJustified(SkilledToolInv(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
             C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
-            if (Objects[beltIt].IsA('DeusExPickupInv'))
+            if (GetPlayer().Objects[beltIt].IsA('DeusExPickupInv'))
             {
             c.SetDrawColor(255,255,255);
             C.Style = ERenderStyle.STY_Masked;
             C.SetPos(holdX,holdY+3);
                         //DeusExPickupInv(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(DeusExPickupInv(Objects[beltIt]).Icon,1.0);
+            C.DrawIconEx(DeusExPickupInv(GetPlayer().Objects[beltIt]).Icon,1.0);
             c.DrawColor = ToolBeltText; //
 
             w = C.CurX;
@@ -933,10 +936,10 @@ function RenderToolBelt(Canvas C)
 
                     //c.Font=Font'DXFonts.FontTiny';
 //                  c.Font=Font'DXFonts.EUX_7';
-            c.DrawTextJustified(DeusExPickupInv(Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+            c.DrawTextJustified(DeusExPickupInv(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
-            if (DeusExPickupInv(Objects[beltIt]).CanHaveMultipleCopies())
-                dxc.DrawTextJustified(strUses $ DeusExPickupInv(Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
+            if (DeusExPickupInv(GetPlayer().Objects[beltIt]).CanHaveMultipleCopies())
+                dxc.DrawTextJustified(strUses $ DeusExPickupInv(GetPlayer().Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
 
             C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
@@ -947,7 +950,7 @@ function RenderToolBelt(Canvas C)
          c.SetPos(holdX, holdY);
          dxc.DrawTextJustified(string(beltIt), 2, holdX, holdY+2, holdX+42, holdY+13);
 
-        sitem = SkilledToolInv(Objects[beltIt]);
+        sitem = SkilledToolInv(GetPlayer().Objects[beltIt]);
         if((sitem != none) && (!sitem.isA('NanoKeyRingInv')))
         {
             dxc.DrawTextJustified(strUses $ sitem.NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
@@ -968,17 +971,17 @@ function RenderToolBelt(Canvas C)
     C.DrawIcon(Texture'HUDObjectBeltBackground_Right',1.0);
 //    c.SetPos(holdX, holdY);
 
-    if ((Objects[0] != none) && (Objects[0].IsA('NanoKeyRingInv')))
+    if ((GetPlayer().Objects[0] != none) && (GetPlayer().Objects[0].IsA('NanoKeyRingInv')))
     {
         c.SetPos(holdX + 51, holdY);
         C.Style = ERenderStyle.STY_Normal;
         c.DrawColor = ToolBeltText;
-        c.DrawTextJustified(Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
+        c.DrawTextJustified(GetPlayer().Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
 //        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+43,holdY+53);
 
         c.SetPos(holdX + 51, holdY);
         c.SetDrawColor(255,255,255);
-        c.DrawIcon(Objects[0].GetIcon(), 1);
+        c.DrawIcon(GetPlayer().Objects[0].GetIcon(), 1);
         c.DrawColor = ToolBeltText;
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }
@@ -1012,52 +1015,52 @@ function renderToolBeltSelection(canvas u)
   if (p.inHand != none)
   {
    u.DrawColor = ToolBeltHighlight;
-   if (p.InHand == Objects[1])
+   if (p.InHand == P.Objects[1])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[2])
+   else if (p.InHand == P.Objects[2])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[2].positionX,u.SizeY-toolbeltSelPos[2].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[3])
+   else if (p.InHand == P.Objects[3])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[3].positionX,u.SizeY-toolbeltSelPos[3].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[4])
+   else if (p.InHand == P.Objects[4])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[4].positionX,u.SizeY-toolbeltSelPos[4].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[5])
+   else if (p.InHand == P.Objects[5])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[5].positionX,u.SizeY-toolbeltSelPos[5].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[6])
+   else if (p.InHand == P.Objects[6])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[6].positionX,u.SizeY-toolbeltSelPos[6].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[7])
+   else if (p.InHand == P.Objects[7])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[7].positionX,u.SizeY-toolbeltSelPos[7].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[8])
+   else if (p.InHand == P.Objects[8])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[8].positionX,u.SizeY-toolbeltSelPos[8].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[9])
+   else if (p.InHand == P.Objects[9])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[9].positionX,u.SizeY-toolbeltSelPos[9].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);
    }
-   else if (p.InHand == Objects[0]) // NanoKeyringInv
+   else if (p.InHand == P.Objects[0]) // NanoKeyringInv
    {
      u.SetPos(u.SizeX-toolbeltSelPos[0].positionX,u.SizeY-toolbeltSelPos[0].positionY);
      u.DrawTileStretched(texture'WhiteBorder', 44, 50);

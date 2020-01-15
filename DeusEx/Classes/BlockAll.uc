@@ -1,11 +1,11 @@
 //=============================================================================
-// SmokelessFire.
+// Blocks all actors from passing.
 //=============================================================================
-class SmokelessFire extends Fire;
-
-//DEUS_EX AMSD SpawnSmokeEffects should only be called client side.
-// Smokeless fire doesn't spawn smoke.
+class BlockAll extends Keypoint;
 
 defaultproperties
 {
+    bCollideActors=True
+    bBlockActors=True
+    bBlockPlayers=True
 }

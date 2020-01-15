@@ -1,11 +1,11 @@
 //=============================================================================
 // WeaponLAM.
 //=============================================================================
-class WeaponLAM extends DeusExWeapon;
+class WeaponLAM extends Grenades;
 
 defaultproperties
 {
-		 InventoryType=class'WeaponLAMInv'
+     InventoryType=class'WeaponLAMInv'
      ItemName="Lightweight Attack Munitions (LAM)"
      Mesh=Mesh'DeusExItems.LAMPickup'
      CollisionRadius=3.800000

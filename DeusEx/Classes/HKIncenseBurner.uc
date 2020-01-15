@@ -9,22 +9,22 @@ var EM_IncenseBurner smokeGen;
 
 function Destroyed()
 {
-	if (smokeGen != None)
-		smokeGen.Kill();
+    if (smokeGen != None)
+        smokeGen.Kill();
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	SetBase(Owner);
-	smokeGen = Spawn(class'EM_IncenseBurner', Self,, Location + vect(0,0,1) * CollisionHeight * 0.6, rot(16384,0,0));
-	if (smokeGen != None)
-	{
-		smokeGen.SetBase(Self);
-	}
+    SetBase(Owner);
+    smokeGen = Spawn(class'EM_IncenseBurner', Self,, Location + vect(0,0,1) * CollisionHeight * 0.6, rot(16384,0,0));
+    if (smokeGen != None)
+    {
+        smokeGen.SetBase(Self);
+    }
 }
 
 
@@ -42,4 +42,7 @@ defaultproperties
      CollisionHeight=27.000000
      Mass=20.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.HKIncenseBurnerTex1'
+     Skins[1]=Texture'DeusExDeco.Skins.HKIncenseBurnerTex2'
+     Skins[2]=Texture'DeusExDeco.Skins.HKIncenseBurnerTex1'
 }

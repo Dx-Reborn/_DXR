@@ -1,11 +1,13 @@
 //=============================================================================
-// MoverHighlight
+// WeaponSpiderBot2.
 //=============================================================================
-class MoverHighlight extends Effects;
+class WeaponSpiderBot_a extends WeaponSpiderBot;
 
 defaultproperties
 {
-     bHidden=True
-     Style=STY_Translucent
-     Mesh=Mesh'DeusExItems.FlatFX'
+    shockDamage=8
+    ShotTime=1.00
+    HitDamage=5
+    maxRange=640
+    AccurateRange=320
 }

@@ -11,4 +11,5 @@ defaultproperties
      CollisionHeight=10.660000
      Mass=20.000000
      Buoyancy=10.000000
+     Skins[0]=Texture'DeusExDeco.Skins.MicroscopeTex1'
 }

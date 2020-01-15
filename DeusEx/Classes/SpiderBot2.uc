@@ -13,8 +13,8 @@ defaultproperties
      MinRange=200.000000
      WalkingSpeed=1.000000
      bEmitDistress=True
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSpiderBot2')
-     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoBattery',Count=99)
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSpiderBot_a')
+     InitialInventory(1)=(Inventory=Class'DeusEx.AmmoBatteryInv',Count=99)
      WalkSound=Sound'DeusExSounds.Robot.SpiderBot2Walk'
      GroundSpeed=300.000000
      WaterSpeed=50.000000

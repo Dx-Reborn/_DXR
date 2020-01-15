@@ -8,7 +8,9 @@ var() int BurnTime, BurnDamage;
 var EM_FlameThrower flame; // Частицы 
 var bool bFlameExists;
 
-singular function SetFlame()
+
+
+function SetFlame()
 {
   local rotator r;
 
@@ -29,7 +31,7 @@ singular function SetFlame()
   {
     flame = spawn(class'EM_FlameThrower');
     bFlameExists = true;
-    flame.Emitters[0].SecondsBeforeInactive = 0.2;
+    flame.Emitters[0].SecondsBeforeInactive = 0.1;
   }
 }
 
@@ -46,8 +48,45 @@ event WeaponTick(float dt)
   }
 }
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetFlamethrowerSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetFlamethrowerFire(gl.WS_Preset);
+
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+
 defaultproperties
 {
+     AttachmentClass=class'WeaponFlamethrowerAtt'
      PickupClass=class'WeaponFlamethrower'
      PickupViewMesh=VertMesh'DXRPickups.FlamethrowerPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.Flamethrower'

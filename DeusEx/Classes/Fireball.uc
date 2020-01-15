@@ -7,30 +7,30 @@ class Fireball extends DeusExProjectile;
 
 function Tick(float deltaTime)
 {
-	local float value;
-	local float sizeMult;
+    local float value;
+    local float sizeMult;
 
-	// don't Super.Tick() becuase we don't want gravity to affect the stream
-	time += deltaTime;
+    // don't Super.Tick() becuase we don't want gravity to affect the stream
+    time += deltaTime;
 
-	value = 1.0+time;
-	if (MinDrawScale > 0)
-		sizeMult = MaxDrawScale/MinDrawScale;
-	else
-		sizeMult = 1;
+    value = 1.0+time;
+    if (MinDrawScale > 0)
+        sizeMult = MaxDrawScale/MinDrawScale;
+    else
+        sizeMult = 1;
 
-	SetDrawScale(MinDrawScale * (-sizeMult/(value*value) + (sizeMult+1)));          // = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
-	ScaleGlow = Default.ScaleGlow/(value*value*value);
+    SetDrawScale(MinDrawScale * (-sizeMult/(value*value) + (sizeMult+1)));          // = (-sizeMult/(value*value) + (sizeMult+1))*MinDrawScale;
+    ScaleGlow = Default.ScaleGlow/(value*value*value);
 }
-/*
-function ZoneChange(ZoneInfo NewZone)
-{
-	Super.ZoneChange(NewZone);
 
-	// If the fireball enters water, extingish it
-	if (NewZone.bWaterZone)
-		Destroy();
-}*/
+function PhysicsVolumeChange(PhysicsVolume NewZone)
+{
+    Super.PhysicsVolumeChange(NewZone);
+
+    // If the fireball enters water, extingish it
+    if (NewZone.bWaterVolume)
+        Destroy();
+}
 
 
 
@@ -42,7 +42,6 @@ defaultproperties
      MaxRange=320
      bIgnoresNanoDefense=True
      ItemName="Fireball"
-     //  ItemArticle="a"
      speed=800.000000
      MaxSpeed=800.000000
      Damage=5.000000

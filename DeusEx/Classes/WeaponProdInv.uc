@@ -3,12 +3,81 @@
 //=============================================================================
 class WeaponProdInv extends DeusExWeaponInv;
 
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetProdSelect(gl.WS_Preset);
+        if (sound != None)
+           return sound;
+           else
+        return Super.GetSelectSound();
+    }
+    return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetProdFire(gl.WS_Preset);
+        if (sound != None)
+           return sound;
+           else
+        return Super.GetFireSound();
+    }
+    return Super.GetFireSound();    
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetProdReloadBegin(gl.WS_Preset);
+        if (sound != None)
+           return sound;
+           else
+        return Super.GetReloadBeginSound();
+    }
+    return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetProdReloadEnd(gl.WS_Preset);
+        if (sound != None)
+           return sound;
+           else
+        return Super.GetReloadEndSound();
+    }
+    return Super.GetReloadEndSound();
+}
+
 defaultproperties
 {
-		 PickupClass=class'WeaponProd'
-		 AttachmentClass=class'WeaponProdAtt'
+     PickupClass=class'WeaponProd'
+     AttachmentClass=class'WeaponProdAtt'
      PickupViewMesh=VertMesh'DXRPickups.ProdPickup'
-		 FirstPersonViewMesh=Mesh'DeusExItems.Prod'
+     FirstPersonViewMesh=Mesh'DeusExItems.Prod'
      Mesh=VertMesh'DXRPickups.ProdPickup'
 
      largeIcon=Texture'DeusExUI.Icons.LargeIconProd'

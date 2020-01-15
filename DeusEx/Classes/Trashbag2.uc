@@ -15,4 +15,5 @@ defaultproperties
      CollisionHeight=16.700001
      Mass=30.000000
      Buoyancy=40.000000
+     Skins[0]=Texture'DeusExDeco.Skins.Trashbag2Tex1'
 }

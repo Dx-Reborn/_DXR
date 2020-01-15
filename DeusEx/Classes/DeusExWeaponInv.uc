@@ -202,6 +202,78 @@ replication
         ClipCount, LockTimer, Target, LockMode, TargetMessage, TargetRange;
 }
 
+function PlayDownSound()
+{
+   if (bool(Owner))
+      Owner.PlaySound(GetDownSound(), SLOT_Misc,,, 1024);
+}
+
+// Переопределить в дочерних классах.
+function Sound GetSelectSound()
+{
+   return default.SelectSound;
+}
+
+function Sound GetFireSound()
+{
+   return default.FireSound;
+}
+
+function Sound GetGEPFireSound()
+{
+   return sound'GEPGunFire';
+}
+
+function Sound GetGEPFireWPSound()
+{
+   return sound'GEPGunFireWP';
+}
+
+function Sound GetReloadBeginSound()
+{
+   return default.CockingSound;
+}
+
+function Sound GetReloadEndSound()
+{
+   return default.ReloadEndSound;
+}
+
+function Sound GetDownSound()
+{
+   return default.DownSound;
+}
+
+function Sound Get20mmFireSound() // Особый случай!
+{
+   return sound'AssaultGunFire20mm';
+}
+
+function Sound GetFleshHitSound()
+{
+   return default.Misc1Sound;
+}
+
+function Sound GetHardHitSound()
+{
+   return default.Misc2Sound;
+}
+
+function Sound GetSoftHitSound()
+{
+   return default.Misc3Sound;
+}
+
+function Sound GetSilencedSound()
+{
+   return sound'StealthPistolFire';
+}
+
+function Sound GetLandedSound()
+{
+   return default.LandSound;
+}
+
 function bool isPlayingIdleAnim()
 {
    if (GetAnimSequence() == 'Idle1' || GetAnimSequence() == 'Idle2' || GetAnimSequence() == 'Idle3')
@@ -213,7 +285,7 @@ function bool isPlayingIdleAnim()
 /**/
 function FixTheInventoryBug()
 {
-   local DeusExGlobals gl;
+/*   local DeusExGlobals gl;
    local int i;
 
    gl = class'DeusExGlobals'.static.GetGlobals();
@@ -228,7 +300,7 @@ function FixTheInventoryBug()
          bInObjectBelt = gl.InvItems[i].bInObjectBelt;
          break;
       }
-   }
+   }*/
 }
 
 //
@@ -253,7 +325,7 @@ event TravelPostAccept()
         // since we can't "var travel class" (AmmoName and ProjectileClass)
         if (AmmoType != None)
         {
-            FireSound = None;
+            //FireSound = None; // DXR: Это зачем здесь?
             for (i=0; i<ArrayCount(AmmoNames); i++)
             {
                 if (AmmoNames[i] == AmmoName)
@@ -327,7 +399,8 @@ function bool HandlePickupQuery(Inventory Item)
 
     if (Item.class == class)
     {
-      if (!( (RuntimeWeapon(item).bWeaponStay && (Level.NetMode == NM_Standalone)) && (!RuntimeWeapon(item).bHeldItem || RuntimeWeapon(item).bTossedOut)))
+        if (!((Weapon(item).bWeaponStay && (Level.NetMode == NM_Standalone)) && 
+           (!Weapon(item).bHeldItem || Weapon(item).bTossedOut)))
         {
             // Only add ammo of the default type
             // There was an easy way to get 32 20mm shells, by picking up another assault rifle with 20mm ammo selected
@@ -572,7 +645,7 @@ function bool LoadAmmo(int ammoNum)
                       else
                     ReloadTime = Default.ReloadTime;
 
-                FireSound = Default.FireSound;
+                FireSound = GetFireSound(); //Default.FireSound;
                 ProjectileClass = None;
             }
             else
@@ -595,12 +668,15 @@ function bool LoadAmmo(int ammoNum)
 
             // AlexB had a new sound for 20mm but there's no mechanism for playing alternate sounds per ammo type
             // Same for WP rocket
-            if (Ammo20mmInv(newAmmo) != None )
-                FireSound = Sound'AssaultGunFire20mm';
+            if (Ammo20mmInv(newAmmo) != None)
+            {
+                FireSound = Get20mmFireSound(); //Sound'AssaultGunFire20mm';
+                log(self@FireSound);
+            }
             else if (AmmoRocketWPInv(newAmmo) != None)
-                FireSound = Sound'GEPGunFireWP';
+                FireSound = GetGEPFireSound(); //Sound'GEPGunFireWP';
             else if (AmmoRocketInv(newAmmo) != None)
-                FireSound=Sound'GEPGunFire';
+                FireSound = GetGEPFireWPSound(); //Sound'GEPGunFire';
 
             // Notify the object belt of the new ammo
             if (DeusExPlayer(P) != None)
@@ -1403,9 +1479,9 @@ function PlayFiring()
     }
 
     if (bHasSilencer)
-        Owner.PlaySound(Sound'StealthPistolFire', SLOT_Misc,,, 2048);
+        Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(FireSound, SLOT_Misc,,, 2048);
+        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048);
 }
 
 function PlayIdleAnim()
@@ -1471,15 +1547,15 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
     {
         // if we are hand to hand, play an appropriate sound
         if (Other.IsA('DeusExDecoration'))
-            Owner.PlaySound(Misc3Sound, SLOT_Misc,,, 1024);
+            Owner.PlaySound(GetSoftHitSound()/* Misc3Sound*/, SLOT_Misc,,, 1024);
         else if (Other.IsA('Pawn'))
-            Owner.PlaySound(Misc1Sound, SLOT_Misc,,, 1024);
+            Owner.PlaySound(GetFleshHitSound()/*Misc1Sound*/, SLOT_Misc,,, 1024);
         else if (Other.IsA('BreakableGlass'))
             Owner.PlaySound(sound'GlassHit1', SLOT_Misc,,, 1024);
         else if (GetWallMaterial(HitLocation, HitNormal) == 'Glass')
             Owner.PlaySound(sound'BulletProofHit', SLOT_Misc,,, 1024);
         else
-            Owner.PlaySound(Misc2Sound, SLOT_Misc,,, 1024);
+            Owner.PlaySound(GetHardHitSound()/*Misc2Sound*/, SLOT_Misc,,, 1024);
     }
     else if (bInstantHit && bPenetrating)
     {
@@ -1556,7 +1632,7 @@ function GenerateBullet()
 {
     if (AmmoType.UseAmmo(1))
     {
-        if ( bInstantHit )
+        if (bInstantHit)
             TraceFire(currentAccuracy);
         else
             ProjectileFire(ProjectileClass, ProjectileSpeed, bWarnTarget);
@@ -1572,7 +1648,7 @@ function GenerateBullet()
 //
 function PlayHitSound(actor destActor, Actor hitActor)
 {
-    local float rnd;
+//    local float rnd;
     local sound snd;
 
     //== Y|y: redundant, since this class is only invoked for bullets.  Kudos to Lork for finding this
@@ -1580,16 +1656,16 @@ function PlayHitSound(actor destActor, Actor hitActor)
     //if ((damageType != 'Shot') && (damageType != 'Sabot'))
     //  return;
 
-    rnd = FRand();
+//    rnd = FRand();
 
-    if (rnd < 0.25)
+/*    if (rnd < 0.25)
         snd = sound'Ricochet1';
     else if (rnd < 0.5)
         snd = sound'Ricochet2';
     else if (rnd < 0.75)
         snd = sound'Ricochet3';
     else
-        snd = sound'Ricochet4';
+        snd = sound'Ricochet4';*/
 
     // play a different ricochet sound if the object isn't damaged by normal bullets
     if (hitActor != None) 
@@ -1604,8 +1680,8 @@ function PlayHitSound(actor destActor, Actor hitActor)
             destActor.bHidden = True;
         }
     }
-//    if (destActor != None)
-  //      destActor.PlaySound(snd, SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+    if (destActor != None)
+        destActor.PlaySound(snd, SLOT_None,,, 1024, 1.1 - 0.2*FRand());
 }
 
 /*function PlayHitSound(actor destActor, Actor hitActor)
@@ -1650,7 +1726,7 @@ function PlayLandingSound()
     {
         if (Velocity.Z <= -200)
         {
-            PlaySound(LandSound, SLOT_Misc, TransientSoundVolume,, 768);
+            PlaySound(GetLandedSound() /*LandSound*/, SLOT_Misc, TransientSoundVolume,, 768);
             class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
         }
     }
@@ -1809,7 +1885,7 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
 function TraceFire(float Accuracy)
 {
     local vector HitLocation, HitNormal, StartTrace, EndTrace, X, Y, Z;
-    local Rotator rot;
+//    local Rotator rot;
     local actor Other;
     local float dist, alpha, degrade;
     local int i, numSlugs;
@@ -1849,6 +1925,10 @@ function TraceFire(float Accuracy)
 //    EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000 ;
 //    EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
       EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
+
+      if (DXRWeaponAttachment(ThirdPersonActor) != None)
+          DXRWeaponAttachment(ThirdPersonActor).EndTraceExtra = EndTrace;
+
       if (Owner.IsA('DeusExPlayer') && MaxRange >= 1024)
       {
           //RSD: range no longer influences player accuracy (took GMDX pistol range as baseline) 
@@ -1864,7 +1944,7 @@ function TraceFire(float Accuracy)
 
         // randomly draw a tracer for relevant ammo types
         // don't draw tracers if we're zoomed in with a scope - looks stupid
-        if (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))
+/*        if (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))
         {
             if ((AmmoName == Class'Ammo10mmInv') || (AmmoName == Class'Ammo3006Inv') || (AmmoName == Class'Ammo762mmInv'))
             {
@@ -1874,7 +1954,7 @@ function TraceFire(float Accuracy)
                     Spawn(class'Tracer',,, StartTrace + 96 * Vector(rot), rot);
                 }
             }
-        }
+        }*/
 
         // check our range
         dist = Abs(VSize(HitLocation - Owner.Location));
@@ -1890,6 +1970,7 @@ function TraceFire(float Accuracy)
             HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
             ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
         }
+
     }
 
     // otherwise we don't hit the target at all
@@ -2306,13 +2387,13 @@ Begin:
     // only reload if we have ammo left
     if (AmmoType.AmmoAmount > 0)
     {
-        Owner.PlaySound(CockingSound, SLOT_Misc,,, 1024);       // CockingSound is reloadbegin
+        Owner.PlaySound(GetReloadBeginSound()/*CockingSound*/, SLOT_Misc,,, 1024);       // CockingSound is reloadbegin
         PlayAnim('ReloadBegin');
         NotifyOwner(True);
         FinishAnim();
         LoopAnim('Reload');
         Sleep(GetReloadTime());
-        Owner.PlaySound(ReloadEndSound, SLOT_Misc,,, 1024);       // AltFireSound is reloadend
+        Owner.PlaySound(GetReloadEndSound()/*ReloadEndSound*/, SLOT_Misc,,, 1024);       // AltFireSound is reloadend
         PlayAnim('ReloadEnd');
         FinishAnim();
         NotifyOwner(False);
@@ -2332,7 +2413,6 @@ state Idle
     {
         // alert NPCs that I'm putting away my gun
         class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
-
         return Super.PutDown();
     }
 
@@ -2360,7 +2440,6 @@ state Active
     {
         // alert NPCs that I'm putting away my gun
         class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
-
         return Super.PutDown();
     }
 
@@ -2391,7 +2470,6 @@ ignores Fire, AltFire;
     {
         // alert NPCs that I'm putting away my gun
         class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
-
         return Super.PutDown();
     }
 
@@ -2411,15 +2489,6 @@ function int GetinvSlotsX()         // Number of horizontal inv. slots this item
 
 function int GetinvSlotsY()         // Number of vertical inv. slots this item takes
 {return invSlotsY;}
-
-function bool   GetInObjectBelt()     // Is this object actually in the object belt?
-{return bInObjectBelt;}
-
-function SetToObjectBelt(optional int position) // Is this object actually in the object belt?
-{bInObjectBelt = true;}
-
-function RemoveFromObjectBelt()
-{bInObjectBelt = false;}
 
 function int GetbeltPos()           // Position on the object belt
 {return beltPos;}

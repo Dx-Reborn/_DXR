@@ -3,8 +3,77 @@
 //=============================================================================
 class WeaponPlasmaRifleInv extends DeusExWeaponInv;
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPlasmaRifleSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPlasmaRifleFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPlasmaRifleReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetPlasmaRifleReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
 defaultproperties
 {
+     AttachmentClass=class'WeaponPlasmaRifleAtt'
      PickupClass=class'WeaponPlasmaRifle'
      PickupViewMesh=VertMesh'DXRPickups.PlasmaRiflePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.PlasmaRifle'

@@ -137,10 +137,10 @@ exec function SpawnMass(Name ClassName, optional int TotalCount)
     numTries = 0;
     maxRange = sqrt(totalCount/3.1416)*4*SpawnClass.Default.CollisionRadius;
 
-    direction = Pawn.GetViewRotation();
+    direction = GetViewRotation();
     direction.pitch = 0;
     direction.roll  = 0;
-    center = pawn.Location + Vector(direction)*(maxRange+SpawnClass.default.CollisionRadius+pawn.CollisionRadius+20);
+    center = Location + Vector(direction)*(maxRange+SpawnClass.default.CollisionRadius+CollisionRadius+20);
     while ((count < totalCount) && (numTries < maxTries))
     {
         angle = FRand()*3.14159265359*2;
@@ -227,99 +227,6 @@ function bool PlayerCanRestart(PlayerController aPlayer)
 {
     return false;
 }
-// ----------------------------------------------------------------------
-// ClientFlash()
-//
-// copied from Engine.PlayerPawn
-// modified to add the new flash to the current flash
-// ----------------------------------------------------------------------
-/*function ClientFlash(float scale, vector fog)
-{
-    FlashScale = (scale + (1 - ScreenFlashScaling) * (1 - Scale)) * vect(1,1,1);
-      flashfog = ScreenFlashScaling * 0.001 * fog;
-}*/
-
-// ----------------------------------------------------------------------
-// ViewFlash()
-// modified so that flash doesn't always go away in exactly half a second.
-// ---------------------------------------------------------------------
-/*function ViewFlash(float DeltaTime)
-{
-    local vector goalFog;
-    local float goalscale, delta, Step;
-    local PhysicsVolume ViewVolume;
-
-    delta = FMin(0.1, DeltaTime);
-    goalScale = 1 + ConstantGlowScale;
-    goalFog = vect(0,0,0) + ConstantGlowFog;
-
-    if ( Pawn != None )
-    {
-        if ( bBehindView )
-            ViewVolume = Level.GetPhysicsVolume(CalcViewLocation);
-        else
-            ViewVolume = Pawn.HeadVolume;
-
-            goalScale += ViewVolume.ViewFlash.X;
-            goalFog += ViewVolume.ViewFog;
-    }                               
-    Step = deltaStep * delta * ScreenFlashScaling;
-    FlashScale.X = UpdateFlashComponent(FlashScale.X,step,goalScale);
-    FlashScale = FlashScale.X * vect(1,1,1);
-
-    FlashFog.X = UpdateFlashComponent(FlashFog.X * flashFogMult,step,goalFog.X);
-    FlashFog.Y = UpdateFlashComponent(FlashFog.Y * flashFogMult,step,goalFog.Y);
-    FlashFog.Z = UpdateFlashComponent(FlashFog.Z * flashFogMult,step,goalFog.Z);
-}*/
-//------------------------------------------------------------------
-/*function ViewFlash(float DeltaTime)
-{
-    local float delta;
-    local vector goalFog;
-    local float goalscale, ReductionFactor;
-
-   ReductionFactor = 2;
-   if (FlashTimer > 0)
-   {
-      if (FlashTimer < Deltatime)
-      {
-         FlashTimer = 0;
-      }
-      else
-      {
-         ReductionFactor = 0;
-         FlashTimer -= Deltatime;
-      }
-   }
-
-   if ( bNoFlash )
-    {
-        InstantFlash = 0;
-        InstantFog = vect(0,0,0);
-    }
-
-    delta = FMin(0.1, DeltaTime);
-    goalScale = 1 + DesiredFlashScale + ConstantGlowScale + HeadRegion.Zone.ViewFlash.X; 
-    goalFog = DesiredFlashFog + ConstantGlowFog + HeadRegion.Zone.ViewFog;
-    DesiredFlashScale -= DesiredFlashScale * ReductionFactor * delta;  
-    DesiredFlashFog -= DesiredFlashFog * ReductionFactor * delta;
-    FlashScale.X += (goalScale - FlashScale.X + InstantFlash) * 10 * delta;
-    FlashFog += (goalFog - FlashFog + InstantFog) * 10 * delta;
-    InstantFlash = 0;
-    InstantFog = vect(0,0,0);
-
-    if ( FlashScale.X > 0.981 )
-        FlashScale.X = 1;
-    FlashScale = FlashScale.X * vect(1,1,1);
-
-    if ( FlashFog.X < 0.019 )
-        FlashFog.X = 0;
-    if ( FlashFog.Y < 0.019 )
-        FlashFog.Y = 0;
-    if ( FlashFog.Z < 0.019 )
-        FlashFog.Z = 0;
-}*/
-
 
 exec function CDObj(class objClass, string objName, string packageName)
 {

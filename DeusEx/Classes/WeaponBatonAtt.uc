@@ -1,7 +1,7 @@
 //=============================================================================
 // WeaponBaton.
 //=============================================================================
-class WeaponBatonAtt extends WeaponAttachment;
+class WeaponBatonAtt extends DXRWeaponAttachment;
 
 defaultproperties
 {

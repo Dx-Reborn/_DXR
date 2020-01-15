@@ -104,7 +104,7 @@ defaultproperties
      Wanderlust=0.050000
      Cowardice=0.200000
      bCanFly=True
-     // MaxStepHeight=2.000000
+     MaxiStepHeight=2.000000
      controllerClass=class'BirdController'
 
      orders=Flying

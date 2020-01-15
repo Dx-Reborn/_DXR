@@ -14,4 +14,5 @@ defaultproperties
      CollisionHeight=30.000000
      Mass=50.000000
      Buoyancy=60.000000
+     Skins[0]=Texture'DeusExDeco.Skins.BoxMediumTex1'
 }

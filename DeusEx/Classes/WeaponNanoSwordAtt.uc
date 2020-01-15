@@ -1,15 +1,12 @@
-//=============================================================================
-// WeaponNanoSword.
-//=============================================================================
-class WeaponNanoSwordAtt extends WeaponAttachment;
+class WeaponNanoSwordAtt extends DXRWeaponAttachment;
 
 #exec OBJ LOAD FILE=DeusExItemsEx.utx
 
 defaultproperties
 {
      Mesh=Mesh'DeusExItems.NanoSwordPickup'
-  	 LightEffect=LE_None
-	   LightType=LT_SubtlePulse
+     LightEffect=LE_None
+     LightType=LT_SubtlePulse
      LightBrightness=224
      LightHue=160
      LightSaturation=64

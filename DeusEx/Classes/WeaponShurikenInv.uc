@@ -3,9 +3,44 @@
 //=============================================================================
 class WeaponShurikenInv extends DeusExWeaponInv;
 
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetShurikenSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetShurikenFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
 defaultproperties
 {
-		 PickupClass=class'WeaponShuriken'
+     AttachmentClass=class'WeaponShurikenAtt'
+     PickupClass=class'WeaponShuriken'
      PickupViewMesh=VertMesh'DXRPickups.ShurikenPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.Shuriken'
      Mesh=VertMesh'DXRPickups.ShurikenPickup'
@@ -32,7 +67,7 @@ defaultproperties
      AmmoName=Class'DeusEx.AmmoShurikenInv'
      ReloadCount=1
      PickupAmmoCount=5
-     FireOffset=(X=-10.00,Y=14.00,Z=22.00),
+     ProjSpawnOffset=(X=-0.11,Y=0.16,Z=0.24)
  //    FireOffset=(X=-10.000000,Y=-21.000000,Z=38.000000)
      ProjectileClass=Class'DeusEx.Shuriken'
      InventoryGroup=12

@@ -3,6 +3,24 @@
 //=============================================================================
 class FishGenerator extends PawnGenerator;
 
+function vector GenerateRandomVelocity()
+{
+	local vector newVector;
+	local float  magnitude;
+
+	magnitude = VSize(SumVelocities);
+	if (magnitude < 0.01)
+		magnitude = 0.01;
+	newVector = Vector(Rand(32768)*2*rot(0,1,0))*magnitude*1.1;
+
+	return newVector;
+}
+
+function float GenerateCoastPeriod()
+{
+	return (FRand()*3+3);
+}
+
 defaultproperties
 {
      PawnClasses(0)=(Count=10,PawnClass=Class'DeusEx.Fish')

@@ -24,6 +24,16 @@ var config string HUDTheme;
 var config int FS_Preset;
 var config string FS_PresetString;
 
+/*-- Еще немного настроек --*/
+var config bool bBurnStaticObjects; // поверхности (BSP && StaticMeshActor) будут гореть от огнемета?
+var config bool bInfiniteAmmoForTurrets; // Бесконечные патроны для турелей?
+var config bool bDelayedDecoExplosions; // Взрывающиеся декорации и трупы взрываются не сразу?
+
+var config bool bUseAltWeaponsSounds; // Использовать подхват из дополнительные ресурсы
+var config int WS_Preset;
+var config string WS_PresetString;
+
+
 // Использовать эффект текста, появляющегося за курсором?
 var config bool bUseCursorEffects;
 
@@ -167,7 +177,7 @@ function SaveInventoryItem(inventory anItem, int posX, int posY, int beltPos)
          InvItems[i].positionX = posX;
          InvItems[i].positionY = posY;
          InvItems[i].BeltPosition = BeltPos;
-         InvItems[i].bInObjectBelt = anItem.GetInObjectBelt();
+         InvItems[i].bInObjectBelt = anItem.bInObjectBelt;
          return;
       }
       else 
@@ -189,7 +199,7 @@ private function AddAnItem(inventory anItem, int posX, int posY, int beltPos)
     InvItems[i].positionX = posX;
     InvItems[i].positionY = posY;
     InvItems[i].BeltPosition = BeltPos;
-    InvItems[i].bInObjectBelt = anItem.GetInObjectBelt();
+    InvItems[i].bInObjectBelt = anItem.bInObjectBelt;
 
     log("Added saved item" @ anItem,'SaveInventory');
 }
@@ -683,4 +693,6 @@ defaultproperties {
 
     TravelDeco=""
     FS_Preset=0
+    WS_Preset=0
+    bUseAltWeaponsSounds=true
 }

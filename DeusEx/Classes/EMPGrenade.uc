@@ -6,8 +6,11 @@ class EMPGrenade extends ThrownProjectile;
 function DrawExplosionEffects(vector HitLocation, vector HitNormal)
 {
     local ExplosionLight light;
-    local SphereEffect sphere;
-    local ExplosionSmall expeffect;
+    local EM_EM_Explosion emp;
+    local vector hitLoc2;
+//    local SphereEffect sphere;
+//    local SphereEffect sphere;
+//    local ExplosionSmall expeffect;
 
     // draw a pretty explosion
     light = Spawn(class'ExplosionLight',,, HitLocation);
@@ -21,7 +24,12 @@ function DrawExplosionEffects(vector HitLocation, vector HitNormal)
         light.LightEffect = LE_Shell;
     }
 
-    expeffect = Spawn(class'ExplosionSmall',,, HitLocation);
+    hitLoc2 = HitLocation;
+    hitloc2.Z += 100;
+    emp = Spawn(class'EM_EM_Explosion',,, hitloc2);
+    emp.LifeSpan = 1.5f;
+
+/*    expeffect = Spawn(class'ExplosionSmall',,, HitLocation);
    if ((expeffect != None) && (!bDamaged))
       expeffect.RemoteRole = ROLE_None;
 
@@ -32,7 +40,7 @@ function DrawExplosionEffects(vector HitLocation, vector HitNormal)
       if (!bDamaged)
          sphere.RemoteRole = ROLE_None;
         sphere.size = blastRadius / 32.0;
-   }
+   }*/
 }
 
 

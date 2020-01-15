@@ -17,37 +17,37 @@ var bool bFrozen;
 
 auto state Flying
 {
-	simulated function Tick(float deltaTime)
-	{
-		// if we are frozen, don't update
-		if (bFrozen && (Owner != None))
-		{
-			LifeSpan += deltaTime;
-			return;
-		}
+    simulated function Tick(float deltaTime)
+    {
+        // if we are frozen, don't update
+        if (bFrozen && (Owner != None))
+        {
+            LifeSpan += deltaTime;
+            return;
+        }
 
-		Velocity.X = OrigVel.X + 2 - FRand() * 5;
-		Velocity.Y = OrigVel.Y + 2 - FRand() * 5;
+        Velocity.X = OrigVel.X + 2 - FRand() * 5;
+        Velocity.Y = OrigVel.Y + 2 - FRand() * 5;
 
-		if (bGravity)
-		Velocity.Z += -950 /*Region.Zone.ZoneGravity.Z*/ * deltaTime * 0.2;
-		else
-			Velocity.Z = OrigVel.Z + (RiseRate * (OrigLifeSpan - LifeSpan)) * (FRand() * 0.2 + 0.9);
+        if (bGravity)
+        Velocity.Z += -950 /*Region.Zone.ZoneGravity.Z*/ * deltaTime * 0.2;
+        else
+            Velocity.Z = OrigVel.Z + (RiseRate * (OrigLifeSpan - LifeSpan)) * (FRand() * 0.2 + 0.9);
 
-		if (bScale)
-			SetDrawScale(FClamp(OrigScale * (1.0 + (OrigLifeSpan - LifeSpan)), 0.01, 4.0));
-		if (bFade)
-			ScaleGlow = LifeSpan / OrigLifeSpan;	// this actually sets the alpha from 1.0 to 0.0
-	}
+        if (bScale)
+            SetDrawScale(FClamp(OrigScale * (1.0 + (OrigLifeSpan - LifeSpan)), 0.01, 4.0));
+        if (bFade)
+            ScaleGlow = LifeSpan / OrigLifeSpan;    // this actually sets the alpha from 1.0 to 0.0
+    }
 
-	simulated function BeginState()
-	{
-		Super.BeginState();
+    simulated function BeginState()
+    {
+        Super.BeginState();
 
-		OrigScale = DrawScale;
-		OrigVel = Velocity;
-		OrigLifeSpan = LifeSpan;
-	}
+        OrigScale = DrawScale;
+        OrigVel = Velocity;
+        OrigLifeSpan = LifeSpan;
+    }
 }
 
 defaultproperties
@@ -56,9 +56,9 @@ defaultproperties
      bScale=True
      bFade=True
      Physics=PHYS_Projectile
-     LifeSpan=1.000000 //1
+     LifeSpan=1.000000
+     DrawType=DT_Sprite
      Style=STY_Translucent
-
      Texture=FireTexture'Effects.Smoke.SmokePuff1'
      DrawScale=0.100000
 }

@@ -11,4 +11,5 @@ defaultproperties
      CollisionHeight=10.940000
      Mass=40.000000
      Buoyancy=10.000000
+     Skins[0]=Texture'DeusExDeco.Skins.TrophyTex1'
 }

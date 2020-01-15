@@ -5,68 +5,68 @@ class FlareInv extends DeusExPickupInv;
 
 state Activated
 {
-	function ZoneChange(ZoneInfo NewZone)
-	{
-//		if (NewZone.bWaterZone)
-//			ExtinguishFlare();
+/*    function PhysicsVolumeChange(PhysicsVolume NewZone)
+    {
+      if (NewZone.bWaterVolume)
+          ExtinguishFlare();
 
-		Super.ZoneChange(NewZone);
-	}
+        Super.PhysicsVolumeChange(NewZone);
+    }*/
 
-	function Activate()
-	{
-		// can't turn it off
-	}
+    function Activate()
+    {
+        // can't turn it off
+    }
 
-	function BeginState()
-	{
-    local flareActual flare;
+    function BeginState()
+    {
+        local flareActual flare;
 
-		Super.BeginState();
+        Super.BeginState();
 
-		// Create a Flare and throw it
+        // Create a Flare and throw it
     flare = Spawn(class'FlareActual',owner);
     LightFlare(flare);
 
-		UseOnce();
-	}
+        UseOnce();
+    }
 Begin:
 }
 
 function LightFlare(FlareActual pk)
 {
-	local Vector X, Y, Z, dropVect;
-	local Pawn P;
+    local Vector X, Y, Z, dropVect;
+    local Pawn P;
 
-	if (pk.gen == None)
-	{	
-	  pk.bDynamicLight = true;
-		pk.LifeSpan = 30;
-		pk.bUnlit = True;
-		pk.LightType = LT_Steady;
-		pk.AmbientSound = Sound'Flare';
+    if (pk.gen == None)
+    {   
+      pk.bDynamicLight = true;
+        pk.LifeSpan = 30;
+        pk.bUnlit = True;
+        pk.LightType = LT_Steady;
+        pk.AmbientSound = Sound'Flare';
 
-		P = Pawn(Owner);
-		if (P != None)
-		{
-			GetAxes(P.GetViewRotation(), X, Y, Z);
-			dropVect = P.Location + 0.8 * P.CollisionRadius * X;
-			dropVect.Z += P.BaseEyeHeight;
-			pk.Velocity = Vector(P.GetViewRotation()) * 500 + vect(0,0,220);
-			pk.bFixedRotationDir = True;
-			pk.RotationRate = RotRand(False);
+        P = Pawn(Owner);
+        if (P != None)
+        {
+            GetAxes(P.GetViewRotation(), X, Y, Z);
+            dropVect = P.Location + 0.8 * P.CollisionRadius * X;
+            dropVect.Z += P.BaseEyeHeight;
+            pk.Velocity = Vector(P.GetViewRotation()) * 500 + vect(0,0,220);
+            pk.bFixedRotationDir = True;
+            pk.RotationRate = RotRand(False);
 
-			// increase our collision height so we light up the ground better
-			pk.SetCollisionSize(CollisionRadius, CollisionHeight*2);
-		}
+            // increase our collision height so we light up the ground better
+            pk.SetCollisionSize(CollisionRadius, CollisionHeight*2);
+        }
 
-		pk.gen = Spawn(class'EM_FlareSmoke', pk,, pk.Location, rot(16384,0,0));
-		if (pk.gen != None)
-		{
-			pk.gen.attachTag = pk.Name;
-			pk.gen.SetBase(pk);
-		}
-	}
+        pk.gen = Spawn(class'EM_FlareSmoke', pk,, pk.Location, rot(16384,0,0));
+        if (pk.gen != None)
+        {
+            pk.gen.attachTag = pk.Name;
+            pk.gen.SetBase(pk);
+        }
+    }
 }
 
 

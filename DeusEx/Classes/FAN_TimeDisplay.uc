@@ -31,7 +31,6 @@ function PostBeginPlay()
 		SetTimer(1.0 / RefreshRate,true);
 		Enable('Timer');
 	}
-  log(self@DestTexture@DestTexture.Client,'Texture');
 }
 
 event Timer()
@@ -51,7 +50,7 @@ event RenderTexture(ScriptedTexture Tex)
    if (!bEnabled)
    return;
 
-   TextToRender = "17:53"; // Здесь будет таймер
+   TextToRender = "17:53"; // ToDo: Здесь будет таймер
 
    tex.DrawText(posX,posY,TextToRender,DigitsFont,color_text);
 }

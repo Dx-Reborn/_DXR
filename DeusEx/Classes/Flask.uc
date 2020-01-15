@@ -14,5 +14,5 @@ defaultproperties
      CollisionHeight=7.470000
      Mass=5.000000
      Buoyancy=3.000000
-     Skins(0)=material'DeusExStaticMeshes.Glass.GlassSH1' // Almost invisible.
+     Skins(0)=material'DeusExStaticMeshes.Glass.GlassSH1'
 }

@@ -7,12 +7,86 @@ var localized String shortName;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	// don't let NPC geps lock on to targets
-	if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
-		bCanTrack = False;
+    // don't let NPC geps lock on to targets
+    if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
+        bCanTrack = False;
 }
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGEPGunSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        if (AmmoName != default.AmmoName)
+            sound = class'DXRWeaponSoundManager'.static.GetGepGunFire(gl.WS_Preset);
+        else
+            sound = class'DXRWeaponSoundManager'.static.GetGepGunFireWP(gl.WS_Preset);
+
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGEPGunReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGEPGunReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
 
 
 defaultproperties
@@ -65,8 +139,8 @@ defaultproperties
      ReloadCount=1
      PickupAmmoCount=4
 
-     projSpawnOffset=(X=-46.000000,Y=22.000000,Z=10.000000)
-//     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
+//     projSpawnOffset=(X=-46.000000,Y=22.000000,Z=10.000000)
+     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
      ProjectileClass=Class'DeusEx.Rocket'
 
      InventoryGroup=17

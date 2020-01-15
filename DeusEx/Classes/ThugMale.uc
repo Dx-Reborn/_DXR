@@ -11,9 +11,9 @@ defaultproperties
      CarcassType=Class'DeusEx.ThugMaleCarcass'
      WalkingSpeed=0.213333
      BaseAssHeight=-23.000000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=6)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbar')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistolInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mmInv',Count=6)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbarInv')
      GroundSpeed=180.000000
      Mesh=mesh'DeusExCharacters.GM_Trench'
      skins(0)=Texture'DeusExCharacters.Skins.ThugMaleTex0'

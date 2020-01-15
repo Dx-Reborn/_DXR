@@ -3,40 +3,62 @@
 //=============================================================================
 class NanoVirusGrenade extends ThrownProjectile;
 
-simulated function DrawExplosionEffects(vector HitLocation, vector HitNormal)
+/*function DrawExplosionEffects(vector HitLocation, vector HitNormal)
 {
-	local ExplosionLight light;
-//	local int i;
-//	local Rotator rot;
-	local SphereEffect sphere;
-  local ExplosionSmall expeffect;
+    local ExplosionLight light;
+    local SphereEffect sphere;
+    local ExplosionSmall expeffect;
 
-	// draw a pretty explosion
-	light = Spawn(class'ExplosionLight',,, HitLocation);
-	if (light != None)
-	{
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, HitLocation);
+    if (light != None)
+    {
     if (!bDamaged)
      light.RemoteRole = ROLE_None;
 
-		light.size = 8;
-		light.LightHue = 128;
-		light.LightSaturation = 96;
-		light.LightEffect = LE_Shell;
-	}
+        light.size = 8;
+        light.LightHue = 128;
+        light.LightSaturation = 96;
+        light.LightEffect = LE_Shell;
+    }
 
-	expeffect = Spawn(class'ExplosionSmall',,, HitLocation);
+    expeffect = Spawn(class'ExplosionSmall',,, HitLocation);
    if ((expeffect != None) && (!bDamaged))
       expeffect.RemoteRole = ROLE_None;
 
-	// draw a cool light sphere
-	sphere = Spawn(class'SphereEffect',,, HitLocation);
-	if (sphere != None)
+    // draw a cool light sphere
+    sphere = Spawn(class'SphereEffect',,, HitLocation);
+    if (sphere != None)
    {
       if (!bDamaged)
          sphere.RemoteRole = ROLE_None;
-		sphere.size = blastRadius / 32.0;
+        sphere.size = blastRadius / 32.0;
    }
+}*/
+function DrawExplosionEffects(vector HitLocation, vector HitNormal)
+{
+    local ExplosionLight light;
+    local EM_NanoVirusExplosion expl;
+    local vector hitLoc2;
+
+    // draw a pretty explosion
+    light = Spawn(class'ExplosionLight',,, HitLocation);
+    if (light != None)
+    {
+      if (!bDamaged)
+        light.RemoteRole = ROLE_None;
+        light.size = 8;
+        light.LightHue = 128;
+        light.LightSaturation = 96;
+        light.LightEffect = LE_Shell;
+    }
+
+    hitLoc2 = HitLocation;
+    hitloc2.Z += 100;
+    expl = Spawn(class'EM_NanoVirusExplosion',,, hitloc2);
+    expl.LifeSpan = 1.5f;
 }
+
 
 defaultproperties
 {

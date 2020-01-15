@@ -106,12 +106,10 @@ function SawedOffCockSound()
 
 defaultproperties
 {
-    bHasLaser=true
-
     LowAmmoWaterMark=5
     GoverningSkill=Class'SkillWeaponRifle'
-    EnviroEffective=1
-    Concealability=1
+    EnviroEffective=ENVEFF_Air
+    Concealability=CONC_Visual
     ShotTime=0.30
     reloadTime=3.00
     HitDamage=8

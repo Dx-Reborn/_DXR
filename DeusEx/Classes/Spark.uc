@@ -6,9 +6,23 @@ class Spark extends Effects;
 #exec OBJ LOAD FILE=Effects
 
 var Rotator rot;
-var Sound HitSounds[4];
-var Sound EarthHitSounds[4];
-var Sound WoodHitSounds[4];
+var Sound Metal[4]; // metal_impact
+var Sound Wood[4]; //?
+var Sound Textile[4];
+var sound Paper[4]; // paper_impact
+var sound Foliage[4]; // earth_impact
+var sound Earth[4]; // sand_impact
+var sound Ceramic[4];
+var sound Glass[4]; // glass_impact
+var sound Tiles[4]; // tile_impact
+var sound Brick[4]; // brick_impact_hard
+var sound Concrete[4]; //concrete_impact
+var sound Stone[4];
+var sound Stucco[4];
+var sound Snow[4];
+var sound Plastic[4];
+var sound FallBack[4];
+
 
 event PostBeginPlay()
 {
@@ -58,13 +72,28 @@ function SpawnCoolEffect(Name TypeOfParticles, vector Loc)
        Spawn(class'EM_DirtHit',,,Loc,);
 
    if (TypeOfParticles == 'Wood') // Дерево
-       Spawn(class'EM_WoodHit',,,Loc,);
+       Spawn(class'EM_WoodHit_a',,,Loc,);
 
    if (TypeOfParticles == 'Textile' || TypeOfParticles == 'Paper') // Ткань или бумага
        Spawn(class'EM_ClothHit',,,Loc,);
 
-   if (TypeOfParticles == 'Brick' || TypeOfParticles == 'Concrete' || TypeOfParticles == 'Stone' || TypeOfParticles == 'Stucco')
+   if (TypeOfParticles == 'Brick')
+       Spawn(class'EM_BrickHit_a',,,Loc,);
+
+   if (TypeOfParticles == 'Stucco')
+       Spawn(class'EM_StuccoHit_a',,,Loc,);
+   
+   if (TypeOfParticles == 'Concrete')
+       Spawn(class'EM_ConcreteHit_a',,,Loc,);
+   
+   if (TypeOfParticles == 'Stone')
        Spawn(class'EM_ConcreteHit',,,Loc,);
+
+   if (TypeOfParticles == 'Glass')
+       Spawn(class'EM_GlassHit_a',,,Loc,);
+
+   if (TypeOfParticles == 'Wall_Objects') // Стены
+       Spawn(class'EM_StuccoHit_a',,,Loc,);
 }
 
 function MakeSound()
@@ -79,47 +108,67 @@ function MakeSound()
     switch(ImpactMaterial)
     {
         case 'Textile':
+            ActualSound = Textile[Rand(4)];
+            break;
         case 'Paper':
-            ActualSound = Sound'PaperHit1';
+            ActualSound = Paper[Rand(4)];
             break;
 
         case 'Foliage':
+            ActualSound = Foliage[Rand(4)];
+            break;
+
         case 'Earth':
-            ActualSound = EarthHitSounds[Rand(4)];
+            ActualSound = Earth[Rand(4)];
             break;
 
         case 'Metal':
         case 'Ladder':
-            if (rnd < 0.5)
-                ActualSound = Sound'BulletImpactMetal1';
-            else
-                ActualSound = Sound'BulletImpactMetal2';
+            ActualSound = Metal[Rand(4)];
             break;
 
         case 'Ceramic':
-        case 'Glass':
-            if (rnd < 0.5)
-                ActualSound = Sound'Glass04hl';
-            else
-                ActualSound = Sound'glass01hl';
+            ActualSound = Ceramic[Rand(4)];
             break;
+
+        case 'Glass':
+            ActualSound = Glass[Rand(4)];
+            break;
+
         case 'Tiles':
-            ActualSound = Sound'GlassHit2';
+            ActualSound = Glass[Rand(4)];
             break;
 
         case 'Wood':
-            ActualSound = WoodHitSounds[Rand(4)];
+            ActualSound = Wood[Rand(4)];
             break;
 
         case 'Brick':
+            ActualSound = Brick[Rand(4)];
+            break;
+
         case 'Concrete':
+            ActualSound = Concrete[Rand(4)];
+            break;
+
         case 'Stone':
+            ActualSound = Stone[Rand(4)];
+            break;
+
         case 'Stucco':
+        case 'Wall_Objects':
+            ActualSound = Stucco[Rand(4)];
+            break;
+
+        case 'Plastic':
+            ActualSound = plastic[Rand(4)];
+
         default:
-            ActualSound = HitSounds[Rand(4)];
+            ActualSound = FallBack[Rand(4)];
             break;
     }
-            PlaySound(ActualSound, SLOT_None,1.1 - 0.2 * FRand() ,, 1024, 1.1 - 0.2 * FRand());
+        if (PhysicsVolume.bWaterVolume == false)
+            PlaySound(ActualSound, SLOT_None,1.2,, /*256*/157,);
 }
 
 
@@ -173,25 +222,91 @@ function name GetImpactMaterial()
 
 defaultproperties
 {
-     HitSounds(0)=Sound'DeusExSounds.Generic.Ricochet1'
-     HitSounds(1)=Sound'DeusExSounds.Generic.Ricochet2'
-     HitSounds(2)=Sound'DeusExSounds.Generic.Ricochet3'
-     HitSounds(3)=Sound'DeusExSounds.Generic.Ricochet4'
+     Wood(0)=Sound'DXR_Impact.Wood_impact1'
+     Wood(1)=Sound'DXR_Impact.Wood_impact2'
+     Wood(2)=Sound'DXR_Impact.Wood_impact3'
+     Wood(3)=Sound'DXR_Impact.Wood_impact4'
 
-     EarthHitSounds(0)=Sound'impact_wpn_small_asphalt2'
-     EarthHitSounds(1)=Sound'impact_wpn_small_earth2'
-     EarthHitSounds(2)=Sound'impact_wpn_small_mud1'
-     EarthHitSounds(3)=Sound'impact_wpn_small_mud2'
+     Metal[0]=Sound'DXR_Impact.metal_impact1' // metal_impact
+     Metal[1]=Sound'DXR_Impact.metal_impact2' // metal_impact
+     Metal[2]=Sound'DXR_Impact.metal_impact3' // metal_impact
+     Metal[3]=Sound'DXR_Impact.metal_impact4' // metal_impact
 
-     WoodHitSounds(0)=Sound'Wood01gr'
-     WoodHitSounds(1)=Sound'Wood02gr'
-     WoodHitSounds(2)=Sound'Wood03gr'
-     WoodHitSounds(3)=Sound'Wood04gr'
+     Textile[0]=Sound'DXR_Impact.paper_impact1'
+     Textile[1]=Sound'DXR_Impact.paper_impact2'
+     Textile[2]=Sound'DXR_Impact.paper_impact3'
+     Textile[3]=Sound'DXR_Impact.paper_impact4'
+
+     Paper[0]=Sound'DXR_Impact.paper_impact1' // paper_impact
+     Paper[1]=Sound'DXR_Impact.paper_impact2' // paper_impact
+     Paper[2]=Sound'DXR_Impact.paper_impact3' // paper_impact
+     Paper[3]=Sound'DXR_Impact.paper_impact4' // paper_impact
+
+     Foliage[0]=Sound'DXR_Impact.earth_impact1' // earth_impact
+     Foliage[1]=Sound'DXR_Impact.earth_impact2' // earth_impact
+     Foliage[2]=Sound'DXR_Impact.earth_impact3' // earth_impact
+     Foliage[3]=Sound'DXR_Impact.earth_impact4' // earth_impact
+
+     Earth[0]=Sound'DXR_Impact.gravel_impact1'
+     Earth[1]=Sound'DXR_Impact.gravel_impact2'
+     Earth[2]=Sound'DXR_Impact.gravel_impact3'
+     Earth[3]=Sound'DXR_Impact.gravel_impact4'
+
+     Ceramic[0]=Sound'DXR_Impact.concrete_impact1'
+     Ceramic[1]=Sound'DXR_Impact.concrete_impact2'
+     Ceramic[2]=Sound'DXR_Impact.concrete_impact3'
+     Ceramic[3]=Sound'DXR_Impact.concrete_impact4'
+
+     Glass[0]=Sound'DXR_Impact.glass_impact1' // glass_impact
+     Glass[1]=Sound'DXR_Impact.glass_impact2' // glass_impact
+     Glass[2]=Sound'DXR_Impact.glass_impact3' // glass_impact
+     Glass[3]=Sound'DXR_Impact.glass_impact4' // glass_impact
+
+     Tiles[0]=Sound'DXR_Impact.tile_impact1' // tile_impact
+     Tiles[1]=Sound'DXR_Impact.tile_impact2' // tile_impact
+     Tiles[2]=Sound'DXR_Impact.tile_impact3' // tile_impact
+     Tiles[3]=Sound'DXR_Impact.tile_impact4' // tile_impact
+
+     Brick[0]=Sound'DXR_Impact.brick_impact_hard1' // brick_impact_hard
+     Brick[1]=Sound'DXR_Impact.brick_impact_hard2' // brick_impact_hard
+     Brick[2]=Sound'DXR_Impact.brick_impact_hard3' // brick_impact_hard
+     Brick[3]=Sound'DXR_Impact.brick_impact_hard4' // brick_impact_hard
+
+     Concrete[0]=Sound'DXR_Impact.concrete_impact1' //concrete_impact
+     Concrete[1]=Sound'DXR_Impact.concrete_impact2' //concrete_impact
+     Concrete[2]=Sound'DXR_Impact.concrete_impact3' //concrete_impact
+     Concrete[3]=Sound'DXR_Impact.concrete_impact4' //concrete_impact
+
+     Stone[0]=Sound'DXR_Impact.concrete_impact1'
+     Stone[1]=Sound'DXR_Impact.concrete_impact2'
+     Stone[2]=Sound'DXR_Impact.concrete_impact3'
+     Stone[3]=Sound'DXR_Impact.concrete_impact4'
+
+     Stucco[0]=Sound'DXR_Impact.concrete_impact1'
+     Stucco[1]=Sound'DXR_Impact.concrete_impact2'
+     Stucco[2]=Sound'DXR_Impact.concrete_impact3'
+     Stucco[3]=Sound'DXR_Impact.concrete_impact4'
+
+     Plastic[0]=Sound'DXR_Impact.plastic_impact4'
+     Plastic[1]=Sound'DXR_Impact.plastic_impact3'
+     Plastic[2]=Sound'DXR_Impact.plastic_impact2'
+     Plastic[3]=Sound'DXR_Impact.plastic_impact1'
+
+/*
+   ToDo: Заполнить 
+     Snow[0];
+     Snow[1];
+     Snow[2];
+     Snow[3];
+*/
+//?
+//     FallBack(0)=Sound'DeusExSounds.Generic.Ricochet1'
+//     FallBack(1)=Sound'DeusExSounds.Generic.Ricochet2'
+//     FallBack(2)=Sound'DeusExSounds.Generic.Ricochet3'
+//     FallBack(3)=Sound'DeusExSounds.Generic.Ricochet4'
 
      LifeSpan=0.250000
-     Style=STY_Translucent
-     DrawType=DT_Sprite//Mesh
-//     Texture=FireTexture'Effects.Fire.SparkFX1'
+     DrawType=DT_None
      Mesh=Mesh'DeusExItems.FlatFX'
      DrawScale=0.100000
      bUnlit=True

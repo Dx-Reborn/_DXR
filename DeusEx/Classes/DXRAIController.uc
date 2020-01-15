@@ -1146,6 +1146,7 @@ auto state StartUp
   {
    Global.Tick(deltaSeconds);
    SetFall();//
+//   scriptedPawn(pawn).ResetReactions();
     if (scriptedPawn(pawn).LastRenderTime <= 1.0)
     {
       pawn.PlayWaiting();
@@ -1226,7 +1227,7 @@ State Seeking
                         bLOS = false;
                     else if (IsPointInCylinder(hitActor, ScriptedPawn(pawn).destLoc, 16, 16))
                         break;
-                    else if (hitActor.BlockSight() && !hitActor.bHidden)
+                    else if (hitActor.bBlockSight && !hitActor.bHidden)
                         bLOS = false;
                 }
                 if (!bLOS)
@@ -1341,7 +1342,7 @@ State Seeking
         navPoint = FindRandomDest();
         if (navPoint != None)
         {
-           log(pawn@"State Seeking() picked "$navPoint);
+//           log(pawn@"State Seeking() picked "$navPoint);
            return NavigationPoint(FindPathToward(navPoint,false));// bestPoint; Пока заглушка
         }
     }
@@ -1487,12 +1488,12 @@ TurnToLocation:
         Sleep(0);  // needed to turn head
         LookAtVector(ScriptedPawn(pawn).destLoc, true, false, true);
         TurnTo(vector(pawn.DesiredRotation)*1000);//+Location);
-        FinishRotation();
+//        FinishRotation();
     }
     else
     {
         TurnTo(ScriptedPawn(pawn).destLoc);
-        FinishRotation();
+//        FinishRotation();
     }
     ScriptedPawn(pawn).bSeekLocation = false;
     ScriptedPawn(pawn).bInterruptSeek = false;
@@ -4883,7 +4884,7 @@ state Wandering
             if (iterations <= 0)
             {
                 ScriptedPawn(pawn).destLoc = ScriptedPawn(pawn).Location;
-                log(pawn$" -- iterations are over, gonna stay at my location");
+                //log(pawn$" -- iterations are over, gonna stay at my location");
             }
         }
     }

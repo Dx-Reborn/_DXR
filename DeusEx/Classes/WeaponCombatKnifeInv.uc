@@ -3,10 +3,61 @@
 //=============================================================================
 class WeaponCombatKnifeInv extends coldarmsInv;
 
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetCombatKnifeFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetFleshHitSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetCombatKnifeHitFlesh(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetHardHitSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetCombatKnifeHitHard(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
 
 defaultproperties
 {
-		 PickupClass=class'WeaponCombatKnife'
+     PickupClass=class'WeaponCombatKnife'
      AttachmentClass=class'WeaponCombatKnifeAtt'
      PickupViewMesh=VertMesh'DXRPickups.CombatKnifePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.CombatKnife'
@@ -30,7 +81,7 @@ defaultproperties
      bHasMuzzleFlash=False
      bHandToHand=True
      bFallbackWeapon=True
-     AmmoName=Class'DeusEx.AmmoNone'
+     AmmoName=Class'DeusEx.AmmoNoneInv'
      ReloadCount=0
      PickupAmmoCount=0
      bInstantHit=True

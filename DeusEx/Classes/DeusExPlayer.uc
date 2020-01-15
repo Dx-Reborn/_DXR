@@ -1367,7 +1367,7 @@ function CreateKeyRing()
   KeyRing = NanoKeyRingInv(FindInventoryType(class'NanoKeyRingInv'));
   if (KeyRing != None)
   {
-     hud.objects[0] = KeyRing;
+     /*hud.*/objects[0] = KeyRing;
      return;
   }
 
@@ -1378,7 +1378,7 @@ function CreateKeyRing()
       KeyRing.InitialState='Idle2';
       KeyRing.Frob(Self, none);
 //  KeyRing.giveto(Self);
-      hud.objects[0] = KeyRing;
+      /*hud.*/objects[0] = KeyRing;
   }
 }
 
@@ -1463,7 +1463,7 @@ event TravelPostAccept()
     // make sure the player's eye height is correct
     BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
 
-    hud.objects[0] = FindInventoryType(Class'nanokeyringinv');
+    /*hud.*/objects[0] = FindInventoryType(Class'nanokeyringinv');
 
   bTPA_OnlyOnce = true;
  }
@@ -4378,19 +4378,16 @@ exec function ResetPlayer(optional bool bTraining)
     if (!bTraining)
     {
         anItem = Spawn(class'WeaponPistolInv');
-        frobTarget = anItem;
-//      DoFrob(self, none);
-     HandleItemPickup(anItem,false);
+        anItem.Frob(Self, None);
+        anItem.bInObjectBelt = True;
 
         anItem = Spawn(class'WeaponProdInv');
-        frobTarget = anItem;
-//      DoFrob(self, none);
-     HandleItemPickup(anItem,false);
+        anItem.Frob(Self, None);
+        anItem.bInObjectBelt = True;
 
         anItem = Spawn(class'MedKitInv');
-        frobTarget = anItem;
-//      DoFrob(self, none);
-     HandleItemPickup(anItem,false);
+        anItem.Frob(Self, None);
+        anItem.bInObjectBelt = True;
     }
 }
 

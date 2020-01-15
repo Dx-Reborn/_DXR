@@ -231,15 +231,6 @@ function int GetinvSlotsX()         // Number of horizontal inv. slots this item
 function int GetinvSlotsY()         // Number of vertical inv. slots this item takes
 {return invSlotsY;}
 
-function bool   GetInObjectBelt()     // Is this object actually in the object belt?
-{return bInObjectBelt;}
-
-function SetToObjectBelt(optional int position)     // Is this object actually in the object belt?
-{bInObjectBelt = true;}
-
-function RemoveFromObjectBelt()
-{bInObjectBelt = false;}
-
 function int GetbeltPos()           // Position on the object belt
 {return beltPos;}
 

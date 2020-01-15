@@ -24,4 +24,5 @@ defaultproperties
      CollisionHeight=1.400000
      Mass=5.000000
      Buoyancy=2.000000
+     bUseExplosionEffects=false
 }

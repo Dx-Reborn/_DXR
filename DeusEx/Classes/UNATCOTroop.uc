@@ -10,9 +10,9 @@ defaultproperties
      UnfamiliarName="UNATCO Troop"
      CarcassType=Class'DeusEx.UNATCOTroopCarcass'
      WalkingSpeed=0.296000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=12)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGunInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=12)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnifeInv')
      walkAnimMult=0.780000
      GroundSpeed=200.000000
      Mesh=mesh'DeusExCharacters.GM_Jumpsuit'

@@ -13,4 +13,5 @@ defaultproperties
      CollisionHeight=25.250000
      Mass=75.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.WHRedEagleTableTex1'
 }

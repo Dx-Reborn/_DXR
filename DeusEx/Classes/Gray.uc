@@ -13,155 +13,156 @@ var float damageTime;
 // check every damageInterval seconds and damage any player near the gray
 function Tick(float deltaTime)
 {
-	local DeusExPlayer player;
+    local DeusExPlayer player;
 
-	damageTime += deltaTime;
+    damageTime += deltaTime;
 
-	if (damageTime >= damageInterval)
-	{
-		damageTime = 0;
-		foreach VisibleActors(class'DeusExPlayer', player, damageRadius)
-			if (player != None)
-				player.TakeDamage(damageAmount, Self, player.Location, vect(0,0,0), class'DM_Radiation');
-	}
+    if (damageTime >= damageInterval)
+    {
+        damageTime = 0;
+        foreach VisibleActors(class'DeusExPlayer', player, damageRadius)
+            if (player != None)
+                player.TakeDamage(damageAmount, Self, player.Location, vect(0,0,0), class'DM_Radiation');
+    }
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 }
 
 function ComputeFallDirection(float totalTime, int numFrames, out vector moveDir, out float stopTime)
 {
-	// Determine direction, and how long to slide
-	if (GetAnimSequence() == 'DeathFront')
-	{
-		moveDir = Vector(DesiredRotation) * Default.CollisionRadius*2.0;
-		stopTime = totalTime*0.7;
-	}
-	else if (GetAnimSequence() == 'DeathBack')
-	{
-		moveDir = -Vector(DesiredRotation) * Default.CollisionRadius*1.8;
-		stopTime = totalTime*0.65;
-	}
+    // Determine direction, and how long to slide
+    if (GetAnimSequence() == 'DeathFront')
+    {
+        moveDir = Vector(DesiredRotation) * Default.CollisionRadius*2.0;
+        stopTime = totalTime*0.7;
+    }
+    else if (GetAnimSequence() == 'DeathBack')
+    {
+        moveDir = -Vector(DesiredRotation) * Default.CollisionRadius*1.8;
+        stopTime = totalTime*0.65;
+    }
 }
 
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation, Vector offset, class<DamageType> damageType)
 {
-	// Grays aren't affected by radiation or fire or gas
-	if ((damageType == class'DM_Radiation') || (damageType == class'DM_Flamed') || (damageType == class'DM_Burned'))
-		return false;
-	else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas') || (damageType == class'DM_PoisonGas'))
-		return false;
-	else
-		return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+    // Grays aren't affected by radiation or fire or gas
+    if ((damageType == class'DM_Radiation') || (damageType == class'DM_Flamed') || (damageType == class'DM_Burned'))
+        return false;
+    else if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas') || (damageType == class'DM_PoisonGas'))
+        return false;
+    else
+        return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
 }
 
 function TweenToAttack(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Attack', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Attack', tweentime);
 }
 
 function PlayAttack()
 {
-	if ((Weapon != None) && Weapon.IsA('WeaponGraySpit'))
-		PlayAnimPivot('Shoot');
-	else
-		PlayAnimPivot('Attack');
+    if ((Weapon != None) && Weapon.IsA('WeaponGraySpit'))
+        PlayAnimPivot('Shoot');
+    else
+        PlayAnimPivot('Attack');
 }
 
 function PlayPanicRunning()
 {
-	PlayRunning();
+    PlayRunning();
 }
 
 function PlayTurning()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', 0.1);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', 0.1);
 }
 
 function TweenToWalking(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('Walk', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('Walk', tweentime);
 }
 
 function PlayWalking()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Walk', , 0.15);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Walk', , 0.15);
 }
 
 function TweenToRunning(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		LoopAnimPivot('Run',, tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        LoopAnimPivot('Run',, tweentime);
 }
 
 function PlayRunning()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('Run');
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+        LoopAnimPivot('Run');
 }
 function TweenToWaiting(float tweentime)
 {
-	if (PhysicsVolume.bWaterVolume)
-		TweenAnimPivot('Tread', tweentime, GetSwimPivot());
-	else
-		TweenAnimPivot('BreatheLight', tweentime);
+    if (PhysicsVolume.bWaterVolume)
+        TweenAnimPivot('Tread', tweentime, GetSwimPivot());
+    else
+        TweenAnimPivot('BreatheLight', tweentime);
 }
 function PlayWaiting()
 {
-	if (PhysicsVolume.bWaterVolume)
-		LoopAnimPivot('Tread',,,, GetSwimPivot());
-	else
-		LoopAnimPivot('BreatheLight', , 0.3);
+    if (PhysicsVolume.bWaterVolume)
+        LoopAnimPivot('Tread',,,, GetSwimPivot());
+    else
+    if (Acceleration == vect(0,0,0))
+        LoopAnimPivot('BreatheLight', , 0.3);
 }
 
 function PlayTakingHit(EHitLocation hitPos)
 {
-	local vector pivot;
-	local name   animName;
+    local vector pivot;
+    local name   animName;
 
-	animName = '';
-	if (!PhysicsVolume.bWaterVolume)
-	{
-		switch (hitPos)
-		{
-			case HITLOC_HeadFront:
-			case HITLOC_TorsoFront:
-			case HITLOC_LeftArmFront:
-			case HITLOC_RightArmFront:
-			case HITLOC_LeftLegFront:
-			case HITLOC_RightLegFront:
-				animName = 'HitFront';
-				break;
+    animName = '';
+    if (!PhysicsVolume.bWaterVolume)
+    {
+        switch (hitPos)
+        {
+            case HITLOC_HeadFront:
+            case HITLOC_TorsoFront:
+            case HITLOC_LeftArmFront:
+            case HITLOC_RightArmFront:
+            case HITLOC_LeftLegFront:
+            case HITLOC_RightLegFront:
+                animName = 'HitFront';
+                break;
 
-			case HITLOC_HeadBack:
-			case HITLOC_TorsoBack:
-			case HITLOC_LeftArmBack:
-			case HITLOC_RightArmBack:
-			case HITLOC_LeftLegBack:
-			case HITLOC_RightLegBack:
-				animName = 'HitBack';
-				break;
-		}
-		pivot = vect(0,0,0);
-	}
+            case HITLOC_HeadBack:
+            case HITLOC_TorsoBack:
+            case HITLOC_LeftArmBack:
+            case HITLOC_RightArmBack:
+            case HITLOC_LeftLegBack:
+            case HITLOC_RightLegBack:
+                animName = 'HitBack';
+                break;
+        }
+        pivot = vect(0,0,0);
+    }
 
-	if (animName != '')
-		PlayAnimPivot(animName, , 0.1, pivot);
+    if (animName != '')
+        PlayAnimPivot(animName, , 0.1, pivot);
 }
 
 //
@@ -170,31 +171,31 @@ function PlayTakingHit(EHitLocation hitPos)
 
 function PlayIdleSound()
 {
-	if (FRand() < 0.5)
-		PlaySound(sound'GrayIdle', SLOT_None);
-	else
-		PlaySound(sound'GrayIdle2', SLOT_None);
+    if (FRand() < 0.5)
+        PlaySound(sound'GrayIdle', SLOT_None);
+    else
+        PlaySound(sound'GrayIdle2', SLOT_None);
 }
 
 function PlayScanningSound()
 {
-	if (FRand() < 0.3)
-	{
-		if (FRand() < 0.5)
-			PlaySound(sound'GrayIdle', SLOT_None);
-		else
-			PlaySound(sound'GrayIdle2', SLOT_None);
-	}
+    if (FRand() < 0.3)
+    {
+        if (FRand() < 0.5)
+            PlaySound(sound'GrayIdle', SLOT_None);
+        else
+            PlaySound(sound'GrayIdle2', SLOT_None);
+    }
 }
 
 function PlayTargetAcquiredSound()
 {
-	PlaySound(sound'GrayAlert', SLOT_None);
+    PlaySound(sound'GrayAlert', SLOT_None);
 }
 
 function PlayCriticalDamageSound()
 {
-	PlaySound(sound'GrayFlee', SLOT_None);
+    PlaySound(sound'GrayFlee', SLOT_None);
 }
 
 defaultproperties
@@ -223,7 +224,7 @@ defaultproperties
      AccelRate=500.000000
      BaseEyeHeight=25.000000
      Health=50
-     // ReducedDamageType=Radiation
+     ReducedDamageType=class'DM_Radiation'
      // ReducedDamagePct=1.000000
      UnderWaterTime=20.000000
      //  AttitudeToPlayer=ATTITUDE_Ignore

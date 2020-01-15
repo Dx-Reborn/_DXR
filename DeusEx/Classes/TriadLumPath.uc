@@ -10,9 +10,9 @@ defaultproperties
      UnfamiliarName="Gang Member"
      CarcassType=Class'DeusEx.TriadLumPathCarcass'
      WalkingSpeed=0.300000
-     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=2)
-     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponSword')
+     InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistolInv')
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mmInv',Count=2)
+     InitialInventory(2)=(Inventory=Class'DeusEx.WeaponSwordInv')
      walkAnimMult=1.200000
      GroundSpeed=200.000000
      WaterSpeed=240.000000

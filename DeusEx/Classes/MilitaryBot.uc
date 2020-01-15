@@ -52,7 +52,7 @@ defaultproperties
      WalkingSpeed=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponRobotMachinegun')
-     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=24)
+     InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mmInv',Count=24)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponRobotRocket')
      InitialInventory(3)=(Inventory=Class'DeusEx.AmmoRocketRobot',Count=10)
      WalkSound=Sound'DeusExSounds.Robot.MilitaryBotWalk'

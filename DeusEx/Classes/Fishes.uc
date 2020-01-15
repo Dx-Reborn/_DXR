@@ -114,8 +114,7 @@ defaultproperties
      WaterSpeed=50.000000
      AirSpeed=144.000000
      AccelRate=500.000000
-     // MaxStepHeight=1.000000
-     //  MinHitWall=0.000000
+     MaxiStepHeight=1.000000
      BaseEyeHeight=1.000000
      UnderWaterTime=99999.000000
      Physics=PHYS_Swimming

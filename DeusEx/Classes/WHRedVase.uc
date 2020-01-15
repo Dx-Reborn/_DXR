@@ -12,4 +12,5 @@ defaultproperties
      CollisionHeight=11.000000
      Mass=5.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.WHRedVaseTex1'
 }

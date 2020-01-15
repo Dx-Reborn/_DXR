@@ -5,18 +5,22 @@ class WeaponAssaultShotgunInv extends DeusExWeaponInv;
 
 var EM_PistolSmoke extrapuff;
 var int amountOfShots;
+var int pLifeRand;
 
 const FirstThreshold = 10;
 const SecondThreshold = 20;
 const Threshold3 = 40;
 const Threshold4 = 60;
 
-
 // Spawn an emitter!
 function AddParticles()
 {
-    extrapuff = Spawn(class'EM_PistolSmoke');
-    AttachToBone(extrapuff, '177');
+    local coords K;
+
+//    extrapuff = Spawn(class'EM_PistolSmoke');
+    K = GetBoneCoords('177');
+    extrapuff = Spawn(class'EM_PistolSmoke',, '', K.Origin);
+//    AttachToBone(extrapuff, '177');
 }
 
 function SpawnSmoke()
@@ -33,21 +37,21 @@ function SpawnSmoke()
     AddParticles();
     extrapuff.Emitters[0].opacity = 0.3;
     extrapuff.Emitters[0].LifetimeRange.Min = 2.000000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 2.500000;
+    extrapuff.Emitters[0].LifetimeRange.Max = 2.500000 + FRand();
   }
   if (amountOfShots > Threshold3)
   {
     AddParticles();
     extrapuff.Emitters[0].opacity = 0.5;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.000000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 3.500000;
+    extrapuff.Emitters[0].LifetimeRange.Max = 3.500000 + FRand();
   }
   if (amountOfShots > Threshold4)
   {
     AddParticles();
     extrapuff.Emitters[0].opacity = 1.0;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.500000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 4.000000;
+    extrapuff.Emitters[0].LifetimeRange.Max = 4.000000 + FRand();
   }
 
   BoneRefresh();
@@ -88,6 +92,75 @@ function EjectShell()
          s.Velocity.Z += 200;
      }
 }
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultShotgunSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultShotgunFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
+function Sound GetReloadBeginSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultShotgunReloadBegin(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadBeginSound();
+    }
+    else return Super.GetReloadBeginSound();
+}
+
+function Sound GetReloadEndSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetAssaultShotgunReloadEnd(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetReloadEndSound();
+    }
+    else return Super.GetReloadEndSound();
+}
+
 
 defaultproperties
 {

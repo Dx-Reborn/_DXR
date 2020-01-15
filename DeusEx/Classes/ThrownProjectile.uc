@@ -19,7 +19,6 @@ var() bool              bDisabled;
 var() bool              bHighlight;         // should this object not highlight when focused?
 var() float             AISoundLevel;       // sound level at which to alert AI (0.0 to 1.0)
 var() bool              bDamaged;         // was this blown up via damage?
-
 var bool                bDoExplode;     // Used for communication into a simulated chain
 
 function Tick(float deltaTime)
@@ -39,7 +38,7 @@ function Tick(float deltaTime)
 
     // check for proximity // „тобы не было спама если игрок погибает.
     if ((bProximityTriggered) && (GetPlayerPawn() != none))
-    {                         // ^^
+    { 
         if (bArmed)
         {
             proxCheckTime += deltaTime;
@@ -208,7 +207,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
 function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
 {
     local int i;
-    local SmokeTrail puff;
+//    local SmokeTrail puff;
+    local EM_SteamRegular puff;
     local TearGas gas;
     local DeusExFragment frag;
     local ParticleGenerator gen;
@@ -244,11 +244,11 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
     if (ExplosionDecal != None)
     {
         mark = DeusExDecal(Spawn(ExplosionDecal, Self,, HitLocation, Rotator(-HitNormal)));
-        if (mark != None)
-        {
+//        if (mark != None)
+//        {
             mark.SetDrawScale(FClamp(damage/30, 0.1, 3.0));
 //          mark.ReattachDecal();
-        }
+//        }
     }
 
     for (i=0; i<blastRadius/36; i++)
@@ -268,14 +268,19 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
 
             if (damageType == class'DM_Exploded')
             {
-                puff = spawn(class'SmokeTrail',,, loc);
+                //puff = spawn(class'SmokeTrail',,, loc);
+                puff = Spawn(class'EM_SteamRegular', Self,, loc, rot(16384,0,0));
                 if (puff != None)
                 {
-                    puff.RiseRate = FRand() + 1;
+                    puff.Emitters[0].LifeTimeRange.Max =  RandRange(20, 40);
+                    puff.Emitters[0].LifeTimeRange.Min = puff.Emitters[0].LifeTimeRange.Max;
+                    puff.Emitters[0].RespawnDeadParticles=false;
+                    puff.lifespan = puff.Emitters[0].LifeTimeRange.Max + 0.5;
+                    /*puff.RiseRate = FRand() + 1;
                     puff.SetDrawScale(FRand() + 3.0);
                     puff.OrigScale = puff.DrawScale;
                     puff.LifeSpan = FRand() * 10 + 10;
-                    puff.OrigLifeSpan = puff.LifeSpan;
+                    puff.OrigLifeSpan = puff.LifeSpan;*/
                 }
 
                 light = Spawn(class'ExplosionLight',,, HitLocation);
@@ -353,7 +358,7 @@ auto state Flying
         GotoState('Exploding');
     }
 
-    simulated function HitWall (vector HitNormal, actor HitWall)
+    event HitWall (vector HitNormal, actor HitWall)
     {
         local Rotator rot;
         local float   volume;
@@ -389,7 +394,7 @@ auto state Flying
     }
 }
 
-simulated singular function PhysicsVolumeChange(PhysicsVolume Volume)
+singular function PhysicsVolumeChange(PhysicsVolume Volume)
 {
     local float splashsize;
     local actor splash;

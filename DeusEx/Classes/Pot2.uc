@@ -12,4 +12,5 @@ defaultproperties
      CollisionHeight=13.000000
      Mass=20.000000
      Buoyancy=5.000000
+     Skins[0]=Texture'DeusExDeco.Skins.Pot2Tex1'
 }

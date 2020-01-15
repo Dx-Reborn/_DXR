@@ -1,7 +1,4 @@
-//=============================================================================
-// WeaponProd.
-//=============================================================================
-class WeaponProdAtt extends WeaponAttachment;
+class WeaponProdAtt extends DXRWeaponAttachment;
 
 defaultproperties
 {

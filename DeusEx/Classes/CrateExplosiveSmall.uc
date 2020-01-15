@@ -16,4 +16,5 @@ defaultproperties
      CollisionHeight=16.000000
      Mass=30.000000
      Buoyancy=40.000000
+     Skins[0]=Texture'DeusExDeco.Skins.CrateExplosiveSmallTex1'
 }

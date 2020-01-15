@@ -8,11 +8,6 @@
 // Copyright(c) 2006 RuneStorm. All Rights Reserved.
 //=============================================================================
 
-#exec obj LOAD FILE=AW-2004Particles
-#exec obj LOAD FILE=ExplosionTex
-#exec obj LOAD FILE=ONSBPTextures
-#exec obj LOAD FILE=BenTex01
-
 class DeusExEmitter extends Emitter abstract;
 
 // Returns a nice neat RangeVector made of two input vectors, Min and Max.

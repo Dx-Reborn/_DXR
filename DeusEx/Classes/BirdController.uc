@@ -99,6 +99,8 @@ state Flying
 
 		bird(pawn).destLoc = bird(pawn).Location + 80*bird(pawn).Velocity/VSize(bird(pawn).Velocity);
 		GotoState('Flying', 'KeepGoing');
+
+		return true;
 	}
 
 	function Tick(float deltaSeconds)
@@ -240,7 +242,6 @@ state Flying
 
 	function bool PickFinalDestination()
 	{
-		local vector dest;
 		local Actor  landActor;
 		local vector hitLoc;
 		local vector hitNorm;

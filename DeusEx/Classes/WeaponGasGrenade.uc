@@ -1,11 +1,11 @@
 //=============================================================================
 // WeaponGasGrenade.
 //=============================================================================
-class WeaponGasGrenade extends DeusExWeapon;
+class WeaponGasGrenade extends Grenades;
 
 defaultproperties
 {
-		 InventoryType=class'WeaponGasGrenadeInv'
+     InventoryType=class'WeaponGasGrenadeInv'
      ItemName="Gas Grenade"
      Mesh=Mesh'DeusExItems.GasGrenadePickup'
      CollisionRadius=2.300000

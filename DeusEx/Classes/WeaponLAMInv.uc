@@ -7,26 +7,62 @@ var localized String shortName;
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the LAM to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			AmmoType.UseAmmo(1);
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // if facing a wall, affix the LAM to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            AmmoType.UseAmmo(1);
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
+    // otherwise, throw as usual
+    Super.Fire(Value);
 }
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetLAMSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetLAMFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
 
 defaultproperties
 {
-		 PickupClass=class'WeaponLAM'
+     AttachmentClass=class'WeaponLAMAtt'
+     PickupClass=class'WeaponLAM'
      PickupViewMesh=VertMesh'DXRPickups.LAMPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.LAM'
      Mesh=VertMesh'DXRPickups.LAMPickup'

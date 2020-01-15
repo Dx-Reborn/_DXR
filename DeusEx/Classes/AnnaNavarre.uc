@@ -59,29 +59,24 @@ function Explode()
     // spawn a mark
     s = spawn(class'ScorchMark', Base,, Location-vect(0,0,1)*CollisionHeight, Rotation-rot(16384,0,0)); //+
     if (s != None)
-    {
-        s.SetDrawScale(drawScale * FClamp(explosionDamage/28, 0.1, 3.0)); //*=
-    }
+        s.SetDrawScale(drawScale * FClamp(explosionDamage/28, 0.1, 3.0)); //*= // DXR: This is pointless...
 
-    for (i=0; i<22; i++) //CyberP: was /1.2
-            {
-                loc.X = (1-2*FRand()) * CollisionRadius;
-                loc.Y = (1-2*FRand()) * CollisionRadius;
-                loc.Z = (1-2*FRand()) * CollisionHeight;
-                loc += Location;
-                spawn(class'BloodDropFlying');
-                chunk = spawn(class'FleshFragment', None,, loc);
-                if (chunk != None)
-                {
-                    chunk.Velocity.Z = FRand() * 410 + 410;
-                    chunk.bFixedRotationDir = False;
-                    chunk.RotationRate = RotRand();
-                }
+        for (i=0; i<22; i++) //CyberP: was /1.2
+        {
+            loc.X = (1-2*FRand()) * CollisionRadius;
+            loc.Y = (1-2*FRand()) * CollisionRadius;
+            loc.Z = (1-2*FRand()) * CollisionHeight;
+            loc += Location;
+            spawn(class'BloodDropFlying');
+            chunk = spawn(class'FleshFragment', None,, loc);
+              if (chunk != None)
+              {
+                  chunk.Velocity.Z = FRand() * 410 + 410;
+                  chunk.bFixedRotationDir = False;
+                  chunk.RotationRate = RotRand();
+              }
        }
-    HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
-
-//    if (PawnShadow != none)
-//        PawnShadow.Destroy(); // Destroy the shadow projector, otherwise bad things will happen.
+       HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
 }
 
 

@@ -19,5 +19,5 @@ defaultproperties
      CollisionRadius=8.500000
      CollisionHeight=3.770000
      bCollideActors=True
-	   PickupClass=class'Ammo10mm'
+     PickupClass=class'Ammo10mm'
 }

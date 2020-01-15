@@ -5,37 +5,77 @@ class WeaponNanoVirusGrenadeInv extends GrenadeWeaponInv;
 
 function Fire(float Value)
 {
-	// if facing a wall, affix the NanoVirusGrenade to the wall
-	if (Pawn(Owner) != None)
-	{
-		if (bNearWall)
-		{
-			AmmoType.UseAmmo(1);
-			bReadyToFire = False;
-			GotoState('NormalFire');
-			bPointing = True;
-			PlayAnim('Place',, 0.1);
-			return;
-		}
-	}
-	// otherwise, throw as usual
-	Super.Fire(Value);
+    // if facing a wall, affix the NanoVirusGrenade to the wall
+    if (Pawn(Owner) != None)
+    {
+        if (bNearWall)
+        {
+            AmmoType.UseAmmo(1);
+            bReadyToFire = False;
+            GotoState('NormalFire');
+            bPointing = True;
+            PlayAnim('Place',, 0.1);
+            return;
+        }
+    }
+    // otherwise, throw as usual
+    Super.Fire(Value);
 }
 
-function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed)
+function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
 {
-	local Projectile proj;
+    local Projectile proj;
 
-	proj = Super.ProjectileFire(ProjClass, ProjSpeed);
+    proj = Super.ProjectileFire(ProjClass, ProjSpeed, bWarn);
 
-	if (proj != None)
-		proj.PlayAnim('Open');
+    if (proj != None)
+        proj.PlayAnim('Open');
+
+    return proj;
 }
+
+
+
+function Sound GetSelectSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetNanoVirusGrenadeSelect(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetSelectSound();
+    }
+    else return Super.GetSelectSound();
+}
+
+function Sound GetFireSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetNanoVirusGrenadeFire(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetFireSound();
+    }
+    else return Super.GetFireSound();
+}
+
 
 
 defaultproperties
 {
-		 PickupClass=class'WeaponNanoVirusGrenade'
+     AttachmentClass=class'WeaponNanoVirusGrenadeAtt'
+     PickupClass=class'WeaponNanoVirusGrenade'
      PickupViewMesh=VertMesh'DXRPickups.NanoVirusGrenadePickup'
      FirstPersonViewMesh=Mesh'DeusExItems.NanoVirusGrenade'
      Mesh=VertMesh'DXRPickups.NanoVirusGrenadePickup'

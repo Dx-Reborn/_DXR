@@ -17,6 +17,7 @@ var name AlarmTag;
 
 var bool bJumpOffPawn;
 var() bool bCrouchToPassObstacles; // Использовать в Controller > NotifyHitWall, чтобы Pawn пригибался для обхода ПОД препятствием. По умолчанию False.
+var bool bbCheckEnemy;
 
 // ----------------------------------------------------------------------
 // Structures
@@ -106,12 +107,16 @@ var float   SaveRate;           // value for how fast we were playing the frame,
 function RobotFiringEffects();
 function PawnFiringEffects();
 
-simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
+function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
 //    local string T;
     Super.DisplayDebug(Canvas, YL, YPos);
 
-    Canvas.DrawText("я EnemyLastSeen = "$EnemyLastSeen);
+    Canvas.DrawText("я EnemyLastSeen = "$EnemyLastSeen $ 
+//                    " CycleIndex = "$CycleIndex$
+                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
+                    " bbCheckEnemy = " $bbCheckEnemy $
+                    " AIVisibility = " $ AIVisibility(self, false));
 }
 
 function Draw_DebugLine()
@@ -4680,11 +4685,18 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
     local bool         bPotentialEnemy;
     local bool         bCheck;
 
+//if (Name != 'Terrorist23')
+//    return false;
+
+//    log(self@"CheckEnemyPresence(bCheckPlayer? "$bCheckPlayer @ "bCheckOther? "$bCheckOther);
+
 //    if (DistanceFromPlayer() > SKIP_ENEMY_DISTANCE)
 //        return false;
-
     bValid  = false;
     bCanSee = false;
+
+//    log(self@"bReactPresence? bLookingForEnemy? bNoNegativeAlliances? "$bReactPresence @ bLookingForEnemy @ bNoNegativeAlliances);
+
     if (bReactPresence && bLookingForEnemy && !bNoNegativeAlliances)
     {
         if (PotentialEnemyAlliance != '')
@@ -4697,6 +4709,7 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
             if (i < 16)
                 bCheck = true;
         }
+//        log(self@"bCheck? "$bCheck);
 
         if (bCheck)
         {
@@ -4708,6 +4721,9 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
             foreach CycleActors(Class'DeusExPawn', candidate, CycleIndex)
             {
                 bValidEnemy = IsValidEnemy(candidate);
+
+//                log(self@"candidate = "$candidate @"CycleIndex = "$ CycleIndex $ " bValidEnemy? "$bValidEnemy);//
+
                 if (!bValidEnemy && (PotentialEnemyTimer > 0))
                     if (PotentialEnemyAlliance == candidate.Alliance)
                         bPotentialEnemy = true;
@@ -4717,6 +4733,7 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
                     bPlayer = candidate.IsA('PlayerPawn');
                     if ((bPlayer && bCheckPlayer) || (!bPlayer && bCheckOther))
                     {
+//                        aVisibility = AICanSee(candidate, ComputeActorVisibility(candidate), true, true, true, true);
                         aVisibility = AICanSee(candidate, ComputeActorVisibility(candidate), true, true, true, true);
                         if (aVisibility > 0)
                         {
@@ -5451,12 +5468,9 @@ event Tick(float deltaTime)
     local bool         bDoLowPriority;
     local bool         bCheckOther;
     local bool         bCheckPlayer;
-    local bool         bCheckEnemy;
+//    local bool         bCheckEnemy;
 
     if (!bInWorld)
-    return;
-
-    if (DistanceFromPlayer() > 2500)
     return;
 
     player = DeusExPlayer(GetPlayerPawn());
@@ -5467,6 +5481,10 @@ event Tick(float deltaTime)
     animTimer[0] += deltaTime;
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
+
+    if (DistanceFromPlayer() > 2500)
+        return;
+
 
     bDoLowPriority = true;
     bCheckPlayer   = true;
@@ -5527,10 +5545,10 @@ event Tick(float deltaTime)
                    player.StartConversation(Self, IM_Radius);
         }
 
-        bCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
+        bbCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
 //      log(self@"bCheckEnemy = "$bCheckEnemy);
 
-        if (bCheckEnemy)
+        if (bbCheckEnemy)
             HandleEnemy();
         else
         {
@@ -6274,7 +6292,8 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 
 function SetInitialState()
 {
-  Super.SetInitialState();
+    GoToState('Auto');
+//  Super.SetInitialState();
 
 //  Controller.SetFall();
   //InitializePawn();
@@ -6288,7 +6307,7 @@ function InitializePawn()
         InitializeAlliances();
         InitializeHomeBase();
 
-        BlockReactions();
+//        BlockReactions();
 
         if (Alliance != '')
             ChangeAlly(Alliance, 1.0, true);
@@ -7280,8 +7299,6 @@ function UpdateFear(float deltaSeconds)
             FearLevel = 0;
     }
 }
-
-
 
 
 // ----------------------------------------------------------------------

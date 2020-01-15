@@ -14,7 +14,7 @@ event Tick(float deltaTime)
    Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
    Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
 
-   foreach RadiusActors(class'WaterVolume', wat, 10000) // DXR: Что это такое?
+   foreach RadiusActors(class'WaterVolume', wat, 40000) // DXR: Что это такое?
         if (!wat.Encompasses(self))
         {
             bHidden = true;

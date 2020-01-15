@@ -5,14 +5,19 @@
 //=============================================================================
 class ShellCasing_a extends DeusExFragment;
 
+var EM_ShellTrail trail;
+
+event SetInitialState()
+{
+   trail = Spawn(class'EM_ShellTrail',self,'',Location);
+   trail.SetPhysics(PHYS_Trailer);
+}
+
 defaultproperties
 {
      DrawType=DT_StaticMesh
      StaticMesh=StaticMesh'DXR_Decals.Shell_ShotGun'
      DrawScale=0.2
-//     Fragments(0)=Mesh'DeusExItems.ShellCasing2'
-//     Mesh=Mesh'DeusExItems.ShellCasing2'
-//     numFragmentTypes=1
      numFragmentTypes=0
      elasticity=0.400000
 

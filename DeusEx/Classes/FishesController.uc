@@ -55,7 +55,7 @@ state Wandering
 	event bool NotifyPhysicsVolumeChange(PhysicsVolume newZone)
 	{
 		local Rotator newRotation;
-		if (Fishes(pawn).PhysicsVolume.bWaterVolume)// && !FootRegion.Zone.bWaterZone)
+		if (NewZone.bWaterVolume && !Pawn.PhysicsVolume.bWaterVolume)
 		{
 			if (!Fishes(pawn).bStayHorizontal)
 			{
@@ -67,8 +67,7 @@ state Wandering
 				GotoState('Wandering', 'Moving');
 			}
 		}
-		return false;
-		//Super.ZoneChange(newZone);
+		return true;
 	}
 
 	function Tick(float deltatime)
@@ -177,7 +176,7 @@ state Wandering
 Begin:
 	Fishes(pawn).bBounce = True;
 	Fishes(pawn).destPoint = None;
-	MoveTo(Fishes(pawn).Location+Vector(Fishes(pawn).Rotation)*(Fishes(pawn).CollisionRadius+5),,true);
+	MoveTo(pawn.Location + Vector(pawn.Rotation) * (pawn.CollisionRadius + 5),,true);
 
 Init:
 	Fishes(pawn).bAcceptBump = false;
