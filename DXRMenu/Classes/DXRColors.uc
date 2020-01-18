@@ -120,7 +120,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 9;
   btnDefault.WinTop = 321;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -131,7 +131,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 526;
   btnOK.WinTop = 321;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -142,7 +142,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 425;
   btnCancel.WinTop = 321;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 }
 
 function resetToDefaults()
@@ -157,7 +157,7 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function SaveSettings()
@@ -169,8 +169,8 @@ function SaveSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).SaveSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
- 	gl.SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
+    gl.SaveConfig();
 }
 
 function CancelSettings()
@@ -182,8 +182,8 @@ function CancelSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).CancelSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
- 	gl.SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
+    gl.SaveConfig();
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -269,16 +269,16 @@ defaultproperties
   strCancel="Cancel"
   strDefault="Reset to defaults"
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=342
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=342
 
-		RightEdgeCorrectorX=628
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=313
+        RightEdgeCorrectorX=628
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=313
 
-		TopEdgeCorrectorX=546
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=546
+        TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=626
@@ -292,20 +292,20 @@ defaultproperties
 
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MenuColor'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=622
-		WinHeight=302
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_MenuColor'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=622
+        WinHeight=302
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

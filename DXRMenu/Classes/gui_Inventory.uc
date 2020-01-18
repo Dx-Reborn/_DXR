@@ -12,7 +12,7 @@ class gui_Inventory extends PlayerInterfacePanel;
 var GUIImage iInv, iKeys, iAmmo;
 var GUIListBox invList;
 var GUIButton btnEquip, btnUse, btnDrop, btnChangeAmmo;
-var PersonaItemButton selectedItem;			// Currently Selected Inventory item
+var PersonaItemButton selectedItem;         // Currently Selected Inventory item
 
 var HUDObjectSlot selectedSlot;
 var HUDObjectSlot objects[10];
@@ -21,18 +21,18 @@ var GUILabel lInventory, lMoney, lMoneyAmount, winStatus; // Инвентарь, деньги, 
 var GUILabel lCheckKeys, lCheckAmmo, winItemName;
 var GUIScrollTextBox tDesc;
 
-var int	invButtonHeight;
-var	int invButtonWidth;
+var int invButtonHeight;
+var int invButtonWidth;
 
-var int	smallInvHeight;									// Small Inventory Button Heigth
-var int	smallInvWidth;									// Small Inventory Button Width
+var int smallInvHeight;                                 // Small Inventory Button Heigth
+var int smallInvWidth;                                  // Small Inventory Button Width
 
 // Drag and Drop Stuff
 var bool bDragging;
-var InventoryButton dragButton;							// Button we're dragging around
+var InventoryButton dragButton;                         // Button we're dragging around
 var InventoryButton lastDragOverButton;
 //var Window       lastDragOverWindow;
-//var Window       destroyWindow;							// Used to defer window destroy
+//var Window       destroyWindow;                           // Used to defer window destroy
 
 //var PersonaInventoryItemButton testItem;
 
@@ -54,7 +54,7 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
 
- 	player.winInv = self;
+    player.winInv = self;
 
   if (bShow) // как в GMDX )))
      PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.25);
@@ -64,10 +64,10 @@ function ShowPanel(bool bShow)
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
-	player = DeusExPlayer(PlayerOwner().pawn);
+    Super.Initcomponent(MyController, MyOwner);
+    player = DeusExPlayer(PlayerOwner().pawn);
 
-	CreateMyControls();
+    CreateMyControls();
   invListChange(none);
 }
 
@@ -83,7 +83,7 @@ function CreateMyControls()
   invList.WinWidth = 212;
   invList.WinLeft = 780;//20;
   invList.WinTop = 82;
-	AppendComponent(invList, true);
+    AppendComponent(invList, true);
 /*--------------------------------------------------------------------------------------------------*/
   btnEquip = new(none) class'GUIButton';
   btnEquip.FontScale = FNS_Small;
@@ -96,7 +96,7 @@ function CreateMyControls()
   btnEquip.WinWidth = 87;
   btnEquip.WinLeft = 42;
   btnEquip.WinTop = 445;
-	AppendComponent(btnEquip, true);
+    AppendComponent(btnEquip, true);
 
   btnUse = new(none) class'GUIButton';
   btnUse.FontScale = FNS_Small;
@@ -109,7 +109,7 @@ function CreateMyControls()
   btnUse.WinWidth = 76;
   btnUse.WinLeft = 130;
   btnUse.WinTop = 445;
-	AppendComponent(btnUse, true);
+    AppendComponent(btnUse, true);
 
   btnDrop = new(none) class'GUIButton';
   btnDrop.FontScale = FNS_Small;
@@ -122,7 +122,7 @@ function CreateMyControls()
   btnDrop.WinWidth = 76;
   btnDrop.WinLeft = 207;
   btnDrop.WinTop = 445;
-	AppendComponent(btnDrop, true);
+    AppendComponent(btnDrop, true);
 
   btnChangeAmmo = new(none) class'GUIButton';
   btnChangeAmmo.FontScale = FNS_Small;
@@ -135,14 +135,14 @@ function CreateMyControls()
   btnChangeAmmo.WinWidth = 78;
   btnChangeAmmo.WinLeft = 284;
   btnChangeAmmo.WinTop = 445;
-	AppendComponent(btnChangeAmmo, true);
+    AppendComponent(btnChangeAmmo, true);
 
 /*--------------------------------------------------------------------------------------------------*/
   tDesc = new(none) class'GUIScrollTextBox';
   tDesc.StyleName="STY_DXR_DeusExScrollTextBox";
   tDesc.bBoundToParent = true;
   tDesc.FontScale=FNS_Small;
-	tDesc.WinHeight = 270;
+    tDesc.WinHeight = 270;
   tDesc.WinWidth = 340;
   tDesc.WinLeft = 425;
   tDesc.WinTop = 78;
@@ -151,17 +151,17 @@ function CreateMyControls()
   tDesc.EOLDelay = 0.01;//75;
   tDesc.CharDelay = 0.01;
   tDesc.RepeatDelay = 3.0;
-	AppendComponent(tDesc, true);
+    AppendComponent(tDesc, true);
 
   iInv = new(none) class'GUIImage'; 
   iInv.Image=texture'DXR_Inventory';
   iInv.bBoundToParent = true;
-	iInv.WinHeight = 600;
+    iInv.WinHeight = 600;
   iInv.WinWidth = 800;
   iInv.WinLeft = 0;
   iInv.WinTop = 32;
   iInv.tag = 75;
-	AppendComponent(iInv, true);
+    AppendComponent(iInv, true);
 /*--------------------------------------------------------------------------------------------------*/
   lInventory = new(none) class'GUILabel';
   lInventory.bBoundToParent = true;
@@ -169,11 +169,11 @@ function CreateMyControls()
   lInventory.caption = InventoryTitleText;
   lInventory.TextFont="UT2HeaderFont";
   lInventory.FontScale = FNS_Small;
- 	lInventory.WinHeight = 21;
+    lInventory.WinHeight = 21;
   lInventory.WinWidth = 93;
   lInventory.WinLeft = 42;
   lInventory.WinTop = 42;
-	AppendComponent(lInventory, true);
+    AppendComponent(lInventory, true);
 
   lMoney = new(none) class'GUILabel';
   lMoney.bBoundToParent = true;
@@ -182,11 +182,11 @@ function CreateMyControls()
   lMoney.caption = strCredits;
   lMoney.TextFont="UT2HeaderFont";
   lMoney.FontScale = FNS_Small;
- 	lMoney.WinHeight = 21;
+    lMoney.WinHeight = 21;
   lMoney.WinWidth = 129;
   lMoney.WinLeft = 156;
   lMoney.WinTop = 42;
-	AppendComponent(lMoney, true);
+    AppendComponent(lMoney, true);
 
   lMoneyAmount = new(none) class'GUILabel';
   lMoneyAmount.bBoundToParent = true;
@@ -195,13 +195,13 @@ function CreateMyControls()
   lMoneyAmount.caption = "Placeholder";
   lMoneyAmount.TextFont="UT2HeaderFont";
   lMoneyAmount.FontScale = FNS_Small;
- 	lMoneyAmount.WinHeight = 21;
+    lMoneyAmount.WinHeight = 21;
   lMoneyAmount.WinWidth = 73;
   lMoneyAmount.WinLeft = 288;
   lMoneyAmount.WinTop = 42;
-	AppendComponent(lMoneyAmount, true);
+    AppendComponent(lMoneyAmount, true);
 
-	// Сообщение
+    // Сообщение
   winStatus = new class'GUILabel';
   winStatus.bBoundToParent = true;
   winStatus.TextAlign = TXTA_Left;
@@ -209,37 +209,37 @@ function CreateMyControls()
   winStatus.caption = "Message";
   winStatus.TextFont="UT2SmallFont";
   winStatus.FontScale = FNS_Small;
- 	winStatus.WinHeight = 21;
+    winStatus.WinHeight = 21;
   winStatus.WinWidth = 344;
   winStatus.WinLeft = 423;
   winStatus.WinTop = 354;
-	AppendComponent(winStatus, true);
+    AppendComponent(winStatus, true);
 
-	// Название выбранного предмета инвентаря
-	winItemName = new class'GUILabel';
+    // Название выбранного предмета инвентаря
+    winItemName = new class'GUILabel';
   winItemName.bBoundToParent = true;
   winItemName.TextAlign = TXTA_Center;
   winItemName.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   winItemName.caption = "Header";
   winItemName.TextFont="UT2HeaderFont";
   winItemName.FontScale = FNS_Small;
- 	winItemName.WinHeight = 21;
+    winItemName.WinHeight = 21;
   winItemName.WinWidth = 344;
   winItemName.WinLeft = 423;
   winItemName.WinTop = 56;
-	AppendComponent(winItemName, true);
+    AppendComponent(winItemName, true);
 /*-- Ключики ---------------------------------------------------------------------------------------*/
-	iKeys = new(none) class'GUIImage';
-	iKeys.image = texture'LargeIconNanoKeyRing';
-	iKeys.bBoundToParent = true;
+    iKeys = new(none) class'GUIImage';
+    iKeys.image = texture'LargeIconNanoKeyRing';
+    iKeys.bBoundToParent = true;
   iKeys.bAcceptsInput = true;
-	iKeys.WinLeft = 426;//423;
-	iKeys.WinTop = 407;//431;//423;
- 	iKeys.WinHeight = 53;
+    iKeys.WinLeft = 426;//423;
+    iKeys.WinTop = 407;//431;//423;
+    iKeys.WinHeight = 53;
   iKeys.WinWidth = 53;
   iKeys.OnClickSound = CS_Click;
   iKeys.OnClick = InternalOnClick;
-	AppendComponent(iKeys, true);
+    AppendComponent(iKeys, true);
 
   lCheckKeys = new(none) class'GUILabel';
   lCheckKeys.bBoundToParent = true;
@@ -250,11 +250,11 @@ function CreateMyControls()
   lCheckKeys.TextAlign = TXTA_Center;
   lCheckKeys.VertAlign = TXTA_Center;
   lCheckKeys.FontScale = FNS_Small;
- 	lCheckKeys.WinHeight = 51;
+    lCheckKeys.WinHeight = 51;
   lCheckKeys.WinWidth = 100;
   lCheckKeys.WinLeft = 480;
   lCheckKeys.WinTop = 400;//424;
-	AppendComponent(lCheckKeys, true);
+    AppendComponent(lCheckKeys, true);
 /*-- Боеприпасы ------------------------------------------------------------------------------------*/
   lCheckAmmo = new(none) class'GUILabel';
   lCheckAmmo.bBoundToParent = true;
@@ -265,26 +265,26 @@ function CreateMyControls()
   lCheckAmmo.TextAlign = TXTA_Center;
   lCheckAmmo.VertAlign = TXTA_Center;
   lCheckAmmo.FontScale = FNS_Small;
- 	lCheckAmmo.WinHeight = 51;
+    lCheckAmmo.WinHeight = 51;
   lCheckAmmo.WinWidth = 100;
   lCheckAmmo.WinLeft = 609;
   lCheckAmmo.WinTop = 400;//424;
-	AppendComponent(lCheckAmmo, true);
+    AppendComponent(lCheckAmmo, true);
 
-	iAmmo = new(none) class'GUIImage';
-	iAmmo.image = texture'LargeIconAmmoShells';
-	iAmmo.bBoundToParent = true;
+    iAmmo = new(none) class'GUIImage';
+    iAmmo.image = texture'LargeIconAmmoShells';
+    iAmmo.bBoundToParent = true;
   iAmmo.bAcceptsInput = true;
-	iAmmo.WinLeft = 725;//715;
-	iAmmo.WinTop = 407;//431;//423;
- 	iAmmo.WinHeight = 53;
+    iAmmo.WinLeft = 725;//715;
+    iAmmo.WinTop = 407;//431;//423;
+    iAmmo.WinHeight = 53;
   iAmmo.WinWidth = 53;
   iAmmo.OnClickSound = CS_Click;
   iAmmo.OnClick = InternalOnClick;
-	AppendComponent(iAmmo, true);
+    AppendComponent(iAmmo, true);
 
   ApplyTheme();
-	fillList();
+    fillList();
   SetMoney();
   CreateInventoryButtons();
   CreateToolBeltSlots();
@@ -297,32 +297,35 @@ function CreateMyControls()
 // ----------------------------------------------------------------------
 function CreateToolBeltSlots()
 {
-	local int i, p;
+    local int i, p;
 
-	for (i=0; i<10; i++)
-	{
-	  p = 51 * i;
-		objects[i] = new class'HUDObjectSlot';
-		objects[i].WinTop = 486;
-		objects[i].WinLeft = 56 + p;
-		objects[i].WinInv = self;
-		//objects[i].OnClick = InternalOnClick;
-		AppendComponent(objects[i], true);
-		objects[i].SetObjectNumber(i);
+    for (i=0; i<10; i++)
+    {
+      p = 51 * i;
+        objects[i] = new class'HUDObjectSlot';
+        objects[i].WinTop = 486;
+        objects[i].WinLeft = 56 + p;
+        objects[i].WinInv = self;
+        //objects[i].OnClick = InternalOnClick;
+        AppendComponent(objects[i], true);
+        objects[i].SetObjectNumber(i);
 
-		// Last item is a little shorter
-		// DXR: Don't allow to remove KeyRing.
-		if (i == 0)
-		{
-			objects[i].WinWidth = 44;
+        // Last item is a little shorter
+        // DXR: Don't allow to remove KeyRing.
+        if (i == 0)
+        {
+            objects[i].WinWidth = 44;
       objects[i].WinLeft = 566;
       objects[i].bDropSource = false;
       objects[i].bAllowDragging = false;
-		}
-		// Заполнить...
-    if (DeusExPlayer(PlayerOwner().pawn).belt[i] != none)
-	      Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).belt[i]);
-	}
+        }
+        // Заполнить...
+
+//      if (DeusExHUD(PlayerOwner().myHUD).objects[i] != None)
+      if (DeusExPlayer(PlayerOwner().pawn).objects[i] != none)
+          Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).objects[i]);
+          //Objects[i].SetItem(DeusExHUD(PlayerOwner().myHUD).objects[i]);
+    }
 }
 
 
@@ -355,17 +358,17 @@ function ListNanoKeys()
 
 function fillList()
 {
-	local Inventory inv;
+    local Inventory inv;
 
   invList.List.Clear();
 
-	inv = PlayerOwner().Pawn.Inventory;
-	while (inv != None)
-	{
-//	  log("Adding inventory to list...");
+    inv = PlayerOwner().Pawn.Inventory;
+    while (inv != None)
+    {
+//    log("Adding inventory to list...");
     invList.List.Add(inv.ItemName, inv, inv.GetDescription());
-		inv = inv.inventory;
-	}
+        inv = inv.inventory;
+    }
 }
 
 function invListChange(GUIComponent Sender)
@@ -401,7 +404,7 @@ function bool InternalOnClick(GUIComponent Sender)
      DropSelectedItem();
   }
 
-	return true;
+    return true;
 }
 
 function PaintFrames(canvas u)
@@ -455,55 +458,55 @@ function FinishButtonDrag()
 
 function bool CalculateItemPosition(Inventory item,float pointX,float pointY,out int slotX,out int slotY)
 {
-	local int invWidth;
-	local int invHeight;
-	local int adjustX;
-	local int adjustY;
-	local bool bResult;
+    local int invWidth;
+    local int invHeight;
+    local int adjustX;
+    local int adjustY;
+    local bool bResult;
 
-	bResult = True;
+    bResult = True;
 
-	// First get the width and height of the inventory icon
-	invWidth  = item.GetlargeIconWidth();
-	invHeight = item.GetlargeIconHeight();
+    // First get the width and height of the inventory icon
+    invWidth  = item.GetlargeIconWidth();
+    invHeight = item.GetlargeIconHeight();
 
-	// Calculate the first square that represents where this object is
-	adjustX = 0;
-	adjustY = 0;
+    // Calculate the first square that represents where this object is
+    adjustX = 0;
+    adjustY = 0;
 
-	if (invWidth > invButtonWidth)
-		adjustX = ((invWidth/2) - (invButtonWidth / 2));
+    if (invWidth > invButtonWidth)
+        adjustX = ((invWidth/2) - (invButtonWidth / 2));
 
-	if (invWidth > invButtonwidth)
-		adjustY = ((invHeight/2) - (invButtonHeight /2));
+    if (invWidth > invButtonwidth)
+        adjustY = ((invHeight/2) - (invButtonHeight /2));
 
-	// Check to see if we're outside the range of where the 
-	// slots are located.
-	if ((pointX - adjustX) > (invButtonWidth  * player.maxInvCols))
-	{
-		slotX = player.maxInvCols - 1;
-		if (slotX < 0)
-			slotX = 0;
+    // Check to see if we're outside the range of where the 
+    // slots are located.
+    if ((pointX - adjustX) > (invButtonWidth  * player.maxInvCols))
+    {
+        slotX = player.maxInvCols - 1;
+        if (slotX < 0)
+            slotX = 0;
 
-		bResult = False;
-	}
-	else
-	{
-		slotX = (pointX - adjustX) / invButtonWidth;
+        bResult = False;
+    }
+    else
+    {
+        slotX = (pointX - adjustX) / invButtonWidth;
 
-		if (slotX < 0)
-			slotX = 0;
-	}
-	if ((pointY - adjustY) > (invButtonHeight * player.maxInvRows))
-	{
-		slotY = player.maxInvRows - 1;
-		bResult = False;
-	}
-	else
-	{
-		slotY = (pointY - adjustY) / invButtonHeight;
-	}
-	return bResult;
+        if (slotX < 0)
+            slotX = 0;
+    }
+    if ((pointY - adjustY) > (invButtonHeight * player.maxInvRows))
+    {
+        slotY = player.maxInvRows - 1;
+        bResult = False;
+    }
+    else
+    {
+        slotY = (pointY - adjustY) / invButtonHeight;
+    }
+    return bResult;
 }
 
 
@@ -518,11 +521,11 @@ function bool CalculateItemPosition(Inventory item,float pointX,float pointY,out
 
 function InventoryDeleted(Inventory item)
 {
-	if (item != None)
-	{
-		// Remove the item from the screen
-		RemoveItem(item);
-	}
+    if (item != None)
+    {
+        // Remove the item from the screen
+        RemoveItem(item);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -533,46 +536,46 @@ function InventoryDeleted(Inventory item)
 // ----------------------------------------------------------------------
 function RemoveItem(Inventory item)
 {
-//	local Window itemWindow;
+//  local Window itemWindow;
   local int i;
 
-	if (item == None)
-		return;
+    if (item == None)
+        return;
 
-	// Remove it from the object belt
-	RemoveObjectFromBelt(item);
+    // Remove it from the object belt
+    RemoveObjectFromBelt(item);
 
-	if ((selectedItem != None) && (item == selectedItem.GetClientObject()))
-	{
-		RemoveSelectedItem();
-	}
-	else
-	{
-		// Loop through the PersonaInventoryItemButtons looking for a match
+    if ((selectedItem != None) && (item == selectedItem.GetClientObject()))
+    {
+        RemoveSelectedItem();
+    }
+    else
+    {
+        // Loop through the PersonaInventoryItemButtons looking for a match
     for (i=0;i<Controls.Length;i++)
     {
        if (controls[i].IsA('PersonaInventoryItemButton'))
-		    if (PersonaInventoryItemButton(Controls[i]).GetClientObject() == item)
-		    {
-	        PersonaInventoryItemButton(Controls[i]).free();
-//	        class'ObjectManager'.static.Destroy(PersonaInventoryItemButton(Controls[i]));
+            if (PersonaInventoryItemButton(Controls[i]).GetClientObject() == item)
+            {
+            PersonaInventoryItemButton(Controls[i]).free();
+//          class'ObjectManager'.static.Destroy(PersonaInventoryItemButton(Controls[i]));
           break;
-		    }
+            }
     }
 
-/*		itemWindow = winItems.GetTopChild();
-		while( itemWindow != None )
-		{
-			if (itemWindow.GetClientObject() == item)
-			{
-				DeferDestroy(itemWindow);
-//				itemWindow.Destroy();
-				break;
-			}
-			
-			itemWindow = itemWindow.GetLowerSibling();
-		}*/
-	}
+/*      itemWindow = winItems.GetTopChild();
+        while( itemWindow != None )
+        {
+            if (itemWindow.GetClientObject() == item)
+            {
+                DeferDestroy(itemWindow);
+//              itemWindow.Destroy();
+                break;
+            }
+            
+            itemWindow = itemWindow.GetLowerSibling();
+        }*/
+    }
 }
 
 
@@ -589,66 +592,66 @@ function RemoveItem(Inventory item)
 // ----------------------------------------------------------------------
 function CreateInventoryButtons()
 {
-	local Inventory anItem;
-	local PersonaInventoryItemButton newButton;
+    local Inventory anItem;
+    local PersonaInventoryItemButton newButton;
 
-	// First, clear the player's inventory grid.
-	player.ClearInventorySlots();
+    // First, clear the player's inventory grid.
+    player.ClearInventorySlots();
 
-	// Iterate through the inventory items, creating a unique button for each
-	anItem = player.Inventory;
+    // Iterate through the inventory items, creating a unique button for each
+    anItem = player.Inventory;
 
-	while(anItem != None)
-	{
-		if (anItem.bDisplayableInv)
-		{
-			// Create another button
-			newButton = new class'PersonaInventoryItemButton';
-			newButton.OnClick = InventoryClick;
-			AppendComponent(newButton, true);
-			newButton.SetClientObject(anItem);
-			newButton.SetInventoryWindow(Self);
+    while(anItem != None)
+    {
+        if (anItem.bDisplayableInv)
+        {
+            // Create another button
+            newButton = new class'PersonaInventoryItemButton';
+            newButton.OnClick = InventoryClick;
+            AppendComponent(newButton, true);
+            newButton.SetClientObject(anItem);
+            newButton.SetInventoryWindow(Self);
 
-			// If the item has a large icon, use it.  Otherwise just use the 
-			// smaller icon that's also shared by the object belt 
+            // If the item has a large icon, use it.  Otherwise just use the 
+            // smaller icon that's also shared by the object belt 
 
-			if ( anItem.GetlargeIcon() != None )
-			{
-				newButton.SetIcon(anItem.GetlargeIcon());
-				newButton.SetIconSize(anItem.GetlargeIconWidth(), anItem.GetlargeIconHeight());
-			}
-			else
-			{
-				newButton.SetIcon(anItem.Geticon());
-				newButton.SetIconSize(smallInvWidth, smallInvHeight);
-			}
-			log("Set size of button: "@(invButtonWidth  * anItem.GetinvSlotsX()) + 1@ (invButtonHeight * anItem.GetinvSlotsY()) + 1);
-			newButton.SetSize((invButtonWidth  * anItem.GetinvSlotsX()) + 1, (invButtonHeight * anItem.GetinvSlotsY()) + 1);
+            if ( anItem.GetlargeIcon() != None )
+            {
+                newButton.SetIcon(anItem.GetlargeIcon());
+                newButton.SetIconSize(anItem.GetlargeIconWidth(), anItem.GetlargeIconHeight());
+            }
+            else
+            {
+                newButton.SetIcon(anItem.Geticon());
+                newButton.SetIconSize(smallInvWidth, smallInvHeight);
+            }
+            log("Set size of button: "@(invButtonWidth  * anItem.GetinvSlotsX()) + 1@ (invButtonHeight * anItem.GetinvSlotsY()) + 1);
+            newButton.SetSize((invButtonWidth  * anItem.GetinvSlotsX()) + 1, (invButtonHeight * anItem.GetinvSlotsY()) + 1);
 
-			// Okeydokey, update the player's inventory grid with this item.
-			player.SetInvSlots(anItem, 1);
+            // Okeydokey, update the player's inventory grid with this item.
+            player.SetInvSlots(anItem, 1);
 
-			// If this item is currently equipped, notify the button
-			if (anItem == player.inHand)
-				newButton.SetEquipped(true);
+            // If this item is currently equipped, notify the button
+            if (anItem == player.inHand)
+                newButton.SetEquipped(true);
 
-			// If this inventory item already has a position, use it.
-			if (( anItem.GetinvPosX() != -1 ) && ( anItem.GetinvPosY() != -1 ))
-			{
-				SetItemButtonPos(newButton, anItem.GetinvPosX(), anItem.GetinvPosY());
-			}
-			else
-			{
-				// Find a place for it.
-				if (player.FindInventorySlot(anItem))
-					SetItemButtonPos(newButton, anItem.GetinvPosX(), anItem.GetinvPosY());
-				else
-					newButton.free();//Destroy();		// Shit!
-			}
-		}
+            // If this inventory item already has a position, use it.
+            if (( anItem.GetinvPosX() != -1 ) && ( anItem.GetinvPosY() != -1 ))
+            {
+                SetItemButtonPos(newButton, anItem.GetinvPosX(), anItem.GetinvPosY());
+            }
+            else
+            {
+                // Find a place for it.
+                if (player.FindInventorySlot(anItem))
+                    SetItemButtonPos(newButton, anItem.GetinvPosX(), anItem.GetinvPosY());
+                else
+                    newButton.free();//Destroy();       // Shit!
+            }
+        }
 //    log("item.InvPosX="$anItem.GetinvPosX() @ "item.InvPosY="$anItem.GetinvPosY());
-		anItem = anItem.Inventory;
-	}	
+        anItem = anItem.Inventory;
+    }   
 }
 
 function bool InventoryClick(GUIComponent Sender)
@@ -671,314 +674,314 @@ function ClearSpecialHighlights()
     PersonaInventoryItemButton(controls[i]).ResetFill();
   }
 
-/*	local Window itemWindow;
-	local PersonaInventoryItemButton itemButton;
-	local Inventory anItem;
+/*  local Window itemWindow;
+    local PersonaInventoryItemButton itemButton;
+    local Inventory anItem;
 
-	// Loop through all our children and check to see if 
-	// we have a match.
+    // Loop through all our children and check to see if 
+    // we have a match.
 
-	itemWindow = winItems.GetTopChild();
-	while( itemWindow != None )
-	{
-		itemButton = PersonaInventoryItemButton(itemWindow);
-		if (itemButton != None)
-		{
-			itemButton.ResetFill();
-		}
+    itemWindow = winItems.GetTopChild();
+    while( itemWindow != None )
+    {
+        itemButton = PersonaInventoryItemButton(itemWindow);
+        if (itemButton != None)
+        {
+            itemButton.ResetFill();
+        }
 
-		itemWindow = itemWindow.GetLowerSibling();
-	}*/
+        itemWindow = itemWindow.GetLowerSibling();
+    }*/
 }
 
 function SetItemButtonPos(PersonaInventoryItemButton moveButton, int slotX, int slotY)
 {
-	moveButton.dragPosX = slotX;
-	moveButton.dragPosY = slotY;
+    moveButton.dragPosX = slotX;
+    moveButton.dragPosY = slotY;
 
-	moveButton.SetPos(moveButton.dragPosX * (invButtonWidth), moveButton.dragPosY * (invButtonHeight));
+    moveButton.SetPos(moveButton.dragPosX * (invButtonWidth), moveButton.dragPosY * (invButtonHeight));
 }
 
 function EnableButtons()
 {
-	local Inventory inv;
+    local Inventory inv;
 
-	// Make sure all the buttons exist!
-	if ((btnChangeAmmo == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
-		return;
+    // Make sure all the buttons exist!
+    if ((btnChangeAmmo == None) || (btnDrop == None) || (btnEquip == None) || (btnUse == None))
+        return;
 
-	if ( selectedItem == None )
-	{
-		btnChangeAmmo.DisableMe();
-		btnDrop.DisableMe();
-		btnEquip.DisableMe();
-		btnUse.DisableMe();
-	}
-	else
-	{
-		btnChangeAmmo.EnableMe();
-		btnEquip.EnableMe();
-		btnUse.EnableMe();
-		btnDrop.EnableMe();
+    if ( selectedItem == None )
+    {
+        btnChangeAmmo.DisableMe();
+        btnDrop.DisableMe();
+        btnEquip.DisableMe();
+        btnUse.DisableMe();
+    }
+    else
+    {
+        btnChangeAmmo.EnableMe();
+        btnEquip.EnableMe();
+        btnUse.EnableMe();
+        btnDrop.EnableMe();
 
-		inv = Inventory(selectedItem.GetClientObject());
+        inv = Inventory(selectedItem.GetClientObject());
 
-		if (inv != None)
-		{
-			// Anything can be dropped, except the NanoKeyRing
-			btnDrop.EnableMe();
+        if (inv != None)
+        {
+            // Anything can be dropped, except the NanoKeyRing
+            btnDrop.EnableMe();
 
-			if (inv.IsA('WeaponModInv'))
-			{
-				btnChangeAmmo.DisableMe();
-				btnUse.DisableMe();
-			}
-			else if (inv.IsA('NanoKeyRingInv'))
-			{
-				btnChangeAmmo.DisableMe();
-				btnDrop.DisableMe();
-				btnEquip.DisableMe();
-				btnUse.DisableMe();
-			}
-			// Augmentation Upgrade Cannisters cannot be used
-			// on this screen
-			else if ( inv.IsA('AugmentationUpgradeCannisterInv') )
-			{
-				btnUse.DisableMe();
-				btnChangeAmmo.DisableMe();
-			}
-			// Ammo can't be used or equipped
-			else if (inv.IsA('Ammunition'))
-			{
-				btnUse.DisableMe();
-				btnEquip.DisableMe();
-			}
-			else 
-			{
-				if ((inv == player.inHand ) || (inv == player.inHandPending))
-					btnEquip.Caption = UnequipButtonLabel;
-				else
-					btnEquip.Caption = EquipButtonLabel;
-			}
+            if (inv.IsA('WeaponModInv'))
+            {
+                btnChangeAmmo.DisableMe();
+                btnUse.DisableMe();
+            }
+            else if (inv.IsA('NanoKeyRingInv'))
+            {
+                btnChangeAmmo.DisableMe();
+                btnDrop.DisableMe();
+                btnEquip.DisableMe();
+                btnUse.DisableMe();
+            }
+            // Augmentation Upgrade Cannisters cannot be used
+            // on this screen
+            else if ( inv.IsA('AugmentationUpgradeCannisterInv') )
+            {
+                btnUse.DisableMe();
+                btnChangeAmmo.DisableMe();
+            }
+            // Ammo can't be used or equipped
+            else if (inv.IsA('Ammunition'))
+            {
+                btnUse.DisableMe();
+                btnEquip.DisableMe();
+            }
+            else 
+            {
+                if ((inv == player.inHand ) || (inv == player.inHandPending))
+                    btnEquip.Caption = UnequipButtonLabel;
+                else
+                    btnEquip.Caption = EquipButtonLabel;
+            }
 
-			// If this is a weapon, check to see if this item has more than 
-			// one type of ammo in the player's inventory that can be
-			// equipped.  If so, enable the "AMMO" button.
-			if ( inv.IsA('DeusExWeaponInv') )
-			{
-				btnUse.DisableMe();
+            // If this is a weapon, check to see if this item has more than 
+            // one type of ammo in the player's inventory that can be
+            // equipped.  If so, enable the "AMMO" button.
+            if ( inv.IsA('DeusExWeaponInv') )
+            {
+                btnUse.DisableMe();
 
-				if (DeusExWeaponInv(inv).NumAmmoTypesAvailable() < 2 )
-					btnChangeAmmo.DisableMe();
-			}
-			else
-			{
-				btnChangeAmmo.DisableMe();
-			}
-		}
-		else
-		{
-			btnChangeAmmo.DisableMe();
-			btnDrop.DisableMe();
-			btnEquip.DisableMe();
-			btnUse.DisableMe();
-		}
-	}
+                if (DeusExWeaponInv(inv).NumAmmoTypesAvailable() < 2 )
+                    btnChangeAmmo.DisableMe();
+            }
+            else
+            {
+                btnChangeAmmo.DisableMe();
+            }
+        }
+        else
+        {
+            btnChangeAmmo.DisableMe();
+            btnDrop.DisableMe();
+            btnEquip.DisableMe();
+            btnUse.DisableMe();
+        }
+    }
 }
 
 /*-- Equip && UnEquip -------------------------------------------------------------------------------------------*/
 function EquipSelectedItem()
 {
-	local Inventory inv;
+    local Inventory inv;
 
-	// If the object's in-hand, then unequip
-	// it.  Otherwise put this object in-hand.
+    // If the object's in-hand, then unequip
+    // it.  Otherwise put this object in-hand.
 
-	inv = Inventory(selectedItem.GetClientObject());
-	
-	if ( inv != None )
-	{
-		// Make sure the Binoculars aren't activated.
-		if ((player.inHand != None) && (player.inHand.IsA('BinocularsInv')))
-			BinocularsInv(player.inHand).Activate();
-		else if ((player.inHandPending != None) && (player.inHandPending.IsA('BinocularsInv')))
-			BinocularsInv(player.inHandPending).Activate();
+    inv = Inventory(selectedItem.GetClientObject());
+    
+    if ( inv != None )
+    {
+        // Make sure the Binoculars aren't activated.
+        if ((player.inHand != None) && (player.inHand.IsA('BinocularsInv')))
+            BinocularsInv(player.inHand).Activate();
+        else if ((player.inHandPending != None) && (player.inHandPending.IsA('BinocularsInv')))
+            BinocularsInv(player.inHandPending).Activate();
 
-		if ((inv == player.inHand) || (inv == player.inHandPending))
-		{
-			UnequipItemInHand();
-		}
-		else
-		{
-			player.PutInHand(inv);
-			PersonaInventoryItemButton(selectedItem).SetEquipped(True);
-		}
-		EnableButtons();
-	}
+        if ((inv == player.inHand) || (inv == player.inHandPending))
+        {
+            UnequipItemInHand();
+        }
+        else
+        {
+            player.PutInHand(inv);
+            PersonaInventoryItemButton(selectedItem).SetEquipped(True);
+        }
+        EnableButtons();
+    }
 }
 
 function UnequipItemInHand()
 {
-	if ((PersonaInventoryItemButton(selectedItem) != None) && ((player.inHand != None) || (player.inHandPending != None)))
-	{
-		player.PutInHand(None);
-		player.SetInHandPending(None);
+    if ((PersonaInventoryItemButton(selectedItem) != None) && ((player.inHand != None) || (player.inHandPending != None)))
+    {
+        player.PutInHand(None);
+        player.SetInHandPending(None);
 
-		PersonaInventoryItemButton(selectedItem).SetEquipped(False);
-		EnableButtons();
-	}
+        PersonaInventoryItemButton(selectedItem).SetEquipped(False);
+        EnableButtons();
+    }
 }
 /*-- !Equip && UnEquip ------------------------------------------------------------------------------------------*/
 
 function DropSelectedItem()
 {
-	local Inventory anItem;
-	local int numCopies, i;
+    local Inventory anItem;
+    local int numCopies, i;
 
-	if (selectedItem == None)
-		return;
+    if (selectedItem == None)
+        return;
 
-	if (Inventory(selectedItem.GetClientObject()) != None)
-	{
-		// Now drop it, unless this is the NanoKeyRing
-		if (!Inventory(selectedItem.GetClientObject()).IsA('NanoKeyRingInv'))
-		{
-			anItem = Inventory(selectedItem.GetClientObject());
+    if (Inventory(selectedItem.GetClientObject()) != None)
+    {
+        // Now drop it, unless this is the NanoKeyRing
+        if (!Inventory(selectedItem.GetClientObject()).IsA('NanoKeyRingInv'))
+        {
+            anItem = Inventory(selectedItem.GetClientObject());
 
-			// If this is a DeusExPickup, keep track of the number of copies
-			if (anItem.IsA('DeusExPickupInv'))
-				numCopies = DeusExPickupInv(anItem).NumCopies;
+            // If this is a DeusExPickup, keep track of the number of copies
+            if (anItem.IsA('DeusExPickupInv'))
+                numCopies = DeusExPickupInv(anItem).NumCopies;
 
-			// First make sure the player can drop it!
-			if (player.DropItem(anItem, True))
-			{
-				// Make damn sure there's nothing pending
-				if ((player.inHandPending == anItem) || (player.inHand == anItem))
-					player.SetInHandPending(None);
+            // First make sure the player can drop it!
+            if (player.DropItem(anItem, True))
+            {
+                // Make damn sure there's nothing pending
+                if ((player.inHandPending == anItem) || (player.inHand == anItem))
+                    player.SetInHandPending(None);
 
-				// Remove the item, but first check to see if it was stackable
-				// and there are more than 1 copies available
+                // Remove the item, but first check to see if it was stackable
+                // and there are more than 1 copies available
 
-				if ( (!anItem.IsA('DeusExPickupInv')) || (anItem.IsA('DeusExPickupInv') && (numCopies <= 1))) // <=1
-				{
-					RemoveSelectedItem();
-				}
-				// Send status message
-				winStatus.Caption = class'Actor'.static.Sprintf(DroppedLabel, anItem.itemName);
+                if ( (!anItem.IsA('DeusExPickupInv')) || (anItem.IsA('DeusExPickupInv') && (numCopies <= 1))) // <=1
+                {
+                    RemoveSelectedItem();
+                }
+                // Send status message
+                winStatus.Caption = class'Actor'.static.Sprintf(DroppedLabel, anItem.itemName);
 
-				// Update the object belt
+                // Update the object belt
         for (i=1;i<10;i++)
              Objects[i].UpdateItemText();
-			//	invBelt.UpdateBeltText(anItem);
-			}
-			else
-			{
-				winStatus.Caption = class'Actor'.static.Sprintf(CannotBeDroppedLabel, anItem.itemName);
-			}
-		}
-	}
+            //  invBelt.UpdateBeltText(anItem);
+            }
+            else
+            {
+                winStatus.Caption = class'Actor'.static.Sprintf(CannotBeDroppedLabel, anItem.itemName);
+            }
+        }
+    }
 }
 
 function RemoveSelectedItem()
 {
-	local Inventory inv;
+    local Inventory inv;
 
-	if (selectedItem == None)
-		return;
+    if (selectedItem == None)
+        return;
 
-	inv = Inventory(selectedItem.GetClientObject());
+    inv = Inventory(selectedItem.GetClientObject());
 
-	if (inv != None)
-	{
-		// Destroy the button
-		RemoveComponent(selectedItem);
-//		selectedItem.free(); //Destroy();
-//		class'ObjectManager'.static.Destroy(selectedItem);
-		selectedItem = None;
+    if (inv != None)
+    {
+        // Destroy the button
+        RemoveComponent(selectedItem);
+//      selectedItem.free(); //Destroy();
+//      class'ObjectManager'.static.Destroy(selectedItem);
+        selectedItem = None;
 
-		// Remove it from the object belt
-		RemoveObjectFromBelt(inv);
+        // Remove it from the object belt
+        RemoveObjectFromBelt(inv);
 
-		// Remove it from the inventory screen
-		UnequipItemInHand();
+        // Remove it from the inventory screen
+        UnequipItemInHand();
 
-		ClearSpecialHighlights();
+        ClearSpecialHighlights();
 
-		SelectInventory(None);
+        SelectInventory(None);
 
-		tDesc.SetContent(""); //winInfo.Clear();
-		EnableButtons();
+        tDesc.SetContent(""); //winInfo.Clear();
+        EnableButtons();
 
-//		player.RemoveItemFromSlot(inv);
-	}
+//      player.RemoveItemFromSlot(inv);
+    }
 }
 
 function UseSelectedItem()
 {
-	local Inventory inv;
-	local int numCopies, i;
+    local Inventory inv;
+    local int numCopies, i;
 
-	inv = Inventory(selectedItem.GetClientObject());
+    inv = Inventory(selectedItem.GetClientObject());
 
-	if (inv != None)
-	{
-		// If this item was equipped in the inventory screen, 
-		// make sure we set inHandPending to None so it's not
-		// drawn when we exit the Inventory screen
+    if (inv != None)
+    {
+        // If this item was equipped in the inventory screen, 
+        // make sure we set inHandPending to None so it's not
+        // drawn when we exit the Inventory screen
 
-		if (player.inHandPending == inv)
-			player.SetInHandPending(None);
+        if (player.inHandPending == inv)
+            player.SetInHandPending(None);
 
-		// If this is a binoculars, then it needs to be equipped
-		// before it can be activated
-		if (inv.IsA('BinocularsInv')) 
-			player.PutInHand(inv);
+        // If this is a binoculars, then it needs to be equipped
+        // before it can be activated
+        if (inv.IsA('BinocularsInv')) 
+            player.PutInHand(inv);
 
-		inv.Activate();
+        inv.Activate();
 
-		// Check to see if this is a stackable item, and keep track of 
-		// the count
-		if ((inv.IsA('DeusExPickupInv')) && (DeusExPickupInv(inv).bCanHaveMultipleCopies))
-			numCopies = DeusExPickupInv(inv).NumCopies;// - 1;??
-		else
-			numCopies = 0;
+        // Check to see if this is a stackable item, and keep track of 
+        // the count
+        if ((inv.IsA('DeusExPickupInv')) && (DeusExPickupInv(inv).bCanHaveMultipleCopies))
+            numCopies = DeusExPickupInv(inv).NumCopies;// - 1;??
+        else
+            numCopies = 0;
 
-		// Update the object belt
-//		invBelt.UpdateBeltText(inv);
+        // Update the object belt
+//      invBelt.UpdateBeltText(inv);
 
-		// Refresh the info!
-		if (numCopies > 0)
-		  for (i=1;i<10;i++)
+        // Refresh the info!
+        if (numCopies > 0)
+          for (i=1;i<10;i++)
         Objects[i].UpdateItemText();
-	//		UpdateWinInfo(inv);
-	}
+    //      UpdateWinInfo(inv);
+    }
 }
 
 
 function MoveItemButton(PersonaInventoryItemButton anItemButton, int col, int row)
 {
-	player.SetInvSlots(Inventory(anItemButton.GetClientObject()), 0);
-	player.PlaceItemInSlot(Inventory(anItemButton.GetClientObject()), col, row );
-	SetItemButtonPos(anItemButton, col, row);
+    player.SetInvSlots(Inventory(anItemButton.GetClientObject()), 0);
+    player.PlaceItemInSlot(Inventory(anItemButton.GetClientObject()), col, row );
+    SetItemButtonPos(anItemButton, col, row);
 }
 
 function ReturnButton(PersonaInventoryItemButton anItemButton)
 {
-	local Inventory inv;
+    local Inventory inv;
 
-	inv = Inventory(anItemButton.GetClientObject());
+    inv = Inventory(anItemButton.GetClientObject());
 
-	player.PlaceItemInSlot(inv, inv.GetinvPosX(), inv.GetinvPosY());
-	SetItemButtonPos(anItemButton, inv.GetinvPosX(), inv.GetinvPosY());
+    player.PlaceItemInSlot(inv, inv.GetinvPosX(), inv.GetinvPosY());
+    SetItemButtonPos(anItemButton, inv.GetinvPosX(), inv.GetinvPosY());
 }
 
 function HighlightSpecial(Inventory item)
 {
-	if (item != None)
-	{
-		if (item.IsA('WeaponModInv'))
-	      HighlightModWeapons(WeaponModInv(item));
-	}
+    if (item != None)
+    {
+        if (item.IsA('WeaponModInv'))
+          HighlightModWeapons(WeaponModInv(item));
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -989,119 +992,119 @@ function HighlightModWeapons(WeaponModInv weaponMod)
 {
   local int i;
   local inventory anItem;
-	local PersonaInventoryItemButton itemButton;
+    local PersonaInventoryItemButton itemButton;
 
   for (i=0;i<Controls.Length;i++)
   {
     if (controls[i].IsA('PersonaInventoryItemButton'))
     {
       itemButton = PersonaInventoryItemButton(controls[i]);
-		  if (itemButton != None)
+          if (itemButton != None)
       {
-			  anItem = Inventory(itemButton.GetClientObject());
-			  if ((anItem != None) && (anItem.IsA('DeusExWeaponInv')))
-			  {
-				  if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeaponInv(anItem))))
-				  {
-					  itemButton.HighlightWeapon(True);
-				  }
-			  }
+              anItem = Inventory(itemButton.GetClientObject());
+              if ((anItem != None) && (anItem.IsA('DeusExWeaponInv')))
+              {
+                  if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeaponInv(anItem))))
+                  {
+                      itemButton.HighlightWeapon(True);
+                  }
+              }
         else
         {
-				   itemButton.ResetFill();
+                   itemButton.ResetFill();
         }
-		  }
+          }
     }
   }
 
 //    PersonaInventoryItemButton(controls[i]).ResetFill();
-/*	local Window itemWindow;
-	local PersonaInventoryItemButton itemButton;
-	local Inventory anItem;
+/*  local Window itemWindow;
+    local PersonaInventoryItemButton itemButton;
+    local Inventory anItem;
 
-	// Loop through all our children and check to see if 
-	// we have a match.
+    // Loop through all our children and check to see if 
+    // we have a match.
 
-	itemWindow = winItems.GetTopChild();
-	while( itemWindow != None )
-	{
-		itemButton = PersonaInventoryItemButton(itemWindow);
-		if (itemButton != None)
-		{
-			anItem = Inventory(itemButton.GetClientObject());
-			if ((anItem != None) && (anItem.IsA('DeusExWeapon')))
-			{
-				if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeapon(anItem))))
-				{
-					itemButton.HighlightWeapon(True);
-				}
-			}
-			else
-			{
-				itemButton.ResetFill();
-			}
-		}	
-		itemWindow = itemWindow.GetLowerSibling();
-	}*/
+    itemWindow = winItems.GetTopChild();
+    while( itemWindow != None )
+    {
+        itemButton = PersonaInventoryItemButton(itemWindow);
+        if (itemButton != None)
+        {
+            anItem = Inventory(itemButton.GetClientObject());
+            if ((anItem != None) && (anItem.IsA('DeusExWeapon')))
+            {
+                if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeapon(anItem))))
+                {
+                    itemButton.HighlightWeapon(True);
+                }
+            }
+            else
+            {
+                itemButton.ResetFill();
+            }
+        }   
+        itemWindow = itemWindow.GetLowerSibling();
+    }*/
 }
 
 
 
 function StartButtonDrag(InventoryButton newDragButton)
 {
-	// Show the object belt
-	dragButton = newDragButton;
+    // Show the object belt
+    dragButton = newDragButton;
 
-	ClearSpecialHighlights();
+    ClearSpecialHighlights();
 
-	if (dragButton.IsA('PersonaInventoryItemButton'))
-	{
-		SelectInventory(None);
+    if (dragButton.IsA('PersonaInventoryItemButton'))
+    {
+        SelectInventory(None);
 
-		// Clear the space used by this button in the grid so we can
-		// still place the button here. 
-		player.SetInvSlots(Inventory(dragButton.GetClientObject()), 0);
-	}
-	else
-	{
-		// Make sure no hud icon is selected
-		if (selectedSlot != None)
-			selectedSlot.SetToggle(False);
-	}
+        // Clear the space used by this button in the grid so we can
+        // still place the button here. 
+        player.SetInvSlots(Inventory(dragButton.GetClientObject()), 0);
+    }
+    else
+    {
+        // Make sure no hud icon is selected
+        if (selectedSlot != None)
+            selectedSlot.SetToggle(False);
+    }
 
-	bDragging  = True;
+    bDragging  = True;
 }
 
 event bool ToggleChanged(GUIComponent button, bool bNewToggle)
 {
-	if (button.IsA('HUDObjectSlot') && (bNewToggle))
-	{
-		if ((selectedSlot != None) && (selectedSlot != HUDObjectSlot(button)))
-			selectedSlot.HighlightSelect(False);
+    if (button.IsA('HUDObjectSlot') && (bNewToggle))
+    {
+        if ((selectedSlot != None) && (selectedSlot != HUDObjectSlot(button)))
+            selectedSlot.HighlightSelect(False);
 
-		selectedSlot = HUDObjectSlot(button);
+        selectedSlot = HUDObjectSlot(button);
 
-		// Only allow to be highlighted if the slot isn't empty
-		if (selectedSlot.item != None)
-		{
-			selectedSlot.HighlightSelect(bNewToggle);
-			SelectInventoryItem(selectedSlot.item);
-		}
-		else
-		{
-			selectedSlot = None;
-		}
-	}
-//	else if (button.IsA('PersonaCheckboxWindow'))
-//	{
-//		DeusExPlayer(PlayerOwner().pawn).bShowAmmoDescriptions = bNewToggle;
-//		DeusExPlayer(PlayerOwner().pawn).SaveConfig();
-//		UpdateAmmoDisplay();
-//	}
+        // Only allow to be highlighted if the slot isn't empty
+        if (selectedSlot.item != None)
+        {
+            selectedSlot.HighlightSelect(bNewToggle);
+            SelectInventoryItem(selectedSlot.item);
+        }
+        else
+        {
+            selectedSlot = None;
+        }
+    }
+//  else if (button.IsA('PersonaCheckboxWindow'))
+//  {
+//      DeusExPlayer(PlayerOwner().pawn).bShowAmmoDescriptions = bNewToggle;
+//      DeusExPlayer(PlayerOwner().pawn).SaveConfig();
+//      UpdateAmmoDisplay();
+//  }
 
-	EnableButtons();
+    EnableButtons();
 
-	return True;
+    return True;
 }
 
 // ----------------------------------------------------------------------
@@ -1110,43 +1113,43 @@ event bool ToggleChanged(GUIComponent button, bool bNewToggle)
 
 function SelectInventory(PersonaItemButton buttonPressed)
 {
-	local Inventory anItem;
+    local Inventory anItem;
 
-	// Don't do extra work.
-	if (buttonPressed != None) 
-	{
-		if (selectedItem != buttonPressed)
-		{
-			// Deselect current button
-			if (selectedItem != None)
-				selectedItem.SelectButton(False);
+    // Don't do extra work.
+    if (buttonPressed != None) 
+    {
+        if (selectedItem != buttonPressed)
+        {
+            // Deselect current button
+            if (selectedItem != None)
+                selectedItem.SelectButton(False);
 
-			selectedItem = buttonPressed;
+            selectedItem = buttonPressed;
 
-			ClearSpecialHighlights();
-			HighlightSpecial(Inventory(selectedItem.GetClientObject()));
-			SelectObjectBeltItem(Inventory(selectedItem.GetClientObject()), True);
+            ClearSpecialHighlights();
+            HighlightSpecial(Inventory(selectedItem.GetClientObject()));
+            SelectObjectBeltItem(Inventory(selectedItem.GetClientObject()), True);
 
-			selectedItem.SelectButton(True);
+            selectedItem.SelectButton(True);
 
-			anItem = Inventory(selectedItem.GetClientObject());
+            anItem = Inventory(selectedItem.GetClientObject());
 
-			if (anItem != None)
-				anItem.UpdateInfo(tDesc);
+            if (anItem != None)
+                anItem.UpdateInfo(tDesc);
 
-			EnableButtons();
-		}
-	}
-	else
-	{
-		if (selectedItem != None)
-			PersonaInventoryItemButton(selectedItem).SelectButton(False);
+            EnableButtons();
+        }
+    }
+    else
+    {
+        if (selectedItem != None)
+            PersonaInventoryItemButton(selectedItem).SelectButton(False);
 
-		if (selectedSlot != None)
-			selectedSlot.SetToggle(false);
+        if (selectedSlot != None)
+            selectedSlot.SetToggle(false);
 
-		selectedItem = None;
-	}
+        selectedItem = None;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -1157,21 +1160,21 @@ function SelectInventory(PersonaItemButton buttonPressed)
 // ----------------------------------------------------------------------
 function SelectInventoryItem(Inventory item)
 {
-	local PersonaInventoryItemButton itemButton;
-	local int i;
+    local PersonaInventoryItemButton itemButton;
+    local int i;
 
   for (i=0;i<Controls.Length;i++)
   {
     if (controls[i].IsA('PersonaInventoryItemButton'))
     {
       itemButton = PersonaInventoryItemButton(controls[i]);
-		  if (itemButton != None)
+          if (itemButton != None)
       {
-				if (itemButton.GetClientObject() == item)
-				{
-					SelectInventory(itemButton);
-					break;
-				}
+                if (itemButton.GetClientObject() == item)
+                {
+                    SelectInventory(itemButton);
+                    break;
+                }
       }
     }
   }
@@ -1179,39 +1182,39 @@ function SelectInventoryItem(Inventory item)
 
 function SelectObjectBeltItem(Inventory item, bool bNewToggle)
 {
-//	invBelt.SelectObject(item, bNewToggle);
-	local int objectIndex;
+//  invBelt.SelectObject(item, bNewToggle);
+    local int objectIndex;
 
-	for (objectIndex=0;objectIndex<10;objectIndex++)
-	{
-		if (objects[objectIndex].item == item)
-		{
-			if (!objects[objectIndex].GetToggle())
-				objects[objectIndex].SetToggle(bNewToggle);
-		}
-		else
-		{
-			// Make sure no other objects are toggled.
-			objects[objectIndex].SetToggle(False);		
-			objects[objectIndex].HighlightSelect(False);
-		}
-	}
+    for (objectIndex=0;objectIndex<10;objectIndex++)
+    {
+        if (objects[objectIndex].item == item)
+        {
+            if (!objects[objectIndex].GetToggle())
+                objects[objectIndex].SetToggle(bNewToggle);
+        }
+        else
+        {
+            // Make sure no other objects are toggled.
+            objects[objectIndex].SetToggle(False);      
+            objects[objectIndex].HighlightSelect(False);
+        }
+    }
 }
 
 function RemoveObjectFromBelt(Inventory item)
 {
-	local int i;
+    local int i;
 
-	for (i=0;i<9;i++)
-	{
-		if (objects[i].GetItem() == item)
-		{
-			objects[i].SetItem(None);
-			item.RemoveFromObjectBelt();
-			item.SetbeltPos(-1);
-			break;
-		}
-	}
+    for (i=0;i<9;i++)
+    {
+        if (objects[i].GetItem() == item)
+        {
+            objects[i].SetItem(None);
+            item.bInObjectBelt = false;
+            item.SetbeltPos(-1);
+            break;
+        }
+    }
 }
 
 

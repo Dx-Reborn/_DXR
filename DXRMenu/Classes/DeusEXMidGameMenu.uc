@@ -15,7 +15,7 @@ var localized string strContinue, strQuit, strExitCurrent, strSettings, strSaveG
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.InitComponent(MyController, MyOwner);
+    Super.InitComponent(MyController, MyOwner);
   CreateMControls();
 }
 
@@ -28,18 +28,18 @@ function bool AlignFrame(Canvas C)
   else
   winleft = -2000;
 
-	return bInit;
+    return bInit;
 }
 
 function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
-	// Swallow first escape key event (key up from key down that opened menu)
-	if(bIgnoreEsc && Key == 0x1B)
-	{
-		bIgnoreEsc = false;
-		return true;
-	}
-	return false;
+    // Swallow first escape key event (key up from key down that opened menu)
+    if(bIgnoreEsc && Key == 0x1B)
+    {
+        bIgnoreEsc = false;
+        return true;
+    }
+    return false;
 }
 
 /*
@@ -61,7 +61,7 @@ function CreateMControls()
   bContinue.WinWidth = 243;
   bContinue.WinLeft = 16;
   bContinue.WinTop = 33;
-	AppendComponent(bContinue, true);
+    AppendComponent(bContinue, true);
 
   bSettings = new(none) class'GUIButton';
   bSettings.OnClick=InternalOnClick;
@@ -71,7 +71,7 @@ function CreateMControls()
   bSettings.WinWidth = 243;
   bSettings.WinLeft = 16;
   bSettings.WinTop = 70;
-	AppendComponent(bSettings, true);
+    AppendComponent(bSettings, true);
 
   bSaveGame = new(none) class'GUIButton';
   bSaveGame.OnClick=InternalOnClick;
@@ -81,7 +81,7 @@ function CreateMControls()
   bSaveGame.WinWidth = 243;
   bSaveGame.WinLeft = 16;
   bSaveGame.WinTop = 105;
-	AppendComponent(bSaveGame, true);
+    AppendComponent(bSaveGame, true);
 
   bLoadGame = new(none) class'GUIButton';
   bLoadGame.OnClick=InternalOnClick;
@@ -91,7 +91,7 @@ function CreateMControls()
   bLoadGame.WinWidth = 243;
   bLoadGame.WinLeft = 16;
   bLoadGame.WinTop = 142;
-	AppendComponent(bLoadGame, true);
+    AppendComponent(bLoadGame, true);
 
   bExitCurrent = new(none) class'GUIButton';
   bExitCurrent.OnClick=InternalOnClick;
@@ -101,7 +101,7 @@ function CreateMControls()
   bExitCurrent.WinWidth = 243;
   bExitCurrent.WinLeft = 16;
   bExitCurrent.WinTop = 177;
-	AppendComponent(bExitCurrent, true);
+    AppendComponent(bExitCurrent, true);
 
   bQuit = new(none) class'GUIButton';
   bQuit.OnClick=InternalOnClick;
@@ -112,69 +112,69 @@ function CreateMControls()
   bQuit.WinWidth = 243;
   bQuit.WinLeft = 16;
   bQuit.WinTop = 214;
-	AppendComponent(bQuit, true);
+    AppendComponent(bQuit, true);
 }
 
 event Opened(GUIComponent Sender)
 {
   super.Opened(Sender);
-	DeusExHUD(playerOwner().myHUD).midMenuMode = true;
+    DeusExHUD(playerOwner().myHUD).midMenuMode = true;
 }
 
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
 {
   super.Closed(Sender, bCancelled);
-	DeusExHUD(playerOwner().myHUD).midMenuMode = false;
+    DeusExHUD(playerOwner().myHUD).midMenuMode = false;
 }
 
 
 function InternalOnClose(optional Bool bCanceled)
 {
-	local PlayerController pc;
+    local PlayerController pc;
 
-	pc = PlayerOwner();
+    pc = PlayerOwner();
 
-	// Turn pause off if currently paused
-	if(pc != None && pc.Level.Pauser != None)
-		pc.SetPause(false);
+    // Turn pause off if currently paused
+    if(pc != None && pc.Level.Pauser != None)
+        pc.SetPause(false);
 
-	Super.OnClose(bCanceled);
+    Super.OnClose(bCanceled);
 }
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-	if(Sender==bQuit) // QUIT
-	{
-		return Controller.OpenMenu("DXRMenu.DXRQuitMessage");
-	}
-	if(Sender==bExitCurrent) // Exit to Main Menu
-	{
-	  log(Sender);
-	  Controller.OpenMenu("DXRMenu.DXRExitCurrentGameQuestion");
-	}
-	if(Sender==bContinue) // CONTINUE
-	{
-		Controller.CloseMenu(); // Назад в игру
-	}
-	if(Sender==bSettings) // SETTINGS
-	{
-		return Controller.OpenMenu(Controller.GetSettingsPage());
-	}
-	if(Sender==bSaveGame)
-	{
-		return Controller.OpenMenu("DXRMenu.DXRSaveWindow");
-	}
-	if(Sender==bLoadGame)
-	{
-		return Controller.OpenMenu("DXRMenu.DXRLoadWindow");
-	}
-//	return true;
+    if(Sender==bQuit) // QUIT
+    {
+        return Controller.OpenMenu("DXRMenu.DXRQuitMessage");
+    }
+    if(Sender==bExitCurrent) // Exit to Main Menu
+    {
+//      log(Sender);
+      Controller.OpenMenu("DXRMenu.DXRExitCurrentGameQuestion");
+    }
+    if(Sender==bContinue) // CONTINUE
+    {
+        Controller.CloseMenu(); // Назад в игру
+    }
+    if(Sender==bSettings) // SETTINGS
+    {
+        return Controller.OpenMenu(Controller.GetSettingsPage());
+    }
+    if(Sender==bSaveGame)
+    {
+        return Controller.OpenMenu("DXRMenu.DXRSaveWindow");
+    }
+    if(Sender==bLoadGame)
+    {
+        return Controller.OpenMenu("DXRMenu.DXRLoadWindow");
+    }
+//  return true;
 }
 
 function InternalOnMouseRelease(GUIComponent Sender)
 {
-	if (Sender == Self)
-		Controller.CloseMenu();
+    if (Sender == Self)
+        Controller.CloseMenu();
 }
 
 function AddSystemMenu(); // stub
@@ -190,54 +190,54 @@ defaultproperties
 
     openSound=sound'DeusExSounds.UserInterface.Menu_Activate'
 
-		DefaultHeight=249
-		DefaultWidth=264
+        DefaultHeight=249
+        DefaultWidth=264
 
-		MaxPageHeight=249
-		MaxPageWidth=264
-		MinPageHeight=249
-		MinPageWidth=264
+        MaxPageHeight=249
+        MaxPageWidth=264
+        MinPageHeight=249
+        MinPageWidth=264
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'menumainbackground_1'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=256
-		WinHeight=229
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'menumainbackground_1'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=256
+        WinHeight=229
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+    End Object
+    i_FrameBG=FloatingFrameBackground
   /* Заголовок */
-	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.98
-		WinHeight=128
-		WinLeft=-2
-		WinTop=-3
-		RenderWeight=0.1
-		FontScale=FNS_Small
-		bUseTextHeight=false
-		bAcceptsInput=True
-		bNeverFocus=true //False
-		bBoundToParent=true
-		bScaleToParent=true
-		OnMousePressed=FloatingMousePressed
-		OnMouseRelease=FloatingMouseRelease
+    Begin Object Class=GUIHeader Name=TitleBar
+        WinWidth=0.98
+        WinHeight=128
+        WinLeft=-2
+        WinTop=-3
+        RenderWeight=0.1
+        FontScale=FNS_Small
+        bUseTextHeight=false
+        bAcceptsInput=True
+        bNeverFocus=true //False
+        bBoundToParent=true
+        bScaleToParent=true
+        OnMousePressed=FloatingMousePressed
+        OnMouseRelease=FloatingMouseRelease
     OnRendered=PaintOnHeader
-		ScalingType=SCALE_ALL
+        ScalingType=SCALE_ALL
     StyleName="STY_DXR_DXWinHeader";
     Justification=TXTA_Left
-	End Object
-	t_WindowTitle=TitleBar
+    End Object
+    t_WindowTitle=TitleBar
 
 
-		winleft=0.4
-		wintop=0.3
+        winleft=0.4
+        wintop=0.3
 
 
     bIgnoreEsc=True

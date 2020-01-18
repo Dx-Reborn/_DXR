@@ -10,10 +10,10 @@ class MenuChoice_HUDColor extends MenuChoice_ThemeColor;
 
 function LoadSetting()
 {
-	// Populate the enums!
-	PopulateThemes(1);
-	currentTheme = gl.HUDThemeIndex;
-	SetValueFromString(class'DXR_HUD'.static.GetHUDThemeName(currentTheme));
+    // Populate the enums!
+    PopulateThemes(1);
+    currentTheme = gl.HUDThemeIndex;
+    SetValueFromString(class'DXR_HUD'.static.GetHUDThemeName(currentTheme));
 }
 
 // ----------------------------------------------------------------------
@@ -33,8 +33,8 @@ function SaveSetting()
 
 function CancelSetting()
 {
-	player.ThemeManager.SetCurrentMenuColorTheme(currentTheme);
-	ChangeStyle();
+    player.ThemeManager.SetCurrentMenuColorTheme(currentTheme);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -43,15 +43,15 @@ function CancelSetting()
 
 function ResetToDefault()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	player.HUDThemeName = defaultTheme;
-	theme = player.ThemeManager.SetHUDThemeByName(defaultTheme);
-	theme.ResetThemeToDefault();
+    player.HUDThemeName = defaultTheme;
+    theme = player.ThemeManager.SetHUDThemeByName(defaultTheme);
+    theme.ResetThemeToDefault();
 
-	SetValueFromString(player.HUDThemeName);
+    SetValueFromString(player.HUDThemeName);
 
-	ChangeStyle();
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -60,8 +60,8 @@ function ResetToDefault()
 */
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	ChangeStyle();
+    Super.CycleNextValue();
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -70,14 +70,14 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    ChangeStyle();
 }
 
 function ChangeStyle()
 {
-	gl.HUDTheme = enumText[GetValue()];
-	gl.HUDThemeIndex = GetValue();
+    gl.HUDTheme = enumText[GetValue()];
+    gl.HUDThemeIndex = GetValue();
 }
 
 // ----------------------------------------------------------------------

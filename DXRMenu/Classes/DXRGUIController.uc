@@ -53,15 +53,15 @@ defaultproperties
 
 
     FONT_NUM=12
-//	FONT_NUM=11
+//  FONT_NUM=11
 
     MouseOverSound=sound'DeusExSounds.UserInterface.Menu_Focus'
-    ClickSound		=sound'DeusExSounds.UserInterface.Menu_Press'
-    EditSound			=none //sound'DeusExSounds.UserInterface.Menu_Slider'
-    UpSound=none		//		=sound'DeusExSounds.UserInterface.'
-    DownSound=none //			=sound'DeusExSounds.UserInterface.Menu_Activate'
-		DragSound			=sound'DeusExSounds.UserInterface.Menu_Slider'
-    FadeSound			=sound'DeusExSounds.UserInterface.Menu_OK'
+    ClickSound      =sound'DeusExSounds.UserInterface.Menu_Press'
+    EditSound           =none //sound'DeusExSounds.UserInterface.Menu_Slider'
+    UpSound=none        //      =sound'DeusExSounds.UserInterface.'
+    DownSound=none //           =sound'DeusExSounds.UserInterface.Menu_Activate'
+        DragSound           =sound'DeusExSounds.UserInterface.Menu_Slider'
+    FadeSound           =sound'DeusExSounds.UserInterface.Menu_OK'
 
     /* Все курсоры уменьшены примерно в три раза */
 //  MouseCursors(0)=material'DeusExCursor.DeusExCursor_Main'          // Arrow
@@ -75,8 +75,8 @@ defaultproperties
     
 //    MouseCursorOffset(0)=(X=0.5,Y=0.5,Z=0) // Смещение курсора
 
-		DblClickWindow=0.5 // How long do you have for a double click//0.05
-		                    // было 0.5. Пришлось уменьшить, иначе диалоги проматывались слишком быстро.
+        DblClickWindow=0.5 // How long do you have for a double click//0.05
+                            // было 0.5. Пришлось уменьшить, иначе диалоги проматывались слишком быстро.
     bFixedMouseSize=true // Избавляет от проблемы с изменяющим размеры курсором :)
 
     ImageList(0)=Material'2K4Menus.Controls.checkboxball_b'

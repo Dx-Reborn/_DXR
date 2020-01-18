@@ -10,7 +10,7 @@ class MenuChoice_SoundCompatMode extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	LoadSettingBool();
+    LoadSettingBool();
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	SaveSettingBool();
+    SaveSettingBool();
 }
 
 // ----------------------------------------------------------------------
@@ -29,5 +29,5 @@ defaultproperties
     defaultValue=0
     Hint="If you have problems with sound, try to use this mode."
     actionText="Compatibility Mode"
-    configSetting="ini:Engine.Engine.AudioDevice UseEAX"
+    configSetting="ini:Engine.Engine.AudioDevice CompatibilityMode"
 }

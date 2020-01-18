@@ -31,8 +31,8 @@ function ShowPanel(bool bShow)
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
 //  gl = class'DeusExGlobals'.static.GetGlobals();
-	Super.Initcomponent(MyController, MyOwner);
-	CreateMyControls();
+    Super.Initcomponent(MyController, MyOwner);
+    CreateMyControls();
 }
 
 function CreateMyControls()
@@ -40,12 +40,12 @@ function CreateMyControls()
   iConvos = new(none) class'GUIImage'; 
   iConvos.Image=texture'DXR_ConversationsBackground';
   iConvos.bBoundToParent = true;
-	iConvos.WinHeight = 512;
+    iConvos.WinHeight = 512;
   iConvos.WinWidth = 512;
   iConvos.WinLeft = 100;
   iConvos.WinTop = 48;
   iConvos.tag = 75;
-	AppendComponent(iConvos, true);
+    AppendComponent(iConvos, true);
 
   lCons = new(none) class'GUILabel';
   lCons.bBoundToParent = true;
@@ -56,11 +56,11 @@ function CreateMyControls()
   lCons.TextAlign = TXTA_Left;
   lCons.VertAlign = TXTA_Center;
   lCons.FontScale = FNS_Small;
- 	lCons.WinHeight = 20;
+    lCons.WinHeight = 20;
   lCons.WinWidth = 120;
   lCons.WinLeft = 108;
   lCons.WinTop = 48;//32;
-	AppendComponent(lCons, true);
+    AppendComponent(lCons, true);
 
   bClear = new(none) class'GUIButton';
   bClear.FontScale = FNS_Small;
@@ -73,7 +73,7 @@ function CreateMyControls()
   bClear.WinWidth = 0;//100;
   bClear.WinLeft = 108;
   bClear.WinTop = 533;//517;
-	AppendComponent(bClear, true);
+    AppendComponent(bClear, true);
 
   ConvoList = new(none) class'DXRConListBox';
   ConvoList.bBoundToParent = true;
@@ -82,14 +82,14 @@ function CreateMyControls()
   ConvoList.WinLeft = 116;
   ConvoList.WinTop = 85;//69;
   ConvoList.bDisplayHeader = false;
-	AppendComponent(ConvoList, true);
-	cList = ConvoList.aList;
+    AppendComponent(ConvoList, true);
+    cList = ConvoList.aList;
   cList.OnChange = ConvoListChange;
 
   ConvoDetails = new(none) class'GUIScrollTextBox'; // описание (считывается из SaveInfo.dxs)
   ConvoDetails.StyleName="STY_DXR_DeusExScrollTextBox";
   ConvoDetails.FontScale=FNS_Small;
-	ConvoDetails.WinHeight = 306;
+    ConvoDetails.WinHeight = 306;
   ConvoDetails.WinWidth = 478;
   ConvoDetails.WinLeft = 118;
   ConvoDetails.WinTop = 240;
@@ -99,9 +99,9 @@ function CreateMyControls()
   ConvoDetails.CharDelay = 0.005;
   ConvoDetails.RepeatDelay = 3.0;
   ConvoDetails.bBoundToParent = true;
-	AppendComponent(ConvoDetails, true);
+    AppendComponent(ConvoDetails, true);
 
-	bsSpeaker = new(none) class'GUIButton';
+    bsSpeaker = new(none) class'GUIButton';
   bsSpeaker.FontScale = FNS_Small;
   bsSpeaker.Caption = "Speaker";
   bsSpeaker.Hint = "";
@@ -112,9 +112,9 @@ function CreateMyControls()
   bsSpeaker.WinWidth = 194;
   bsSpeaker.WinLeft = 114;
   bsSpeaker.WinTop = 66;
-	AppendComponent(bsSpeaker, true);
+    AppendComponent(bsSpeaker, true);
 
-	bsLocation = new(none) class'GUIButton';
+    bsLocation = new(none) class'GUIButton';
   bsLocation.FontScale = FNS_Small;
   bsLocation.Caption = "Location";
   bsLocation.Hint = "";
@@ -125,9 +125,9 @@ function CreateMyControls()
   bsLocation.WinWidth = 247;
   bsLocation.WinLeft = 308;
   bsLocation.WinTop = 66;
-	AppendComponent(bsLocation, true);
+    AppendComponent(bsLocation, true);
 
-	bsType = new(none) class'GUIButton';
+    bsType = new(none) class'GUIButton';
   bsType.FontScale = FNS_Small;
   bsType.Caption = "Type";
   bsType.Hint = "";
@@ -138,22 +138,48 @@ function CreateMyControls()
   bsType.WinWidth = 47;
   bsType.WinLeft = 555;
   bsType.WinTop = 66;
-	AppendComponent(bsType, true);
+    AppendComponent(bsType, true);
 
-	ApplyTheme();
+    ApplyTheme();
   fillNamesAndLocations();
 }
 
 
 function ConvoListChange(GUIComponent Sender)
 {
-  fillDetails();
+    local ConHistory history;
+
+    history = ConHistory(cList.ConvoHistory[cList.CurrentListId()].ClientObject);
+    DisplayHistory(history);
 }
 
 
 function fillNamesAndLocations()
 {
-  local int x;
+   local ConHistory history;
+   local int x;
+
+    history = DeusExPlayer(PlayerOwner().pawn).ConHistory;
+
+    while(history != None)
+    {
+       x = cList.ConvoHistory.Length;
+       cList.ConvoHistory.Length = x + 1;
+
+       cList.ConvoHistory[x].Speaker = history.conOwnerName;
+       cList.ConvoHistory[x].Location = history.strLocation;
+       cList.ConvoHistory[x].ClientObject = History;
+
+             if (history.bInfoLink)
+                 cList.ConvoHistory[x].Type="B";
+             else
+                 cList.ConvoHistory[x].Type="A";
+
+       history = history.next;
+    cList.AddedItem();
+    }
+
+/*  local int x;
 
   if (gl.myConHistory.length < 1)
   return;
@@ -174,21 +200,29 @@ function fillNamesAndLocations()
         cList.ConvoHistory[x].Type="A";
 
     cList.AddedItem();
-  }
+  }*/
 //  ConvoListChange(none);
 }
 
-function fillDetails()
+function DisplayHistory(ConHistory history)
 {
-//    ConvoDetails.AddText(lstEmail.aList.myMailList[lstEmail.alist.CurrentListId()].text[x]);
-  local int x;
+  local ConHistoryEvent event;
 
   ConvoDetails.SetContent("");
 
-  for (x=0; x<gl.myConHistory[cList.CurrentListId()].conHistoryEvents.length; x++)
+  event = history.firstEvent;
+  while(event != None)
+  {
+    ConvoDetails.AddText(" "$event.conSpeaker$"|     "$event.speech$"|");
+
+    // Continue on to the next event
+    event = event.next;
+  }
+
+/*  for (x=0; x<gl.myConHistory[cList.CurrentListId()].conHistoryEvents.length; x++)
   {
     ConvoDetails.AddText(gl.myConHistory[cList.CurrentListId()].conHistoryEvents[x].conSpeaker $"|"$chr(9)$chr(9)$ gl.myConHistory[cList.CurrentListId()].conHistoryEvents[x].speech$"|");
-  }
+  }*/
 }
 
 

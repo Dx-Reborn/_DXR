@@ -35,7 +35,7 @@ function CreateMyControls()
   SelStyle = Controller.GetStyle("STY_DXR_ListSelection",FontScale); // Get style to draw listbox selection
 
   imgSkill = new(none) class'GUIImage';
-	imgSkill.WinHeight = 32;
+    imgSkill.WinHeight = 32;
   imgSkill.WinWidth = 32;
   imgSkill.WinLeft = 176;
   imgSkill.WinTop = 250;
@@ -47,7 +47,7 @@ function CreateMyControls()
   sSkillInfo.MyScrollBar.WinWidth = 16;
   sSkillInfo.StyleName="STY_DXR_DeusExScrollTextBox";
   sSkillInfo.FontScale=FNS_Small;
-	sSkillInfo.WinHeight = 112;
+    sSkillInfo.WinHeight = 112;
   sSkillInfo.WinWidth = 390;
   sSkillInfo.WinLeft = 205;
   sSkillInfo.WinTop = 246;
@@ -56,7 +56,7 @@ function CreateMyControls()
   sSkillInfo.EOLDelay = 0.1;//75;
   sSkillInfo.CharDelay = 0.005;
   sSkillInfo.RepeatDelay = 3.0;
-	AppendComponent(sSkillInfo, true);
+    AppendComponent(sSkillInfo, true);
 
   /* Список навыков */
   lstSkills = new(none) class'GUIListBox';
@@ -81,7 +81,7 @@ function CreateMyControls()
   bLeftArrow.WinLeft = 110;
   bLeftArrow.WinTop = 336;
   bLeftArrow.caption="";
-	AppendComponent(bLeftArrow, true);
+    AppendComponent(bLeftArrow, true);
 
   bRightArrow = new(none) class'GUIButton';
   bRightArrow.StyleName="STY_DXR_ArrowButton_Right";
@@ -91,14 +91,14 @@ function CreateMyControls()
   bRightArrow.WinLeft = 125;
   bRightArrow.WinTop = 336;
   bRightArrow.caption="";
-	AppendComponent(bRightArrow, true);
+    AppendComponent(bRightArrow, true);
 
-	iPortrait = new(none) class'GUIImage';
+    iPortrait = new(none) class'GUIImage';
   iPortrait.WinHeight = 161;
   iPortrait.WinWidth = 114;
   iPortrait.WinLeft = 26;
   iPortrait.WinTop = 172;
-	AppendComponent(iPortrait, true);
+    AppendComponent(iPortrait, true);
 
   /* Нижний ряд кнопок */
   bStart = new(none) class'GUIButton'; // Начать игру
@@ -110,7 +110,7 @@ function CreateMyControls()
   bStart.WinWidth = 129;
   bStart.WinLeft = 478;
   bStart.WinTop = 410;
-	AppendComponent(bStart, true);
+    AppendComponent(bStart, true);
 
   bCancel = new(none) class'GUIButton'; // Назад
   bCancel.FontScale = FNS_Small;
@@ -121,7 +121,7 @@ function CreateMyControls()
   bCancel.WinWidth = 109;
   bCancel.WinLeft = 366;
   bCancel.WinTop = 410;
-	AppendComponent(bCancel, true);
+    AppendComponent(bCancel, true);
 
   bReset = new(none) class'GUIButton'; // Сбросить в начальные значения
   bReset.FontScale = FNS_Small;
@@ -133,7 +133,7 @@ function CreateMyControls()
   bReset.WinWidth = 201;
   bReset.WinLeft = 8;
   bReset.WinTop = 410;
-	AppendComponent(bReset, true);
+    AppendComponent(bReset, true);
 
   /* Upgrade/Downgrade */
   bUpgrade = new(none) class'GUIButton';
@@ -146,7 +146,7 @@ function CreateMyControls()
   bUpgrade.WinWidth = 75;
   bUpgrade.WinLeft = 172;
   bUpgrade.WinTop = 361;
-	AppendComponent(bUpgrade, true);
+    AppendComponent(bUpgrade, true);
 
   bDownGrade = new(none) class'GUIButton';
   bDownGrade.FontScale = FNS_Small;
@@ -157,9 +157,9 @@ function CreateMyControls()
   bDownGrade.WinWidth = 90;
   bDownGrade.WinLeft = 249;
   bDownGrade.WinTop = 361;
-	AppendComponent(bDownGrade, true);
+    AppendComponent(bDownGrade, true);
 
-	/* -- Надписи (label) -------------------------- */
+    /* -- Надписи (label) -------------------------- */
   lSkillName = new(none) class'GUILabel';
   lSkillName.TextFont="UT2HeaderFont";
   lSkillName.TextColor = class'Canvas'.static.MakeColor(200, 200, 200);
@@ -168,7 +168,7 @@ function CreateMyControls()
   lSkillName.WinWidth = 330;
   lSkillName.WinLeft = 204;
   lSkillName.WinTop = 227;
-	AppendComponent(lSkillName, true);
+    AppendComponent(lSkillName, true);
 
 
   lName = new(none) class'GUILabel';
@@ -180,7 +180,7 @@ function CreateMyControls()
   lName.WinWidth = 109;
   lName.WinLeft = 28;
   lName.WinTop = 92;
-	AppendComponent(lName, true);
+    AppendComponent(lName, true);
 
   lAppearence = new(none) class'GUILabel';
   lAppearence.Caption = strAppearanceLabel;
@@ -191,9 +191,9 @@ function CreateMyControls()
   lAppearence.WinWidth = 109;
   lAppearence.WinLeft = 28;
   lAppearence.WinTop = 152;
-	AppendComponent(lAppearence, true);
+    AppendComponent(lAppearence, true);
 
-	/* Доступно единиц */
+    /* Доступно единиц */
   lSkillPoints = new(none) class'GUILabel';
   lSkillPoints.Caption = strSkillPointsLabel;
   lSkillPoints.TextFont="UT2HeaderFont";
@@ -203,7 +203,7 @@ function CreateMyControls()
   lSkillPoints.WinWidth = 105;
   lSkillPoints.WinLeft = 404;
   lSkillPoints.WinTop = 364;
-	AppendComponent(lSkillPoints, true);
+    AppendComponent(lSkillPoints, true);
 
   /* Кодовое имя */
   lCodeName = new(none) class'GUILabel';
@@ -215,7 +215,7 @@ function CreateMyControls()
   lCodeName.WinWidth = 105;
   lCodeName.WinLeft = 28;
   lCodeName.WinTop = 36;
-	AppendComponent(lCodeName, true);
+    AppendComponent(lCodeName, true);
 
   lSkills = new(none) class'GUILabel';
   lSkills.Caption = strSkillsLabel;
@@ -226,7 +226,7 @@ function CreateMyControls()
   lSkills.WinWidth = 109;
   lSkills.WinLeft = 176;
   lSkills.WinTop = 36;
-	AppendComponent(lSkills, true);
+    AppendComponent(lSkills, true);
 
   lSkillLevel = new(none) class'GUILabel';
   lSkillLevel.Caption = strSkillLevelLabel;
@@ -237,7 +237,7 @@ function CreateMyControls()
   lSkillLevel.WinWidth = 70;
   lSkillLevel.WinLeft = 452;
   lSkillLevel.WinTop = 36;
-	AppendComponent(lSkillLevel, true);
+    AppendComponent(lSkillLevel, true);
 
   lSkillRequired = new(none) class'GUILabel';
   lSkillRequired.Caption = strPointsNeededLabel;
@@ -248,47 +248,47 @@ function CreateMyControls()
   lSkillRequired.WinWidth = 77;
   lSkillRequired.WinLeft = 528;
   lSkillRequired.WinTop = 36;
-	AppendComponent(lSkillRequired, true);
+    AppendComponent(lSkillRequired, true);
 
-	/* -- Поля ввода (хотя задействано будет всего одно из них) ----------------- */
-	eCodeName = new(none) class'GUIEditBox';
+    /* -- Поля ввода (хотя задействано будет всего одно из них) ----------------- */
+    eCodeName = new(none) class'GUIEditBox';
   eCodeName.StyleName="STY_DXR_EditBox";
-	eCodeName.bScaleToParent = false;
-	eCodeName.FontScale = FNS_Small;
-	eCodeName.bMaskText = false;
-	eCodeName.MaxWidth = 128;
-	eCodeName.WinHeight = 19;
+    eCodeName.bScaleToParent = false;
+    eCodeName.FontScale = FNS_Small;
+    eCodeName.bMaskText = false;
+    eCodeName.MaxWidth = 128;
+    eCodeName.WinHeight = 19;
   eCodeName.WinWidth = 113;
   eCodeName.WinLeft = 26;
   eCodeName.WinTop = 56;
-	AppendComponent(eCodeName, true);
+    AppendComponent(eCodeName, true);
 
   eName = new(none) class'GUIEditBox';
   eName.StyleName="STY_DXR_EditBox";
-	eName.bScaleToParent = false;
-	eName.FontScale = FNS_Small;
-	eName.bMaskText = false;
-	eName.MaxWidth = 128;
-	eName.WinHeight = 19;
+    eName.bScaleToParent = false;
+    eName.FontScale = FNS_Small;
+    eName.bMaskText = false;
+    eName.MaxWidth = 128;
+    eName.WinHeight = 19;
   eName.WinWidth = 113;
   eName.WinLeft = 26;
   eName.WinTop = 112;
-	AppendComponent(eName, true);
+    AppendComponent(eName, true);
 
   eSkillsAvail = new(none) class'GUIEditBox';
   eSkillsAvail.StyleName="STY_DXR_EditBox";
-	eSkillsAvail.bScaleToParent = false;
-	eSkillsAvail.bReadOnly = true;
-	eSkillsAvail.FontScale = FNS_Small;
-	eSkillsAvail.bMaskText = false;
-	eSkillsAvail.MaxWidth = 128;
-	eSkillsAvail.WinHeight = 19;
+    eSkillsAvail.bScaleToParent = false;
+    eSkillsAvail.bReadOnly = true;
+    eSkillsAvail.FontScale = FNS_Small;
+    eSkillsAvail.bMaskText = false;
+    eSkillsAvail.MaxWidth = 128;
+    eSkillsAvail.WinHeight = 19;
   eSkillsAvail.WinWidth = 84;
   eSkillsAvail.WinLeft = 512;
   eSkillsAvail.WinTop = 361;
-	AppendComponent(eSkillsAvail, true);
+    AppendComponent(eSkillsAvail, true);
 
-	ResetToDefaults();
+    ResetToDefaults();
 }
 
 // Override listbox drawing
@@ -319,18 +319,18 @@ function bool InternalOnClick(GUIComponent Sender)
 
   if (Sender==bStart)
   {
-  		// Make sure the name isn't blank
-		playerName = class'DxUtil'.static.TrimSpaces(eName.GetText());
+        // Make sure the name isn't blank
+        playerName = class'DxUtil'.static.TrimSpaces(eName.GetText());
 
-		if (playerName == "")
-		{
+        if (playerName == "")
+        {
         controller.OpenMenu("DXRMenu.DXRNameIsBlank");
-		}
-		else
-		{
-			SaveSettings();
-			DeusExPlayer(PlayerOwner().pawn).ShowIntro(True);
-		}
+        }
+        else
+        {
+            SaveSettings();
+            DeusExPlayer(PlayerOwner().pawn).ShowIntro(True);
+        }
   }
   if (Sender==bCancel)
   {
@@ -363,7 +363,7 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 {
 //  log("bCancelled"@bCancelled);
   if (bCancelled)
-  RestoreSkillPoints();	
+  RestoreSkillPoints(); 
 
   Super.Closed(Sender, bCancelled);
 }
@@ -371,7 +371,7 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 event Free()            // This control is no longer needed
 {
   DestroyLocalSkills();
-  log(self@"event Free()");
+//  log(self@"event Free()");
   Super.Free();
 }
 
@@ -379,163 +379,163 @@ event Free()            // This control is no longer needed
 /* -- Перенесено из оригинала ---------------------------------------------------------- */
 function UpgradeSkill()
 {
-	// First make sure we have a skill selected
-	if ( selectedSkill == None )
-		return;
+    // First make sure we have a skill selected
+    if ( selectedSkill == None )
+        return;
 
-	selectedSkill.IncLevel(DeusExPlayer(playerOwner().pawn));
+    selectedSkill.IncLevel(DeusExPlayer(playerOwner().pawn));
   lstSkills.list.Replace(selectedRowId, BuildSkillString(localSkills[selectedRowId]),localSkills[selectedRowId],, true);
 
-	UpdateSkillPoints();
-	EnableButtons();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 function DowngradeSkill()
 {
-	// First make sure we have a skill selected
-	if ( selectedSkill == None )
-		return;
+    // First make sure we have a skill selected
+    if ( selectedSkill == None )
+        return;
 
-	selectedSkill.DecLevel(True, DeusExPlayer(playerOwner().pawn));
+    selectedSkill.DecLevel(True, DeusExPlayer(playerOwner().pawn));
   lstSkills.list.Replace(selectedRowId, BuildSkillString(localSkills[selectedRowId]), localSkills[selectedRowId],, true);
 
-	UpdateSkillPoints();
-	EnableButtons();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 
 function bool PreviousPortrait(GUIComponent Sender)
 {
-	portraitIndex--;
+    portraitIndex--;
 
-	if (portraitIndex < 0)
-		portraitIndex = arrayCount(texPortraits) - 1;
+    if (portraitIndex < 0)
+        portraitIndex = arrayCount(texPortraits) - 1;
 
-	iPortrait.Image = texPortraits[portraitIndex];
+    iPortrait.Image = texPortraits[portraitIndex];
 return true;
 }
 
 function bool NextPortrait(GUIComponent Sender)
 {
-	portraitIndex++;
+    portraitIndex++;
 
-	if (portraitIndex == arrayCount(texPortraits))
-		portraitIndex = 0;
+    if (portraitIndex == arrayCount(texPortraits))
+        portraitIndex = 0;
 
-	iPortrait.Image = texPortraits[portraitIndex];
+    iPortrait.Image = texPortraits[portraitIndex];
 return true;
 }
 
 function SetDifficulty(float newDifficulty)
 {
-	combatDifficulty = newDifficulty;
+    combatDifficulty = newDifficulty;
 }
 
 function String BuildSkillString(Skill aSkill)
 {
-	local String skillString;
-	local String levelCost;
-	
-	if (aSkill.GetCurrentLevel() == 3) 
-		levelCost = "----";
-	else
-		levelCost = String(aSkill.GetCost());
+    local String skillString;
+    local String levelCost;
+    
+    if (aSkill.GetCurrentLevel() == 3) 
+        levelCost = "----";
+    else
+        levelCost = String(aSkill.GetCost());
 
-	skillString = aSkill.skillName $ chr(9) $ aSkill.GetCurrentLevelString() $ chr(9) $ levelCost;
+    skillString = aSkill.skillName $ chr(9) $ aSkill.GetCurrentLevelString() $ chr(9) $ levelCost;
 
-	return skillString;
+    return skillString;
 }
 
 function SaveSettings()
 {
-	ApplySkills();
-	DeusExPlayer(PlayerOwner().pawn).TruePlayerName   = eName.GetText();
-	DeusExPlayer(PlayerOwner().pawn).PlayerSkin       = portraitIndex;
-	DeusExPlayer(PlayerOwner().pawn).CombatDifficulty = combatDifficulty;
+    ApplySkills();
+    DeusExPlayer(PlayerOwner().pawn).TruePlayerName   = eName.GetText();
+    DeusExPlayer(PlayerOwner().pawn).PlayerSkin       = portraitIndex;
+    DeusExPlayer(PlayerOwner().pawn).CombatDifficulty = combatDifficulty;
 }
 
 function SaveSkillPoints()
 {
-	saveSkillPointsAvail = DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
-	saveSkillPointsTotal = DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
+    saveSkillPointsAvail = DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
+    saveSkillPointsTotal = DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail;
 }
 
 function RestoreSkillPoints()
 {
-	DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = saveSkillPointsAvail;
-	DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = saveSkillPointsTotal;
+    DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = saveSkillPointsAvail;
+    DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = saveSkillPointsTotal;
 }
 
 // Apply our local skills to the real skills in the game.
 function ApplySkills()
 {
-	local Skill aSkill;
-	local int skillIndex;
+    local Skill aSkill;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	while(localSkills[skillIndex] != None)
-	{
-		aSkill = DeusExPlayer(PlayerOwner().pawn).SkillSystem.FirstSkill;
-		while(aSkill != None)
-		{
-			if (aSkill.SkillName == localSkills[skillIndex].SkillName)
-			{
-				// Copy the skill
-				aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
-				break;
-			}
-			aSkill = aSkill.next;
-		}
-		skillIndex++;
-	}
+    while(localSkills[skillIndex] != None)
+    {
+        aSkill = DeusExPlayer(PlayerOwner().pawn).SkillSystem.FirstSkill;
+        while(aSkill != None)
+        {
+            if (aSkill.SkillName == localSkills[skillIndex].SkillName)
+            {
+                // Copy the skill
+                aSkill.CurrentLevel = localSkills[skillIndex].GetCurrentLevel();
+                break;
+            }
+            aSkill = aSkill.next;
+        }
+        skillIndex++;
+    }
 }
 
 // Makes a local copy of the skills so we can manipulate them without
 // actually making changes to the ones attached to the player.
 function CopySkills()
 {
-	local Skill aSkill;
-	local int skillIndex;
+    local Skill aSkill;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	aSkill = DeusExPlayer(PlayerOwner().pawn).SkillSystem.FirstSkill;
-	while(aSkill != None)
-	{
-		localSkills[skillIndex] = DeusExPlayer(PlayerOwner().pawn).Spawn(aSkill.Class);
-		skillIndex++;
-		aSkill = aSkill.next;
-	}
+    aSkill = DeusExPlayer(PlayerOwner().pawn).SkillSystem.FirstSkill;
+    while(aSkill != None)
+    {
+        localSkills[skillIndex] = DeusExPlayer(PlayerOwner().pawn).Spawn(aSkill.Class);
+        skillIndex++;
+        aSkill = aSkill.next;
+    }
 }
 
 
 function DestroyLocalSkills()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	while(localSkills[skillIndex] != None)
-	{
-//		localSkills[skillIndex].ResetSkill();
-		localSkills[skillIndex].Destroy();
-		localSkills[skillIndex] = None;
-		skillIndex++;
-	}
+    while(localSkills[skillIndex] != None)
+    {
+//      localSkills[skillIndex].ResetSkill();
+        localSkills[skillIndex].Destroy();
+        localSkills[skillIndex] = None;
+        skillIndex++;
+    }
 }
 
 function ResetLocalSkills()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	while(localSkills[skillIndex] != None)
-	{
-		localSkills[skillIndex].ResetSkill();
-		skillIndex++;
-	}
+    while(localSkills[skillIndex] != None)
+    {
+        localSkills[skillIndex].ResetSkill();
+        skillIndex++;
+    }
 }
 
 
@@ -545,103 +545,103 @@ function ResetToDefaults()
   eCodeName.bReadOnly = true;
   combatDifficulty = DeusExPlayer(PlayerOwner().pawn).default.CombatDifficulty;
 
-	eName.SetText(DeusExPlayer(PlayerOwner().pawn).TruePlayerName);
+    eName.SetText(DeusExPlayer(PlayerOwner().pawn).TruePlayerName);
 
-	DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = DeusExPlayer(PlayerOwner().pawn).default.SkillPointsAvail;
-	DeusExPlayer(PlayerOwner().pawn).SkillPointsTotal = DeusExPlayer(PlayerOwner().pawn).default.SkillPointsTotal;
+    DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail = DeusExPlayer(PlayerOwner().pawn).default.SkillPointsAvail;
+    DeusExPlayer(PlayerOwner().pawn).SkillPointsTotal = DeusExPlayer(PlayerOwner().pawn).default.SkillPointsTotal;
 
-	portraitIndex = 0;
-	iPortrait.Image = texPortraits[portraitIndex];
+    portraitIndex = 0;
+    iPortrait.Image = texPortraits[portraitIndex];
 
 //  ResetLocalSkills();//
-	CopySkills();
-	PopulateSkillsList();
-	UpdateSkillPoints();
-	EnableButtons();
-	lstSkillsChange(none);
+    CopySkills();
+    PopulateSkillsList();
+    UpdateSkillPoints();
+    EnableButtons();
+    lstSkillsChange(none);
 }
 
 function UpdateSkillPoints()
 {
-	eSkillsAvail.SetText(String(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail));
+    eSkillsAvail.SetText(String(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail));
 }
 
 
 function EnableButtons()
 {
-	// Abort if a skill item isn't selected
-	if (selectedSkill == None)
-	{
-		bUpgrade.DisableMe();
-		bDownGrade.DisableMe();
-	}
-	else
-	{
-		// Upgrade Skill only available if the skill is not at 
-		// the maximum -and- the user has enough skill points
-		// available to upgrade the skill
-		if (selectedSkill.CanAffordToUpgrade(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail))
-		{
+    // Abort if a skill item isn't selected
+    if (selectedSkill == None)
+    {
+        bUpgrade.DisableMe();
+        bDownGrade.DisableMe();
+    }
+    else
+    {
+        // Upgrade Skill only available if the skill is not at 
+        // the maximum -and- the user has enough skill points
+        // available to upgrade the skill
+        if (selectedSkill.CanAffordToUpgrade(DeusExPlayer(PlayerOwner().pawn).SkillPointsAvail))
+        {
       bUpgrade.EnableMe();
-		}
-		else
-		bUpgrade.DisableMe();
+        }
+        else
+        bUpgrade.DisableMe();
 
-		if (selectedSkill.GetCurrentLevel() > 0)
-		{
-		   bDownGrade.EnableMe();
-		}
-		else
-		bDownGrade.DisableMe();
-	}
+        if (selectedSkill.GetCurrentLevel() > 0)
+        {
+           bDownGrade.EnableMe();
+        }
+        else
+        bDownGrade.DisableMe();
+    }
 
-	// Only enable the OK button if the player has entered a name
-	if (eName != None)
-	{
-		if (eName.GetText() == "")
-			bStart.DisableMe(); // EnableActionButton(AB_Other, False, "START");
-		else
-			bStart.EnableMe();//			EnableActionButton(AB_Other, True, "START");
-	}
+    // Only enable the OK button if the player has entered a name
+    if (eName != None)
+    {
+        if (eName.GetText() == "")
+            bStart.DisableMe(); // EnableActionButton(AB_Other, False, "START");
+        else
+            bStart.EnableMe();//            EnableActionButton(AB_Other, True, "START");
+    }
 }
 
 function PopulateSkillsList()
 {
-	local int skillIndex;
+    local int skillIndex;
 
-	lstSkills.List.Clear();
-	skillIndex = 0;
+    lstSkills.List.Clear();
+    skillIndex = 0;
 
-	// Iterate through the skills, adding them to our list
-	while(localSkills[skillIndex] != None)
-	{
-	 	lstSkills.List.Add(BuildSkillString(localSkills[skillIndex]), localSkills[skillIndex]);
-		skillIndex++;
-	}
+    // Iterate through the skills, adding them to our list
+    while(localSkills[skillIndex] != None)
+    {
+        lstSkills.List.Add(BuildSkillString(localSkills[skillIndex]), localSkills[skillIndex]);
+        skillIndex++;
+    }
 }
 
 function lstSkillsChange(GUIComponent Sender)
 {
-//	local Skill aSkill;
+//  local Skill aSkill;
 
-	selectedSkill = Skill(lstSkills.List.GetObject());
+    selectedSkill = Skill(lstSkills.List.GetObject());
   selectedRowId = lstSkills.list.FindItemObject(selectedSkill);
-	sSkillInfo.SetContent(selectedSkill.Description);
-	imgSkill.image = selectedSkill.SkillIcon;
-	lSkillName.Caption = selectedSkill.SkillName;
+    sSkillInfo.SetContent(selectedSkill.Description);
+    imgSkill.image = selectedSkill.SkillIcon;
+    lSkillName.Caption = selectedSkill.SkillName;
 
-//	lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
+//  lstSkills.ModifyRow(selectedRowId, BuildSkillString( selectedSkill ));
 
-/*	selectedRowId = focusRowId;
+/*  selectedRowId = focusRowId;
 
-	winSkillInfo.SetSkill(selectedSkill);*/
+    winSkillInfo.SetSkill(selectedSkill);*/
 
-	EnableButtons();
+    EnableButtons();
 }
 
 /*function int FindItemObject(Object Obj)
 {
-	return FindIndex("",,,Obj);
+    return FindIndex("",,,Obj);
 }*/
 
 
@@ -650,27 +650,27 @@ function lstSkillsChange(GUIComponent Sender)
 
 defaultproperties
 {
-		DefaultHeight=415
-		DefaultWidth=610
+        DefaultHeight=415
+        DefaultWidth=610
 
-		MaxPageHeight=415
-		MaxPageWidth=610
-		MinPageHeight=415
-		MinPageWidth=610
+        MaxPageHeight=415
+        MaxPageWidth=610
+        MinPageHeight=415
+        MinPageWidth=610
 
     levelPos=280
     pointsPos=170 // for TXTA_Center //365 for TXTA_Left
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=429
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=429
 
-		RightEdgeCorrectorX=607
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=402
+        RightEdgeCorrectorX=607
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=402
 
-		TopEdgeCorrectorX=504
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=504
+        TopEdgeCorrectorY=16
     TopEdgeLength=100
 
     TopRightCornerX=604
@@ -700,20 +700,20 @@ defaultproperties
     texPortraits(3)=Texture'DeusExUI.UserInterface.MenuNewGameJCDenton_4'
     texPortraits(4)=Texture'DeusExUI.UserInterface.MenuNewGameJCDenton_5'
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'MenuNewGameBackground'
-		ImageRenderStyle=MSTY_Normal
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=600
-		WinHeight=392
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'MenuNewGameBackground'
+        ImageRenderStyle=MSTY_Normal
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=600
+        WinHeight=392
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
     OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

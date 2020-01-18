@@ -5,7 +5,7 @@
 class DXRMenuMain extends DxWindowTemplate;
 
 #exec OBJ LOAD FILE=DeusExUI.u
-const ver="Deus Ex: Reborn Alpha build";
+const ver="Deus Ex: Reborn Beta build";
 var Automated GUIButton bNew, bLoad, bTraining, bCreators, bOptions, bMods, bIntro, bExit;
 var localized string strNew, strLoad, strTraining, strCreators, strOptions, strMods, strIntro, strExit;
 var localized string dNew, dLoad, dSave, dTraining, dCreators, dOptions, dMods, dIntro, dExit;
@@ -14,7 +14,7 @@ var() float bX, bY;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.InitComponent(MyController, MyOwner);
+    Super.InitComponent(MyController, MyOwner);
   CreateMainMenuControls();
 }
 
@@ -30,8 +30,8 @@ function CreateMainMenuControls()
   bNew.WinWidth = 243;
   bNew.WinLeft = 16;
   bNew.WinTop = 33;
-	AppendComponent(bNew, true);
-	// Загрузить
+    AppendComponent(bNew, true);
+    // Загрузить
   bLoad = new(none) class'GUIButton';
   bLoad.OnClick=InternalOnClick;
   bLoad.RenderWeight = 1.0;
@@ -42,8 +42,8 @@ function CreateMainMenuControls()
   bLoad.WinWidth = 243;
   bLoad.WinLeft = 16;
   bLoad.WinTop = 69;
-	AppendComponent(bLoad, true);
-	// Тренировка
+    AppendComponent(bLoad, true);
+    // Тренировка
   bTraining = new(none) class'GUIButton';
   bTraining.OnClick=InternalOnClick;
   bTraining.RenderWeight = 1.0;
@@ -54,8 +54,8 @@ function CreateMainMenuControls()
   bTraining.WinWidth = 243;
   bTraining.WinLeft = 16;
   bTraining.WinTop = 105;
-	AppendComponent(bTraining, true);
-	// Авторы
+    AppendComponent(bTraining, true);
+    // Авторы
   bCreators = new(none) class'GUIButton';
   bCreators.OnClick=InternalOnClick;
   bCreators.RenderWeight = 1.0;
@@ -66,8 +66,8 @@ function CreateMainMenuControls()
   bCreators.WinWidth = 243;
   bCreators.WinLeft = 16;
   bCreators.WinTop = 141;
-	AppendComponent(bCreators, true);
-	// Настройки
+    AppendComponent(bCreators, true);
+    // Настройки
   bOptions = new(none) class'GUIButton';
   bOptions.OnClick=InternalOnClick;
   bOptions.RenderWeight = 1.0;
@@ -78,8 +78,8 @@ function CreateMainMenuControls()
   bOptions.WinWidth = 243;
   bOptions.WinLeft = 16;
   bOptions.WinTop = 177;
-	AppendComponent(bOptions, true);
-	// Моды )))
+    AppendComponent(bOptions, true);
+    // Моды )))
   bMods = new(none) class'GUIButton';
   bMods.OnClick=InternalOnClick;
   bMods.RenderWeight = 1.0;
@@ -90,8 +90,8 @@ function CreateMainMenuControls()
   bMods.WinWidth = 243;
   bMods.WinLeft = 16;
   bMods.WinTop = 213;
-	AppendComponent(bMods, true);
-	// View Intro!
+    AppendComponent(bMods, true);
+    // View Intro!
   bIntro = new(none) class'GUIButton';
   bIntro.OnClick=InternalOnClick;
   bIntro.RenderWeight = 1.0;
@@ -102,8 +102,8 @@ function CreateMainMenuControls()
   bIntro.WinWidth = 243;
   bIntro.WinLeft = 16;
   bIntro.WinTop = 249;
-	AppendComponent(bIntro, true);
-	// Выход
+    AppendComponent(bIntro, true);
+    // Выход
   bExit = new(none) class'GUIButton';
   bExit.OnClick=InternalOnClick;
   bExit.RenderWeight = 1.0;
@@ -114,7 +114,7 @@ function CreateMainMenuControls()
   bExit.WinWidth = 243;
   bExit.WinLeft = 16;
   bExit.WinTop = 307;
-	AppendComponent(bExit, true);
+    AppendComponent(bExit, true);
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -123,35 +123,35 @@ function bool InternalOnClick(GUIComponent Sender)
   {
     Controller.OpenMenu("DXRMenu.DXRCombatDifficultyChoice");
   }
-	if(Sender==bMods) // Список модов
-	{
-		Controller.OpenMenu("DXRMenu.DXRModList");
-	}
-	if(Sender==bTraining) // Тренировка
-	{
-		Controller.OpenMenu("DXRMenu.DXRAskTrainingMessage");
-	}
-	if(Sender==bExit) // выход
-	{
-		Controller.OpenMenu(Controller.GetQuitPage());
-	}
-	if(Sender==bLoad) // Загрузить игру
-	{
-		Controller.OpenMenu("DXRMenu.DXRLoadWindow");
-	}
-	if(Sender==bOptions) // Опции
-	{
-		Controller.OpenMenu("DXRMenu.DXRMenuSettings");
-	}
-	if (Sender==bIntro)
-	{
-	  Controller.OpenMenu("DXRMenu.DXRAskIntroMessage");
-	}
-	if (Sender==bCreators)
-	{
-	  Controller.OpenMenu("DXRMenu.DXRCredits");
-	}
-	return true;
+    if(Sender==bMods) // Список модов
+    {
+        Controller.OpenMenu("DXRMenu.DXRModList");
+    }
+    if(Sender==bTraining) // Тренировка
+    {
+        Controller.OpenMenu("DXRMenu.DXRAskTrainingMessage");
+    }
+    if(Sender==bExit) // выход
+    {
+        Controller.OpenMenu(Controller.GetQuitPage());
+    }
+    if(Sender==bLoad) // Загрузить игру
+    {
+        Controller.OpenMenu("DXRMenu.DXRLoadWindow");
+    }
+    if(Sender==bOptions) // Опции
+    {
+        Controller.OpenMenu("DXRMenu.DXRMenuSettings");
+    }
+    if (Sender==bIntro)
+    {
+      Controller.OpenMenu("DXRMenu.DXRAskIntroMessage");
+    }
+    if (Sender==bCreators)
+    {
+      Controller.OpenMenu("DXRMenu.DXRCredits");
+    }
+    return true;
 }
 
 function AddSystemMenu();
@@ -162,7 +162,7 @@ function bool AlignFrame(Canvas C)
   else
   winleft = -2000;
 
-	return bInit;
+    return bInit;
 }
 
 function PaintDXRVersion(Canvas C)
@@ -207,28 +207,28 @@ defaultproperties
     dIntro="View Game Intro"
     dExit="Leave World of Conspiracies..."
 
-		DefaultHeight=354
-		DefaultWidth=264
+        DefaultHeight=354
+        DefaultWidth=264
 
-		MaxPageHeight=354
-		MaxPageWidth=264
-		MinPageHeight=354
-		MinPageWidth=264
+        MaxPageHeight=354
+        MaxPageWidth=264
+        MinPageHeight=354
+        MinPageWidth=264
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MenuMainBackground'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled //PartialScaled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=256
-		WinHeight=333 //229
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_MenuMainBackground'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled //PartialScaled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=256
+        WinHeight=333 //229
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
     OnRendered=PaintDXRVersion
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

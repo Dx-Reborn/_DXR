@@ -4,11 +4,11 @@
 //=============================================================================
 class PersonaInventoryItemButton extends PersonaItemButton;
 
-var bool bEquipped;						// True if item Equipped
+var bool bEquipped;                     // True if item Equipped
 
 // Drag/Drop Stuff
 var bool bDragStart;
-var bool bDimIcon;	
+var bool bDimIcon;  
 var bool bAllowDragging;
 var bool bDragging;
 var bool bValidSlot;
@@ -17,16 +17,16 @@ var Int  clickY;
 var Int  dragPosX;
 var Int  dragPosY;
 
-var gui_Inventory winInv;		// Pointer back to the window 
+var gui_Inventory winInv;       // Pointer back to the window 
 
 enum FillModes
 {
-	FM_WeaponModTrue,
-	FM_WeaponModFalse,
-	FM_Selected,
-	FM_DropGood,
-	FM_DropBad,
-	FM_None
+    FM_WeaponModTrue,
+    FM_WeaponModFalse,
+    FM_Selected,
+    FM_DropGood,
+    FM_DropBad,
+    FM_None
 };
 
 var FillModes fillMode;
@@ -40,8 +40,8 @@ var Color colDropBad;
 var Color colNone;
 
 // Texture and Color for background
-var Color		fillColor;
-var Texture		fillTexture;
+var Color       fillColor;
+var Texture     fillTexture;
 
 var localized String CountLabel;
 var localized String RoundLabel;
@@ -53,134 +53,137 @@ var localized String RoundsLabel;
 
 //event DrawWindow(GC gc)
 function InternalOnRendered(canvas u)
-{	
-	local Inventory anItem;
-	local String str;
-	local DeusExWeaponInv weapon;
-//	local float strWidth, strHeight;
+{   
+    local Inventory anItem;
+    local String str;
+    local DeusExWeaponInv weapon;
+//  local float strWidth, strHeight;
 
-	if (( !bDragging ) || ( bDragging && bValidSlot ))
-	{
-		// Draw the background
-		SetFillColor();
-		u.Style = EMenuRenderStyle.MSTY_Translucent;//gc.SetStyle(DSTY_Translucent);
-		u.DrawColor = fillColor; //gc.SetTileColor(fillColor);
-		u.drawTileStretched(fillTexture, WinWidth - 2, WinHeight - 2); //gc.DrawPattern(1, 1, width - 2, height - 2, 0, 0, fillTexture);
-	}
+    if (( !bDragging ) || ( bDragging && bValidSlot ))
+    {
+        // Draw the background
+        SetFillColor();
+        u.Style = EMenuRenderStyle.MSTY_Translucent;//gc.SetStyle(DSTY_Translucent);
+        u.DrawColor = fillColor; //gc.SetTileColor(fillColor);
+        u.drawTileStretched(fillTexture, WinWidth - 2, WinHeight - 2); //gc.DrawPattern(1, 1, width - 2, height - 2, 0, 0, fillTexture);
+    }
 
-	if ( !bDragging )
-	{
-		u.Style = EMenuRenderStyle.MSTY_Masked;//  gc.SetStyle(DSTY_Masked);	
-		u.DrawColor = colIcon;// gc.SetTileColor(colIcon);
+    if ( !bDragging )
+    {
+        u.Style = EMenuRenderStyle.MSTY_Masked;//  gc.SetStyle(DSTY_Masked);    
+        u.DrawColor = colIcon;// gc.SetTileColor(colIcon);
 
-		// Draw icon centered in button
-		u.SetPos(ActualLeft() + ((Actualwidth()) / 2)  - (iconPosWidth / 2), ActualTop() + ((Actualheight()) / 2) - (iconPosHeight / 2));
-		u.DrawIcon(icon, 1);
-		//gc.DrawTexture(((width) / 2)  - (iconPosWidth / 2),((height) / 2) - (iconPosHeight / 2),iconPosWidth, iconPosHeight, 0, 0,icon);
+        // Draw icon centered in button
+        u.SetPos(ActualLeft() + ((Actualwidth()) / 2)  - (iconPosWidth / 2), ActualTop() + ((Actualheight()) / 2) - (iconPosHeight / 2));
+        u.DrawIcon(icon, 1);
+        //gc.DrawTexture(((width) / 2)  - (iconPosWidth / 2),((height) / 2) - (iconPosHeight / 2),iconPosWidth, iconPosHeight, 0, 0,icon);
 
-		anItem = Inventory(GetClientObject());
+        anItem = Inventory(GetClientObject());
 
-		// If this item is an inventory item *and* it's in the object 
-		// belt, draw a small number in the 
-		// upper-right corner designating it's position in the belt
+        // If this item is an inventory item *and* it's in the object 
+        // belt, draw a small number in the 
+        // upper-right corner designating it's position in the belt
 
-		if (anItem.GetInObjectBelt())
-		{
-			u.font = font'MSS_8';// gc.SetFont(Font'FontMenuSmall_DS'); gc.SetAlignments(HALIGN_Right, VALIGN_Center);
-			u.DrawColor = colHeaderText;
-			//gc.GetTextExtent(0, strWidth, strHeight, anItem.beltPos);
-			u.drawText(anItem.GetbeltPos());
-			//gc.DrawText(width - strWidth - 3, 3, strWidth, strHeight, anItem.beltPos);
-		}
+        if (anItem.bInObjectBelt)
+        {
+            u.font = font'MSS_8';// gc.SetFont(Font'FontMenuSmall_DS'); gc.SetAlignments(HALIGN_Right, VALIGN_Center);
+            u.DrawColor = colHeaderText;
+            //gc.GetTextExtent(0, strWidth, strHeight, anItem.beltPos);
+            u.drawText(anItem.GetbeltPos());
+            //gc.DrawText(width - strWidth - 3, 3, strWidth, strHeight, anItem.beltPos);
+        }
 
-		// If this is an ammo or a LAM (or other thrown projectile),
-		// display the number of rounds remaining
-		//
-		// If it's a weapon that takes ammo, then show the type of 
-		// ammo loaded into it
+        // If this is an ammo or a LAM (or other thrown projectile),
+        // display the number of rounds remaining
+        //
+        // If it's a weapon that takes ammo, then show the type of 
+        // ammo loaded into it
 
-		if (anItem.IsA('DeusExAmmoInv') || anItem.IsA('DeusExWeaponInv'))
-		{
-			weapon = DeusExWeaponInv(anItem);
-			str = "";
+        if (anItem.IsA('DeusExAmmoInv') || anItem.IsA('DeusExWeaponInv'))
+        {
+            weapon = DeusExWeaponInv(anItem);
+            str = "";
 
-			if ((weapon != None) && weapon.bHandToHand && (weapon.AmmoType != None) && (weapon.AmmoName != class'AmmoNone'))
-			{
-				str = String(weapon.AmmoType.AmmoAmount);
-				if (str == "1")
-					str = class'Actor'.static.Sprintf(RoundLabel, str);
-				else
-					str = class'Actor'.static.Sprintf(RoundsLabel, str);
-			}
-			else if (anItem.IsA('DeusExAmmoInv'))
-			{
-				str = String(DeusExAmmoInv(anItem).AmmoAmount);
-				if (str == "1")
-					str = class'Actor'.static.Sprintf(RoundLabel, str);
-				else
-					str = class'Actor'.static.Sprintf(RoundsLabel, str);
-			}
-			else if ((weapon != None) && (!weapon.bHandToHand))
-			{
-				str = weapon.AmmoType.GetbeltDescription();
-			}
+            if ((weapon != None) && weapon.bHandToHand && (weapon.AmmoType != None) && (weapon.AmmoName != class'AmmoNone'))
+            {
+                str = String(weapon.AmmoType.AmmoAmount);
+                if (str == "1")
+                    str = class'Actor'.static.Sprintf(RoundLabel, str);
+                else
+                    str = class'Actor'.static.Sprintf(RoundsLabel, str);
+            }
+            else if (anItem.IsA('DeusExAmmoInv'))
+            {
+                str = String(DeusExAmmoInv(anItem).AmmoAmount);
+                if (str == "1")
+                    str = class'Actor'.static.Sprintf(RoundLabel, str);
+                else
+                    str = class'Actor'.static.Sprintf(RoundsLabel, str);
+            }
+            else if ((weapon != None) && (!weapon.bHandToHand))
+            {
+                str = weapon.AmmoType.GetbeltDescription();
+            }
 
-			if (str != "")
-			{
-				u.font = font'MSS_8'; //gc.SetFont(Font'FontMenuSmall_DS');
-				//gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-				u.DrawColor = colHeaderText;
-				//gc.GetTextExtent(0, strWidth, strHeight, str);
-				u.DrawText(str); //(0, height - strHeight, width, strHeight, str);
-			}
-		}
+            if (str != "")
+            {
+                u.font = font'MSS_8'; //gc.SetFont(Font'FontMenuSmall_DS');
+                //gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+                u.DrawColor = colHeaderText;
+                //gc.GetTextExtent(0, strWidth, strHeight, str);
+                u.DrawText(str); //(0, height - strHeight, width, strHeight, str);
+            }
+        }
 
-		// Check to see if we need to print "x copies"
-		if (anItem.IsA('DeusExPickupInv') && (!anItem.IsA('NanoKeyRingInv')))
-		{
-			if (DeusExPickupInv(anItem).NumCopies > 1)
-			{
-				str = class'Actor'.static.Sprintf(CountLabel, DeusExPickupInv(anItem).NumCopies);
+        // Check to see if we need to print "x copies"
+        if (anItem.IsA('DeusExPickupInv') && (!anItem.IsA('NanoKeyRingInv')))
+        {
+            if (DeusExPickupInv(anItem).NumCopies > 1)
+            {
+                str = class'Actor'.static.Sprintf(CountLabel, DeusExPickupInv(anItem).NumCopies);
 
-				u.font = font'MSS_8'; //gc.SetFont(Font'FontMenuSmall_DS');
-				//gc.SetAlignments(HALIGN_Center, VALIGN_Center);
-				u.DrawColor = colHeaderText;// SetTextColor(colHeaderText);		
-				//gc.GetTextExtent(0, strWidth, strHeight, str);
-				u.DrawText(str); //gc.DrawText(0, height - strHeight, width, strHeight, str);
-			}
-		}
-	}
+                u.font = font'MSS_8'; //gc.SetFont(Font'FontMenuSmall_DS');
+                //gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+                u.DrawColor = colHeaderText;// SetTextColor(colHeaderText);     
+                //gc.GetTextExtent(0, strWidth, strHeight, str);
+                u.DrawText(str); //gc.DrawText(0, height - strHeight, width, strHeight, str);
+            }
+        }
+    }
 
-	// Draw selection border width/height of button
-	if (bSelected)
-	{
+    // Draw selection border width/height of button
+    if (bSelected)
+    {
 
-//		u.DrawColor = colSelectionBorder;
-		u.DrawColor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex);//colSelectionBorder;
-		u.Style = EMenuRenderStyle.MSTY_Masked;
-		u.SetPos(ActualLeft(),ActualTop());
-		u.DrawTileStretched(texture'WhiteBorderT', buttonWidth, buttonHeight);
+//      u.DrawColor = colSelectionBorder;
+        u.DrawColor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex);//colSelectionBorder;
+        u.Style = EMenuRenderStyle.MSTY_Masked;
+        u.SetPos(ActualLeft(),ActualTop());
+        u.DrawTileStretched(texture'WhiteBorderT', buttonWidth, buttonHeight);
 
-		/*gc.SetTileColor(colSelectionBorder);
-		gc.SetStyle(DSTY_Masked);
-		gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);*/
-	}
-	if (bDrawDebug)
-	{
-	u.Reset();
-	u.SetPos(ActualLeft() + 4,ActualTop() + 4);
-	u.drawText("selected"@bSelected);
-	u.SetPos(ActualLeft() + 4,ActualTop() + 14);
-	u.drawText("invPosX="$anItem.GetInvPosX());
-	u.SetPos(ActualLeft() + 4,ActualTop() + 24);
-	u.drawText("invPosY="$anItem.GetInvPosY());
+        /*gc.SetTileColor(colSelectionBorder);
+        gc.SetStyle(DSTY_Masked);
+        gc.DrawBorders(0, 0, width, height, 0, 0, 0, 0, texBorders);*/
+    }
+    if (bDrawDebug)
+    {
+    u.Reset();
+    u.DrawColor = class'HUD'.default.WhiteColor;
 
-	u.SetPos(ActualLeft() + 4,ActualTop() + 34);
-	u.drawText("bDragging="$bDragging$", bDragStart="$bDragStart$", CanDrag?="$bAllowDragging);
+    u.SetPos(ActualLeft() + 4,ActualTop() + 4);
+    u.drawText("selected"@bSelected);
+    u.SetPos(ActualLeft() + 4,ActualTop() + 14);
+    u.drawText("invPosX="$anItem.GetInvPosX());
+    u.SetPos(ActualLeft() + 4,ActualTop() + 24);
+    u.drawText("invPosY="$anItem.GetInvPosY());
 
-	u.SetPos(ActualLeft() + 4,ActualTop() + 44);
-	u.drawText("ActualLeft="$ActualLeft()$", ActualTop="$ActualTop());
-	}
+    u.SetPos(ActualLeft() + 4,ActualTop() + 34);
+    u.drawText("bDragging="$bDragging$", bDragStart="$bDragStart$", CanDrag?="$bAllowDragging);
+
+    u.SetPos(ActualLeft() + 4,ActualTop() + 44);
+    u.DrawText("bInObjectBelt? "$anItem.bInObjectBelt@"BeltPos = "$anItem.GetBeltPos());
+//    u.drawText("ActualLeft="$ActualLeft()$", ActualTop="$ActualTop());
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -189,7 +192,7 @@ function InternalOnRendered(canvas u)
 
 function SetInventoryWindow(GUI_Inventory newWinInv)
 {
-	winInv = newWinInv;
+    winInv = newWinInv;
 }
 
 // ----------------------------------------------------------------------
@@ -198,7 +201,7 @@ function SetInventoryWindow(GUI_Inventory newWinInv)
 
 function SetEquipped(Bool bNewEquipped)
 {
-	bEquipped = bNewEquipped;
+    bEquipped = bNewEquipped;
 }
 
 // ----------------------------------------------------------------------
@@ -207,12 +210,12 @@ function SetEquipped(Bool bNewEquipped)
 
 function SetIconSize(int newWidth, int newHeight)
 {
-	iconPosWidth  = newWidth;
-	iconPosHeight = newHeight;
+    iconPosWidth  = newWidth;
+    iconPosHeight = newHeight;
 
-	// Also draw borders at the same size
-	borderWidth   = newWidth;
-	borderHeight  = newHeight;
+    // Also draw borders at the same size
+    borderWidth   = newWidth;
+    borderHeight  = newHeight;
 }
 
 // ----------------------------------------------------------------------
@@ -221,7 +224,7 @@ function SetIconSize(int newWidth, int newHeight)
 
 function AllowDragging(bool bNewDragMode)
 {
-	bAllowDragging = bNewDragMode;
+    bAllowDragging = bNewDragMode;
 }
 
 // ----------------------------------------------------------------------
@@ -230,12 +233,12 @@ function AllowDragging(bool bNewDragMode)
 
 function SelectButton(bool bNewSelected)
 {
-	bSelected = bNewSelected;
+    bSelected = bNewSelected;
 
-	if (bSelected) 
-		fillMode = FM_Selected;
-	else
-		fillMode = FM_None;
+    if (bSelected) 
+        fillMode = FM_Selected;
+    else
+        fillMode = FM_None;
 }
 
 // ----------------------------------------------------------------------
@@ -244,10 +247,10 @@ function SelectButton(bool bNewSelected)
 
 function HighlightWeapon(bool bNewToggle)
 {
-	if (bNewToggle)
-		fillMode = FM_WeaponModTrue;
-	else
-		fillMode = FM_WeaponModFalse;
+    if (bNewToggle)
+        fillMode = FM_WeaponModTrue;
+    else
+        fillMode = FM_WeaponModFalse;
 }
 
 // ----------------------------------------------------------------------
@@ -256,10 +259,10 @@ function HighlightWeapon(bool bNewToggle)
 
 function SetDropFill(bool bGoodDrop)
 {
-	if (bGoodDrop)
-		fillMode = FM_DropGood;
-	else
-		fillMode = FM_DropBad;
+    if (bGoodDrop)
+        fillMode = FM_DropGood;
+    else
+        fillMode = FM_DropBad;
 }
 
 // ----------------------------------------------------------------------
@@ -268,7 +271,7 @@ function SetDropFill(bool bGoodDrop)
 
 function ResetFill()
 {
-	fillMode = FM_None;
+    fillMode = FM_None;
 }
 
 // ----------------------------------------------------------------------
@@ -277,27 +280,27 @@ function ResetFill()
 
 function SetFillColor()
 {
-	switch(fillMode)
-	{
-		case FM_WeaponModTrue:
-			fillColor = colWeaponModTrue;
-			break;
-		case FM_WeaponModFalse:
-			fillColor = colWeaponModFalse;
-			break;
-		case FM_Selected:
-			fillColor = colFillSelected;
-			break;
-		case FM_DropBad:
-			fillColor = colDropBad;
-			break;
-		case FM_DropGood:
-			fillColor = colDropGood;
-			break;
-		case FM_None:
-			fillColor = colNone;
-			break;
-	}
+    switch(fillMode)
+    {
+        case FM_WeaponModTrue:
+            fillColor = colWeaponModTrue;
+            break;
+        case FM_WeaponModFalse:
+            fillColor = colWeaponModFalse;
+            break;
+        case FM_Selected:
+            fillColor = colFillSelected;
+            break;
+        case FM_DropBad:
+            fillColor = colDropBad;
+            break;
+        case FM_DropGood:
+            fillColor = colDropGood;
+            break;
+        case FM_None:
+            fillColor = colNone;
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -309,18 +312,18 @@ function SetFillColor()
 
 /*event bool MouseButtonPressed(float pointX, float pointY, EInputKey button, int numClicks)
 {
-	local Bool bResult;
+    local Bool bResult;
 
-	bResult = False;
+    bResult = False;
 
-	if (button == IK_LeftMouse)
-	{
-		bDragStart = True;
-		clickX = pointX;
-		clickY = pointY;
-		bResult = True;
-	}
-	return bResult;
+    if (button == IK_LeftMouse)
+    {
+        bDragStart = True;
+        clickX = pointX;
+        clickY = pointY;
+        bResult = True;
+    }
+    return bResult;
 }*/
 
 // ----------------------------------------------------------------------
@@ -334,15 +337,15 @@ function SetFillColor()
 /*event bool MouseButtonReleased(float pointX, float pointY, EInputKey button,
                                int numClicks)
 {
-	if (button == IK_LeftMouse)
-	{
-		FinishButtonDrag();
-		return True;
-	}
-	else
-	{
-		return false;  // don't handle
-	}
+    if (button == IK_LeftMouse)
+    {
+        FinishButtonDrag();
+        return True;
+    }
+    else
+    {
+        return false;  // don't handle
+    }
 }*/
 
 // ----------------------------------------------------------------------
@@ -353,36 +356,36 @@ function SetFillColor()
 //function MouseMoved(float newX, float newY)
 function bool CapturedMouseMove(float newX, float newY)
 {
-	local float invX;
-	local float invY;
+    local float invX;
+    local float invY;
 
-//			log(self@"mousemoved?");
+//          log(self@"mousemoved?");
 
-	if (bAllowDragging)
-	{
-		if (bDragStart)
-		{
+    if (bAllowDragging)
+    {
+        if (bDragStart)
+        {
 
-			// Only start a drag even if the cursor has moved more than, say,
-			// two pixels.  This prevents problems if the user just wants to 
-			// click on an item to select it but is a little sloppy.  :)
-			if (( Abs(newX - clickX) > 2 ) || ( Abs(newY- clickY) > 2 ))
-			{
-				StartButtonDrag();
-//				SetCursorPos(ActualLeft() + ActualWidth(), ActualTop() + ActualHeight());
-			}
-		}
+            // Only start a drag even if the cursor has moved more than, say,
+            // two pixels.  This prevents problems if the user just wants to 
+            // click on an item to select it but is a little sloppy.  :)
+            if (( Abs(newX - clickX) > 2 ) || ( Abs(newY- clickY) > 2 ))
+            {
+                StartButtonDrag();
+//              SetCursorPos(ActualLeft() + ActualWidth(), ActualTop() + ActualHeight());
+            }
+        }
 
-		if (bDragging)
-		{
-			// Call the PersonaScreenInventory::MouseMoved function, with translated
-			// coordinates.
-			ConvertCoordinates(Self, newX, newY, winInv, invX, invY);
+        if (bDragging)
+        {
+            // Call the PersonaScreenInventory::MouseMoved function, with translated
+            // coordinates.
+            ConvertCoordinates(Self, newX, newY, winInv, invX, invY);
 
-			winInv.UpdateDragMouse(invX, invY);
-		}
-	}
-	return true;
+            winInv.UpdateDragMouse(invX, invY);
+        }
+    }
+    return true;
 }
 
 // ----------------------------------------------------------------------
@@ -394,27 +397,27 @@ function bool CapturedMouseMove(float newX, float newY)
 
 /*event texture CursorRequested(window win, float pointX, float pointY,
                               out float hotX, out float hotY, out color newColor,
-							  out Texture shadowTexture)
+                              out Texture shadowTexture)
 {
     shadowTexture = None;
 
-	hotX = iconPosWidth / 2;
-	hotY = iconPosHeight / 2;
+    hotX = iconPosWidth / 2;
+    hotY = iconPosHeight / 2;
 
-	if (bDragging)
-	{
-		if (bDimIcon)
-		{
-			newColor.R = 64;
-			newColor.G = 64;
-			newColor.B = 64;
-		}
-		return (icon);
-	}
-	else
-	{
-		return (None);
-	}
+    if (bDragging)
+    {
+        if (bDimIcon)
+        {
+            newColor.R = 64;
+            newColor.G = 64;
+            newColor.B = 64;
+        }
+        return (icon);
+    }
+    else
+    {
+        return (None);
+    }
 }*/
 
 // ----------------------------------------------------------------------
@@ -423,10 +426,10 @@ function bool CapturedMouseMove(float newX, float newY)
 
 function StartButtonDrag()
 {
-	bDragStart = False;
-	bDragging  = True;
+    bDragStart = False;
+    bDragging  = True;
 
-	winInv.StartButtonDrag(Self);
+    winInv.StartButtonDrag(Self);
 }
 
 // ----------------------------------------------------------------------
@@ -435,10 +438,10 @@ function StartButtonDrag()
 
 function FinishButtonDrag()
 {
-	bDragStart = False;
-	bDragging  = False;
+    bDragStart = False;
+    bDragging  = False;
 
-	winInv.FinishButtonDrag();
+    winInv.FinishButtonDrag();
 }
 
 // Подсказки

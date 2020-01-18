@@ -7,7 +7,9 @@ struct S_Convos
     var string Speaker; // Who
     var string Location; // Where
     var string type; // regular/infolink? maybe bool?
+    var int    ConId;
     var string Message;
+    var Object ClientObject;
 };
 
 var() array<S_Convos> ConvoHistory;

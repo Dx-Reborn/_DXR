@@ -6,7 +6,7 @@ class DXRGameOptionsA extends DxWindowTemplate;
 
 var MenuChoice_LeftClickForLastItem mLeftClickForLastItem;
 var MenuChoice_RemainingAmmo mRemainingAmmo;
-var MenuChoice_ExtraDebugInfo mExtraDebugInfo;
+//var MenuChoice_ExtraDebugInfo mExtraDebugInfo;
 var MenuChoice_PlayerInterfaceMode mPlayerInterfaceMode;
 var MenuChoice_UseCursorEffects mUseCursorEffects;
 
@@ -32,21 +32,15 @@ function CreateMyControls()
   iRemainingAmmo.WinWidth = 78;
   AppendComponent(iRemainingAmmo, true);
 
-  iExtraDebugInfo = new class'DXRChoiceInfo';
-  iExtraDebugInfo.WinLeft = 285;
-  iExtraDebugInfo.WinTop = 118;
-  iExtraDebugInfo.WinWidth = 78;
-  AppendComponent(iExtraDebugInfo, true);
-
   iPlayerInterfaceMode = new class'DXRChoiceInfo';
   iPlayerInterfaceMode.WinLeft = 285;
-  iPlayerInterfaceMode.WinTop = 154;
+  iPlayerInterfaceMode.WinTop = 118;
   iPlayerInterfaceMode.WinWidth = 78;
   AppendComponent(iPlayerInterfaceMode, true);
 
   iUseCursorEffects = new class'DXRChoiceInfo';
   iUseCursorEffects.WinLeft = 285;
-  iUseCursorEffects.WinTop = 190;
+  iUseCursorEffects.WinTop = 154;
   iUseCursorEffects.WinWidth = 78;
   AppendComponent(iUseCursorEffects, true);
 
@@ -68,18 +62,9 @@ function CreateMyControls()
   mRemainingAmmo.LoadSetting();
   mRemainingAmmo.UpdateInfoButton();
 
-  mExtraDebugInfo = new class'MenuChoice_ExtraDebugInfo';
-  mExtraDebugInfo.WinLeft = 15;
-  mExtraDebugInfo.WinTop = 118;
-  mExtraDebugInfo.WinWidth = 244;
-  AppendComponent(mExtraDebugInfo, true);
-  mExtraDebugInfo.info = iExtraDebugInfo;
-  mExtraDebugInfo.LoadSetting();
-  mExtraDebugInfo.UpdateInfoButton();
-
   mPlayerInterfaceMode = new class'MenuChoice_PlayerInterfaceMode';
   mPlayerInterfaceMode.WinLeft = 15;
-  mPlayerInterfaceMode.WinTop = 154;
+  mPlayerInterfaceMode.WinTop = 118;
   mPlayerInterfaceMode.WinWidth = 244;
   AppendComponent(mPlayerInterfaceMode, true);
   mPlayerInterfaceMode.info = iPlayerInterfaceMode;
@@ -88,7 +73,7 @@ function CreateMyControls()
 
   mUseCursorEffects = new class'MenuChoice_UseCursorEffects';
   mUseCursorEffects.WinLeft = 15;
-  mUseCursorEffects.WinTop = 190;
+  mUseCursorEffects.WinTop = 154;
   mUseCursorEffects.WinWidth = 244;
   AppendComponent(mUseCursorEffects, true);
   mUseCursorEffects.info = iUseCursorEffects;
@@ -104,7 +89,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
   btnDefault.WinTop = 232;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -115,7 +100,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 445;
   btnOK.WinTop = 232;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -126,7 +111,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 344;
   btnCancel.WinTop = 232;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
   /*-------------------------------------------------------------*/
 
 
@@ -144,7 +129,7 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
   gl.SaveConfig();
 }
 
@@ -157,7 +142,7 @@ function SaveSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).SaveSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
   gl.SaveConfig();
 }
 
@@ -170,7 +155,7 @@ function CancelSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).CancelSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
   gl.SaveConfig();
 }
 
@@ -203,36 +188,36 @@ defaultproperties
   strCancel="Cancel"
   strDefault="Reset to defaults"
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=251
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=251
 
-		RightEdgeCorrectorX=545
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=224
+        RightEdgeCorrectorX=545
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=224
 
-		TopEdgeCorrectorX=462
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=462
+        TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=542
     TopRightCornerY=16
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_ScreenResolution'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=538
-		WinHeight=238
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_ScreenResolution'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=538
+        WinHeight=238
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }
