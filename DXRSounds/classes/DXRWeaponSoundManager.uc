@@ -493,6 +493,8 @@ static function Sound GetShurikenDown(int Index)
    return Sound(DynamicLoadObject(default.Collection[Index].ShurikenDown,class'Sound',true));
 }
 
+
+/*--------------------------------------------------------------------------------------------*/
 // EMP Grenade
 static function Sound GetEMPGrenadeSelect(int Index)
 {
@@ -505,6 +507,10 @@ static function Sound GetEMPGrenadeFire(int Index)
 static function Sound GetEMPGrenadeDown(int Index)
 {
    return Sound(DynamicLoadObject(default.Collection[Index].EMPGrenadeDown,class'Sound',true));
+}
+static function Sound GetEMPGrenadeExplosion(int Index)
+{
+   return Sound(DynamicLoadObject(default.Collection[Index].EMPGrenadeExplosion,class'Sound',true));
 }
 
 // Gas Grenade
@@ -520,6 +526,10 @@ static function Sound GetGasGrenadeDown(int Index)
 {
    return Sound(DynamicLoadObject(default.Collection[Index].GasGrenadeDown,class'Sound',true));
 }
+static function Sound GetGasGrenadeExplosion(int Index)
+{
+   return Sound(DynamicLoadObject(default.Collection[Index].GasGrenadeExplosion,class'Sound',true));
+}
 
 // NanoVirus Grenade
 static function Sound GetNanoVirusGrenadeSelect(int Index)
@@ -534,6 +544,10 @@ static function Sound GetNanoVirusGrenadeDown(int Index)
 {
    return Sound(DynamicLoadObject(default.Collection[Index].NanoVirusGrenadeDown,class'Sound',true));
 }
+static function Sound GetNanoVirusGrenadeExplosion(int Index)
+{
+   return Sound(DynamicLoadObject(default.Collection[Index].NanoVirusGrenadeExplosion,class'Sound',true));
+}
 
 // LAM
 static function Sound GetLAMSelect(int Index)
@@ -547,6 +561,10 @@ static function Sound GetLAMFire(int Index)
 static function Sound GetLAMDown(int Index)
 {
    return Sound(DynamicLoadObject(default.Collection[Index].LAMDown,class'Sound',true));
+}
+static function Sound GetLAMGrenadeExplosion(int Index)
+{
+   return Sound(DynamicLoadObject(default.Collection[Index].LAMGrenadeExplosion,class'Sound',true));
 }
 
 
@@ -681,22 +699,31 @@ defaultproperties
       ShurikenSelect="DESO_Flam.Weapons.ShurikenSelect"
       ShurikenFire="DESO_Flam.Weapons.ShurikenFire"
       ShurikenDown="DESO_Flam.Weapons.ShurikenDown"
+
+
 // EMP Grenade
       EMPGrenadeSelect="DESO_Flam.Weapons.EMPGrenadeSelect"
       EMPGrenadeFire="DESO_Flam.Weapons.EMPGrenadeFire"
       EMPGrenadeDown="DESO_Flam.Weapons.EMPGrenadeDown"
+      EMPGrenadeExplosion="DESO_Flam.Weapons.EMPGrenadeExplode"
+
 // Gas Grenade
       GasGrenadeSelect="DESO_Flam.Weapons.GasGrenadeSelect"
       GasGrenadeFire="DESO_Flam.Weapons.GasGrenadeFire"
       GasGrenadeDown="DESO_Flam.Weapons.GasGrenadeDown"
+      GasGrenadeExplosion="DESO_Flam.Weapons.GasGrenadeExplode"
+
 // NanoVirus Grenade
       NanoVirusGrenadeSelect="DESO_Flam.Weapons.NanoVirusGrenadeSelect"
       NanoVirusGrenadeFire="DESO_Flam.Weapons.NanoVirusGrenadeFire"
       NanoVirusGrenadeDown="DESO_Flam.Weapons.NanoVirusGrenadeDown"
-// LAM
+      NanoVirusGrenadeExplosion="DESO_Flam.Weapons.NanoVirusGrenadeExplode"
+
+// LAM Grenade
       LAMSelect="DESO_Flam.Weapons.LAMSelect"
       LAMFire="DESO_Flam.Weapons.LAMFire"
       LAMDown="DESO_Flam.Weapons.LAMDown"
+      LAMGrenadeExplosion="DESO_Flam.Weapons.LAMExplode"
 
    End object
    Collection(0)=col00

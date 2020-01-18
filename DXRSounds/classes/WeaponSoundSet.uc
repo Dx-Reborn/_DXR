@@ -155,35 +155,24 @@ var() string ShurikenDown;
 var() string EMPGrenadeSelect;
 var() string EMPGrenadeFire;
 var() string EMPGrenadeDown;
+var() string EMPGrenadeExplosion;
+
 
 // Gas Grenade
 var() string GasGrenadeSelect;
 var() string GasGrenadeFire;
 var() string GasGrenadeDown;
+var() string GASGrenadeExplosion;
 
 // NanoVirus Grenade
 var() string NanoVirusGrenadeSelect;
 var() string NanoVirusGrenadeFire;
 var() string NanoVirusGrenadeDown;
+var() string NanoVirusGrenadeExplosion;
 
 // LAM
 var() string LAMSelect;
 var() string LAMFire;
 var() string LAMDown;
+var() string LAMGrenadeExplosion;
 
-
-
-
-
-
-// Not sure...
-var() string GraySpitFire;
-var() string GraySwipeFire;
-var() string GreaselSpitFire;
-var() string MJ12CommandoFire;
-var() string MJ12RocketFire;
-var() string RobotMachinegunFire;
-var() string RobotRocketFire;
-var() string SpiderBotFire;
-var() string SpiderBot2Fire;
-var() string RatBiteFire;
