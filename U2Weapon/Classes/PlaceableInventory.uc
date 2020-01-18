@@ -15,10 +15,10 @@ var() string ItemName; // Only for map designers
 var() class<Inventory> InventoryType; // What inventory item should be spawned?
 var inventory inv_ptr;
 
-function PostBeginPlay()
+function PreBeginPlay()
 {
 //  SetCollision(false,false,false);
-  Super.PostBeginPlay();
+  Super.PreBeginPlay();
 
     // We need to just spawn Inventory item, everything else is in inventory item itself.
     inv_ptr = spawn(inventoryType,,,location,rotation);
@@ -40,7 +40,7 @@ defaultproperties
 {
   bCollideWorld=true
   drawType=DT_Mesh // vertMesh or SkeletalMesh (mesh). 
-  CollisionHeight=20 // These should match with inventory item's collision size
+  CollisionHeight=20
   CollisionRadius=20
   Physics=PHYS_Falling
 }
