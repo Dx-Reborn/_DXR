@@ -4158,7 +4158,7 @@ function name GetWallMaterial(out vector wallNormal)
 // ----------------------------------------------------------------------
 function name GetFloorMaterial()
 {
-    local vector EndTrace, HitLocation, HitNormal, Start;
+    local vector EndTrace, HitLocation, HitNormal;//, Start;
     local actor target;
     local int texFlags;
     local name texName, texGroup;
@@ -4171,8 +4171,20 @@ function name GetFloorMaterial()
     {
         if (target == Level) // movers are staticmeshes.
             break;
+
+        if ((target.bWorldGeometry) || (target.IsA('Mover')))
+        {
+           Trace(HitLocation, HitNormal, EndTrace, , false, , mat);
+
+            if (mat != none)
+            {
+               texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
+               SpecTex = class'DxUtil'.static.GetMaterialName(mat);
+               break;
+            }
+        }
     }
-    if (texGroup == 'None') // None? Fallback to Trace()! Usually for StaticMeshes.
+/*    if (texGroup == 'None') // None? Fallback to Trace()! Usually for StaticMeshes.
     {
      Start = Location - Vect(0,0,1)*CollisionHeight;
      EndTrace = Start - Vect(0,0,32);
@@ -4183,7 +4195,9 @@ function name GetFloorMaterial()
          texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
           SpecTex = class'DxUtil'.static.GetMaterialName(mat);
        }
-    }
+    }*/
+
+//    log(target @ texGroup);
 
     SpecTex = texName;
     return texGroup;

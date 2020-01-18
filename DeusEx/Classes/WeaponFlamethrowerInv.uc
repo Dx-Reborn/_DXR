@@ -9,6 +9,15 @@ var EM_FlameThrower flame; // Частицы
 var bool bFlameExists;
 
 
+state NormalFire
+{
+    event EndState()
+    {
+       Super.EndState();
+       log("StopSound? "$GetFireSound());
+       class'SoundManager'.static.StopSound(owner,GetFireSound());
+    }
+}
 
 function SetFlame()
 {
@@ -73,7 +82,7 @@ function Sound GetFireSound()
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {
-        sound = class'DXRWeaponSoundManager'.static.GetFlamethrowerFire(gl.WS_Preset);
+        sound = class'DXRWeaponSoundManager'.static.GetFlamethrowerFireLoop(gl.WS_Preset);
 
         if (sound != None)
         return sound;

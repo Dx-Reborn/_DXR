@@ -3,6 +3,23 @@
 //=============================================================================
 class NanoVirusGrenade extends ThrownProjectile;
 
+function sound GetExplosionSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetNanoVirusGrenadeExplosion(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetExplosionSound();
+    }
+    else return Super.GetExplosionSound();
+}
+
 /*function DrawExplosionEffects(vector HitLocation, vector HitNormal)
 {
     local ExplosionLight light;

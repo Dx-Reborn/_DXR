@@ -3,6 +3,22 @@
 //=============================================================================
 class LAM extends ThrownProjectile;
 
+function sound GetExplosionSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetLAMGrenadeExplosion(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetExplosionSound();
+    }
+    else return Super.GetExplosionSound();
+}
 
 simulated function Tick(float deltaTime)
 {

@@ -1152,8 +1152,8 @@ auto state StartUp
       pawn.PlayWaiting();
       scriptedPawn(pawn).InitializePawn();
 
-        if (scriptedPawn(pawn).bInWorld) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
-      FollowOrders();
+      if (scriptedPawn(pawn).bInWorld) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
+          FollowOrders();
     }
   }
 
@@ -1164,9 +1164,7 @@ Begin:
 
 Start:
    if (scriptedPawn(pawn).bInWorld) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
-   {
-      FollowOrders();
-   }
+       FollowOrders();
 }
 
 // ----------------------------------------------------------------------

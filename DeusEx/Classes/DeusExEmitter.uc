@@ -1,8 +1,6 @@
 //=============================================================================
 // Некоторые функции  взяты из BallisticWeapons
 // -Static function, ScaleEmitter() scales an entire emitter (very handy!)
-// -static function, KillEmitter() is can smoothly remove an emitter instead of
-//  using Destroy(). Obsolete now since Kill() was added...
 //
 // by Nolan "Dark Carnivour" Richert.
 // Copyright(c) 2006 RuneStorm. All Rights Reserved.
@@ -54,22 +52,6 @@ static function ScaleEmitter (Emitter TheOne, float Scale)
     }
 }
 
-// Instead of destroying emitters, we can use this to gracefully make them go away
-static function KillEmitter (Emitter TheOne)
-{
-    local int i;
-
-    TheOne.AutoDestroy = True;
-    for (i=0; i<TheOne.Emitters.Length; i++)
-    {
-        TheOne.Emitters[i].AutoDestroy = True;
-        TheOne.Emitters[i].AutomaticInitialSpawning = False;
-        TheOne.Emitters[i].RespawnDeadParticles = False;
-        TheOne.Emitters[i].InitialParticlesPerSecond = 0;
-        TheOne.Emitters[i].ParticlesPerSecond = 0;
-        TheOne.Emitters[i].TriggerDisabled=true;
-    }
-}
 
 // Make the emitter stop producing particles
 static function Pause (Emitter TheOne)

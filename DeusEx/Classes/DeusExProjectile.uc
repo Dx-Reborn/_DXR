@@ -45,9 +45,12 @@ var localized string itemName;      // human readable name
 var localized string itemArticle;    // article much like those for weapons
 var bool bUseExplosionEffects; // Добавлять эффекты взрыва или нет?
 var bool bAddRings;
-
 var sound MiscSound;
 
+function sound GetExplosionSound()
+{
+    return default.ImpactSound;
+}
 
 function PostBeginPlay()
 {
@@ -348,8 +351,8 @@ auto state Flying
         }
 
         rad = Max(blastRadius*24, 1024);
-        PlaySound(ImpactSound, SLOT_None, 2.0,, rad);
-        if (ImpactSound != None)
+        PlaySound(/*ImpactSound*/GetExplosionSound(), SLOT_None, 2.0,, rad);
+        if (/*ImpactSound*/GetExplosionSound() != None)
         {
             class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, blastRadius*24);
             if (bExplodes)

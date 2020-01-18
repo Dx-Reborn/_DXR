@@ -350,7 +350,7 @@ auto state Flying
 
         SpawnEffects(HitLocation, HitNormal, None);
         DrawExplosionEffects(HitLocation, HitNormal);
-        PlaySound(ImpactSound, SLOT_None, 2.0,, blastRadius*16);
+        PlaySound(/*ImpactSound*/GetExplosionSound(), SLOT_None, 2.0,, blastRadius*16);
 
         if (AISoundLevel > 0.0)
             class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, AISoundLevel*blastRadius*16);

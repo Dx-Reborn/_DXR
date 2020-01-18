@@ -3,6 +3,24 @@
 //=============================================================================
 class GasGrenade extends ThrownProjectile;
 
+function sound GetExplosionSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetGASGrenadeExplosion(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetExplosionSound();
+    }
+    else return Super.GetExplosionSound();
+}
+
+
 defaultproperties
 {
      fuseLength=3.000000
@@ -11,7 +29,7 @@ defaultproperties
      bBlood=False
      bDebris=False
      DamageType=class'DM_TearGas'
-     spawnWeaponClass=Class'DeusEx.WeaponGasGrenadeInv'
+     spawnWeaponClass=class'DeusEx.WeaponGasGrenadeInv'
      ItemName="Gas Grenade"
      speed=1000.000000
      MaxSpeed=1000.000000

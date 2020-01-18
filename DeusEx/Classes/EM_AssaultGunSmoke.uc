@@ -9,7 +9,6 @@ defaultproperties
         ColorScale(1)=(RelativeTime=1.000000,Color=(B=255,G=255,R=255))
         MaxParticles=15
         RespawnDeadParticles=False
-//        StartLocationOffset=(X=40.000000,Y=-1.000000,Z=8.500000)
         StartLocationOffset=(X=0.000000,Y=0.000000,Z=0.000000)
         UseRotationFrom=PTRS_Actor
         SpinParticles=True
