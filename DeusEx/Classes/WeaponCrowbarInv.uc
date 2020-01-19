@@ -88,6 +88,23 @@ function Sound GetSoftHitSound()
     else return Super.GetFireSound();
 }
 
+function Sound GetDownSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetCrowBarDown(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetDownSound();
+    }
+    else return Super.GetDownSound();
+}
+
 
 defaultproperties
 {

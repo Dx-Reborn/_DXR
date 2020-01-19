@@ -121,6 +121,10 @@ function Sound GetReloadBeginSound()
     else return Super.GetReloadBeginSound();
 }
 
+function Sound GetDownSound()
+{
+   return default.DownSound;
+}
 
 
 
