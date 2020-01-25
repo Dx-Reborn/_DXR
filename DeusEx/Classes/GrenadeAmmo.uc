@@ -1,0 +1,1 @@
+class GrenadeAmmo extends DeusExAmmo;

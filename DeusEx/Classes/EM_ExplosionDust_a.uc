@@ -1,0 +1,110 @@
+class EM_ExplosionDust_a extends DeusExEmitter;
+
+defaultproperties
+{
+   Begin Object Class=SpriteEmitter Name=SpriteEmitter335
+        UseDirectionAs=PTDU_Up
+        UseColorScale=True
+        FadeOut=True
+        RespawnDeadParticles=False
+        UseSizeScale=True
+        UseRegularSizeScale=False
+        AutomaticInitialSpawning=False
+        ColorScale(0)=(Color=(B=130,G=160,R=191,A=255))
+        ColorScale(1)=(RelativeTime=1.000000,Color=(B=130,G=160,R=191,A=255))
+        FadeOutFactor=(X=0.000000,Y=0.000000,Z=0.000000)
+        FadeOutStartTime=0.800000
+        MaxParticles=1
+        StartLocationOffset=(Z=-10.000000)
+        SpinsPerSecondRange=(Y=(Min=1.000000,Max=1.000000),Z=(Min=1.000000,Max=1.000000))
+        SizeScale(1)=(RelativeTime=1.000000,RelativeSize=5.000000)
+        StartSizeRange=(X=(Min=70.000000,Max=70.000000),Y=(Min=70.000000,Max=70.000000),Z=(Min=70.000000,Max=70.000000))
+        InitialParticlesPerSecond=200.000000
+        DrawStyle=PTDS_AlphaBlend
+        Texture=Texture'DXR_FX.Particles.DirtExplosion'
+        LifetimeRange=(Min=1.000000,Max=1.000000)
+        StartVelocityRange=(Z=(Min=1.000000,Max=1.000000))
+        Name="SpriteEmitter335"
+    End Object
+    Emitters(0)=SpriteEmitter'SpriteEmitter335'
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter336
+        UseColorScale=True
+        FadeOut=True
+        RespawnDeadParticles=False
+        SpinParticles=True
+        UseSizeScale=True
+        UseRegularSizeScale=False
+        AutomaticInitialSpawning=False
+        UniformSize=True
+        Acceleration=(Z=-750.000000)
+        ColorScale(0)=(Color=(B=120,G=120,R=120,A=255))
+        ColorScale(1)=(RelativeTime=1.000000,Color=(B=120,G=120,R=120,A=255))
+        FadeOutStartTime=0.500000
+        MaxParticles=15
+        StartLocationOffset=(Z=-64.000000)
+        SpinsPerSecondRange=(X=(Min=0.250000,Max=0.500000))
+        SizeScale(0)=(RelativeSize=0.500000)
+        SizeScale(1)=(RelativeTime=1.000000,RelativeSize=1.000000)
+        StartSizeRange=(X=(Min=50.000000,Max=75.000000))
+        InitialParticlesPerSecond=200.000000
+        DrawStyle=PTDS_AlphaBlend
+        Texture=Texture'DXR_FX.Particles.DirtExplosion'
+        TextureUSubdivisions=2
+        TextureVSubdivisions=2
+        SubdivisionStart=1
+        SubdivisionEnd=1
+        LifetimeRange=(Min=1.500000,Max=1.500000)
+        StartVelocityRange=(X=(Min=-50.000000,Max=50.000000),Y=(Min=-50.000000,Max=50.000000),Z=(Min=200.000000,Max=800.000000))
+        Name="SpriteEmitter336"
+    End Object
+    Emitters(1)=SpriteEmitter'SpriteEmitter336'
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter337
+        UseColorScale=True
+        FadeOut=True
+        RespawnDeadParticles=False
+        SpinParticles=True
+        UseSizeScale=True
+        UseRegularSizeScale=False
+        AutomaticInitialSpawning=False
+        UniformSize=True
+        Acceleration=(Z=-750.000000)
+        ColorScale(0)=(Color=(B=130,G=160,R=191,A=255))
+        ColorScale(1)=(RelativeTime=1.000000,Color=(B=130,G=160,R=191,A=255))
+        FadeOutStartTime=0.800000
+        MaxParticles=20
+        StartLocationOffset=(Z=-64.000000)
+        SpinsPerSecondRange=(X=(Min=0.250000,Max=0.500000))
+        SizeScale(0)=(RelativeSize=1.000000)
+        SizeScale(1)=(RelativeTime=1.000000,RelativeSize=0.500000)
+        StartSizeRange=(X=(Min=75.000000))
+        InitialParticlesPerSecond=500.000000
+        DrawStyle=PTDS_AlphaBlend
+        Texture=Texture'DXR_FX.Particles.DirtExplosion'
+        TextureUSubdivisions=2
+        TextureVSubdivisions=2
+        SubdivisionStart=3
+        SubdivisionEnd=3
+        LifetimeRange=(Min=2.000000,Max=2.000000)
+        StartVelocityRange=(X=(Min=-200.000000,Max=200.000000),Y=(Min=-200.000000,Max=200.000000),Z=(Min=300.000000,Max=800.000000))
+        Name="SpriteEmitter337"
+    End Object
+    Emitters(2)=SpriteEmitter'SpriteEmitter337'
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter338
+        UseColorScale=True
+        RespawnDeadParticles=False
+        UseSizeScale=True
+        UseRegularSizeScale=False
+        AutomaticInitialSpawning=False
+        UniformSize=True
+        ColorScale(0)=(Color=(G=128,R=255,A=255))
+        ColorScale(1)=(RelativeTime=1.000000,Color=(A=255))
+        MaxParticles=1
+        SizeScale(1)=(RelativeTime=1.000000,RelativeSize=1.000000)
+        InitialParticlesPerSecond=500.000000
+        DrawStyle=PTDS_Brighten
+        Texture=Texture'DXR_FX.Particles.Circle'
+        LifetimeRange=(Min=0.300000,Max=0.300000)
+        Name="SpriteEmitter338"
+    End Object
+    Emitters(3)=SpriteEmitter'SpriteEmitter338'
+}
