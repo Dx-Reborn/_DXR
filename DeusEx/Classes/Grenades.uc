@@ -1,1 +1,0 @@
-class Grenades extends DeusExWeapon;

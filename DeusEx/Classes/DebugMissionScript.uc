@@ -1,2 +1,0 @@
-class DebugMissionScript extends MissionScript;
-
