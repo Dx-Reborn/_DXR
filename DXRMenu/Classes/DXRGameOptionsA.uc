@@ -1,16 +1,22 @@
 /*
-
+   Дополнительные игровые настройки.
 */
 
 class DXRGameOptionsA extends DxWindowTemplate;
 
 var MenuChoice_LeftClickForLastItem mLeftClickForLastItem;
 var MenuChoice_RemainingAmmo mRemainingAmmo;
-//var MenuChoice_ExtraDebugInfo mExtraDebugInfo;
 var MenuChoice_PlayerInterfaceMode mPlayerInterfaceMode;
 var MenuChoice_UseCursorEffects mUseCursorEffects;
 
+var MenuChoice_DelayedExplosions mMenuChoice_DelayedExplosions;
+var MenuChoice_BurnStaticObjects mMenuChoice_BurnStaticObjects;
+var MenuChoice_InfiniteTurretsAmmo mMenuChoice_InfiniteTurretsAmmo;
+
 var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, iExtraDebugInfo, iPlayerInterfaceMode, iUseCursorEffects;
+var DXRChoiceInfo iMenuChoice_DelayedExplosions, iMenuChoice_BurnStaticObjects, iMenuChoice_InfiniteTurretsAmmo;
+
+
 var localized string strOK, strCancel, strDefault;
 var localized string strGamma, strGraphics, strPhysics;
 var GUIButton btnDefault, btnOK, btnCancel;
@@ -23,26 +29,46 @@ function CreateMyControls()
   iLeftClickForLastItem = new class'DXRChoiceInfo';
   iLeftClickForLastItem.WinLeft = 285;
   iLeftClickForLastItem.WinTop = 46;
-  iLeftClickForLastItem.WinWidth = 78;
+  iLeftClickForLastItem.WinWidth = 178;
   AppendComponent(iLeftClickForLastItem, true);
 
   iRemainingAmmo = new class'DXRChoiceInfo';
   iRemainingAmmo.WinLeft = 285;
   iRemainingAmmo.WinTop = 82;
-  iRemainingAmmo.WinWidth = 78;
+  iRemainingAmmo.WinWidth = 178;
   AppendComponent(iRemainingAmmo, true);
 
   iPlayerInterfaceMode = new class'DXRChoiceInfo';
   iPlayerInterfaceMode.WinLeft = 285;
   iPlayerInterfaceMode.WinTop = 118;
-  iPlayerInterfaceMode.WinWidth = 78;
+  iPlayerInterfaceMode.WinWidth = 178;
   AppendComponent(iPlayerInterfaceMode, true);
 
   iUseCursorEffects = new class'DXRChoiceInfo';
   iUseCursorEffects.WinLeft = 285;
   iUseCursorEffects.WinTop = 154;
-  iUseCursorEffects.WinWidth = 78;
+  iUseCursorEffects.WinWidth = 178;
   AppendComponent(iUseCursorEffects, true);
+
+  // Новые
+  iMenuChoice_DelayedExplosions = new class'DXRChoiceInfo';
+  iMenuChoice_DelayedExplosions.WinLeft = 285;
+  iMenuChoice_DelayedExplosions.WinTop = 190;
+  iMenuChoice_DelayedExplosions.WinWidth = 178;
+  AppendComponent(iMenuChoice_DelayedExplosions, true);
+
+  iMenuChoice_BurnStaticObjects = new class'DXRChoiceInfo';
+  iMenuChoice_BurnStaticObjects.WinLeft = 285;
+  iMenuChoice_BurnStaticObjects.WinTop = 226;
+  iMenuChoice_BurnStaticObjects.WinWidth = 178;
+  AppendComponent(iMenuChoice_BurnStaticObjects, true);
+
+  iMenuChoice_InfiniteTurretsAmmo = new class'DXRChoiceInfo';
+  iMenuChoice_InfiniteTurretsAmmo.WinLeft = 285;
+  iMenuChoice_InfiniteTurretsAmmo.WinTop = 262;
+  iMenuChoice_InfiniteTurretsAmmo.WinWidth = 178;
+  AppendComponent(iMenuChoice_InfiniteTurretsAmmo, true);
+
 
   mLeftClickForLastItem = new class'MenuChoice_LeftClickForLastItem';
   mLeftClickForLastItem.WinLeft = 15;
@@ -80,6 +106,37 @@ function CreateMyControls()
   mUseCursorEffects.LoadSetting();
   mUseCursorEffects.UpdateInfoButton();
 
+  // Новые
+  mMenuChoice_DelayedExplosions = new class'MenuChoice_DelayedExplosions';
+  mMenuChoice_DelayedExplosions.WinLeft = 15;
+  mMenuChoice_DelayedExplosions.WinTop = 190;
+  mMenuChoice_DelayedExplosions.WinWidth = 244;
+  AppendComponent(mMenuChoice_DelayedExplosions, true);
+  mMenuChoice_DelayedExplosions.info = iMenuChoice_DelayedExplosions;
+  mMenuChoice_DelayedExplosions.LoadSetting();
+  mMenuChoice_DelayedExplosions.UpdateInfoButton();
+
+  mMenuChoice_BurnStaticObjects = new class'MenuChoice_BurnStaticObjects';
+  mMenuChoice_BurnStaticObjects.WinLeft = 15;
+  mMenuChoice_BurnStaticObjects.WinTop = 226;
+  mMenuChoice_BurnStaticObjects.WinWidth = 244;
+  AppendComponent(mMenuChoice_BurnStaticObjects, true);
+  mMenuChoice_BurnStaticObjects.info = iMenuChoice_BurnStaticObjects;
+  mMenuChoice_BurnStaticObjects.LoadSetting();
+  mMenuChoice_BurnStaticObjects.UpdateInfoButton();
+
+  mMenuChoice_InfiniteTurretsAmmo = new class'MenuChoice_InfiniteTurretsAmmo';
+  mMenuChoice_InfiniteTurretsAmmo.WinLeft = 15;
+  mMenuChoice_InfiniteTurretsAmmo.WinTop = 262;
+  mMenuChoice_InfiniteTurretsAmmo.WinWidth = 244;
+  AppendComponent(mMenuChoice_InfiniteTurretsAmmo, true);
+  mMenuChoice_InfiniteTurretsAmmo.info = iMenuChoice_InfiniteTurretsAmmo;
+  mMenuChoice_InfiniteTurretsAmmo.LoadSetting();
+  mMenuChoice_InfiniteTurretsAmmo.UpdateInfoButton();
+
+
+
+
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;
   btnDefault.fontScale = FNS_Small;
@@ -88,8 +145,8 @@ function CreateMyControls()
   btnDefault.WinHeight = 21;
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
-  btnDefault.WinTop = 232;
-    AppendComponent(btnDefault, true);
+  btnDefault.WinTop = 320;
+  AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -99,8 +156,8 @@ function CreateMyControls()
   btnOK.WinHeight = 21;
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 445;
-  btnOK.WinTop = 232;
-    AppendComponent(btnOK, true);
+  btnOK.WinTop = 320;
+  AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -110,8 +167,8 @@ function CreateMyControls()
   btnCancel.WinHeight = 21;
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 344;
-  btnCancel.WinTop = 232;
-    AppendComponent(btnCancel, true);
+  btnCancel.WinTop = 320;
+  AppendComponent(btnCancel, true);
   /*-------------------------------------------------------------*/
 
 
@@ -182,22 +239,22 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-  WinTitle="Additional game options"
+   WinTitle="Additional game options"
 
-  strOK="OK"
-  strCancel="Cancel"
-  strDefault="Reset to defaults"
+   strOK="OK"
+   strCancel="Cancel"
+   strDefault="Reset to defaults"
 
-        leftEdgeCorrectorX=4
-        leftEdgeCorrectorY=0
-        leftEdgeHeight=251
+    leftEdgeCorrectorX=4
+    leftEdgeCorrectorY=0
+    leftEdgeHeight=340
 
-        RightEdgeCorrectorX=545
-        RightEdgeCorrectorY=20
-        RightEdgeHeight=224
+    RightEdgeCorrectorX=545
+    RightEdgeCorrectorY=20
+    RightEdgeHeight=314
 
-        TopEdgeCorrectorX=462
-        TopEdgeCorrectorY=16
+    TopEdgeCorrectorX=462
+    TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=542
@@ -205,13 +262,13 @@ defaultproperties
 
 
     Begin Object Class=FloatingImage Name=FloatingFrameBackground
-        Image=Texture'DXR_ScreenResolution'
+        Image=Texture'DXR_SpecialOptions'
         ImageRenderStyle=MSTY_Translucent
-        ImageStyle=ISTY_Tiled
+        ImageStyle=ISTY_Stretched
         ImageColor=(R=255,G=255,B=255,A=255)
         DropShadow=None
-        WinWidth=538
-        WinHeight=238
+        WinWidth=546
+        WinHeight=300
         WinLeft=8
         WinTop=20
         RenderWeight=0.000003
@@ -221,3 +278,4 @@ defaultproperties
     End Object
     i_FrameBG=FloatingFrameBackground
 }
+

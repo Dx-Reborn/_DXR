@@ -5,7 +5,7 @@
 
 class MedBotAugItemButton extends PersonaItemButton;
 
-var AugmentationCannisterInv augCan;
+var AugmentationCannister augCan;
 
 var bool bSlotFull;
 var bool bHasIt;
@@ -28,21 +28,21 @@ function InternalOnRendered(canvas u)
   u.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceButton(gl.MenuThemeIndex);
   u.DrawTileStretched(texture'WhiteBorderT', ActualWidth(), ActualHeight());
 
-	if ((bSlotFull) || (bHasIt))	
-		colIcon = colIconDisabled;
-	else
-		colIcon = colIconNormal;
+    if ((bSlotFull) || (bHasIt))    
+        colIcon = colIconDisabled;
+    else
+        colIcon = colIconNormal;
 
-	Super.InternalOnRendered(u);
+    Super.InternalOnRendered(u);
 
-	// Draw selection border
-//	if (!bSelected)
-	if (bSelected)
-	{
-		u.drawcolor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex); //colBorder; //gc.SetTileColor(colBorder);
-		//gc.SetStyle(DSTY_Masked);
-		//gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
-	}
+    // Draw selection border
+//  if (!bSelected)
+    if (bSelected)
+    {
+        u.drawcolor = class'DXR_Menu'.static.GetAugButtonBorder(gl.MenuThemeIndex); //colBorder; //gc.SetTileColor(colBorder);
+        //gc.SetStyle(DSTY_Masked);
+        //gc.DrawBorders(0, 0, borderWidth, borderHeight, 0, 0, 0, 0, texBorders);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -51,32 +51,32 @@ function InternalOnRendered(canvas u)
 
 function SetAugmentation(Augmentation newAug)
 {
-	SetClientObject(newAug);
-	SetIcon(newAug.smallIcon);
+    SetClientObject(newAug);
+    SetIcon(newAug.smallIcon);
 
-	// First check to see if the player already has this augmentation
-	bHasIt = newAug.bHasIt;
+    // First check to see if the player already has this augmentation
+    bHasIt = newAug.bHasIt;
 
-	// Now check to see if this augmentation slot is full
-	bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
+    // Now check to see if this augmentation slot is full
+    bSlotFull = player.AugmentationSystem.AreSlotsFull(newAug);
 }
 
 // ----------------------------------------------------------------------
 // SetAugCan()
 // ----------------------------------------------------------------------
 
-function SetAugCan(AugmentationCannisterInv newAugCan)
+function SetAugCan(AugmentationCannister newAugCan)
 {
-	augCan = newAugCan;
+    augCan = newAugCan;
 }
 
 // ----------------------------------------------------------------------
 // GetAugCan()
 // ----------------------------------------------------------------------
 
-function AugmentationCannisterInv GetAugCan()
+function AugmentationCannister GetAugCan()
 {
-	return augCan;
+    return augCan;
 }
 
 // ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ function AugmentationCannisterInv GetAugCan()
 
 function Augmentation GetAugmentation()
 {
-	return Augmentation(GetClientObject());
+    return Augmentation(GetClientObject());
 }
 
 // ----------------------------------------------------------------------
@@ -94,10 +94,10 @@ function Augmentation GetAugmentation()
 
 function String GetAugDesc()
 {
-	if (GetClientObject() != None)
-		return Augmentation(GetClientObject()).augmentationName;
-	else
-		return "";
+    if (GetClientObject() != None)
+        return Augmentation(GetClientObject()).augmentationName;
+    else
+        return "";
 }
 
 // ----------------------------------------------------------------------
@@ -106,13 +106,13 @@ function String GetAugDesc()
 
 /*event StyleChanged()
 {
-	local ColorTheme theme;
+    local ColorTheme theme;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	colBorder.r = Int(Float(colBackground.r) * 0.75);
-	colBorder.g = Int(Float(colBackground.g) * 0.75);
-	colBorder.b = Int(Float(colBackground.b) * 0.75);
+    colBorder.r = Int(Float(colBackground.r) * 0.75);
+    colBorder.g = Int(Float(colBackground.g) * 0.75);
+    colBorder.b = Int(Float(colBackground.b) * 0.75);
 }*/
 
 // ----------------------------------------------------------------------

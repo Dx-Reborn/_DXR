@@ -173,35 +173,35 @@ function SetItem(Inventory newItem)
 
 function UpdateItemText()
 {
-    local DeusExWeaponInv weapon;
+    local DeusExWeapon weapon;
 
     itemText = "";
 
     if (item != None)
     {
-        if (item.IsA('DeusExWeaponInv'))
+        if (item.IsA('DeusExWeapon'))
         {
             // If this is a weapon, show the number of remaining rounds 
-            weapon = DeusExWeaponInv(item);
+            weapon = DeusExWeapon(item);
 
             // Ammo loaded
-            if ((weapon.AmmoName != class'AmmoNoneInv') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
+            if ((weapon.AmmoName != class'AmmoNone') && (!weapon.bHandToHand) && (weapon.ReloadCount != 0) && (weapon.AmmoType != None))
                 itemText = weapon.AmmoType.GetbeltDescription();
 
             // If this is a grenade
-            if (weapon.IsA('WeaponNanoVirusGrenadeInv') || weapon.IsA('WeaponGasGrenadeInv') || weapon.IsA('WeaponEMPGrenadeInv') || weapon.IsA('WeaponLAMInv'))
+            if (weapon.IsA('WeaponGrenade'))
             {
                 if (weapon.AmmoType.AmmoAmount > 1)
                     itemText = CountLabel @ weapon.AmmoType.AmmoAmount;
             }
 
         }
-        else if (item.IsA('DeusExPickupInv') && (!item.IsA('NanoKeyRingInv')))
+        else if (item.IsA('DeusExPickup') && (!item.IsA('NanoKeyRing')))
         {
             // If the object is a SkilledTool (but not the NanoKeyRing) then show the 
             // number of uses
-            if (DeusExPickupInv(item).NumCopies > 0) //1
-                itemText = DeusExPickupInv(item).CountLabel @ String(DeusExPickupInv(item).NumCopies);
+            if (DeusExPickup(item).NumCopies > 0) //1
+                itemText = DeusExPickup(item).CountLabel @ String(DeusExPickup(item).NumCopies);
         }
     }
 }

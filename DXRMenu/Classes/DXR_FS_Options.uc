@@ -2,17 +2,19 @@
    Setup sounds.
    Presets for footstepping
    Use sounds for ladders
-   Use Special sounds (port these from GMDX first)
+   Presets for weapons (and other items?)
 */
 
 class DXR_FS_Options extends DxWindowTemplate;
 
 var GUIButton btnDefault, btnOK, btnCancel;
-var DXRChoiceInfo iFS_Info, iLS_Toggle;
+var DXRChoiceInfo iFS_Info, iLS_Toggle, iWS_Info, iWS_Toggle;
 var MenuChoice_FS_Preset mMenuChoice_FS_Preset;
+var MenuChoice_WS_Preset mMenuChoice_WS_Preset;
 var MenuChoice_SoundForLadders mMenuChoice_SoundForLadders;
+var MenuChoice_WeaponSounds mMenuChoice_WeaponSounds;
 
-var localized string strOk, strDefault, strCancel, strHelp;
+var localized string strOk, strDefault, strCancel;
 
 function CreateMyControls()
 {
@@ -29,6 +31,20 @@ function CreateMyControls()
   iLS_Toggle.WinTop = 82;
   iLS_Toggle.WinWidth = 200;
   AppendComponent(iLS_Toggle, true);
+
+  iWS_Toggle = new class'DXRChoiceInfo';
+  iWS_Toggle.WinLeft = 285;
+  iWS_Toggle.WinTop = 118;
+  iWS_Toggle.WinWidth = 200;
+  AppendComponent(iWS_Toggle, true);
+
+  iWS_Info = new class'DXRChoiceInfo';
+  iWS_Info.WinLeft = 285;
+  iWS_Info.WinTop = 154;
+  iWS_Info.WinWidth = 200;
+  AppendComponent(iWS_Info, true);
+
+  /*------------------------------------------------------------*/
 
   mMenuChoice_FS_Preset = new class'MenuChoice_FS_Preset';
   mMenuChoice_FS_Preset.WinLeft = 15;
@@ -48,6 +64,26 @@ function CreateMyControls()
   mMenuChoice_SoundForLadders.LoadSetting();
   mMenuChoice_SoundForLadders.UpdateInfoButton();
 
+  mMenuChoice_WeaponSounds = new class'MenuChoice_WeaponSounds';
+  mMenuChoice_WeaponSounds.WinLeft = 15;
+  mMenuChoice_WeaponSounds.WinTop = 118;
+  mMenuChoice_WeaponSounds.WinWidth = 244;
+  AppendComponent(mMenuChoice_WeaponSounds, true);
+  mMenuChoice_WeaponSounds.info = iWS_Toggle;
+  mMenuChoice_WeaponSounds.LoadSetting();
+  mMenuChoice_WeaponSounds.UpdateInfoButton();
+
+  mMenuChoice_WS_Preset = new class'MenuChoice_WS_Preset';
+  mMenuChoice_WS_Preset.WinLeft = 15;
+  mMenuChoice_WS_Preset.WinTop = 154;
+  mMenuChoice_WS_Preset.WinWidth = 244;
+  AppendComponent(mMenuChoice_WS_Preset, true);
+  mMenuChoice_WS_Preset.info = iWS_Info;
+  mMenuChoice_WS_Preset.LoadSetting();
+  mMenuChoice_WS_Preset.UpdateInfoButton();
+
+
+
   btnDefault = new class'GUIButton';
   btnDefault.OnClick=InternalOnClick;
   btnDefault.fontScale = FNS_Small;
@@ -56,7 +92,7 @@ function CreateMyControls()
   btnDefault.WinHeight = 21;
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
-  btnDefault.WinTop = 149;
+  btnDefault.WinTop = 240;
   AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
@@ -67,7 +103,7 @@ function CreateMyControls()
   btnOK.WinHeight = 21;
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 445;
-  btnOK.WinTop = 149;
+  btnOK.WinTop = 240;
   AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
@@ -78,7 +114,7 @@ function CreateMyControls()
   btnCancel.WinHeight = 21;
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 344;
-  btnCancel.WinTop = 149;
+  btnCancel.WinTop = 240;
   AppendComponent(btnCancel, true);
 }
 
@@ -106,6 +142,7 @@ function SaveSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).SaveSetting();
   }
+  class'DeusExGlobals'.static.GetGlobals().SaveConfig();
 }
 
 function CancelSettings()
@@ -146,19 +183,18 @@ defaultproperties
     strOk="OK"
     strDefault="Reset to Defaults"
     strCancel="Cancel"
-    strHelp="Select set of footstep sounds. This will affect all pawns."
-    WinTitle="Setup footstepping sounds"
+    WinTitle="Setup custom sounds presets"
 
-        leftEdgeCorrectorX=4
-        leftEdgeCorrectorY=0
-        leftEdgeHeight=168
+    leftEdgeCorrectorX=4
+    leftEdgeCorrectorY=0
+    leftEdgeHeight=261
 
-        RightEdgeCorrectorX=545
-        RightEdgeCorrectorY=20
-        RightEdgeHeight=141
+    RightEdgeCorrectorX=545
+    RightEdgeCorrectorY=20
+    RightEdgeHeight=234
 
-        TopEdgeCorrectorX=462
-        TopEdgeCorrectorY=16
+    TopEdgeCorrectorX=462
+    TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=542
@@ -166,13 +202,16 @@ defaultproperties
 
 
     Begin Object Class=FloatingImage Name=FloatingFrameBackground
-        Image=Texture'DXR_Physics'
+        //Image=Texture'DXR_Physics'
+        Image=Texture'DXR_SpecialOptions'
         ImageRenderStyle=MSTY_Translucent
-        ImageStyle=ISTY_Tiled
+        ImageStyle=ISTY_Stretched
+        //ImageStyle=ISTY_Tiled
         ImageColor=(R=255,G=255,B=255,A=255)
         DropShadow=None
-        WinWidth=538
-        WinHeight=128
+        //WinWidth=538
+        WinWidth=546
+        WinHeight=220//128
         WinLeft=8
         WinTop=20
         RenderWeight=0.000003

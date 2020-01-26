@@ -315,12 +315,11 @@ function CreateToolBeltSlots()
         if (i == 0)
         {
             objects[i].WinWidth = 44;
-      objects[i].WinLeft = 566;
-      objects[i].bDropSource = false;
-      objects[i].bAllowDragging = false;
+            objects[i].WinLeft = 566;
+            objects[i].bDropSource = false;
+            objects[i].bAllowDragging = false;
         }
         // Заполнить...
-
 //      if (DeusExHUD(PlayerOwner().myHUD).objects[i] != None)
       if (DeusExPlayer(PlayerOwner().pawn).objects[i] != none)
           Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).objects[i]);
@@ -731,12 +730,12 @@ function EnableButtons()
             // Anything can be dropped, except the NanoKeyRing
             btnDrop.EnableMe();
 
-            if (inv.IsA('WeaponModInv'))
+            if (inv.IsA('WeaponMod'))
             {
                 btnChangeAmmo.DisableMe();
                 btnUse.DisableMe();
             }
-            else if (inv.IsA('NanoKeyRingInv'))
+            else if (inv.IsA('NanoKeyRing'))
             {
                 btnChangeAmmo.DisableMe();
                 btnDrop.DisableMe();
@@ -767,11 +766,11 @@ function EnableButtons()
             // If this is a weapon, check to see if this item has more than 
             // one type of ammo in the player's inventory that can be
             // equipped.  If so, enable the "AMMO" button.
-            if ( inv.IsA('DeusExWeaponInv') )
+            if ( inv.IsA('DeusExWeapon') )
             {
                 btnUse.DisableMe();
 
-                if (DeusExWeaponInv(inv).NumAmmoTypesAvailable() < 2 )
+                if (DeusExWeapon(inv).NumAmmoTypesAvailable() < 2 )
                     btnChangeAmmo.DisableMe();
             }
             else
@@ -802,10 +801,10 @@ function EquipSelectedItem()
     if ( inv != None )
     {
         // Make sure the Binoculars aren't activated.
-        if ((player.inHand != None) && (player.inHand.IsA('BinocularsInv')))
-            BinocularsInv(player.inHand).Activate();
-        else if ((player.inHandPending != None) && (player.inHandPending.IsA('BinocularsInv')))
-            BinocularsInv(player.inHandPending).Activate();
+        if ((player.inHand != None) && (player.inHand.IsA('Binoculars')))
+            Binoculars(player.inHand).Activate();
+        else if ((player.inHandPending != None) && (player.inHandPending.IsA('Binoculars')))
+            Binoculars(player.inHandPending).Activate();
 
         if ((inv == player.inHand) || (inv == player.inHandPending))
         {
@@ -844,13 +843,13 @@ function DropSelectedItem()
     if (Inventory(selectedItem.GetClientObject()) != None)
     {
         // Now drop it, unless this is the NanoKeyRing
-        if (!Inventory(selectedItem.GetClientObject()).IsA('NanoKeyRingInv'))
+        if (!Inventory(selectedItem.GetClientObject()).IsA('NanoKeyRing'))
         {
             anItem = Inventory(selectedItem.GetClientObject());
 
             // If this is a DeusExPickup, keep track of the number of copies
-            if (anItem.IsA('DeusExPickupInv'))
-                numCopies = DeusExPickupInv(anItem).NumCopies;
+            if (anItem.IsA('DeusExPickup'))
+                numCopies = DeusExPickup(anItem).NumCopies;
 
             // First make sure the player can drop it!
             if (player.DropItem(anItem, True))
@@ -862,7 +861,7 @@ function DropSelectedItem()
                 // Remove the item, but first check to see if it was stackable
                 // and there are more than 1 copies available
 
-                if ( (!anItem.IsA('DeusExPickupInv')) || (anItem.IsA('DeusExPickupInv') && (numCopies <= 1))) // <=1
+                if ( (!anItem.IsA('DeusExPickup')) || (anItem.IsA('DeusExPickup') && (numCopies <= 1))) // <=1
                 {
                     RemoveSelectedItem();
                 }
@@ -934,15 +933,15 @@ function UseSelectedItem()
 
         // If this is a binoculars, then it needs to be equipped
         // before it can be activated
-        if (inv.IsA('BinocularsInv')) 
+        if (inv.IsA('Binoculars')) 
             player.PutInHand(inv);
 
         inv.Activate();
 
         // Check to see if this is a stackable item, and keep track of 
         // the count
-        if ((inv.IsA('DeusExPickupInv')) && (DeusExPickupInv(inv).bCanHaveMultipleCopies))
-            numCopies = DeusExPickupInv(inv).NumCopies;// - 1;??
+        if ((inv.IsA('DeusExPickup')) && (DeusExPickup(inv).bCanHaveMultipleCopies))
+            numCopies = DeusExPickup(inv).NumCopies;// - 1;??
         else
             numCopies = 0;
 
@@ -979,8 +978,8 @@ function HighlightSpecial(Inventory item)
 {
     if (item != None)
     {
-        if (item.IsA('WeaponModInv'))
-          HighlightModWeapons(WeaponModInv(item));
+        if (item.IsA('WeaponMod'))
+          HighlightModWeapons(WeaponMod(item));
     }
 }
 
@@ -988,7 +987,7 @@ function HighlightSpecial(Inventory item)
 // Highlights/Unhighlights any weapons that can be upgraded with the 
 // weapon mod passed in
 // ----------------------------------------------------------------------
-function HighlightModWeapons(WeaponModInv weaponMod)
+function HighlightModWeapons(WeaponMod weaponMod)
 {
   local int i;
   local inventory anItem;
@@ -1002,9 +1001,9 @@ function HighlightModWeapons(WeaponModInv weaponMod)
           if (itemButton != None)
       {
               anItem = Inventory(itemButton.GetClientObject());
-              if ((anItem != None) && (anItem.IsA('DeusExWeaponInv')))
+              if ((anItem != None) && (anItem.IsA('DeusExWeapon')))
               {
-                  if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeaponInv(anItem))))
+                  if ((weaponMod != None) && (weaponMod.CanUpgradeWeapon(DeusExWeapon(anItem))))
                   {
                       itemButton.HighlightWeapon(True);
                   }

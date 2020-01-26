@@ -23,8 +23,8 @@ var int augSlotSpacingY;
 
 struct AugLoc_S
 {
-	var() int x;
-	var() int y;
+    var() int x;
+    var() int y;
 };
 var() AugLoc_S augLocs[7];
 
@@ -68,8 +68,8 @@ function ShowPanel(bool bShow)
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
-	CreateMyControls();
+    Super.Initcomponent(MyController, MyOwner);
+    CreateMyControls();
 }
 
 function CreateMyControls()
@@ -78,36 +78,36 @@ function CreateMyControls()
   iAugsBG.Image=texture'DXR_AugmentationsBackground';
   iAugsBG.bBoundToParent = true;
   iAugsBG.tag = 75;
-	iAugsBG.WinHeight = 448;
+    iAugsBG.WinHeight = 448;
   iAugsBG.WinWidth = 640;
   iAugsBG.WinLeft = 74;
   iAugsBG.WinTop = 32;
-	AppendComponent(iAugsBG, true);
+    AppendComponent(iAugsBG, true);
 
-	iAugsBody = new(none) class'GUIImage';
-	iAugsBody.Image = texture'DXR_AugmentationsBody';
+    iAugsBody = new(none) class'GUIImage';
+    iAugsBody.Image = texture'DXR_AugmentationsBody';
   iAugsBody.bBoundToParent = true;
-	iAugsBody.WinHeight = 384;
+    iAugsBody.WinHeight = 384;
   iAugsBody.WinWidth = 256;
   iAugsBody.WinLeft = 146;
   iAugsBody.WinTop = 60;
-	AppendComponent(iAugsBody, true);
+    AppendComponent(iAugsBody, true);
 
-	iAugsOVR = new(none) class'GUIImage';
-	iAugsOVR.Image=texture'DXR_AugmentationsOverlays';
+    iAugsOVR = new(none) class'GUIImage';
+    iAugsOVR.Image=texture'DXR_AugmentationsOverlays';
   iAugsOVR.bBoundToParent = true;
   iAugsOVR.tag = 75;
-	iAugsOVR.WinHeight = 384;
+    iAugsOVR.WinHeight = 384;
   iAugsOVR.WinWidth = 256;
   iAugsOVR.WinLeft = 146;
   iAugsOVR.WinTop = 60;
-	AppendComponent(iAugsOVR, true);
+    AppendComponent(iAugsOVR, true);
 
-	AugDescArea = new(none) class'GUIScrollTextBox';
+    AugDescArea = new(none) class'GUIScrollTextBox';
   AugDescArea.StyleName="STY_DXR_DeusExScrollTextBox";
   AugDescArea.FontScale=FNS_Small;
   AugDescArea.bBoundToParent = true;
-	AugDescArea.WinHeight = 216;
+    AugDescArea.WinHeight = 216;
   AugDescArea.WinWidth = 267;
   AugDescArea.WinLeft = 423;
   AugDescArea.WinTop = 66;
@@ -117,11 +117,11 @@ function CreateMyControls()
   AugDescArea.CharDelay = 0.005;
   AugDescArea.RepeatDelay = 3.0;
   AugDescArea.MyScrollBar.WinWidth = 16;
-	AppendComponent(AugDescArea, true);
+    AppendComponent(AugDescArea, true);
 
-	if (!bMedBotMode) // когда это окно использует МедБот, некоторые элементы не создаются.
-	{
-	btnUpgrade = new(none) class'GUIButton';
+    if (!bMedBotMode) // когда это окно использует МедБот, некоторые элементы не создаются.
+    {
+    btnUpgrade = new(none) class'GUIButton';
   btnUpgrade.FontScale = FNS_Small;
   btnUpgrade.Caption = UpgradeButtonLabel;
   btnUpgrade.Hint = "";
@@ -132,9 +132,9 @@ function CreateMyControls()
   btnUpgrade.WinWidth = 87;
   btnUpgrade.WinLeft = 187;
   btnUpgrade.WinTop = 439;
-	AppendComponent(btnUpgrade, true);
+    AppendComponent(btnUpgrade, true);
 
-	btnActivate = new(none) class'GUIButton';
+    btnActivate = new(none) class'GUIButton';
   btnActivate.FontScale = FNS_Small;
   btnActivate.Caption = ActivateButtonLabel;
   btnActivate.Hint = "";
@@ -145,9 +145,9 @@ function CreateMyControls()
   btnActivate.WinWidth = 99;
   btnActivate.WinLeft = 87;
   btnActivate.WinTop = 439;
-	AppendComponent(btnActivate, true);
+    AppendComponent(btnActivate, true);
 
-	btnUseCell = new(none) class'GUIButton';
+    btnUseCell = new(none) class'GUIButton';
   btnUseCell.FontScale = FNS_Small;
   btnUseCell.Caption = UseCellButtonLabel;
   btnUseCell.Hint = "";
@@ -158,32 +158,32 @@ function CreateMyControls()
   btnUseCell.WinWidth = 97;
   btnUseCell.WinLeft = 420;
   btnUseCell.WinTop = 437;
-	AppendComponent(btnUseCell, true);
+    AppendComponent(btnUseCell, true);
 
-	iconCells = new(none) class'GUIImage';
-	iconCells.Image = texture'LargeIconBioCell';
+    iconCells = new(none) class'GUIImage';
+    iconCells.Image = texture'LargeIconBioCell';
   iconCells.bBoundToParent = true;
-	iconCells.WinHeight = 48;
+    iconCells.WinHeight = 48;
   iconCells.WinWidth = 48;
   iconCells.WinLeft = 425;
   iconCells.WinTop = 390;
-	AppendComponent(iconCells, true);
+    AppendComponent(iconCells, true);
 
   iconUpgrades = new(none) class'GUIImage';
-	iconUpgrades.Image = texture'LargeIconAugmentationUpgrade';
+    iconUpgrades.Image = texture'LargeIconAugmentationUpgrade';
   iconUpgrades.bBoundToParent = true;
-	iconUpgrades.WinHeight = 48;
+    iconUpgrades.WinHeight = 48;
   iconUpgrades.WinWidth = 48;
   iconUpgrades.WinLeft = 434;
   iconUpgrades.WinTop = 329;
-	AppendComponent(iconUpgrades, true);
+    AppendComponent(iconUpgrades, true);
 
-	lCountBiocells = new(none) class'GUILabel';
-	lCountBiocells.WinLeft = 421;
-	lCountBiocells.WinTop = 415;
-	lCountBiocells.WinHeight = 20;
-	lCountBiocells.WinWidth = 52;
-	lCountBiocells.caption = "cells";
+    lCountBiocells = new(none) class'GUILabel';
+    lCountBiocells.WinLeft = 421;
+    lCountBiocells.WinTop = 415;
+    lCountBiocells.WinHeight = 20;
+    lCountBiocells.WinWidth = 52;
+    lCountBiocells.caption = "cells";
   lCountBiocells.bBoundToParent = true;
   lCountBiocells.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lCountBiocells.TextFont="UT2HeaderFont";
@@ -193,12 +193,12 @@ function CreateMyControls()
   lCountBiocells.FontScale = FNS_Small;
   AppendComponent(lCountBiocells, true);
 
-	lCountUpgrades = new(none) class'GUILabel';
-	lCountUpgrades.WinLeft = 421;
-	lCountUpgrades.WinTop = 358;
-	lCountUpgrades.WinHeight = 20;
-	lCountUpgrades.WinWidth = 52;
-	lCountUpgrades.caption = "upgrades";
+    lCountUpgrades = new(none) class'GUILabel';
+    lCountUpgrades.WinLeft = 421;
+    lCountUpgrades.WinTop = 358;
+    lCountUpgrades.WinHeight = 20;
+    lCountUpgrades.WinWidth = 52;
+    lCountUpgrades.caption = "upgrades";
   lCountUpgrades.bBoundToParent = true;
   lCountUpgrades.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lCountUpgrades.TextFont="UT2HeaderFont";
@@ -208,14 +208,14 @@ function CreateMyControls()
   lCountUpgrades.FontScale = FNS_Small;
   AppendComponent(lCountUpgrades, true);
 
-	prEnergy = new(none) class'GUIProgressBar';
+    prEnergy = new(none) class'GUIProgressBar';
   prEnergy.FontName="UT2HeaderFont";
- 	prEnergy.WinHeight = 20;
+    prEnergy.WinHeight = 20;
   prEnergy.WinWidth = 172;
   prEnergy.WinLeft = 519;
   prEnergy.WinTop = 438;
   prEnergy.High = DeusExPlayer(PlayerOwner().pawn).EnergyMax;
-	prEnergy.CaptionWidth = 0.0; //0.45;
+    prEnergy.CaptionWidth = 0.0; //0.45;
   prEnergy.bBoundToParent = true;
   prEnergy.bShowLow = true;
   prEnergy.bShowHigh = true;
@@ -224,15 +224,15 @@ function CreateMyControls()
   prEnergy.BarBack = Material'MenuTitleBubble_Center'; // The unselected portion of the bar
   prEnergy.BarTop = Material'Solid'; // The selected portion of the bar
   prEnergy.OnRendered = pr_OnRendered; // Delegate assign
-	AppendComponent(prEnergy, true);
-	}
+    AppendComponent(prEnergy, true);
+    }
 
-	lmsg = new(none) class'GUILabel';
-	lmsg.WinLeft = 423;
-	lmsg.WinTop = 286;
-	lmsg.WinHeight = 20;
-	lmsg.WinWidth = 267;
-//	lmsg.caption = "message";
+    lmsg = new(none) class'GUILabel';
+    lmsg.WinLeft = 423;
+    lmsg.WinTop = 286;
+    lmsg.WinHeight = 20;
+    lmsg.WinWidth = 267;
+//  lmsg.caption = "message";
   lmsg.bBoundToParent = true;
   lmsg.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lmsg.TextFont="UT2SmallFont";
@@ -240,14 +240,14 @@ function CreateMyControls()
   lmsg.TextAlign = TXTA_Left;
   lmsg.VertAlign = TXTA_Center;
   lmsg.FontScale = FNS_Small;
-	AppendComponent(lmsg, true);
+    AppendComponent(lmsg, true);
 
-	lTitle = new(none) class'GUILabel';
-	lTitle.WinLeft = 85;
-	lTitle.WinTop = 33;
-	lTitle.WinHeight = 20;
-	lTitle.WinWidth = 150;
-	lTitle.caption = "Augmentations";
+    lTitle = new(none) class'GUILabel';
+    lTitle.WinLeft = 85;
+    lTitle.WinTop = 33;
+    lTitle.WinHeight = 20;
+    lTitle.WinWidth = 150;
+    lTitle.caption = "Augmentations";
   lTitle.bBoundToParent = true;
   lTitle.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
   lTitle.TextFont="UT2HeaderFont";
@@ -255,14 +255,14 @@ function CreateMyControls()
   lTitle.TextAlign = TXTA_Left;
   lTitle.VertAlign = TXTA_Center;
   lTitle.FontScale = FNS_Small;
-	AppendComponent(lTitle, true);
+    AppendComponent(lTitle, true);
 
-	lTitle2 = new(none) class'GUILabel';
-	lTitle2.WinLeft = 423;
-	lTitle2.WinTop = 43;
-	lTitle2.WinHeight = 20;
-	lTitle2.WinWidth = 267;
-//	lTitle2.caption = "Augmentation title";
+    lTitle2 = new(none) class'GUILabel';
+    lTitle2.WinLeft = 423;
+    lTitle2.WinTop = 43;
+    lTitle2.WinHeight = 20;
+    lTitle2.WinWidth = 267;
+//  lTitle2.caption = "Augmentation title";
   lTitle2.bBoundToParent = true;
   lTitle2.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lTitle2.TextFont="UT2HeaderFont";
@@ -270,16 +270,16 @@ function CreateMyControls()
   lTitle2.TextAlign = TXTA_Left;
   lTitle2.VertAlign = TXTA_Center;
   lTitle2.FontScale = FNS_Small;
-	AppendComponent(lTitle2, true);
+    AppendComponent(lTitle2, true);
 
-	if (!bMedBotMode)
-	{
-	lUseUpg = new(none) class'GUILabel';
-	lUseUpg.WinLeft = 475;
-	lUseUpg.WinTop = 327;
-	lUseUpg.WinHeight = 49;
-	lUseUpg.WinWidth = 215;
-	lUseUpg.caption = AugCanUseText;
+    if (!bMedBotMode)
+    {
+    lUseUpg = new(none) class'GUILabel';
+    lUseUpg.WinLeft = 475;
+    lUseUpg.WinTop = 327;
+    lUseUpg.WinHeight = 49;
+    lUseUpg.WinWidth = 215;
+    lUseUpg.caption = AugCanUseText;
   lUseUpg.bBoundToParent = true;
   lUseUpg.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lUseUpg.TextFont="UT2SmallFont";
@@ -287,14 +287,14 @@ function CreateMyControls()
   lUseUpg.TextAlign = TXTA_Left;
   lUseUpg.VertAlign = TXTA_Center;
   lUseUpg.FontScale = FNS_Small;
-	AppendComponent(lUseUpg, true);
+    AppendComponent(lUseUpg, true);
 
   lUseCell = new(none) class'GUILabel';
-	lUseCell.WinLeft = 475;
-	lUseCell.WinTop = 384;
-	lUseCell.WinHeight = 49;
-	lUseCell.WinWidth = 215;
-	lUseCell.caption = BioCellUseText;
+    lUseCell.WinLeft = 475;
+    lUseCell.WinTop = 384;
+    lUseCell.WinHeight = 49;
+    lUseCell.WinWidth = 215;
+    lUseCell.caption = BioCellUseText;
   lUseCell.bBoundToParent = true;
   lUseCell.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
   lUseCell.TextFont="UT2SmallFont";
@@ -302,13 +302,13 @@ function CreateMyControls()
   lUseCell.TextAlign = TXTA_Left;
   lUseCell.VertAlign = TXTA_Center;
   lUseCell.FontScale = FNS_Small;
-	AppendComponent(lUseCell, true);
-	}
+    AppendComponent(lUseCell, true);
+    }
 
   CreateAugmentationButtons();
   CreateAugmentationLabels();
 
- 	ApplyTheme();
+    ApplyTheme();
 }
 
 /* When ProgressBar  is rendered...*/
@@ -332,8 +332,8 @@ function GetAugInfo()
     lTitle2.Caption = selectedAug.AugmentationName;
 /*    AugDescArea.SetContent(selectedAug.description$"|");
     strOut = class'Actor'.static.Sprintf(selectedAug.CurrentLevelLabel, selectedAug.CurrentLevel + 1);
-	
-	// Can Upgrade / Is Active labels
+    
+    // Can Upgrade / Is Active labels
     if (selectedAug.CanBeUpgraded())
         strOut = strOut @ selectedAug.CanUpgradeLabel;
 
@@ -342,7 +342,7 @@ function GetAugInfo()
 
         AugDescArea.AddText(strOut);
 
-	// Always Active?
+    // Always Active?
     if (selectedAug.bAlwaysActive)
         AugDescArea.AddText(selectedAug.AlwaysActiveLabel);*/
 }
@@ -374,12 +374,12 @@ function bool InternalOnClick(GUIComponent Sender)
 
 function UpdateAugCans()
 {
-   local AugmentationUpgradeCannisterInv augCan;
+   local AugmentationUpgradeCannister augCan;
 
    if (bMedBotMode)
    return;
 
-   augCan = AugmentationUpgradeCannisterInv(PlayerOwner().pawn.FindInventoryType(Class'AugmentationUpgradeCannisterInv'));
+   augCan = AugmentationUpgradeCannister(PlayerOwner().pawn.FindInventoryType(Class'AugmentationUpgradeCannister'));
    if (augCan != none)
    {
      if (augCan.NumCopies == 0)
@@ -392,163 +392,163 @@ function UpdateAugCans()
 
 function UpdateBioCells()
 {
-   local BioelectricCellInv bioCell;
+   local BioElectricCell bioCell;
 
    if (bMedBotMode)
    return;
 
-		bioCell = BioelectricCellInv(PlayerOwner().pawn.FindInventoryType(Class'BioelectricCellInv'));
-		if (bioCell != None)
-		{
-		 if (bioCell.NumCopies == 0)
-		     bioCell.NumCopies = 1;
-		 lCountBiocells.Caption="x "$bioCell.NumCopies;
-		}
-		else
-		lCountBiocells.Caption="x 0";
+        bioCell = BioElectricCell(PlayerOwner().pawn.FindInventoryType(Class'BioElectricCell'));
+        if (bioCell != None)
+        {
+         if (bioCell.NumCopies == 0)
+             bioCell.NumCopies = 1;
+         lCountBiocells.Caption="x "$bioCell.NumCopies;
+        }
+        else
+        lCountBiocells.Caption="x 0";
 }
 
 function SelectAugmentation(PersonaItemButton buttonPressed)
 {
-	// Don't do extra work.
-	if (selectedAugButton != buttonPressed)
-	{
-		// Deselect current button
-		if (selectedAugButton != None)
-			selectedAugButton.SelectButton(False);
+    // Don't do extra work.
+    if (selectedAugButton != buttonPressed)
+    {
+        // Deselect current button
+        if (selectedAugButton != None)
+            selectedAugButton.SelectButton(False);
 
-		selectedAugButton = buttonPressed;
-		selectedAug       = Augmentation(selectedAugButton.GetClientObject());
+        selectedAugButton = buttonPressed;
+        selectedAug       = Augmentation(selectedAugButton.GetClientObject());
 
-		selectedAug.UpdateInfo(AugDescArea);
-		selectedAugButton.SelectButton(True);
-		GetAugInfo();//
+        selectedAug.UpdateInfo(AugDescArea);
+        selectedAugButton.SelectButton(True);
+        GetAugInfo();//
 
-		EnableButtons();
-	}
+        EnableButtons();
+    }
 }
 
 function UpgradeAugmentation()
 {
-	local AugmentationUpgradeCannisterInv augCan;
+    local AugmentationUpgradeCannister augCan;
 
   if (bMedBotMode)
   return;
 
-	// First make sure we have a selected Augmentation
-	if (selectedAug == None)
-		return;
+    // First make sure we have a selected Augmentation
+    if (selectedAug == None)
+        return;
 
-	// Now check to see if we have an upgrade cannister
-	augCan = AugmentationUpgradeCannisterInv(playerOwner().pawn.FindInventoryType(class'AugmentationUpgradeCannisterInv'));
+    // Now check to see if we have an upgrade cannister
+    augCan = AugmentationUpgradeCannister(playerOwner().pawn.FindInventoryType(class'AugmentationUpgradeCannister'));
 
-	if (augCan != None)
-	{
-		// Increment the level and remove the aug cannister from
-		// the player's inventory
-		selectedAug.IncLevel();
+    if (augCan != None)
+    {
+        // Increment the level and remove the aug cannister from
+        // the player's inventory
+        selectedAug.IncLevel();
     GetAugInfo();
-		selectedAug.UpdateInfo(AugDescArea);
-		augCan.UseOnce();
+        selectedAug.UpdateInfo(AugDescArea);
+        augCan.UseOnce();
     lmsg.Caption = class'Actor'.static.Sprintf(selectedAug.AugNowHave, selectedAug.AugmentationName, selectedAug.CurrentLevel + 1);
 
-		// Update the level icons
-//		if (selectedAugButton != None)
-//			PersonaAugmentationItemButton(selectedAugButton).SetLevel(selectedAug.GetCurrentLevel());
-	}
-	UpdateAugCans();
-	EnableButtons();
+        // Update the level icons
+//      if (selectedAugButton != None)
+//          PersonaAugmentationItemButton(selectedAugButton).SetLevel(selectedAug.GetCurrentLevel());
+    }
+    UpdateAugCans();
+    EnableButtons();
 }
 
 function ActivateAugmentation()
 {
-	if (selectedAug == None)
-		return;
+    if (selectedAug == None)
+        return;
 
   if (bMedBotMode)
   return;
-	
-	if (selectedAug.IsActive())
-	{
-		selectedAug.Deactivate();
+    
+    if (selectedAug.IsActive())
+    {
+        selectedAug.Deactivate();
     lmsg.Caption = class'Actor'.static.Sprintf(selectedAug.AugDeActivated, selectedAug.AugmentationName);
-	}
-	else
-	{
-		selectedAug.Activate();
+    }
+    else
+    {
+        selectedAug.Activate();
     lmsg.Caption = class'Actor'.static.Sprintf(selectedAug.AugActivated, selectedAug.AugmentationName);
-	}
+    }
 
-	// If the augmentation activated or deactivated, set the 
-	// button appropriately.
+    // If the augmentation activated or deactivated, set the 
+    // button appropriately.
 
-	if (selectedAugButton != None)
-		selectedAugButton.SetActive(selectedAug.IsActive());
+    if (selectedAugButton != None)
+        selectedAugButton.SetActive(selectedAug.IsActive());
 
     GetAugInfo();
-//		PersonaAugmentationItemButton(selectedAugButton).SetActive(selectedAug.IsActive());
-	selectedAug.UpdateInfo(AugDescArea);
+//      PersonaAugmentationItemButton(selectedAugButton).SetActive(selectedAug.IsActive());
+    selectedAug.UpdateInfo(AugDescArea);
 
-	EnableButtons();
+    EnableButtons();
 }
 
 function UseCell()
 {
-	local BioelectricCellInv bioCell;
+    local BioElectricCell bioCell;
 
-	bioCell = BioelectricCellInv(playerOwner().pawn.FindInventoryType(Class'BioelectricCellInv'));
+    bioCell = BioElectricCell(playerOwner().pawn.FindInventoryType(Class'BioElectricCell'));
 
-	if (bioCell != None)
-		bioCell.UseOnce();
-		
-	UpdateBioCells();
-	EnableButtons();
+    if (bioCell != None)
+        bioCell.UseOnce();
+        
+    UpdateBioCells();
+    EnableButtons();
 }
 
 function EnableButtons()
 {
-	// Upgrade can only be enabled if the player has an
-	// AugmentationUpgradeCannister that allows this augmentation to 
-	// be upgraded
+    // Upgrade can only be enabled if the player has an
+    // AugmentationUpgradeCannister that allows this augmentation to 
+    // be upgraded
   if ((selectedAug != none) && (selectedAug.CanBeUpgraded()))
       btnUpgrade.EnableMe();
       else
       btnUpgrade.DisableMe();
 
-	// Only allow btnActivate to be active if 
+    // Only allow btnActivate to be active if 
   // 1.  We have a selected augmentation 
-	// 2.  The player's energy is above 0
-	// 3.  This augmentation isn't "AlwaysActive"
+    // 2.  The player's energy is above 0
+    // 3.  This augmentation isn't "AlwaysActive"
 
-	if ((selectedAug != none) && (DeusExPlayer(PlayerOwner().pawn).Energy > 0) && (!selectedAug.IsAlwaysActive()))
-	   btnActivate.EnableMe(); else btnActivate.DisableMe();
+    if ((selectedAug != none) && (DeusExPlayer(PlayerOwner().pawn).Energy > 0) && (!selectedAug.IsAlwaysActive()))
+       btnActivate.EnableMe(); else btnActivate.DisableMe();
 
-	if (selectedAug != None)
-	{
-		if (selectedAug.bIsActive)
-			btnActivate.Caption=DeactivateButtonLabel;
-		else
-			btnActivate.Caption=ActivateButtonLabel;
-	}
+    if (selectedAug != None)
+    {
+        if (selectedAug.bIsActive)
+            btnActivate.Caption=DeactivateButtonLabel;
+        else
+            btnActivate.Caption=ActivateButtonLabel;
+    }
 
-	// Use Cell button
-	// Only active if the player has one or more Energy Cells and 
+    // Use Cell button
+    // Only active if the player has one or more Energy Cells and 
   // BioElectricEnergy < 100%
-	if ((DeusExPlayer(playerOwner().pawn).Energy < DeusExPlayer(playerOwner().pawn).EnergyMax) && (playerOwner().pawn.FindInventoryType(Class'BioelectricCellInv') != None))
-	   btnUseCell.EnableMe(); else btnUseCell.DisableMe();
+    if ((DeusExPlayer(playerOwner().pawn).Energy < DeusExPlayer(playerOwner().pawn).EnergyMax) && (playerOwner().pawn.FindInventoryType(Class'BioElectricCell') != None))
+       btnUseCell.EnableMe(); else btnUseCell.DisableMe();
 
 }
 
 function CreateLabel(int posX, int posY, String strLabel)
 {
-	local GUIlabel winLabel;
+    local GUIlabel winLabel;
 
-	winLabel = new(none) class'GUILabel';
-	winLabel.WinLeft = posX;
-	winLabel.WinTop = posY;
-	winLabel.WinHeight = 20;
-	winLabel.WinWidth = 52;
-	winLabel.caption = strLabel;
+    winLabel = new(none) class'GUILabel';
+    winLabel.WinLeft = posX;
+    winLabel.WinTop = posY;
+    winLabel.WinHeight = 20;
+    winLabel.WinWidth = 52;
+    winLabel.caption = strLabel;
 
   winLabel.bBoundToParent = true;
   winLabel.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
@@ -563,94 +563,94 @@ function CreateLabel(int posX, int posY, String strLabel)
 function CreateAugmentationLabels()
 {
                          //left X 74   Top Y 32
-	CreateLabel(131,  56, AugLocationCranial); //	CreateLabel( 57,  27, AugLocationCranial);
-	CreateLabel(286,  56, AugLocationEyes);   //	CreateLabel(212,  27, AugLocationEyes);
-	CreateLabel(93, 132, AugLocationArms);     //	CreateLabel( 19, 103, AugLocationArms);
-	CreateLabel(93, 216, AugLocationSubdermal);  //	CreateLabel( 19, 187, AugLocationSubdermal);
-	CreateLabel(321, 138, AugLocationTorso); // 	CreateLabel(247, 109, AugLocationTorso);
-	CreateLabel(93, 359, AugLocationDefault); // 	CreateLabel( 19, 330, AugLocationDefault);
-	CreateLabel(321, 340, AugLocationLegs); // 	CreateLabel(247, 311, AugLocationLegs);
+    CreateLabel(131,  56, AugLocationCranial); //   CreateLabel( 57,  27, AugLocationCranial);
+    CreateLabel(286,  56, AugLocationEyes);   //    CreateLabel(212,  27, AugLocationEyes);
+    CreateLabel(93, 132, AugLocationArms);     //   CreateLabel( 19, 103, AugLocationArms);
+    CreateLabel(93, 216, AugLocationSubdermal);  // CreateLabel( 19, 187, AugLocationSubdermal);
+    CreateLabel(321, 138, AugLocationTorso); //     CreateLabel(247, 109, AugLocationTorso);
+    CreateLabel(93, 359, AugLocationDefault); //    CreateLabel( 19, 330, AugLocationDefault);
+    CreateLabel(321, 340, AugLocationLegs); //  CreateLabel(247, 311, AugLocationLegs);
 }
 
 function PersonaAugmentationItemButton CreateAugButton(Augmentation anAug, int augX, int augY, int slotIndex)
 {
-	local PersonaAugmentationItemButton newButton;
+    local PersonaAugmentationItemButton newButton;
 
-	newButton = new(none) class'PersonaAugmentationItemButton';
-	newButton.OnClick = InternalOnClick;
-	newButton.WinLeft = augX;
-	newButton.WinTop = augY;
+    newButton = new(none) class'PersonaAugmentationItemButton';
+    newButton.OnClick = InternalOnClick;
+    newButton.WinLeft = augX;
+    newButton.WinTop = augY;
 
-	//newButton.aug = anAug;
-	newButton.SetClientObject(anAug);
+    //newButton.aug = anAug;
+    newButton.SetClientObject(anAug);
 
-	// set the hotkey number
-	if (!anAug.bAlwaysActive)
-		newButton.SetHotkeyNumber(anAug.GetHotKey());
+    // set the hotkey number
+    if (!anAug.bAlwaysActive)
+        newButton.SetHotkeyNumber(anAug.GetHotKey());
 
-	// If the augmentation is currently active, notify the button
-	newButton.SetActive(anAug.IsActive());
-	newButton.SetLevel(anAug.GetCurrentLevel());
-	AppendComponent(newButton, true);
+    // If the augmentation is currently active, notify the button
+    newButton.SetActive(anAug.IsActive());
+    newButton.SetLevel(anAug.GetCurrentLevel());
+    AppendComponent(newButton, true);
 
-	return newButton;
+    return newButton;
 }
 
 function CreateAugmentationButtons()
 {
-	local Augmentation anAug;
-	local int augX, augY;
-	local int torsoCount;
-	local int skinCount;
-	local int defaultCount;
-	local int slotIndex;
-	local int augCount;
+    local Augmentation anAug;
+    local int augX, augY;
+    local int torsoCount;
+    local int skinCount;
+    local int defaultCount;
+    local int slotIndex;
+    local int augCount;
 
-	augCount   = 0;
-	torsoCount = 0;
-	skinCount  = 0;
-	defaultCount = 0;
+    augCount   = 0;
+    torsoCount = 0;
+    skinCount  = 0;
+    defaultCount = 0;
 
-	// Iterate through the augmentations, creating a unique button for each
-	anAug = DeusExplayer(playerOwner().pawn).AugmentationSystem.FirstAug;
-	while(anAug != None)
-	{
-		if (( anAug.AugmentationName != "" ) && ( anAug.bHasIt ))
-		{
-			slotIndex = 0;
-			augX = augLocs[int(anAug.AugmentationLocation)].x;
-			augY = augLocs[int(anAug.AugmentationLocation)].y;
+    // Iterate through the augmentations, creating a unique button for each
+    anAug = DeusExplayer(playerOwner().pawn).AugmentationSystem.FirstAug;
+    while(anAug != None)
+    {
+        if (( anAug.AugmentationName != "" ) && ( anAug.bHasIt ))
+        {
+            slotIndex = 0;
+            augX = augLocs[int(anAug.AugmentationLocation)].x;
+            augY = augLocs[int(anAug.AugmentationLocation)].y;
 
-			// Show the highlight graphic for this augmentation slot as long
-			// as it's not the Default slot (for which there is no graphic)
+            // Show the highlight graphic for this augmentation slot as long
+            // as it's not the Default slot (for which there is no graphic)
 
-//			if (anAug.AugmentationLocation < arrayCount(augHighlightWindows))
-//				augHighlightWindows[anAug.AugmentationLocation].Show();
+//          if (anAug.AugmentationLocation < arrayCount(augHighlightWindows))
+//              augHighlightWindows[anAug.AugmentationLocation].Show();
 
-			if (int(anAug.AugmentationLocation) == 2)			// Torso
-			{
-				slotIndex = torsoCount;
-				augY += (torsoCount++ * augSlotSpacingY);
-			}
+            if (int(anAug.AugmentationLocation) == 2)           // Torso
+            {
+                slotIndex = torsoCount;
+                augY += (torsoCount++ * augSlotSpacingY);
+            }
 
-			if (int(anAug.AugmentationLocation) == 5)			// Subdermal
-			{
-				slotIndex = skinCount;
-				augY += (skinCount++ * augSlotSpacingY);
-			}
+            if (int(anAug.AugmentationLocation) == 5)           // Subdermal
+            {
+                slotIndex = skinCount;
+                augY += (skinCount++ * augSlotSpacingY);
+            }
 
-			if (int(anAug.AugmentationLocation) == 6)			// Default
-				augX += (defaultCount++ * augSlotSpacingX);
+            if (int(anAug.AugmentationLocation) == 6)           // Default
+                augX += (defaultCount++ * augSlotSpacingX);
 
-			augItems[augCount] = CreateAugButton(anAug, augX, augY, slotIndex);
+            augItems[augCount] = CreateAugButton(anAug, augX, augY, slotIndex);
 
-			// If the augmentation is active, make sure the button draws it 
-			// appropriately
-			augItems[augCount].SetActive(anAug.IsActive());
-			augCount++;
-		}
-		anAug = anAug.next;
-	}	
+            // If the augmentation is active, make sure the button draws it 
+            // appropriately
+            augItems[augCount].SetActive(anAug.IsActive());
+            augCount++;
+        }
+        anAug = anAug.next;
+    }   
 }
 
 function PaintFrames(canvas u)

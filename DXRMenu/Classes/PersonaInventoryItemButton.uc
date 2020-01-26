@@ -56,7 +56,7 @@ function InternalOnRendered(canvas u)
 {   
     local Inventory anItem;
     local String str;
-    local DeusExWeaponInv weapon;
+    local DeusExWeapon weapon;
 //  local float strWidth, strHeight;
 
     if (( !bDragging ) || ( bDragging && bValidSlot ))
@@ -99,9 +99,9 @@ function InternalOnRendered(canvas u)
         // If it's a weapon that takes ammo, then show the type of 
         // ammo loaded into it
 
-        if (anItem.IsA('DeusExAmmoInv') || anItem.IsA('DeusExWeaponInv'))
+        if (anItem.IsA('DeusExAmmo') || anItem.IsA('DeusExWeapon'))
         {
-            weapon = DeusExWeaponInv(anItem);
+            weapon = DeusExWeapon(anItem);
             str = "";
 
             if ((weapon != None) && weapon.bHandToHand && (weapon.AmmoType != None) && (weapon.AmmoName != class'AmmoNone'))
@@ -112,9 +112,9 @@ function InternalOnRendered(canvas u)
                 else
                     str = class'Actor'.static.Sprintf(RoundsLabel, str);
             }
-            else if (anItem.IsA('DeusExAmmoInv'))
+            else if (anItem.IsA('DeusExAmmo'))
             {
-                str = String(DeusExAmmoInv(anItem).AmmoAmount);
+                str = String(DeusExAmmo(anItem).AmmoAmount);
                 if (str == "1")
                     str = class'Actor'.static.Sprintf(RoundLabel, str);
                 else
@@ -136,11 +136,11 @@ function InternalOnRendered(canvas u)
         }
 
         // Check to see if we need to print "x copies"
-        if (anItem.IsA('DeusExPickupInv') && (!anItem.IsA('NanoKeyRingInv')))
+        if (anItem.IsA('DeusExPickup') && (!anItem.IsA('NanoKeyRing')))
         {
-            if (DeusExPickupInv(anItem).NumCopies > 1)
+            if (DeusExPickup(anItem).NumCopies > 1)
             {
-                str = class'Actor'.static.Sprintf(CountLabel, DeusExPickupInv(anItem).NumCopies);
+                str = class'Actor'.static.Sprintf(CountLabel, DeusExPickup(anItem).NumCopies);
 
                 u.font = font'MSS_8'; //gc.SetFont(Font'FontMenuSmall_DS');
                 //gc.SetAlignments(HALIGN_Center, VALIGN_Center);

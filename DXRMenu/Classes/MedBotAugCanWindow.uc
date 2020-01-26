@@ -5,17 +5,17 @@ class MedBotAugCanWindow extends GUIPanel;
 var localized String AugContainsText;
 var() MedBotAugItemButton btnAug[2];
 var DeusExGlobals gl;
-var AugmentationCannisterInv augCan;
+var AugmentationCannister augCan;
 var String augDesc[2];
 var Color colBorder;
 var texture icon;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    Super.Initcomponent(MyController, MyOwner);
+    gl = class'DeusExGlobals'.static.GetGlobals();
   OnPostDraw = PanelDraw;
-	CreateSubControls();
+    CreateSubControls();
 }
 
 function SetIcon(texture newIcon)
@@ -38,18 +38,18 @@ function CreateSubControls()
   AppendComponent(btnAug[1], true);
 }
 
-function SetCannister(AugmentationCannisterInv newAugCan)
+function SetCannister(AugmentationCannister newAugCan)
 {
-	augCan = newAugCan;
+    augCan = newAugCan;
 
-	SetIcon(augCan.Icon);
-	btnAug[0].SetAugmentation(augCan.GetAugmentation(0));
-	btnAug[0].SetAugCan(augCan);
-	btnAug[1].SetAugmentation(augCan.GetAugmentation(1));
-	btnAug[1].SetAugCan(augCan);
+    SetIcon(augCan.Icon);
+    btnAug[0].SetAugmentation(augCan.GetAugmentation(0));
+    btnAug[0].SetAugCan(augCan);
+    btnAug[1].SetAugmentation(augCan.GetAugmentation(1));
+    btnAug[1].SetAugCan(augCan);
 
-	augDesc[0] = btnAug[0].GetAugDesc();
-	augDesc[1] = btnAug[1].GetAugDesc();
+    augDesc[0] = btnAug[0].GetAugDesc();
+    augDesc[1] = btnAug[1].GetAugDesc();
 }
 
 function bool PanelDraw(canvas u)
@@ -87,9 +87,9 @@ function bool PanelDraw(canvas u)
 // GetCannister()
 // ----------------------------------------------------------------------
 
-function AugmentationCannisterInv GetCannister()
+function AugmentationCannister GetCannister()
 {
-	return augCan;
+    return augCan;
 }
 
 
@@ -102,6 +102,6 @@ defaultproperties
 //   WinLeft=422
 //   WinTop=66
 //   OnPostDraw=PanelDraw
-//	PropagateVisibility=false
+//  PropagateVisibility=false
    bNeverScale=true
 }

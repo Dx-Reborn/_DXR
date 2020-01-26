@@ -35,8 +35,8 @@ function ShowPanel(bool bShow)
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
-	CreateMyControls();
+    Super.Initcomponent(MyController, MyOwner);
+    CreateMyControls();
 }
 
 function CreateMyControls()
@@ -51,12 +51,12 @@ function CreateMyControls()
   lImageName.TextAlign = TXTA_Left;
   lImageName.VertAlign = TXTA_Center;
   lImageName.FontScale = FNS_Small;
- 	lImageName.WinHeight = 20;
+    lImageName.WinHeight = 20;
   lImageName.WinWidth = 500;
   lImageName.WinLeft = 264;
   lImageName.WinTop = 32;
-	AppendComponent(lImageName, true);
-//	lImageName.caption="image name here";
+    AppendComponent(lImageName, true);
+//  lImageName.caption="image name here";
 
   lNewImage = new(none) class'GUILabel';
   lNewImage.bBoundToParent = true;
@@ -67,16 +67,16 @@ function CreateMyControls()
   lNewImage.TextAlign = TXTA_Left;
   lNewImage.VertAlign = TXTA_Center;
   lNewImage.FontScale = FNS_Small;
- 	lNewImage.WinHeight = 20;
+    lNewImage.WinHeight = 20;
   lNewImage.WinWidth = 223;
   lNewImage.WinLeft = 550;
   lNewImage.WinTop = 574;
   lNewImage.FocusInstead=cShowNotes;
-	AppendComponent(lNewImage, true);
+    AppendComponent(lNewImage, true);
 
   cShowNotes = new(none) class'CheckBox_Personal';
   cShowNotes.bBoundToParent = true;
-	cShowNotes.WinHeight = 16;
+    cShowNotes.WinHeight = 16;
   cShowNotes.WinWidth = 16;
   cShowNotes.WinLeft = 325.000000;
   cShowNotes.WinTop = 575;//0;
@@ -92,17 +92,17 @@ function CreateMyControls()
   lShowImages.TextAlign = TXTA_Left;
   lShowImages.VertAlign = TXTA_Center;
   lShowImages.FontScale = FNS_Small;
- 	lShowImages.WinHeight = 20;
+    lShowImages.WinHeight = 20;
   lShowImages.WinWidth = 150;
   lShowImages.WinLeft = 340;
   lShowImages.WinTop = 573;
   lShowImages.FocusInstead=cShowNotes;
-	AppendComponent(lShowImages, true);
+    AppendComponent(lShowImages, true);
 /* -- Просмотр изображения ------------------------------ */
   ImgViewer = new(none) class'GUIImage';
   ImgViewer.bBoundToParent = true;
   ImgViewer.RenderWeight = 0.5;
-	ImgViewer.WinHeight = 512;
+    ImgViewer.WinHeight = 512;
   ImgViewer.WinWidth = 512;
   ImgViewer.WinLeft = 32;
   ImgViewer.WinTop = 54;//0;
@@ -111,18 +111,18 @@ function CreateMyControls()
   ImgViewer.bCaptureMouse = false; //
   ImgViewer.bNeverFocus = true; //
 //  ImgViewer.
-	AppendComponent(ImgViewer, true);
+    AppendComponent(ImgViewer, true);
 
 /* ------------------------------------------------------ */
   imagesBG = new(none) class'GUIImage'; 
   imagesBG.Image=texture'DXR_ImagesBackground';
   imagesBG.bBoundToParent = true;
-	imagesBG.WinHeight = 564;
+    imagesBG.WinHeight = 564;
   imagesBG.WinWidth = 768;
   imagesBG.WinLeft = 16;
   imagesBG.WinTop = 32;//0;
   imagesBG.tag = 75;
-	AppendComponent(imagesBG, true);
+    AppendComponent(imagesBG, true);
 
   Limages = new(none) class'GUILabel';
   Limages.bBoundToParent = true;
@@ -133,11 +133,11 @@ function CreateMyControls()
   Limages.TextAlign = TXTA_Left;
   Limages.VertAlign = TXTA_Center;
   Limages.FontScale = FNS_Small;
- 	Limages.WinHeight = 20;
+    Limages.WinHeight = 20;
   Limages.WinWidth = 120;
   Limages.WinLeft = 23;
   Limages.WinTop = 33;
-	AppendComponent(Limages, true);
+    AppendComponent(Limages, true);
 
   LNoImages = new(none) class'GUILabel';
   LNoImages.bBoundToParent = true;
@@ -148,11 +148,11 @@ function CreateMyControls()
   LNoImages.TextAlign = TXTA_Center;
   LNoImages.VertAlign = TXTA_Center;
   LNoImages.FontScale = FNS_Small;
- 	LNoImages.WinHeight = 20;
+    LNoImages.WinHeight = 20;
   LNoImages.WinWidth = 514;
   LNoImages.WinLeft = 33;
   LNoImages.WinTop = 288;
-	AppendComponent(LNoImages, true);
+    AppendComponent(LNoImages, true);
 
   /*---Кнопки-------------------------------------------------*/
   bClear = new(none) class'GUIButton';
@@ -166,7 +166,7 @@ function CreateMyControls()
   bClear.WinWidth = 145;//100;
   bClear.WinLeft = 171;
   bClear.WinTop = 571;
-	AppendComponent(bClear, true);
+    AppendComponent(bClear, true);
 
   bAdd = new(none) class'GUIButton';
   bAdd.FontScale = FNS_Small;
@@ -179,7 +179,7 @@ function CreateMyControls()
   bAdd.WinWidth = 145;//100;
   bAdd.WinLeft = 26;
   bAdd.WinTop = 571;
-	AppendComponent(bAdd, true);
+    AppendComponent(bAdd, true);
   /*---!Кнопки------------------------------------------------*/
 
   imageList = new(none) class'GUIListBox';
@@ -191,12 +191,12 @@ function CreateMyControls()
   imageList.WinWidth = 214;
   imageList.WinLeft = 552;
   imageList.WinTop = 55;
-	AppendComponent(imageList, true);
+    AppendComponent(imageList, true);
   imageList.OnChange = imageListChange;
   imageList.list.OnDrawItem = CustomDrawing;
 
-	ApplyTheme();
-	fillData();
+    ApplyTheme();
+    fillData();
 }
 
 // Override listbox drawing
@@ -211,7 +211,7 @@ function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, b
   if (bSelected) // Draw selection border
       SelStyle.Draw(u,MSAT_Pressed, X, Y-2, W, H+2);
 
-  if (DataVaultImageInv(imageList.List.GetObjectAtIndex(Item)).bPlayerViewedImage == false)
+  if (DatavaultImage(imageList.List.GetObjectAtIndex(Item)).bPlayerViewedImage == false)
   {
     u.font = font'FontHUDWingDings';
     u.Style = EMenuRenderStyle.MSTY_Normal;
@@ -226,21 +226,21 @@ function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, b
 
 function fillData()
 {
-	local Inventory inv;
+    local Inventory inv;
 
   imageList.List.Clear();
 
-	inv = PlayerOwner().Pawn.Inventory;
-	while (inv != None)
-	{
-   if (inv.IsA('DataVaultImageInv'))
+    inv = PlayerOwner().Pawn.Inventory;
+    while (inv != None)
+    {
+   if (inv.IsA('DatavaultImage'))
     imageList.List.Add(inv.GetDescription(), inv);
 
-		inv = inv.inventory;
-	}
-	imageListChange(none);
+        inv = inv.inventory;
+    }
+    imageListChange(none);
 
-	if (imageList.List.ItemCount > 0)
+    if (imageList.List.ItemCount > 0)
       LNoImages.SetVisibility(false);
 }
 
@@ -248,16 +248,16 @@ function imageListChange(GUIComponent Sender)
 {
   // А почему Hint напрямую не хочешь?
   imagelist.ToolTip.SetTip(imageList.List.SelectedText());
-  ImgViewer.image = DataVaultImageInv(imageList.List.GetObject()).imageTexture;
-  lImageName.Caption = DataVaultImageInv(imageList.List.GetObject()).imageDescription;
+  ImgViewer.image = DatavaultImage(imageList.List.GetObject()).imageTexture;
+  lImageName.Caption = DatavaultImage(imageList.List.GetObject()).imageDescription;
 }
 
 function bool InternalOnClick (GUIComponent Sender)
 {
   local int currentLeft, currentTop;
-  local DataVaultImageInv img;
+  local DatavaultImage img;
 
-  img = DataVaultImageInv(imageList.List.GetObject());
+  img = DatavaultImage(imageList.List.GetObject());
 
   if (img != none)
   {
@@ -272,7 +272,7 @@ function bool InternalOnClick (GUIComponent Sender)
     }
     if (Sender==ImgViewer)
     {
-      DataVaultImageInv(imageList.List.GetObject()).bPlayerViewedImage = true;
+      DatavaultImage(imageList.List.GetObject()).bPlayerViewedImage = true;
       currentLeft = Controller.mouseX - ImgViewer.ClientBounds[0];
       currentTop = Controller.mouseY - ImgViewer.ClientBounds[1] + 48;
       AddNoteObject(currentLeft, currentTop, "Enter text here");
@@ -290,20 +290,20 @@ function AddNoteObject(int locX, int locY, string myNote)
   n.StyleName="STY_DXR_EditBox";
   n.RenderWeight = 1.0;
   n.bCaptureMouse = true;
-	n.bScaleToParent = true;
-	n.bBoundToParent = true;
-	n.bAutoSize = false;
-	n.FontScale = FNS_Small;
-	n.bMaskText = false;
-	n.SetText(myNote);
-	n.MaxWidth = 128;
-	n.WinHeight = 20;
+    n.bScaleToParent = true;
+    n.bBoundToParent = true;
+    n.bAutoSize = false;
+    n.FontScale = FNS_Small;
+    n.bMaskText = false;
+    n.SetText(myNote);
+    n.MaxWidth = 128;
+    n.WinHeight = 20;
   n.WinWidth = 120;
   n.WinLeft = locX;
   n.WinTop = locY;
   n.Tag = 123;
   n.OnRightClick=NoteOnRightClick;
-	AppendComponent(n, true);
+    AppendComponent(n, true);
   SetFocus(n);
  }
  bWaitingForClick = false;
@@ -322,15 +322,15 @@ function ShowNotesOnChange(GUIComponent Sender)
 {
   local int i;
 
-	for (i=0;i<Controls.Length;i++)
-	{
-	  if (Controls[i].tag==123)
-	  Controls[i].setVisibility(cShowNotes.bChecked);
-	}
+    for (i=0;i<Controls.Length;i++)
+    {
+      if (Controls[i].tag==123)
+      Controls[i].setVisibility(cShowNotes.bChecked);
+    }
 }
 
-/* local DataVaultImageInv mo;
-	mo(imageList.GetObject()).AddImgNote(string id, locX, locY);*/
+/* local DatavaultImage mo;
+    mo(imageList.GetObject()).AddImgNote(string id, locX, locY);*/
 
 
 
