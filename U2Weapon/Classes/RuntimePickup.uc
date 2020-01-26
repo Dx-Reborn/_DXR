@@ -43,8 +43,6 @@ var() const vector PickupViewDrawScale3D;
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
 
-function RestoreProperties(PlaceableInventory mapinv);
-
 simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
     local string T;

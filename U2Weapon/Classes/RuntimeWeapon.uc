@@ -2,7 +2,8 @@
    Old-style Weapon base class (without using weird WeaponFire object).
    Uses some parts from UE2Runtime.
 */
-class RuntimeWeapon extends Weapon Abstract
+class RuntimeWeapon extends DeusExWeaponExt
+                            Abstract
                             placeable;
 
 #exec obj load file=DeusExItems.ukx
@@ -117,7 +118,7 @@ var(WeaponAI) bool    bAltWarnTarget;    // When firing alternate projectile, wa
 /*----------------------------------------------------------------------------------------------------------------
  Properties to behave like old-style weapons. Third person mesh is not used, because there is better replacement.
 ----------------------------------------------------------------------------------------------------------------*/
-var() vertmesh PickupViewMesh; // Only VertMesh is supported! But for powerups (like sodacan) any mesh type will work fine.
+var() mesh PickupViewMesh; // Only VertMesh is supported! But for powerups (like sodacan) any mesh type will work fine.
                                // UE2.5 supports three types of models: Skeletal mesh (or just Mesh), StaticMesh and VertMesh.
                                // VertMesh is like old-style meshes from Unreal. Use only when really required. Don't use
                                // VertMesh for first-person items (two meshes will be always rendered).
