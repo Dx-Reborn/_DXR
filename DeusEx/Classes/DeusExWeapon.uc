@@ -1481,7 +1481,7 @@ function PlayFiring()
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048);
+        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_None,,false, 2048, 1.0, true);
 }
 
 function PlayIdleAnim()

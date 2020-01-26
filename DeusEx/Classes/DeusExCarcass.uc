@@ -81,7 +81,7 @@ function ChunkUp(int Damage)
         }
     }
     if (!bAnimalCarcass)
-    RestoreItems(); // DXR: to avoid losing important items, relocate inventory to ground.
+    RestoreItems(); // DXR: to avoid losing important items, relocate inventory to the ground.
     Super.ChunkUp(Damage);
 }
 
@@ -100,8 +100,8 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
     {
         if ((damageType != class'DM_Munch') && (damageType != class'DM_Tantalus'))
         {
-        spawn(class'BloodSpurt',,,HitLocation);
-        spawn(class'BloodDrop',,, HitLocation);
+           spawn(class'BloodSpurt',,,HitLocation);
+           spawn(class'BloodDrop',,, HitLocation);
            for (i=0; i<Damage; i+=10)
              spawn(class'BloodDrop',,, HitLocation);
         }
@@ -317,7 +317,7 @@ function Destroyed()
 {
     if (flyGen != None)
     {
-//      flyGen.StopGenerator();
+        flyGen.StopGenerator();
         flyGen = None;
     }
     Super.Destroyed();
@@ -751,13 +751,18 @@ Begin:
     HandleLanding();
 }
 
-function Landed(vector HitNormal)
+event Landed(vector HitNormal)
 {
-  super.Landed(HitNormal);
-
   if (!PhysicsVolume.bWaterVolume)
+  {
     if (Level.TimeSeconds > 2)
       PlaySound(sound'pl_jumpland1');
+
+    if (Velocity.Z < -1750)
+        TakeDamage(1000, None, Location, Velocity, class'DM_Exploded');
+    else if (Velocity.Z < -1000)
+        TakeDamage(5, None, Location, Velocity, class'DM_Shot');
+  }
 }
 
 

@@ -415,7 +415,6 @@ function DeusExLevelInfo GetLevelInfo()
 
     foreach AllActors(class'DeusExLevelInfo', info)
         break;
-
     return info;
 }
 

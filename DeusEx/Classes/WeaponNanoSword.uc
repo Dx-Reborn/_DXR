@@ -170,11 +170,11 @@ defaultproperties
      FirstPersonViewSkins(6)=Shader'DeusExItemsEX.ExSkins.NanoSwordEx2'
 
      PickupViewSkins(0)=Texture'DeusExItems.Skins.NanoSword3rdTex1'
-     PickupViewSkins(1)=Texture'DeusExItems.Skins.NanoSword3rdTex1'
-     PickupViewSkins(2)=Texture'DeusExItems.Skins.PinkMaskTex'
-     PickupViewSkins(3)=Texture'DeusExItems.Skins.PinkMaskTex'
-     PickupViewSkins(4)=Shader'DeusExItemsEX.ExSkins.NanoSwordEx4'
-     PickupViewSkins(5)=Shader'DeusExItemsEX.ExSkins.NanoSwordEx3'
+     PickupViewSkins(1)=Shader'Effects.Electricity.WavyBlade_SH'
+     PickupViewSkins(2)=Texture'DeusExItems.Skins.NanoSword3rdTex1'
+     PickupViewSkins(3)=Texture'DeusExItems.Skins.NanoSword3rdTex1'
+     PickupViewSkins(4)=Shader'Effects.Electricity.WEPN_NESword_SFX_SH'
+     PickupViewSkins(5)=Shader'Effects.Electricity.sh_nanoSFX_A'
 
      SwingOffset=(X=24.000000,Z=2.000000)
      AmmoName=Class'DeusEx.AmmoNone'
