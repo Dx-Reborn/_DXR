@@ -202,6 +202,9 @@ replication
         ClipCount, LockTimer, Target, LockMode, TargetMessage, TargetRange;
 }
 
+// Drop "physical" version of the used weapon, instead of disappearing to nowhere.
+function DropUsedWeapon();
+
 function PlayDownSound()
 {
    if (bool(Owner))
@@ -1481,7 +1484,7 @@ function PlayFiring()
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_None,,false, 2048, 1.0, true);
+        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048, 1.0, );
 }
 
 function PlayIdleAnim()
@@ -2301,6 +2304,8 @@ Begin:
     {
         if (DeusExPlayer(Owner) != None)
             DeusExPlayer(Owner).RemoveItemFromSlot(Self);   // remove it from the inventory grid
+
+        DropUsedWeapon(); // DXR: Ѕросить использованное одноразовое оружие.
         Destroy();
     }
 

@@ -54,6 +54,14 @@ function Sound GetDownSound()
     else return Super.GetDownSound();
 }
 
+function DropUsedWeapon()
+{
+   local usedWeaponHideAGun used;
+   local coords K;
+
+   K = GetBoneCoords('116');
+   used = Spawn(class'usedWeaponHideAGun',, '', K.Origin);
+}
 
 defaultproperties
 {

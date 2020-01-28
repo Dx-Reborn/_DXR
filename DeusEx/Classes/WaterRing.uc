@@ -2,28 +2,28 @@
 // Всплеск воды
 //
 
-class WaterRing extends Emitter;
+class WaterRing extends DeusExEmitter;
 
 function PostBeginPlay()
 {
-	local float F;
-	Super.PostBeginPlay();
+    local float F;
+    Super.PostBeginPlay();
 
-	if ( Instigator != None )
-	{
-		F = (70 + 30*FRand()) * sqrt(Instigator.CollisionRadius/25);
-		Emitters[0].StartSizeRange.X.Min = F;
-		Emitters[0].StartSizeRange.X.Max = F;
-		Emitters[0].StartSizeRange.Y.Min = F;
-		Emitters[0].StartSizeRange.Y.Max = F;
-		Emitters[0].StartSizeRange.Z.Min = F;
-		Emitters[0].StartSizeRange.Z.Max = F;
-	}
+    if (Instigator != None)
+    {
+        F = (70 + 30*FRand()) * sqrt(Instigator.CollisionRadius/25);
+        Emitters[0].StartSizeRange.X.Min = F;
+        Emitters[0].StartSizeRange.X.Max = F;
+        Emitters[0].StartSizeRange.Y.Min = F;
+        Emitters[0].StartSizeRange.Y.Max = F;
+        Emitters[0].StartSizeRange.Z.Min = F;
+        Emitters[0].StartSizeRange.Z.Max = F;
+    }
 }
 
 defaultproperties
 {
-	bHighDetail=true
+    bHighDetail=true
 
     Begin Object Class=SpriteEmitter Name=SpriteEmitter9
         UseDirectionAs=PTDU_Normal

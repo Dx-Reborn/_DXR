@@ -32,9 +32,9 @@ function Sound GetFleshHitSound()
         if (sound != None)
         return sound;
         else
-        return Super.GetFireSound();
+        return Super.GetFleshHitSound();
     }
-    else return Super.GetFireSound();
+    else return Super.GetFleshHitSound();
 }
 
 function Sound GetHardHitSound()
@@ -49,9 +49,9 @@ function Sound GetHardHitSound()
         if (sound != None)
         return sound;
         else
-        return Super.GetFireSound();
+        return Super.GetHardHitSound();
     }
-    else return Super.GetFireSound();
+    else return Super.GetHardHitSound();
 }
 
 function Sound GetDownSound()

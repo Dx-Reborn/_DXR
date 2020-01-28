@@ -1,4 +1,4 @@
-class EM_BulletSplash extends Emitter;
+class EM_BulletSplash extends DeusExEmitter;
 
 defaultproperties
 {
