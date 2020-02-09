@@ -6,7 +6,6 @@ class HackableDevices extends ElectronicDevices
 
 var() bool              bHackable;              // can this device be hacked?
 var() float             hackStrength;           // "toughness" of the hack on this device - 0.0 is easy, 1.0 is hard
-var() float          initialhackStrength; // for multiplayer hack resets, this is the initial value
 var() name              UnTriggerEvent[4];      // event to UnTrigger when hacked
 var editconst bool bWasHacked;
 
@@ -19,10 +18,7 @@ var float            TicksPerHack;         // num 0.1 second ticks needed for a 
 var float            LastTickTime;         // time last tick occurred.
 
 var DeusExPlayer        hackPlayer;             // the player that is hacking
-var MultiTool            curTool;                // the multitool that is being used // Вариант для инвентаря!
-
-var float            TimeSinceReset;   // time since the hackstate was last reset.
-var float            TimeToReset;      // how long between resets
+var MultiTool            curTool;                // the multitool that is being used
 
 var localized string    msgMultitoolSuccess;    // message when the device is hacked
 var localized string    msgNotHacked;           // message when the device is not hacked
@@ -39,9 +35,6 @@ function PostBeginPlay()
 
     if (!bHackable)
         hackStrength = 1.0;
-
-   initialhackStrength = hackStrength;
-   TimeSinceReset = 0.0;
 }
 
 //
@@ -108,7 +101,7 @@ function Timer()
 function StopHacking()
 {
     // alert NPCs that I'm not messing with stuff anymore
-//  AIEndEvent('MegaFutz', EAITYPE_Visual);
+    class'EventManager'.static.AIEndEvent(self,'MegaFutz', EAITYPE_Visual);
     bHacking = False;
     if (curTool != None)
     {
@@ -128,8 +121,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     local DeusExPlayer Player;
     local bool bHackIt, bDone;
     local string msg;
-//  local Vector X, Y, Z;
-//  local float dotp;
 
     P = Pawn(Frobber);
     Player = DeusExPlayer(P);
@@ -215,7 +206,6 @@ defaultproperties
      bHackable=True
      hackStrength=0.200000
      hackTime=4.000000
-     TimeToReset=28.000000
      msgMultitoolSuccess="You bypassed the device"
      msgNotHacked="It's secure"
      msgHacking="Bypassing the device..."

@@ -38,14 +38,15 @@ function SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have s
     {
         if (NanoKeyData[i].ScriptedPawnTag != '')
         {
-            foreach AllActors(class'ScriptedPawn', P, NanoKeyData[i].ScriptedPawnTag)
+            foreach DynamicActors(class'ScriptedPawn', P, NanoKeyData[i].ScriptedPawnTag)
             {
                 key = spawn(class'NanoKey', P);
                 if (key != None)
                 {
                     key.KeyID = NanoKeyData[i].KeyID;
                     key.Description = NanoKeyData[i].Description;
-//                  key.SkinColor = NanoKeyData[i].SkinColor;
+                    //key.SkinColor = NanoKeyData[i].SkinColor;
+                    key.SetPropertyText("SkinColor", "SC_Level" $ (NanoKeyData[i].SkinColor+1));
                     key.InitialState = 'Idle2';
                     key.GiveTo(P);
                     key.SetBase(P);

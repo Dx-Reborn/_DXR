@@ -20,11 +20,7 @@ var int CumulativeDamage;
 var PlayerReplicationInfo PlayerOwner;
 var bool bBobbing;
 
-
-function Initfor(actor Other)
-{
-        //implemented in subclasses
-}
+function Initfor(actor Other);
             
 function ChunkUp(int Damage)
 {
@@ -36,7 +32,7 @@ static simulated function bool AllowChunk(int N, name A)
     return true;
 }
 
-function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<damageType> damageType)
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<damageType> damageType)
 {
     if ( !bDecorative )
         {

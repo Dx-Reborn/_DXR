@@ -1406,6 +1406,8 @@ State Seeking
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).Enable('AnimEnd');
         ScriptedPawn(pawn).ResetReactions();
@@ -1413,6 +1415,7 @@ State Seeking
         ScriptedPawn(pawn).bStasis = True;
         StopBlendAnims();
         ScriptedPawn(pawn).SeekLevel = 0;
+      }
     }
 
 Begin:
@@ -1646,12 +1649,16 @@ state AvoidingProjectiles
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
+
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         if (pawn.JumpZ > 0)
             pawn.bCanJump = true;
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bStasis = True;
         ScriptedPawn(pawn).bCanConverse = True;
+      }
     }
 
 Begin:
@@ -1954,7 +1961,7 @@ State Attacking
         local vector lastLocation;
         local Pawn   lastEnemy;
 
-        Global.Tick(deltaSeconds);
+        //Global.Tick(deltaSeconds);
 
         if (scriptedPawn(pawn).CrouchTimer > 0)
         {
@@ -2086,6 +2093,8 @@ State Attacking
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         scriptedPawn(pawn).EnableCheckDestLoc(false);
         scriptedPawn(pawn).bCanFire      = false;
         scriptedPawn(pawn).bFacingTarget = false;
@@ -2097,14 +2106,15 @@ State Attacking
         scriptedPawn(pawn).bReadyToReload = false;
 
         EndCrouch();
+      }
     }
 
-    // Stuck? 
-    event RecoverFromBadStateCode()
+    // DXR: Застряла(а)? Тогда перезапустить состояние с другой позиции. Сейчас уже должно быть исправлено (теоретически)ю
+    event RecoverFromBadStateCode()                                                                         
     {
-        log(self$"."$pawn$" State Attacking: something gone WRONG, fallback to ContinueAttack:",'DXRAIController');
+        log(self$"."$pawn$" State Attacking: something gone WRONG, fallback to Surprise:",'DXRAIController');
         bBadStateCode = false;
-        GotoState('Attacking', 'ContinueAttack');
+        GotoState('Attacking', 'Surprise');
     }
 
 
@@ -2222,7 +2232,7 @@ Fire:
         else
             FinishRotation();
     }
-    scriptedPawn(pawn).FinishAnim();
+    /*scriptedPawn(pawn).*/FinishAnim();
     scriptedPawn(pawn).bReadyToReload = true;
 
 ContinueFire:
@@ -2594,6 +2604,8 @@ State Fleeing
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         Enable('AnimEnd');
         //Enable('Bump');
@@ -2602,6 +2614,7 @@ State Fleeing
             ScriptedPawn(pawn).bCanConverse = True;
 
         ScriptedPawn(pawn).bStasis = True;
+      }
     }
 
 Begin:
@@ -2830,8 +2843,11 @@ state WaitingFor
     }
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -2932,12 +2948,15 @@ state Paralyzed
     }
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bCanConverse = true;
+      }
     }
 
 Begin:
-    ScriptedPawn(pawn).Acceleration = vect(0,0,0);
+    pawn.Acceleration = vect(0,0,0);
     ScriptedPawn(pawn).PlayAnimPivot('Still');
 }
 
@@ -3051,9 +3070,12 @@ State Patrolling
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         EnableCheckDestLoc(false);
         Enable('AnimEnd');
         ScriptedPawn(pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -3406,6 +3428,8 @@ state Sitting
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         scriptedPawn(pawn).EnableCheckDestLoc(false);
         if (!scriptedPawn(pawn).bSitting)
             scriptedPawn(pawn).StandUp();
@@ -3416,8 +3440,8 @@ state Sitting
             scriptedPawn(pawn).bCanJump = true;
 
         scriptedPawn(pawn).bSitInterpolation = false;
-
         scriptedPawn(pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -3607,12 +3631,15 @@ state BackingOff
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         if (pawn.JumpZ > 0)
             pawn.bCanJump = true;
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bStasis = true;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
 
 Begin:
@@ -3762,18 +3789,15 @@ state FallingState
 
     function EndState()
     {
-        if (pawn == None)
-        {
-          log("State FallingState() EndState() -- No Pawn !!");
-          return;
-        }
-
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bUpAndOut = false;
         ScriptedPawn(pawn).bInterruptState = true;
         ScriptedPawn(pawn).bCanConverse = True;
         ScriptedPawn(pawn).bStasis = True;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
 
 LongFall:
@@ -4114,7 +4138,7 @@ Begin:
     pawn.Acceleration = vect(0,0,0);
     pawn.DesiredRotation.Pitch = 0;
 
-        FinishRotation();//
+    FinishRotation();//
 
     if (!ScriptedPawn(pawn).bSitting && !ScriptedPawn(pawn).bDancing)
         pawn.PlayWaiting();
@@ -4135,8 +4159,11 @@ state Idle
     }
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bCanConverse = true;
+      }
     }
 
 Begin:
@@ -4185,12 +4212,15 @@ state TakingHit
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bInterruptState = true;
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bCanConverse = true;
         ScriptedPawn(pawn).bStasis = true;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
         
 Begin:
@@ -4337,10 +4367,13 @@ state Burning
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bCanConverse = True;
         ScriptedPawn(pawn).bStasis = True;
+      }
     }
 
 Begin:
@@ -4431,6 +4464,8 @@ state RubbingEyes
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bInterruptState = true;
         ScriptedPawn(pawn).ResetReactions();
@@ -4439,6 +4474,7 @@ state RubbingEyes
         if (ScriptedPawn(pawn).Health > 0)
             ScriptedPawn(pawn).bStunned = False;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
 
 Begin:
@@ -4507,6 +4543,8 @@ state Stunned
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bInterruptState = true;
         ScriptedPawn(pawn).ResetReactions();
@@ -4517,6 +4555,7 @@ state Stunned
         if (ScriptedPawn(pawn).Health > 0)
             ScriptedPawn(pawn).bStunned = False;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
 
 Begin:
@@ -4583,6 +4622,8 @@ state Standing
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         EnableCheckDestLoc(false);
         scriptedPawn(pawn).bAcceptBump = true;
 
@@ -4591,6 +4632,7 @@ state Standing
         pawn.bStasis = true;
 
         StopBlendAnims();
+      }
     }
 
 Begin:
@@ -4906,14 +4948,10 @@ state Wandering
 
     function EndState()
     {
-        local int i;
+      local int i;
 
-        if (pawn == None)
-        {
-          log("State Wandering() EndState() -- No Pawn !!");
-          return;
-        }
-
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).bAcceptBump = true;
 
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
@@ -4924,6 +4962,7 @@ state Wandering
 
         if (pawn.JumpZ > 0)
             pawn.bCanJump = true;
+      }
     }
 
 Begin:
@@ -5076,6 +5115,8 @@ state Dancing
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bAcceptBump = True;
 
@@ -5084,6 +5125,7 @@ state Dancing
         ScriptedPawn(pawn).bStasis = true;
 
         StopBlendAnims();
+      }
     }
 
 Begin:
@@ -5227,9 +5269,12 @@ state RunningTo
     }
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         //ResetReactions();
         ScriptedPawn(pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -5355,9 +5400,12 @@ state GoingTo
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         //ResetReactions();
         ScriptedPawn(pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -5534,6 +5582,8 @@ state OpeningDoor
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bAcceptBump = True;
 
@@ -5543,6 +5593,7 @@ state OpeningDoor
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bStasis = True;
         ScriptedPawn(pawn).bInTransientState = false;
+      }
     }
 
 Begin:
@@ -5667,11 +5718,14 @@ state AvoidingPawn
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(Pawn).EnableCheckDestLoc(false);
         ScriptedPawn(Pawn).bAcceptBump = True;
         if (pawn.JumpZ > 0)
             pawn.bCanJump = true;
         ScriptedPawn(Pawn).bStasis = true;
+      }
     }
 
 Begin:
@@ -5819,11 +5873,14 @@ state Following
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bAcceptBump = False;
         //Enable('AnimEnd');
         ScriptedPawn(pawn).bStasis = true;
         StopBlendAnims();
+      }
     }
 
 Begin:
@@ -6074,6 +6131,8 @@ State Shadowing
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).bAcceptBump = False;
         ScriptedPawn(pawn).Enable('AnimEnd');
@@ -6081,6 +6140,7 @@ State Shadowing
         ScriptedPawn(pawn).bPausing = False;
         ScriptedPawn(pawn).bStaring = False;
         ScriptedPawn(pawn).bStasis = True;
+      }
     }
 
 Begin:
@@ -6405,6 +6465,8 @@ State Alerting
 
     function EndState()
     {
+      if (ScriptedPawn(pawn) != None)
+      {
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
         ScriptedPawn(pawn).ResetReactions();
         ScriptedPawn(pawn).bAcceptBump = False;
@@ -6415,6 +6477,7 @@ State Alerting
                 ScriptedPawn(pawn).AlarmActor.associatedPawn = None;
         ScriptedPawn(pawn).AlarmActor = None;
         ScriptedPawn(pawn).bStasis = True;
+      }
     }
 
 Begin:

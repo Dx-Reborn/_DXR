@@ -365,10 +365,8 @@ function ResetScaleGlow()
    for (i=0;i<Skins.Length;i++)
      Skins[i]=default.skins[i];
 
-    if (!bInvincible)
-        ScaleGlow = float(HitPoints) / float(Default.HitPoints) * 0.9 + 0.1;
-
-
+//    if (!bInvincible)
+//        ScaleGlow = float(HitPoints) / float(Default.HitPoints) * 0.9 + 0.1;
 }
 
 // ----------------------------------------------------------------------

@@ -417,10 +417,7 @@ exec function DVect()
 
 exec function Radar()
 {
-  local HudOverlay_Radar test;
-
-  test = spawn(class'HudOverlay_Radar');
-  DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).AddHudOverlay(test);
+   bRadarActive =!bRadarActive;
 }
 
 exec function audioLog()

@@ -9,7 +9,7 @@ var localized string strReceived;
 var transient DxCanvas dxc;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
-const MIN_OVERLAY_DELAY = 0.7;
+const MIN_OVERLAY_DELAY = 0.9;
 
 function addItem(inventory newItem)
 {
@@ -18,6 +18,8 @@ function addItem(inventory newItem)
   x = recentItems.Length;
   recentItems.Length = x + 1; // добавить 1 к длине массива
   recentItems[x] = newItem; // присвоить данные к элементу массива
+
+  log("Added item: "$newItem);
 }
 
 function SetInitialState()
@@ -29,16 +31,29 @@ function SetInitialState()
     dxc = new(Outer) class'DxCanvas';
     Super.SetInitialState();
 
-  h = DeusExHUD(level.GetLocalPlayerController().myHUD);
-  InfoLinkBG = h.InfoLinkBG;
-  InfoLinkText = h.InfoLinkText;
-  InfoLinkTitles = h.InfoLinkTitles;
-  InfoLinkFrame = h.InfoLinkFrame;
+    h = DeusExHUD(level.GetLocalPlayerController().myHUD);
+    InfoLinkBG = h.InfoLinkBG;
+    InfoLinkText = h.InfoLinkText;
+    InfoLinkTitles = h.InfoLinkTitles;
+    InfoLinkFrame = h.InfoLinkFrame;
 }
 
 function Timer()
 {
     Destroy();
+}
+
+event Destroyed()
+{
+    local int x;
+
+    Super.Destroyed();
+    for(x=0; x<recentItems.length; x++)
+    {
+        if (recentItems[x] != None)
+            if (recentItems[x].IsA('Credits') || recentItems[x].IsA('NanoKey'))
+                recentItems[x].Destroy();
+    }
 }
 
 //
@@ -170,20 +185,20 @@ function Render(Canvas C)
             c.SetPos(60+40*x, 0);
             if (recentItems[x].isA('DeusExPickup'))
             {
-              c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
-                ico = DeusExPickup(recentItems[x]).Icon;
+                c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExPickup(recentItems[x]).default.Icon;
                 c.DrawIconEx(ico,1.0);
-              c.Style=1;
-              c.DrawColor = InfoLinkText;
+                c.Style=1;
+                c.DrawColor = InfoLinkText;
                 dxc.DrawTextJustified(DeusExPickup(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
             }
             if (recentItems[x].isA('DeusExWeapon'))
             {
-              c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
                 ico = DeusExWeapon(recentItems[x]).Icon;
                 c.DrawIconEx(ico,1.0);
-              c.Style=1;
-              c.DrawColor = InfoLinkText;
+                c.Style=1;
+                c.DrawColor = InfoLinkText;
                 dxc.DrawTextJustified(DeusExWeapon(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
               }
             }

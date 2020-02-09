@@ -93,4 +93,5 @@ defaultproperties
      Buoyancy=2.000000
      RotationRate=(Yaw=65530)
      ControllerClass=class'RatController'
+     bAmbientCreature=true
 }

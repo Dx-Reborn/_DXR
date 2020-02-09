@@ -83,4 +83,5 @@ defaultproperties
      Mass=10.000000
      Buoyancy=97.000000
      RotationRate=(Yaw=100000)
+     bAmbientCreature=true
 }

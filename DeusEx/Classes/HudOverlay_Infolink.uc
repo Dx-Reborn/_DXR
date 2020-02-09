@@ -160,17 +160,16 @@ function Render(canvas u)
      }
             if (datalinkplay.bEndTransmission == true && (Level.TimeSeconds%1.0 >= 0.5))
             {
-       u.DrawColor = InfoLinkTitles;
-         u.SetOrigin(198,17);
-
-       u.SetPos(0,0);
-         u.SetClip(293,15);
-       u.Font = Font'DxFonts.FontMenuHeaders_DS';
-       winname="";
-       u.DrawTextJustified(endName,0,u.OrgX,u.OrgY,u.OrgX+u.ClipX,u.OrgY+u.ClipY);
-        }
-            u.reset();
-            u.SetClip(u.sizeX,u.sizeY);
+               u.DrawColor = InfoLinkTitles;
+               u.SetOrigin(198,17);
+               u.SetPos(0,0);
+               u.SetClip(293,15);
+               u.Font = Font'DxFonts.FontMenuHeaders_DS';
+               winname="";
+               u.DrawTextJustified(endName,0,u.OrgX,u.OrgY,u.OrgX+u.ClipX,u.OrgY+u.ClipY);
+            }
+   u.reset();
+   u.SetClip(u.sizeX,u.sizeY);
 }
 
 // ----------------------------------------------------------------------
@@ -254,10 +253,10 @@ function SetInitialState()
 
 defaultproperties
 {
-  textYStep=-1
-  textYStart=0
-  ttyRate=0.4 //0.3  // 0.5 1.6 // Меньше - быстрее ползет текст инфолинка снизу вверх.
-  ttyCRate=0.04 // 0.05 // Больше  - быстрее бежит текст за курсором
+    textYStep=-1
+    textYStart=0
+    ttyRate=0.4 //0.3  // 0.5 1.6 // Меньше - быстрее ползет текст инфолинка снизу вверх.
+    ttyCRate=0.04 // 0.05 // Больше  - быстрее бежит текст за курсором
 
     IncomingTransmission="Incoming Transmission..."
     EndTransmission="End transmission..."

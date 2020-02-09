@@ -1,6 +1,7 @@
-//=============================================================================
-// DeusExCarcass.
-//=============================================================================
+/*
+   DeusExCarcass
+   DXR: this class uses some stuff from DeusEx V2 and GMDX mods.
+*/
 
 class DeusExCarcass extends Carcass;
 
@@ -30,6 +31,8 @@ var int             MaxDamage;          // maximum amount of cumulative damage
 var bool            bNotDead;           // this body is just unconscious
 var() bool          bEmitCarcass;       // make other NPCs aware of this body
 
+var string          FamiliarName;
+
 var bool            bInit;
 
 // Used for Received Items window
@@ -45,14 +48,87 @@ var localized string itemName;          // human readable name
 
 var() bool bInvincible;
 var bool bAnimalCarcass;
+
+//Lork: Stuff we need to know in order to kill unconscious people
+var string deadName; 
+var bool wasFemale;
+var String flagName;
+var bool wasImportant;
+
+var bool underwater;
+var float drownTimer;
+
 var HudOverlay_received WinReceived;
 var DeusExPlayer dxplayer;
 
+// ----------------------------------------------------------------------
+// InitFor()
+// ----------------------------------------------------------------------
+function InitFor(Actor Other)
+{
+    if (Other != None)
+    {
+        // set as unconscious or add the pawns name to the description
+        if (!bAnimalCarcass)
+        {
+            if (bNotDead)
+            {
+                deadName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")"; //Lork: Save these for later
+                wasFemale = ScriptedPawn(Other).bIsFemale;  
+                wasImportant = ScriptedPawn(Other).bImportant;
+                flagName = Other.GetBindName();
+                itemName = msgNotDead;
+            }
+            else if (Other.IsA('ScriptedPawn'))
+                itemName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")";
+        }
+
+        Mass           = Other.Mass;
+        Buoyancy       = Mass * 1.2;
+        MaxDamage      = 0.8*Mass;
+        if (ScriptedPawn(Other) != None)
+            if (ScriptedPawn(Other).bBurnedToDeath)
+                CumulativeDamage = MaxDamage-1;
+
+        SetScaleGlow();
+
+        // Will this carcass spawn flies?
+        if (bAnimalCarcass)
+        {
+            itemName = msgAnimalCarcass;
+            if (FRand() < 0.2)
+                bGenerateFlies = true;
+        }
+        else if (!Other.IsA('Robot') && !bNotDead)
+        {
+            if (FRand() < 0.1)
+                bGenerateFlies = true;
+            bEmitCarcass = true;
+        }
+
+        if (Other.GetAnimSequence() == 'DeathFront')
+            LinkMesh(Mesh2);
+
+        // set the instigator and tag information
+        if (Other.Instigator != None)
+        {
+            KillerBindName = DeusExPawn(Other.Instigator).BindName;
+            KillerAlliance = DeusExPawn(Other.Instigator).Alliance;
+        }
+        else
+        {
+            KillerBindName = Other.GetBindName();
+            KillerAlliance = '';
+        }
+        Tag = Other.Tag;
+        Alliance = DeusExPawn(Other).Alliance;
+        CarcassName = Other.Name;
+    }
+}
 
 // ----------------------------------------------------------------------
 // ChunkUp()
 // ----------------------------------------------------------------------
-
 function ChunkUp(int Damage)
 {
     local int i;
@@ -88,7 +164,7 @@ function ChunkUp(int Damage)
 // ----------------------------------------------------------------------
 // TakeDamage()
 // ----------------------------------------------------------------------
-function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
 {
     local int i;
 
@@ -96,14 +172,15 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
         return;
 
     // only take "gib" damage from these damage types
-    if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded') || (damageType == class'DM_Munch') || (damageType == class'DM_Tantalus'))
+    if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded') || (damageType == class'DM_Munch') ||
+        (damageType == class'DM_Tantalus') || (damageType == class'DM_Shell') || (damageType == class'Fell')) //Lork: Falling can gib you too!
     {
         if ((damageType != class'DM_Munch') && (damageType != class'DM_Tantalus'))
         {
-           spawn(class'BloodSpurt',,,HitLocation);
-           spawn(class'BloodDrop',,, HitLocation);
-           for (i=0; i<Damage; i+=10)
-             spawn(class'BloodDrop',,, HitLocation);
+            spawn(class'BloodSpurt',,,HitLocation);
+            spawn(class'BloodDrop',,, HitLocation);
+            for (i=0; i<Damage; i+=10)
+               spawn(class'BloodDrop',,, HitLocation);
         }
 
         // this section copied from Carcass::TakeDamage() and modified a little
@@ -119,12 +196,57 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
             Damage *= 0.4;
         CumulativeDamage += Damage;
         if (CumulativeDamage >= MaxDamage)
+        {
+            if (bNotDead) //Lork: Gibbing is no excuse for pretending you're alive!
+                setDeathFlags(InstigatedBy);
+                
             ChunkUp(Damage);
+        }
         if (bDecorative)
             Velocity = vect(0,0,0);
     }
+
+    if(bNotDead)
+    {
+        //Lork: Only apply these damage types if the "corpse" is alive
+        if (damageType == class'DM_Drowned' || damageType == class'DM_Radiation' || damageType == class'DM_Burned' || 
+            damageType == class'DM_Flamed' || damageType == class'DM_PoisonGas' || damageType == class'DM_HalonGas')
+            CumulativeDamage += Damage;
+        
+        //Lork: Make it possible for unconscious NPCs to die
+        if(!bAnimalCarcass && (damageType == class'DM_Shot' || damageType == class'DM_Sabot' || damageType == class'DM_Exploded' || damageType == class'DM_Munch' ||
+        damageType == class'DM_Tantalus' || damageType == class'DM_Shell' || damageType == class'Fell' || damageType == class'DM_Drowned' || damageType == class'DM_Flamed' ||
+        damageType == class'DM_Burned' || damageType == class'DM_Radiation' || damageType == class'DM_PoisonGas' || damageType == class'DM_HalonGas'))
+        {
+            if(CumulativeDamage * 10 >= MaxDamage)
+            {
+                bNotDead = False;
+                itemName = deadName;
+                FamiliarName = itemName;
+            
+                if (PhysicsVolume.bWaterVolume)
+                {
+                    if(wasFemale)
+                        PlaySound(sound'FemaleWaterDeath', SLOT_Pain,,,, 1.1 - 0.2*FRand());
+                    else
+                        PlaySound(sound'MaleWaterDeath', SLOT_Pain,,,, 1.1 - 0.2*FRand());
+                }
+                else
+                {
+                    if(wasFemale)
+                        PlaySound(sound'FemaleDeath', SLOT_Pain,,,, 1.1 - 0.2*FRand());
+                    else
+                        PlaySound(sound'MaleDeath', SLOT_Pain,,,, 1.1 - 0.2*FRand());
+                }
+                
+                class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+                setDeathFlags(InstigatedBy);
+            }
+        }
+    }
     SetScaleGlow();
 }
+
 
 // ----------------------------------------------------------------------
 // SetScaleGlow()
@@ -187,71 +309,6 @@ function RestoreItems()
 }
 
 // ----------------------------------------------------------------------
-// InitFor()
-// ----------------------------------------------------------------------
-function InitFor(Actor Other)
-{
-  local name AnimSequence;
-  local float frame, rate;
-
-    if (Other != None)
-    {
-        Other.GetAnimParams(0,AnimSequence,frame,rate);
-
-        // set as unconscious or add the pawns name to the description
-        if (!bAnimalCarcass)
-        {
-            if (bNotDead)
-                itemName = msgNotDead;
-            else if (Other.IsA('ScriptedPawn'))
-                itemName = itemName $ " (" $ ScriptedPawn(Other).FamiliarName $ ")";
-        }
-
-        Mass           = Other.Mass;
-        Buoyancy       = Mass * 1.2;
-        MaxDamage      = 0.8*Mass;
-        if (ScriptedPawn(Other) != None)
-            if (ScriptedPawn(Other).bBurnedToDeath)
-                CumulativeDamage = MaxDamage-1;
-
-        SetScaleGlow();
-
-        // Will this carcass spawn flies?
-        if (bAnimalCarcass)
-        {
-            itemName = msgAnimalCarcass;
-            if (FRand() < 0.2)
-                bGenerateFlies = true;
-        }
-        else if (!Other.IsA('Robot') && !bNotDead)
-        {
-            if (FRand() < 0.1)
-                bGenerateFlies = true;
-            bEmitCarcass = true;
-        }
-
-        if (Other.GetAnimSequence() == 'DeathFront')
-            LinkMesh(Mesh2);
-
-        // set the instigator and tag information
-        if (Other.Instigator != None)
-        {
-            KillerBindName = Other.Instigator.GetBindName();
-            KillerAlliance = DeusExPawn(Other.Instigator).Alliance;
-        }
-        else
-        {
-            KillerBindName = Other.GetBindName();
-            KillerAlliance = '';
-        }
-        Tag = Other.Tag;
-        Alliance = DeusExPawn(Other).Alliance;
-        CarcassName = Other.Name;
-    }
-}
-
-
-// ----------------------------------------------------------------------
 // PostBeginPlay()
 // ----------------------------------------------------------------------
 event PostBeginPlay()
@@ -311,6 +368,8 @@ function PhysicsVolumeChange(PhysicsVolume NewVolume)
     // use the correct mesh for water
     if (NewVolume.bWaterVolume)
           LinkMesh(Mesh3);
+
+    underwater = NewVolume.bWaterVolume; //Lork: keep track of whether you're underwater or not
 }
 
 function Destroyed()
@@ -330,6 +389,18 @@ function Tick(float deltaSeconds)
         bInit = true;
         if (bEmitCarcass)
             class'EventManager'.static.AIStartEvent(self,'Carcass', EAITYPE_Visual);
+    }
+
+    //Lork: Unconscious people can drown too
+    if(underwater && bNotDead)
+    {
+        if(drownTimer <= 0)
+        {
+            TakeDamage(5, None, Location, vect(0,0,0), class'DM_Drowned');
+            drownTimer = 2.0;
+        }
+        else
+            drownTimer -= deltaSeconds;
     }
     Super.Tick(deltaSeconds);
 }
@@ -394,6 +465,13 @@ function Frob(Actor Frobber, Inventory frobWith)
                     corpse.CorpseItemName = itemName;
                     corpse.CarcassName = CarcassName;
                     corpse.CarcassInv = Inventory; // DXR: Added to save corpse's inventory
+
+                    //Lork: Keep track of the unconscious vars as well
+                    corpse.deadName = deadName;
+                    corpse.wasFemale = wasFemale;
+                    corpse.wasImportant = wasImportant;
+                    corpse.flagName = flagName;
+
                     corpse.SetBase(player);
                     corpse.Frob(player, None);
                     player.PutInHand(corpse);
@@ -453,11 +531,11 @@ function Frob(Actor Frobber, Inventory frobWith)
                     {
                         if (player != None)
                         {
-                            player.PickupNanoKey(NanoKey(item));
                             AddReceivedItem(player, item, 1);
+                            player.PickupNanoKey(NanoKey(item));
                             DeleteInventory(item);
-                            item.Destroy();
-                            item = None;
+                            //item.Destroy(); // Чтобы оверлей смог нарисовать значок, предмет должен существовать.
+                            item = None;      // Destroy() будет выполнено из оверлея, когда тот самоуничтожится по таймеру.
                         }
                         bPickedItemUp = True;
                     }
@@ -469,7 +547,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                             player.Credits += Credits(item).numCredits;
                             P.ClientMessage(Sprintf(Credits(item).msgCreditsAdded, Credits(item).numCredits));
                             DeleteInventory(item);
-                            item.Destroy();
+                            //item.Destroy();
                             item = None;
                         }
                         bPickedItemUp = True;
@@ -544,7 +622,6 @@ function Frob(Actor Frobber, Inventory frobWith)
                     {
                         // Special case if this is a DeusExPickup(), it can have multiple copies
                         // and the player already has it.
-
                         if ((item.IsA('DeusExPickup')) && (DeusExPickup(item).bCanHaveMultipleCopies) && (player.FindInventoryType(item.class) != None))
                         {
                             invItem   = DeusExPickup(player.FindInventoryType(item.class));
@@ -610,7 +687,7 @@ function Frob(Actor Frobber, Inventory frobWith)
             until ((item == None) || (item == startItem));
         }
 
-log("  bFoundSomething = " $ bFoundSomething);
+//log("  bFoundSomething = " $ bFoundSomething);
 
         if (!bFoundSomething)
             P.ClientMessage(msgEmpty);
@@ -624,8 +701,8 @@ function AddReceivedItem(DeusExPlayer player, Inventory item, int count)
     if (WinReceived == none)
     {
        WinReceived = spawn(class'HudOverlay_received'); // Create HUD overlay...
-       DeusExPlayerController(player.controller).myHUD.AddHudOverlay(WinReceived);// Add it to our HUD...
        WinReceived.AddItem(item); // When overlay just created, add first item.
+       DeusExPlayerController(player.controller).myHUD.AddHudOverlay(WinReceived);// Add it to our HUD...
     }
     else if (WinReceived != none)
     {
@@ -736,7 +813,7 @@ auto state Dead
         // expand the collision radius back to where it's supposed to be
         // don't change animal carcass collisions
         if (!bAnimalCarcass)
-            SetCollisionSize(40.0, Default.CollisionHeight);
+            SetCollisionSize(40.0, default.CollisionHeight);
 
         // alert NPCs that I'm really disgusting
         if (bEmitCarcass)
@@ -751,18 +828,41 @@ Begin:
     HandleLanding();
 }
 
+//Lork: Corpses take falling damage
 event Landed(vector HitNormal)
 {
   if (!PhysicsVolume.bWaterVolume)
   {
     if (Level.TimeSeconds > 2)
-      PlaySound(sound'pl_jumpland1');
+        PlaySound(sound'pl_jumpland1');
 
-    if (Velocity.Z < -1750)
-        TakeDamage(1000, None, Location, Velocity, class'DM_Exploded');
-    else if (Velocity.Z < -1000)
-        TakeDamage(5, None, Location, Velocity, class'DM_Shot');
+    if (Velocity.Z < -700)
+        TakeDamage(-0.14 * (Velocity.Z + 700), None, Location, Velocity, class'fell');
   }
+}
+
+function DeusExGameInfo GetFlagBase()
+{
+    return DeusExGameInfo(Level.Game);
+}
+
+
+//Lork: Set the death flags properly if the carcass goes from unconscious to dead
+// DXR: Modified to use our FlagBase.
+function setDeathFlags(Pawn InstigatedBy)
+{
+    local string deathFlag;
+
+    if(wasImportant)
+    {
+        deathFlag = flagName$"_Dead";
+        GetflagBase().SetBool(deathFlag, True);
+        GetflagBase().SetExpiration(deathFlag, FLAG_Bool, 0);
+
+        deathFlag = flagName$"_Unconscious";
+        GetflagBase().SetBool(deathFlag, False);
+        GetflagBase().SetExpiration(deathFlag, FLAG_Bool, 0);
+    }
 }
 
 

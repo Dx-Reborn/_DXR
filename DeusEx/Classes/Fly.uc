@@ -5,14 +5,14 @@ class Fly extends Animal;
 
 function bool IsNearHome(vector position)
 {
-	local bool bNear;
+    local bool bNear;
 
-	bNear = true;
-	if (bUseHome)
-		if (VSize(HomeLoc-position) > HomeExtent)
-			bNear = false;
+    bNear = true;
+    if (bUseHome)
+        if (VSize(HomeLoc-position) > HomeExtent)
+            bNear = false;
 
-	return bNear;
+    return bNear;
 }
 
 
@@ -20,11 +20,11 @@ function ReactToInjury(Pawn instigatedBy, class<damageType> damageType, EHitLoca
 
 function PlayWalking()
 {
-	LoopAnimPivot('Still');
+    LoopAnimPivot('Still');
 }
 function TweenToWalking(float tweentime)
 {
-	TweenAnimPivot('Still', tweentime);
+    TweenAnimPivot('Still', tweentime);
 }
 
 
@@ -63,7 +63,8 @@ function PlaySwimming();
 
 defaultproperties
 {
-     bTransient=True
+     bAmbientCreature=true
+     bTransient=true
      BindName="Fly"
      FamiliarName="Fly"
      UnfamiliarName="Fly"

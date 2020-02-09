@@ -6,7 +6,7 @@ class Pot2 extends DeusExDecoration;
 defaultproperties
 {
      bCanBeBase=True
-     ItemName="Clay Pot"
+     ItemName="Metal Pot"
      mesh=mesh'DeusExDeco.Pot2'
      CollisionRadius=7.980000
      CollisionHeight=13.000000

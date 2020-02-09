@@ -25,10 +25,25 @@ function BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_Level1: Skins[0] = Texture'NanoKeyTex1'; break;
-        case SC_Level2: Skins[0] = Texture'NanoKeyTex2'; break;
-        case SC_Level3: Skins[0] = Texture'NanoKeyTex3'; break;
-        case SC_Level4: Skins[0] = Texture'NanoKeyTex4'; break;
+        case SC_Level1: 
+        Skins[0] = Texture'NanoKeyTex1';
+        Icon=Texture'BeltIconNanoKey';
+        break;
+
+        case SC_Level2: 
+        Skins[0] = Texture'NanoKeyTex2'; 
+        Icon=Texture'HXBeltIconNanoKey2'; // New icons from HX (DeusEx Coop mod).
+        break;
+
+        case SC_Level3: 
+        Skins[0] = Texture'NanoKeyTex3'; 
+        Icon=Texture'HXBeltIconNanoKey3';
+        break;
+
+        case SC_Level4: 
+        Skins[0] = Texture'NanoKeyTex4'; 
+        Icon=Texture'HXBeltIconNanoKey4';
+        break;
     }
 }
 
@@ -52,7 +67,7 @@ function GiveTo(pawn Other)
     }
     else
     {
-        /*log("Nanokey: something else");*/Super.GiveTo(Other);
+        Super.GiveTo(Other);
     }
 }
 
@@ -79,6 +94,11 @@ function bool HandlePickupQuery(Inventory Item)
     return Super.HandlePickupQuery(Item);
 }
 
+event Destroyed()
+{
+    log(self@" has been destroyed!",'Debug');
+}
+
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -88,7 +108,7 @@ defaultproperties
      Description="NO KEY DESCRIPTION - REPORT THIS AS A BUG!"
      beltDescription="NANO"
      ItemName="NanoKey"
-
+     Icon=Texture'DeusExUI.Icons.BeltIconNanoKey'
      Mesh=Mesh'DeusExItems.NanoKey'
      PickupViewMesh=Mesh'DeusExItems.NanoKey'
      FirstPersonViewMesh=Mesh'DeusExItems.NanoKey'

@@ -3,8 +3,7 @@
 // 02/12/2017: добавлено state PlayerMousing (из примеров с UDN)
 //
 
-class PlayerControllerEXT extends DeusExPlayerControllerExt
-                                  config (DXRConfig);
+class PlayerControllerEXT extends DeusExPlayerControllerBase;
 
 #exec OBJ LOAD FILE=DeusExSounds
 

@@ -1464,8 +1464,8 @@ function PlayFiring()
     anim = 'Shoot';
 
     if (bAutomatic)
-        PlayAnim(anim,, 0.1);
-//        LoopAnim(anim,, 0.1);
+//        PlayAnim(anim,, 0.1);
+        LoopAnim(anim,, 0.1);
     else
     {
         if (bHandToHand)
@@ -1484,7 +1484,8 @@ function PlayFiring()
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048, 1.0, );
+        Owner.PlaySound(GetFireSound(), SLOT_None,,false, 2048, 1.0, false);
+//        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048, 1.0, );
 }
 
 function PlayIdleAnim()
@@ -1506,14 +1507,11 @@ function PlayIdleAnim()
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-//    spawn(class'BloodSpurt',,,HitLocation+HitNormal);
-//    spawn(class'BloodDrop',,,HitLocation+HitNormal);
+    spawn(class'BloodSpurt',,,HitLocation+HitNormal);
+    spawn(class'BloodDrop',,,HitLocation+HitNormal);
 
-//      spawn(class'DX_BodyHit',,,HitLocation+HitNormal);
-//    if (FRand() < 0.5)
-//        spawn(class'DX_BodyHit',,,HitLocation+HitNormal);
-
-//        spawn(class'BloodDrop',,,HitLocation+HitNormal);
+    if (FRand() < 0.5)
+        spawn(class'BloodDrop',,,HitLocation+HitNormal);
 }
 
 function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float Damage)
@@ -2616,6 +2614,5 @@ defaultproperties
     ShakeOffsetTime=2.000000
 
     TransientSoundVolume=1.00
-
 }
 

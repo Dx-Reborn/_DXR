@@ -181,7 +181,10 @@ var DataLinkPlay dataLinkPlay;
 // Used to manage NPC Barks
 var travel BarkManager barkManager;
 var bool bInConversation;
+
 var string strStartMap;
+
+var travel bool bRadarActive;
 
 var transient DeusExGlobals gl;
 var transient PlayerInterfacePanel winInv;
@@ -217,12 +220,9 @@ function RestoreTravelData()
 function DeleteInventory(inventory item)
 {
     local DeusExHUD hud;
-
-    hud = DeusExHUD(level.GetLocalPlayerController().myHUD);
-
     // Vanilla Matters: Make sure VM_lastInHand is deleted properly.
-  if (item == VM_lastInHand)
-      VM_lastInHand = None;
+    if (item == VM_lastInHand)
+        VM_lastInHand = None;
 
     // If the item was inHand, clear the inHand
     if (inHand == item)
@@ -241,7 +241,9 @@ function DeleteInventory(inventory item)
         winInv.InventoryDeleted(item);
     }
     // Remove the item from the object belt
-    hud.RemoveObjectFromBelt(item);
+    hud = DeusExHUD(level.GetLocalPlayerController().myHUD);
+    if (hud != None)
+        hud.RemoveObjectFromBelt(item);
 
     Super.DeleteInventory(item);
 }
@@ -547,6 +549,7 @@ function DeleteAllGoals()
 // ----------------------------------------------------------------------
 function ResetGoals()
 {
+  gl = class'DeusExGlobals'.static.GetGlobals();
   gl.ResetGoals();
 }
 // --== !Управление задачами ==--
@@ -558,21 +561,12 @@ final function UpdateTimePlayed(float deltaTime)
 }
 
 //
-// Find out what mission we're in.
-// return the current mission number
-//
-/*function int getMissionNum()
-{
-    return DeusExGameInfo(Level.Game).missionNumber;
-}*/
-
-//
 // Stores an image in the player's data vault.
 // @param image the data vault image being added
 //
 function addImage(DataVaultImage image)
 {
- if (FindInventoryType(image.class) == none)
+   if (FindInventoryType(image.class) == none)
    {
       image = spawn(image.class);
       image.Frob(self, none);
@@ -1552,7 +1546,6 @@ function Landed(vector HitNormal)
     else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
         MakeNoise(0.1 * Level.Game.GameDifficulty);
     bJustLanded = true;
-
 }
 
 
@@ -1786,7 +1779,7 @@ function bool DoJump(bool bUpdating)
 //      if (bIsCrouching)
 //          Velocity.Z *= 0.9;
 
-        if (Base != Level)
+        if ((base != None) && (Base != Level))
             Velocity.Z += Base.Velocity.Z;
 
         SetPhysics(PHYS_Falling);
@@ -2209,7 +2202,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 
     if ((damageType != class'DM_Stunned') && (damageType != class'DM_TearGas') && (damageType != class'DM_HalonGas') &&
         (damageType != class'DM_PoisonGas') && (damageType != class'DM_Radiation') && (damageType != class'DM_EMP') &&
-        (damageType != class'DM_NanoVirus') && (damageType != class'Drowned') && (damageType != class'DM_KnockedOut'))
+        (damageType != class'DM_NanoVirus') && (damageType != class'DM_Drowned') && (damageType != class'DM_KnockedOut'))
         bleedRate += (origHealth-Health)/30.0;  // 30 points of damage = bleed profusely
 
     if (CarriedDecoration != None)
@@ -2331,49 +2324,7 @@ function Timer()
     }
 }
 
-
-
-//----------------------
-// АЙ! ОЙ!
-
 function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult);
-/*{
-    local float rnd;
-
-    if ( Level.TimeSeconds - LastPainSound < FRand() + 0.5)
-        return;
-
-    LastPainSound = Level.TimeSeconds;
-
-    if (PhysicsVolume.bWaterVolume) 
-    {
-        if (damageType == class'Drowned')
-        {
-            if (FRand() < 0.8)
-                self.PlaySound(sound'MaleDrown', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-        }
-        else
-            self.PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-    }
-    else
-    {
-        if ((damageType == class'DM_TearGas') || (damageType == class'DM_HalonGas'))
-            self.PlaySound(sound'MaleEyePain', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-        else if (damageType == class'DM_PoisonGas')
-            self.PlaySound(sound'MaleCough', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-        else
-        {
-            rnd = FRand();
-            if (rnd < 0.33)
-                self.PlaySound(sound'MalePainSmall', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-            else if (rnd < 0.66)
-                self.PlaySound(sound'MalePainMedium', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-            else
-                self.PlaySound(sound'MalePainLarge', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
-        }
-        class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, FMax(Mult * TransientSoundVolume, Mult * 2.0));
-    }
-}*/
 
 function RestoreAllHealth()
 {
@@ -2392,14 +2343,11 @@ function RestoreAllHealth()
 // Calculates reduced damage from augmentations and from inventory items
 // Also calculates a scalar damage reduction based on the mission number
 // ----------------------------------------------------------------------
-//function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
-function bool DXReduceDamage(int Damage, class<DamageType> DamageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
+function bool DXReduceDamage(int Damage, class<damageType> damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
 {
     local float newDamage;
     local float augLevel, skillLevel;
     local float pct;
-    local HazmatSuit suit;
-    local BallisticArmor armor;
     local bool bReduced;
 
     bReduced = False;
@@ -2425,24 +2373,29 @@ function bool DXReduceDamage(int Damage, class<DamageType> DamageType, vector hi
 
         // go through the actor list looking for owned HazMatSuits
         // since they aren't in the inventory anymore after they are used
-        foreach AllActors(class'HazMatSuit', suit)
-            if ((suit.Owner == Self) && suit.bActive)
-            {
-                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-                newDamage *= 0.75 * skillLevel;
-            }
     }
-
-    if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded'))
+    
+    //Lork: The hazmat suit needs to be split off into its own block of code to do its job properly
+    if ((damageType == class'DM_TearGas') || (damageType == class'DM_PoisonGas') || (damageType == class'DM_Radiation') ||
+        (damageType == class'DM_HalonGas')  || (damageType == class'DM_PoisonEffect') || (damageType == class'DM_Poison') ||
+        (damageType == class'DM_Flamed') || (damageType == class'DM_EMP') || (damageType == class'DM_Shocked')) //Damage types that it was supposed to protect you from, but didn't
+    {
+        if (UsingChargedPickup(class'HazMatSuit'))
+        {
+            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+            newDamage *= 0.75 * skillLevel;
+        }
+    }
+        
+    if ((damageType == class'DM_Shot') || (damageType == class'DM_Sabot') || (damageType == class'DM_Exploded') || (damageType == class'DM_AutoShot'))
     {
         // go through the actor list looking for owned BallisticArmor
         // since they aren't in the inventory anymore after they are used
-        foreach AllActors(class'BallisticArmor', armor)
-            if ((armor.Owner == Self) && armor.bActive)
-            {
-                skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-                newDamage *= 0.5 * skillLevel;
-            }
+        if (UsingChargedPickup(class'BallisticArmor'))
+        {
+           skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+           newDamage *= 0.5 * skillLevel;
+        }
     }
 
     if (damageType == class'DM_HalonGas')
@@ -2451,7 +2404,7 @@ function bool DXReduceDamage(int Damage, class<DamageType> DamageType, vector hi
             ExtinguishFire();
     }
 
-    if (damageType == class'DM_Shot')
+    if ((damageType == class'DM_Shot') || (damageType == class'DM_AutoShot'))
     {
         if (AugmentationSystem != None)
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
@@ -2498,8 +2451,8 @@ function bool DXReduceDamage(int Damage, class<DamageType> DamageType, vector hi
 
     //
     // Reduce or increase the damage based on the combat difficulty setting
-    // 
-    if (damageType == class'DM_Shot')
+    //
+    if ((damageType == class'DM_Shot') || (damageType == class'DM_AutoShot'))
     {
         newDamage *= CombatDifficulty;
 
@@ -2543,7 +2496,7 @@ function PlayHit(float Damage, Pawn InstigatedBy, vector HitLocation, class<Dama
                 DeusExPlayerController(controller).ClientFlash(rnd * 0.002, vect(50,150,0));
             else if (damageType == class'DM_TearGas')
                 DeusExPlayerController(controller).ClientFlash(rnd * 0.002, vect(150,150,0));
-            else if (damageType == class'Drowned')
+            else if (damageType == class'DM_Drowned')
                 DeusExPlayerController(controller).ClientFlash(rnd * 0.002, vect(0,100,200));
             else if (damageType == class'DM_EMP')
                 DeusExPlayerController(controller).ClientFlash(rnd * 0.002, vect(0,200,200));
@@ -3630,6 +3583,13 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
                             carc.itemName = POVCorpse(item).CorpseItemName;
                             carc.CarcassName = POVCorpse(item).CarcassName;
                             carc.Inventory = POVCorpse(item).CarcassInv; // DXR: Restore inventory
+
+                            //Lork: Save the new unconscious vars too
+                            carc.deadName = POVCorpse(item).deadName;
+                            carc.wasFemale = POVCorpse(item).wasFemale;
+                            carc.wasImportant = POVCorpse(item).wasImportant;
+                            carc.flagName = POVCorpse(item).flagName;
+
                             carc.Velocity = item.Velocity * 0.5;
                             item.Velocity = vect(0,0,0);
                             carc.bHidden = False;
@@ -3994,7 +3954,7 @@ function FootStepping(int Side)
         speedFactor = VSize(Velocity)/180.0;
 
     massFactor  = Mass/150.0;
-    radius      = 128; //375.0;
+    radius      = 375.0;
     volume      = (speedFactor+0.2) * massFactor;
     range       = radius * volume;
     pitch       = (volume+0.5);
@@ -4163,12 +4123,13 @@ function name GetFloorMaterial()
     local name texName, texGroup;
     local material mat;
 
-    // trace down to our feet           //* 1.5
-    EndTrace = Location - CollisionHeight * 2.0 * vect(0,0,1);
+    // trace down to our feet           //* 2.0
+    EndTrace = Location - CollisionHeight * 2.0 * vect(0,0,16);
+//    EndTrace = Location - CollisionHeight * 2.0 * vect(0,0,1);
 
     foreach class'ActorManager'.static.TraceTexture(self, class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
     {
-        if (target == Level) // movers are staticmeshes.
+        if (target == Level)
             break;
 
         if ((target.bWorldGeometry) || (target.IsA('Mover')))

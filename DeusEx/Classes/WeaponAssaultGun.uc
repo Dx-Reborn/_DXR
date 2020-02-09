@@ -12,6 +12,25 @@ const SecondThreshold = 20;
 const Threshold3 = 40;
 const Threshold4 = 60;
 
+function PlayFiring()
+{
+    local Name anim;
+
+    anim = 'Shoot';
+
+    if (bAutomatic)
+        LoopAnim(anim,5.0, 0.01);
+    else
+    {
+        PlayAnim(anim,,0.1);
+    }
+
+    if (bHasSilencer)
+        Owner.PlaySound(GetSilencedSound(), SLOT_Misc,,, 2048);
+    else
+        Owner.PlaySound(GetFireSound(), SLOT_Misc,,, 2048, 1.0,);
+}
+
 event AnimEnd(int channel)
 {
    Super.AnimEnd(channel);
@@ -25,16 +44,13 @@ function AddParticles()
     local coords K;
 
     K = GetBoneCoords('211');
-
     extrapuff = Spawn(class'EM_PistolSmoke',, '', K.Origin);
-//    AttachToBone(extrapuff, '211');
 }
 
 
 function AssaultGunSmoke()
 {
-//  amountOfShots++;
-  amountOfShots += 5;
+  amountOfShots++;
 
   if (amountOfShots > FirstThreshold)
   {
@@ -44,21 +60,21 @@ function AssaultGunSmoke()
   if (amountOfShots > SecondThreshold)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.3;
+    extrapuff.Emitters[0].opacity = 0.15;
     extrapuff.Emitters[0].LifetimeRange.Min = 2.000000;
     extrapuff.Emitters[0].LifetimeRange.Max = 2.500000;
   }
   if (amountOfShots > Threshold3)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.5;
+    extrapuff.Emitters[0].opacity = 0.2;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.000000;
     extrapuff.Emitters[0].LifetimeRange.Max = 3.500000;
   }
   if (amountOfShots > Threshold4)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 1.0;
+    extrapuff.Emitters[0].opacity = 0.25;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.500000;
     extrapuff.Emitters[0].LifetimeRange.Max = 4.000000;
   }
@@ -79,15 +95,14 @@ function AssaultGunFireStart()
 function AssaultGunFireEnd()
 {
     Skins[2] = texture'PinkMaskTex';
+    class'SoundManager'.static.StopSound(owner,GetFireSound());
 }
 
-/*function WeaponTick(float dt)
+event WeaponTick(float dt)
 {
-  if (extrapuff != none)
-     AttachToBone(extrapuff, '211');
-
-  Super.WeaponTick(dt);
-}*/
+  if (GetAnimSequence() != 'Shoot')
+      class'SoundManager'.static.StopSound(owner,GetFireSound());
+}
 
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
 {
@@ -196,8 +211,6 @@ function Sound GetDownSound()
     }
     else return Super.GetDownSound();
 }
-
-
 
 
 defaultproperties

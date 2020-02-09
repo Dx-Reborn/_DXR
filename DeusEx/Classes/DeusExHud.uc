@@ -4,7 +4,7 @@
 
 class DeusExHUD extends MouseHUD;
 
-const DebugTraceDist = 512; //256;
+const DebugTraceDist = 512;
 
 var localized string strMeters;
 var bool bUseCameraTrick; // Как бы ЭТО назвать...
@@ -15,8 +15,13 @@ var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
 
 var bool bRenderMover;
-
 var float vis;
+
+// Radar
+var float RadarPulse,RadarScale;
+var float RadarPosX, RadarPosY;
+var float MinEnemyDist;
+var material RadarBackground;
 
 exec function ShowDebug()
 {
@@ -115,7 +120,7 @@ exec function ExtraHUDDebugInfo()
   }
 }
 
-simulated event PostRender(canvas C)
+event PostRender(canvas C)
 {
     super.postrender(C);
 
@@ -127,12 +132,18 @@ simulated event PostRender(canvas C)
     if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
     RenderDebugInfo(C);
 
-  if (bUseBinocularView)
-  {
-    RenderBinoculars(C);
-  }
-  if ((DeusExWeapon(PlayerOwner.pawn.Weapon) != none) && (DeusExWeapon(PlayerOwner.pawn.Weapon).bZoomed))
-      renderScopeView(C);
+    if (bUseBinocularView)
+    {
+      RenderBinoculars(C);
+    }
+    if ((DeusExWeapon(PlayerOwner.pawn.Weapon) != none) && (DeusExWeapon(PlayerOwner.pawn.Weapon).bZoomed))
+        renderScopeView(C);
+
+    if (DeusExPlayer(PlayerOwner.Pawn) != None && DeusExPlayer(PlayerOwner.Pawn).bRadarActive)
+    {
+        DrawRadarCircle(c); // Фон радара
+        DrawRadar(c);
+    }
 
 //  if (bRenderMover)
 //     RenderMover(C);
@@ -208,11 +219,9 @@ simulated event PostRender(canvas C)
 
 simulated function DisplayMessages(Canvas C)
 {
-  local int i, j, /*XPos, YPos,*/ MessageCount;
+    local int i, j, MessageCount;
     local float w,h;
-    local texture border;//, ico;
-//  local DxCanvas dxc;
-//  local int x;
+    local texture border;
 
   if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
   return;
@@ -680,6 +689,9 @@ function RemoveObjectFromBelt(Inventory item)
 
    StartPos = 1;
 
+   if (GetPlayer() == None)
+   return;
+
     for (i=StartPos; IsValidPos(i); i++)
     {
         if (GetPlayer().objects[i] == item)
@@ -1068,42 +1080,146 @@ function renderToolBeltSelection(canvas u)
   }
 }
 
+/* Radar (перемещено из оверлея) -----------------------------------------------------------------*/
+function DrawRadarCircle(canvas u)
+{
+    local float RadarWidth;
+
+    RadarScale = default.RadarScale * HUDScale;
+    RadarWidth = 0.5 * RadarScale * u.ClipX;
+
+    u.Style = ERenderStyle.STY_Alpha;
+    u.DrawColor = class'HUD'.default.GrayColor;
+
+    u.SetPos(RadarPosX * u.ClipX - RadarWidth, RadarPosY * u.ClipY + RadarWidth);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 512, 512, -512);
+
+    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY + RadarWidth);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 512, -512, -512);
+
+    u.SetPos(RadarPosX * u.ClipX - RadarWidth,RadarPosY * u.ClipY);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 0, 512, 512);
+
+    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 0, -512, 512);
+}
+
+function DrawRadar(canvas u)
+{
+    local ScriptedPawn P;
+    local float Dist, MaxDist, RadarWidth,Angle,DotSize,OffsetY,OffsetScale;
+    local rotator Dir;
+    local vector Start;
+    local int DistB;
+    local float AIvis;
+    
+    RadarWidth = 0.5 * RadarScale * u.ClipX;
+    DotSize = 8 * u.ClipX * HUDScale/1600;
+    if (PawnOwner == None)
+        Start = PlayerOwner.Location;
+    else
+        Start = PawnOwner.Location;
+    
+    MaxDist = 3000;
+    u.Style = ERenderStyle.STY_Masked;
+    OffsetY = RadarPosY + RadarWidth/u.ClipY;
+    MinEnemyDist = 3000;
+    foreach DynamicActors(class'ScriptedPawn',P)
+        if ((P.Health > 0) && (P.bInWorld == true) && (P.bAmbientCreature == false))
+        {
+            Dist = VSize(Start - P.Location);
+
+            AIvis = class'DeusExPawn'.static.AiVisibility(P, false);
+            if (Dist < 3000)
+            {
+                if (P != None)
+                {
+                  if (P.GetAllianceType((DeusExPawn(pawnOwner).Alliance)) == ALLIANCE_Hostile)
+                  {
+                    u.DrawColor.R = 200;
+                    u.DrawColor.G = 0;
+                    u.DrawColor.B = 0;
+                  }
+                  else
+                  {
+                    u.DrawColor.R = 0;
+                    u.DrawColor.G = 200;
+                    u.DrawColor.B = 0;
+                  }
+                }
+                else
+                {
+                    u.DrawColor.R = 0;
+                    u.DrawColor.G = 0;
+                    u.DrawColor.B = 0;
+                }
+                Dir = rotator(P.Location - Start);
+                OffsetScale = RadarScale * Dist * 0.000167;
+
+                if (PawnOwner == None)
+                    Angle = ((Dir.Yaw - PlayerOwner.Rotation.Yaw) & 65535) * 6.2832/65536;
+                else
+                    Angle = ((Dir.Yaw - PawnOwner.Rotation.Yaw) & 65535) * 6.2832/65536;
+
+                u.SetPos(RadarPosX * u.ClipX + OffsetScale * u.ClipX * sin(Angle) - 0.5 * DotSize, 
+                         OffsetY * u.ClipY - OffsetScale * u.ClipX * cos(Angle) - 0.5 * DotSize);
+
+                DistB = abs(PawnOwner.Location.Z - P.Location.Z) - abs(PawnOwner.default.CollisionHeight - PawnOwner.CollisionHeight);
+                if (abs(DistB) >= 0 && abs(DistB) < 60) // Same
+                    u.DrawTile(Material'CheckboxOff',DotSize,DotSize,0,0,8,8);
+                else 
+                    if (DistB > 61) // Below or above
+                        u.DrawTile(Material'RadarSquare',DotSize,DotSize,0,0,8,8);
+            }
+        }
+}
+
+
+
+
+
 
 defaultproperties
 {
+    RadarScale=0.20
+    RadarPosX=0.840
+    RadarPosY=0.540
+
+    RadarBackground=Texture'UT2k4Extra.RadarQ'
+
     bUseCameraTrick=true
-  BinocularsMaxRange=2000
-  strMeters="meters"
+    BinocularsMaxRange=2000
+    strMeters="meters"
 
- MessageBG=(R=139,G=105,B=35,A=255)   // ClientMessage Background
- MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
- MessageFrame=(R=185,G=177,B=140,A=255) // ClientMessage frame
+    MessageBG=(R=139,G=105,B=35,A=255)   // ClientMessage Background
+    MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
+    MessageFrame=(R=185,G=177,B=140,A=255) // ClientMessage frame
 
- ToolBeltBG=(R=139,G=105,B=35,A=255)
- ToolBeltText=(R=255,G=255,B=255,A=255)
- ToolBeltFrame=(R=185,G=177,B=140,A=255)
+    ToolBeltBG=(R=139,G=105,B=35,A=255)
+    ToolBeltText=(R=255,G=255,B=255,A=255)
+    ToolBeltFrame=(R=185,G=177,B=140,A=255)
 
- AugsBeltBG=(R=139,G=105,B=35,A=255)
- AugsBeltText=(R=255,G=255,B=255,A=255)
- AugsBeltFrame=(R=185,G=177,B=140,A=255)
- AugsBeltActive=(R=0,G=233,B=177,A=255)
- AugsBeltInActive=(R=100,G=100,B=100,A=255)
+    AugsBeltBG=(R=139,G=105,B=35,A=255)
+    AugsBeltText=(R=255,G=255,B=255,A=255)
+    AugsBeltFrame=(R=185,G=177,B=140,A=255)
+    AugsBeltActive=(R=0,G=233,B=177,A=255)
+    AugsBeltInActive=(R=100,G=100,B=100,A=255)
 
- AmmoDisplayBG=(R=139,G=105,B=35,A=255)
- AmmoDisplayFrame=(R=185,G=177,B=140,A=255)
+    AmmoDisplayBG=(R=139,G=105,B=35,A=255)
+    AmmoDisplayFrame=(R=185,G=177,B=140,A=255)
 
- compassBG=(R=139,G=105,B=35,A=255)
- compassFrame=(R=185,G=177,B=140,A=255)
+    compassBG=(R=139,G=105,B=35,A=255)
+    compassFrame=(R=185,G=177,B=140,A=255)
 
- HealthBG=(R=139,G=105,B=35,A=255)
- HealthFrame=(R=185,G=177,B=140,A=255)
+    HealthBG=(R=139,G=105,B=35,A=255)
+    HealthFrame=(R=185,G=177,B=140,A=255)
 
- BooksBG=(R=139,G=105,B=35,A=255)
- BooksText=(R=255,G=255,B=255,A=255)
- BooksFrame=(R=185,G=177,B=140,A=255)
+    BooksBG=(R=139,G=105,B=35,A=255)
+    BooksText=(R=255,G=255,B=255,A=255)
+    BooksFrame=(R=185,G=177,B=140,A=255)
 
- InfoLinkBG=(R=139,G=105,B=35,A=255)
- InfoLinkText=(R=255,G=255,B=255,A=255)
- InfoLinkTitles=(R=255,G=233,B=177,A=255)
- InfoLinkFrame=(R=185,G=177,B=140,A=255)
+    InfoLinkBG=(R=139,G=105,B=35,A=255)
+    InfoLinkText=(R=255,G=255,B=255,A=255)
+    InfoLinkTitles=(R=255,G=233,B=177,A=255)
+    InfoLinkFrame=(R=185,G=177,B=140,A=255)
 }

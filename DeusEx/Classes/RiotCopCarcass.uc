@@ -15,4 +15,5 @@ defaultproperties
      skins(4)=Texture'DeusExCharacters.Skins.MiscTex1'
      skins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
      skins(6)=Texture'DeusExCharacters.Skins.RiotCopTex3'
+     skins(7)=TexEnvMap'DeusExStaticMeshes.Glass.EM1'
 }

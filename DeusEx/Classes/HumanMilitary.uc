@@ -58,6 +58,8 @@ event Tick(float dt)
     local Rotator lrt;
     local Name cState;
 
+    Super.Tick(dt);
+
     loc = Location;
     loc.z = loc.z + EyeHeight;
 
@@ -75,15 +77,13 @@ event Tick(float dt)
         AttachToBone(DCL, LampBone);
     }
 
-    if (bool(Controller))
+    if (Controller != None)
         cState = Controller.GetStateName();
 
     if ((AIVisibility(self) < 0.05) && (cState == 'Seeking'))
         fTurnOn();
           else
         fTurnOff();
-
-    Super.Tick(dt);
 }
 
 function bool PlayTurnHead(ELookDirection newLookDir, float rate, float tweentime)

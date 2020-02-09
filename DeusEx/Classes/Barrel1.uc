@@ -36,40 +36,54 @@ function SetInitialState()
 
 }
 
+function SetDefaultSkin(material material)
+{
+    default.Skins[0] = material;
+    Skins[0] = material;
+}
+
 function BeginPlay()
 {
     Super.BeginPlay();
 
     switch (SkinColor)
     {
-        case SC_Biohazard:          Skins[0] = Texture'Barrel1Tex1';
+        case SC_Biohazard:          SetDefaultSkin(Texture'Barrel1Tex1');
                                     HitPoints = 12;
                                     break;
-        case SC_Blue:               Skins[0] = Texture'Barrel1Tex2'; break;
-        case SC_Brown:          Skins[0] = Texture'Barrel1Tex3'; break;
-        case SC_Rusty:          Skins[0] = Texture'Barrel1Tex4'; 
-                                    //SetDrawScale(0.850000);
-                                    //SetDrawType(DT_StaticMesh);
+
+        case SC_Blue:               SetDefaultSkin(Texture'Barrel1Tex2'); 
                                     break;
-        case SC_Explosive:  Skins[0] = Texture'Barrel1Tex5';
+
+        case SC_Brown:              SetDefaultSkin(Texture'Barrel1Tex3'); 
+                                    break;
+
+        case SC_Rusty:              SetDefaultSkin(Texture'Barrel1Tex4');
+                                    break;
+
+        case SC_Explosive:          SetDefaultSkin(Texture'Barrel1Tex5');
                                     bExplosive = True;
                                     explosionDamage = 400;
                                     explosionRadius = 1000;
                                     HitPoints = 4;
                                     break;
-        case SC_FlammableLiquid:    Skins[0] = Texture'Barrel1Tex6';
+
+        case SC_FlammableLiquid:    SetDefaultSkin(Texture'Barrel1Tex6');
                                     bExplosive = True;
                                     HitPoints = 8;
                                     break;
-        case SC_FlammableSolid:     Skins[0] = Texture'Barrel1Tex7';
+
+        case SC_FlammableSolid:     SetDefaultSkin(Texture'Barrel1Tex7');
                                     bExplosive = True;
                                     explosionDamage = 200;
                                     HitPoints = 8;
                                     break;
-        case SC_Poison:             Skins[0] = Texture'Barrel1Tex8';
+
+        case SC_Poison:             SetDefaultSkin(Texture'Barrel1Tex8');
                                     HitPoints = 12;
                                     break;
-        case SC_RadioActive:        Skins[0] = Texture'Barrel1Tex9';
+
+        case SC_RadioActive:        SetDefaultSkin(Texture'Barrel1Tex9');
                                     bInvincible = True;
                                     LightType = LT_Steady;
                                     LightRadius = 8;
@@ -82,11 +96,13 @@ function BeginPlay()
                                     bUnlit = True;
                                     ScaleGlow = 0.4;
                                     break;
-        case SC_Wood:           Skins[0] = Texture'Barrel1Tex10';
-                                            FragType = Class'DeusEx.WoodFragment'; //CyberP
+
+        case SC_Wood:               SetDefaultSkin(Texture'Barrel1Tex10');
+                                    FragType = Class'DeusEx.WoodFragment'; //CyberP
                                     break;
 
-        case SC_Yellow:     Skins[0] = Texture'Barrel1Tex11'; break;
+        case SC_Yellow:             SetDefaultSkin(Texture'Barrel1Tex11');
+                                    break;
     }
 }
 
