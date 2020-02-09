@@ -1,5 +1,5 @@
 /*
-  ...sigh
+   Old-style ammo class.
 */
 
 class RuntimeAmmunition extends Ammunition abstract
@@ -9,6 +9,11 @@ var() class<ammunition> ParentAmmo;    // Class of ammo to be represented in inv
 var() sound PickupSound;
 var sound LandSound;
 var localized string PickupMessage;
+
+event SetInitialState()
+{
+   bCollideWorld = true;
+}
 
 
 function bool AddAmmo(int AmmoToAdd)
@@ -35,7 +40,7 @@ function bool HandlePickupQuery( inventory Item )
         item.Destroy();
         return true;                
     }
-    if ( Inventory == None )
+    if (Inventory == None)
         return false;
 
     return Inventory.HandlePickupQuery(Item);
@@ -65,6 +70,17 @@ function GiveTo(pawn Other)
     GotoState('Idle2');
 }
 
+function BecomePickup()
+{
+    if (Physics != PHYS_Falling)
+        RemoteRole    = ROLE_SimulatedProxy;
+
+    bOnlyOwnerSee = false;
+    bHidden       = false;
+    NetPriority   = 1.4;
+    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+}
+
 function BecomeItem()
 {
 //  log(self$" becomeItem ?");
@@ -84,7 +100,8 @@ function BecomeItem()
 
 defaultproperties
 {
-  bCollideWorld=true
-   bUseDynamicLights=true
-   PickupMessage="Found ammo:"
+    bUseDynamicLights=true
+    PickupMessage="Found ammo:"
+    bCollideActors=false
+    bOrientOnSlope=true
 }

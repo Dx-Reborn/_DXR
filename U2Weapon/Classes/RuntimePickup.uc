@@ -8,7 +8,6 @@ var() int           MaxCopies; // сколько можно унести с собой
 var bool            bBreakable;     // true if we can destroy this item
 var class<Fragment> fragType;       // fragments created when pickup is destroyed
 
-var bool                bCanUseObjectBelt; // Can this object be placed on the object belt?
 var() localized string beltDescription, description;
 var() texture   icon, largeicon;
 var int                 largeIconHeight;   // Height of graphic in texture
@@ -177,8 +176,6 @@ function BecomePickup()
     if (Physics != PHYS_Falling)
         RemoteRole    = ROLE_SimulatedProxy;
 
-//  SetPhysics(default.Physics);
-
     if (bUsePickupViewStaticMesh)
     {
       SetStaticMesh(PickupViewStaticMesh);
@@ -190,15 +187,15 @@ function BecomePickup()
       SetDrawType(DT_Mesh);
     }
     Skins.Length = PickupViewSkins.Length;
-  Skins = PickupViewSkins;
-  SetDrawScale(PickupViewDrawScale);
-  SetDrawScale3D(PickupViewDrawScale3D);
+    Skins = PickupViewSkins;
+    SetDrawScale(PickupViewDrawScale);
+    SetDrawScale3D(PickupViewDrawScale3D);
 
     bOnlyOwnerSee = false;
     bHidden       = false;
     NetPriority   = 1.4;
-    SetCollision(true, false, false);       // make things block actors as well - DEUS_EX CNN
-}                    //true
+    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+}
 
 function BecomeItem()
 {
@@ -215,9 +212,9 @@ function BecomeItem()
       SetDrawType(DT_Mesh);
     }
     Skins.Length = FirstPersonViewSkins.Length;
-  Skins = FirstPersonViewSkins;
-  SetDrawScale(FirstPersonDrawScale);
-  SetDrawScale3D(FirstPersonDrawScale3D);
+    Skins = FirstPersonViewSkins;
+    SetDrawScale(FirstPersonDrawScale);
+    SetDrawScale3D(FirstPersonDrawScale3D);
 
     bOnlyOwnerSee = true;
     bHidden       = true;
@@ -378,16 +375,16 @@ state Activated
 defaultproperties
 {
     bUseDynamicLights=true
-        bDisplayableInv=true
-        bCanHaveMultipleCopies=true     // if player can possess more than one of this
-        bAutoActivate=false            // automatically activated when picked up
-        bActivatable=true      // Whether item can be activated/deactivated (if true, must auto activate)
-        PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768)
-        drawType=DT_Mesh
+    bDisplayableInv=true
+    bCanHaveMultipleCopies=true     // if player can possess more than one of this
+    bAutoActivate=false            // automatically activated when picked up
+    bActivatable=true      // Whether item can be activated/deactivated (if true, must auto activate)
+    PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768)
+    drawType=DT_Mesh
     NumCopies=1
-        maxCopies=10
-        invSlotsX=1
-        invSlotsY=1
+    maxCopies=10
+    invSlotsX=1
+    invSlotsY=1
     CountLabel="COUNT:"
     msgTooMany="You can't carry any more of those"
     PickupMessage="You found"
@@ -395,7 +392,7 @@ defaultproperties
     M_Activated=" activated"
     M_Selected=" selected"
     M_Deactivated=" deactivated"
-
+    Physics=PHYS_Falling
     FirstPersonDrawScale=1.00
     FirstPersonDrawScale3D=(X=1.00,Y=1.00,Z=1.00)
     PickupViewDrawScale=1.00

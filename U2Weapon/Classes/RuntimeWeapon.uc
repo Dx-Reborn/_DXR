@@ -2,7 +2,7 @@
    Old-style Weapon base class (without using weird WeaponFire object).
    Uses some parts from UE2Runtime.
 */
-class RuntimeWeapon extends DeusExWeaponExt
+class RuntimeWeapon extends DeusExWeaponBase
                             Abstract
                             placeable;
 
@@ -132,24 +132,8 @@ var() const vector PickupViewDrawScale3D;
 // Do not fill these arrays if you want to leave all skins as defined in the package.
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
-/*
-function CheckForSplash()
-{
-    local Actor HitActor;
-    local vector HitNormal, HitLocation;
-    
-    if ( !Level.bDropDetail && (Level.DetailMode != DM_Low) && (SplashEffect != None) && !Instigator.PhysicsVolume.bWaterVolume )
-    {
-        // check for splash
-        bTraceWater = true;
-        HitActor = Trace(HitLocation,HitNormal,mHitLocation,Instigator.Location,true);
-        bTraceWater = false;
-        if ( (FluidSurfaceInfo(HitActor) != None) || ((PhysicsVolume(HitActor) != None) && PhysicsVolume(HitActor).bWaterVolume) )
-            Spawn(SplashEffect,,,HitLocation,rot(16384,0,0));
-    }
-}
-*/
 
+function StopFireSound();
 
 event SetInitialState()
 {
@@ -175,7 +159,7 @@ event TravelPostAccept()
         AmmoType = RuntimeAmmunition(Pawn(Owner).FindInventoryType(AmmoName));
         if (AmmoType == None)
         {
-            AmmoType = Spawn(AmmoName,,,owner.location); // Create ammo type required
+            AmmoType = Spawn(AmmoName,,,); // Create ammo type required
             Pawn(Owner).AddInventory(AmmoType);     // and add to player's inventory
             AmmoType.AmmoAmount = PickUpAmmoCount; 
             AmmoType.GotoState('Idle2');
@@ -432,11 +416,10 @@ function BecomePickup()
     SetDrawScale3D(PickupViewDrawScale3D);
     SetDrawType(DT_Mesh);
     Skins.Length = PickupViewSkins.Length;
-  Skins = PickupViewSkins;
+    Skins = PickupViewSkins;
 
     bOnlyOwnerSee = false;
     bHidden       = false;
-    NetPriority   = 1.4;
     SetCollision(true, false, false);       // make things block actors as well - DEUS_EX CNN
 }                    //true
 
@@ -450,11 +433,10 @@ function BecomeItem()
     SetDrawScale3D(FirstPersonDrawScale3D);
     SetDrawType(DT_Mesh);
     Skins.Length = FirstPersonViewSkins.Length;
-  Skins = FirstPersonViewSkins;
+    Skins = FirstPersonViewSkins;
 
     bOnlyOwnerSee = true;
     bHidden       = true;
-    NetPriority   = 1.4;
     SetCollision(false, false, false);
     SetPhysics(PHYS_None);
     AmbientGlow = 0;
@@ -477,7 +459,6 @@ function inventory SpawnCopy(pawn Other)
     
     newWeapon = RuntimeWeapon(Copy);
     newWeapon.Instigator = Other;
-//  newWeapon.SetSwitchPriority(Other);
 
     newWeapon.AmbientGlow = 0;
     return newWeapon;
@@ -773,6 +754,11 @@ state NormalFire
     }
     function AltFire(float F) 
     {
+    }
+
+    event AnimEnd(int channel)
+    {
+        StopFireSound(); // Особое приглашение для Assault Gun :D
     }
 
 Begin:
