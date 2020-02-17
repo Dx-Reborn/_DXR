@@ -10,14 +10,23 @@ class SkilledTool extends DeusExPickup
 
 var() sound     useSound;
 var bool        bBeingUsed;
-var int         ToolsFOV;
 
-function Activate()
+// DXR: New stuff
+var int ToolsFOV;
+var sound BringUpSound;
+var sound PutDownSound;
+
+function Sound GetBringUpSound();
+function Sound GetPutDownSound();
+
+function Sound GetUseSound()
 {
+   return default.useSound;
 }
-function UsedUp()
-{
-}
+
+function Activate();
+function UsedUp();
+
 
 // ----------------------------------------------------------------------
 // PlayUseAnim()
@@ -104,6 +113,7 @@ state Idle
 Begin:
     bOnlyOwnerSee = True;
     PlayAnim('Select',, 0.1);
+    Owner.PlaySound(GetBringUpSound(), SLOT_Misc,,, 2048); // DXR: Play "bring up" sound
 DontPlaySelect:
     FinishAnim();
     PlayAnim('Idle1',, 0.1);
@@ -128,7 +138,7 @@ state UseIt
     }
 
 Begin:
-    AmbientSound = useSound;
+    AmbientSound = GetUseSound();
     PlayAnim('UseBegin',, 0.1);
     FinishAnim();
     LoopAnim('UseLoop',, 0.1);
@@ -161,6 +171,7 @@ state DownItem
 
 Begin:
     AmbientSound = None;
+    Owner.PlaySound(GetPutDownSound(), SLOT_Misc,,, 2048);// DXR: Play "put down" sound
     PlayAnim('Down',, 0.1);
     FinishAnim();
     GotoState('Idle2');
@@ -193,13 +204,15 @@ function UseOnce()
 
 defaultproperties
 {
-        bDisplayableInv=true
-        bCanHaveMultipleCopies=true     // if player can possess more than one of this
-        bAutoActivate=false            // automatically activated when picked up
-        bActivatable=false       // Whether item can be activated/deactivated (if true, must auto activate)
-        DrawType=DT_Mesh
-        PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) 
-        CountLabel="Uses:"
-        ToolsFOV=75
-        bHidden=true
+    bDisplayableInv=true
+    bCanHaveMultipleCopies=true     // if player can possess more than one of this
+    bAutoActivate=false            // automatically activated when picked up
+    bActivatable=false       // Whether item can be activated/deactivated (if true, must auto activate)
+    DrawType=DT_Mesh
+    PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) 
+    CountLabel="Uses:"
+    ToolsFOV=75
+    bHidden=true
+    SoundVolume=250
+    bFullVolume=true
 }
