@@ -3,18 +3,6 @@
 //=============================================================================
 class CrateUnbreakableMed extends Containers;
 
-auto state Active
-{
-    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
-    {
-        if ( (damageType == class'DM_Shot') || (damageType == class'DM_Decapitated') )
-            PlaySound(sound'BulletImpactMetal2', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
-
-        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
-    }
-}
-
-
 defaultproperties
 {
      bBlockSight=True
