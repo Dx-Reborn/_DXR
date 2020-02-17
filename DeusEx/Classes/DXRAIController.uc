@@ -5,6 +5,9 @@
 
   Основной принцип такой: все стейты и все что с ними связано, помещается в контроллер.
   Все остальное в Pawn.
+
+  Важно: нельзя вызывать latent функции Pawn! Это может привести (и приведет) к бесконечной рекурсии.
+  Если нужно выполнить FinishAnim(), то нужно вызывать её напрямую, контроллер при этом сделает то что нужно для Pawn.
 */
 
 class DXRAiController extends DeusExAiController;
@@ -1057,7 +1060,7 @@ event bool NotifyHitWall(vector HitLocation, Actor hitActor)
             }
         }
     }
-    return true; // true -- pawn don't receive HitWall() event.
+    return !ScriptedPawn(Pawn).bCrouchToPassObstacles; //true; // true -- pawn don't receive HitWall() event.
 }
 
 function bool HandleTurn(actor Other)
@@ -1570,7 +1573,7 @@ DoneSeek:
 
 ContinueSeek:
 ContinueFromDoor:
-    pawn.FinishAnim();
+    FinishAnim();
     Goto('FindAnotherPlace');
 
 }
@@ -2156,7 +2159,7 @@ BeginAttack:
         else
             FinishRotation();
 
-        scriptedPawn(pawn).FinishAnim();
+        FinishAnim();
     }
 
 RunToRange:
@@ -2219,7 +2222,7 @@ Fire:
     else if (ShouldCrouch() && (FRand() < scriptedPawn(pawn).CrouchRate))
     {
         scriptedPawn(pawn).TweenToCrouchShoot(0.15);
-        pawn.FinishAnim();
+        FinishAnim();
         StartCrouch();
     }
     else
@@ -2262,7 +2265,7 @@ ContinueFire:
         scriptedPawn(pawn).PlayAttack();
     else
         scriptedPawn(pawn).PlayShoot();
-    scriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     if (FRand() > 0.5)
         scriptedPawn(pawn).bUseSecondaryAttack = true;
     else
@@ -2721,7 +2724,7 @@ Pausing:
         while (AICanSee(enemy, 1.0, false, false, true, true) <= 0)
             Sleep(0.25);
         Disable('AnimEnd');
-        pawn.FinishAnim();
+        FinishAnim();
     }
 
     Goto('Flee');
@@ -2736,7 +2739,7 @@ Cower:
 CowerContinue:
     pawn.Acceleration = vect(0,0,0);
     ScriptedPawn(pawn).PlayCowerBegin();
-    pawn.FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).PlayCowering();
 
     // behavior 3 - cower and occasionally make short runs
@@ -2745,7 +2748,7 @@ CowerContinue:
         Sleep(FRand()*3+6);
 
         ScriptedPawn(pawn).PlayCowerEnd();
-        pawn.FinishAnim();
+        FinishAnim();
         if (AIPickRandomDestination(60, 150, 0, 0, 0, 0,
                                     2, FRand()*0.3+0.6, ScriptedPawn(pawn).useLoc))
         {
@@ -2754,7 +2757,7 @@ CowerContinue:
             MoveTo(ScriptedPawn(pawn).useLoc, ,false);
         }
         ScriptedPawn(pawn).PlayCowerBegin();
-        pawn.FinishAnim();
+        FinishAnim();
         ScriptedPawn(pawn).PlayCowering();
     }
 
@@ -2777,7 +2780,7 @@ CowerContinue:
 
 ContinueFlee:
 ContinueFromDoor:
-    pawn.FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).PlayRunning();
     if (ScriptedPawn(pawn).bCower)
         Goto('Cower');
@@ -3142,14 +3145,14 @@ Pausing:
             Sleep(sleepTime);
             Disable('AnimEnd');
             //Disable('Bump');
-            scriptedPawn(pawn).FinishAnim();
+            FinishAnim();
         }
     }
     Goto('Patrol');
 
 ContinuePatrol:
 ContinueFromDoor:
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).PlayWalking();
     Goto('Moving');
 
@@ -3539,7 +3542,7 @@ Sit:
     scriptedPawn(pawn).bSitInterpolation = true;
     while (scriptedPawn(pawn).bSitInterpolation)
         Sleep(0);
-    pawn.FinishAnim();
+    FinishAnim();
     Goto('ContinueSitting');
 
 ContinueFromDoor:
@@ -3821,7 +3824,7 @@ LongFall:
     Goto('LongFall');
 
 FastLanded:
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).TweenToWaiting(0.15);
     Goto('Done');
 
@@ -3829,7 +3832,7 @@ Landed:
     if (!bIsPlayer) //bots act like players
       ScriptedPawn(pawn).Acceleration = vect(0,0,0);
 
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).TweenToWaiting(0.2);
     if (!bIsPlayer)
         Sleep(0.08);
@@ -3843,7 +3846,7 @@ Done:
 
 Splash:
     ScriptedPawn(pawn).bUpAndOut = false;
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     if (HasNextState())
         GotoNextState();
     else
@@ -3880,7 +3883,7 @@ Begin:
 
 PlayFall:
         ScriptedPawn(pawn).PlayFalling();
-        ScriptedPawn(pawn).FinishAnim();
+        FinishAnim();
     }
     
     if (pawn.Physics != PHYS_Falling)
@@ -4225,7 +4228,7 @@ state TakingHit
         
 Begin:
     ScriptedPawn(pawn).Acceleration = vect(0, 0, 0);
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     if ((pawn.Physics == PHYS_Falling) && !pawn.PhysicsVolume.bWaterVolume)
     {
         pawn.Acceleration = vect(0,0,0);
@@ -4695,7 +4698,7 @@ Fidget:
     if (FRand() < 0.5)
     {
         scriptedPawn(pawn).PlayIdle();
-        scriptedPawn(pawn).FinishAnim();
+        FinishAnim();
     }
     else
     {
@@ -4748,7 +4751,7 @@ state Wandering
 
     event bool NotifyBump(actor bumper)
     {
-        if (ScriptedPawn(pawn).bAcceptBump)
+        if ((ScriptedPawn(pawn) != None) && (ScriptedPawn(pawn).bAcceptBump))
         {
             // If we get bumped by another actor while we wait, start wandering again
             ScriptedPawn(pawn).bAcceptBump = False;
@@ -5058,12 +5061,12 @@ Pausing:
     Sleep(ScriptedPawn(pawn).sleepTime);
     Disable('AnimEnd');
     ScriptedPawn(pawn).bAcceptBump = False;
-    pawn.FinishAnim();
+    FinishAnim();
     Goto('Wander');
 
 ContinueWander:
 ContinueFromDoor:
-    ScriptedPawn(pawn).FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).PlayWalking();
     Goto('Wander');
 }
@@ -6224,7 +6227,7 @@ StopPausing:
     ScriptedPawn(pawn).bStaring = False;
     Disable('AnimEnd');
     ScriptedPawn(pawn).bAcceptBump = False;
-    pawn.FinishAnim();
+    FinishAnim();
     Goto('Shadow');
 
 Staring:
@@ -6253,12 +6256,12 @@ StopStaring:
     ScriptedPawn(pawn).bStaring = False;
     Disable('AnimEnd');
     ScriptedPawn(pawn).bAcceptBump = False;
-    pawn.FinishAnim();
+    FinishAnim();
     Goto('Shadow');
 
 ContinueShadow:
 ContinueFromDoor:
-    pawn.FinishAnim();
+    FinishAnim();
     ScriptedPawn(pawn).PlayRunning();
     Goto('Moving');
 }
@@ -6532,7 +6535,7 @@ SoundAlarm:
     {
         TurnToward(ScriptedPawn(pawn).AlarmActor);
         ScriptedPawn(pawn).PlayPushing();
-        pawn.FinishAnim();
+        FinishAnim();
         TriggerAlarm(); 
     }
 
@@ -6561,8 +6564,8 @@ defaultproperties
     bStasis=false
     bAdjustFromWalls=true
     FovAngle=+90.00
-//    MinHitWall=9999999827968.00
-    MinHitWall=-0.2
+    MinHitWall=9999999827968.00
+//    MinHitWall=-0.2
 //  RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
     RotationRate=(Pitch=4096,Yaw=90000,Roll=3072)
     Skill=2.00
