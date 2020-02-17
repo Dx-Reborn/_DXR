@@ -3,10 +3,62 @@
 //=============================================================================
 class Multitool extends SkilledTool;
 
+function Sound GetBringUpSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMultiToolBringUp(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetBringUpSound();
+    }
+    else return Super.GetBringUpSound();
+}
+
+function Sound GetPutDownSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMultiToolPutDown(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetPutDownSound();
+    }
+    else return Super.GetPutDownSound();
+}
+
+function Sound GetUseSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetMultiToolUseSound(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetUseSound();
+    }
+    else return Super.GetUseSound();
+}
+
+
+
 defaultproperties
 {
    AttachmentClass=class'EmptyAttachment'
-
 
    UseSound=Sound'DeusExSounds.Generic.MultitoolUse'
    LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
