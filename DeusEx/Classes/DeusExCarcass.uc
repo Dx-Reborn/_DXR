@@ -43,7 +43,6 @@ var localized string msgEmpty;
 var localized string msgNotDead;
 var localized string msgAnimalCarcass;
 var localized string msgCannotPickup;
-var localized String msgRecharged;
 var localized string itemName;          // human readable name
 
 var() bool bInvincible;
@@ -871,7 +870,6 @@ function setDeathFlags(Pawn InstigatedBy)
 
 defaultproperties
 {
-//     BindName="DeadBody"
      bVisionImportant=True
      bHighlight=True
      msgSearching="You found:"
@@ -879,7 +877,6 @@ defaultproperties
      msgNotDead="Unconscious"
      msgAnimalCarcass="Animal Carcass"
      msgCannotPickup="You cannot pickup the %s"
-     msgRecharged="Recharged %d points"
      ItemName="Dead Body"
      RemoteRole=ROLE_SimulatedProxy
      LifeSpan=0.000000
