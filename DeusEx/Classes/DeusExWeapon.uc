@@ -202,6 +202,29 @@ replication
         ClipCount, LockTimer, Target, LockMode, TargetMessage, TargetRange;
 }
 
+event SetInitialState()
+{
+   local Sound pickSound;
+   local DeusExGlobals gl;
+
+   Super.SetInitialState();
+
+   gl = class'DeusExGlobals'.static.GetGlobals();
+   if (gl.bUseAltWeaponsSounds)
+   {
+       if (self.IsA('WeaponSword') || self.IsA('WeaponNanoSword'))
+           pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.ItemPickUp",class'Sound',true));
+       else
+           pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.WeaponPickUp",class'Sound',true));
+
+       if (pickSound != None)
+           PickupSound = pickSound;
+   }
+   else
+       PickupSound = default.PickupSound;
+}
+
+
 // Drop "physical" version of the used weapon, instead of disappearing to nowhere.
 function DropUsedWeapon();
 
@@ -1405,7 +1428,7 @@ function Fire(float Value)
             bReadyToFire = False;
             GotoState('NormalFire');
             if (PlayerPawn(Owner) != None)        // shake us based on accuracy
-                PlayerPawn(Owner).Controller.ShakeView(currentAccuracy * ShakeRotMag + ShakeRotMag,
+                Level.GetLocalPlayerController().WeaponShakeView(currentAccuracy * ShakeRotMag + ShakeRotMag,
                                                        ShakeRotRate,
                                                        ShakeRotTime,
                                                        currentAccuracy * ShakeOffsetMag,
@@ -1516,10 +1539,10 @@ function SpawnBlood(Vector HitLocation, Vector HitNormal)
 
 function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float Damage)
 {
-    local SmokeTrail puff;
+    local EM_NeutralHit puff;
 //    local int i;
-    local BulletHole hole;
-    local DeusExMover mov;
+//    local BulletHole hole;
+//    local DeusExMover mov;
 
     if (Other == None)
     return;
@@ -1528,20 +1551,8 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
     {
         if (FRand() < 0.5)
         {
-            puff = spawn(class'SmokeTrail',,,HitLocation+HitNormal, Rotator(HitNormal));
-            if (puff != None)
-            {
-                puff.SetDrawScale(0.3);  //*= 0.3
-                puff.OrigScale = puff.DrawScale;
-                puff.LifeSpan = 0.25;
-                puff.OrigLifeSpan = puff.LifeSpan;
-            }
+            puff = spawn(class'EM_NeutralHit',,,HitLocation+HitNormal, Rotator(HitNormal));
         }
-
-/*        if (!Other.IsA('DeusExMover'))
-            for (i=0; i<2; i++)
-                if (FRand() < 0.8)
-                    spawn(class'Rockchip',,,HitLocation+HitNormal);*/
     }
 
     if (bHandToHand)
@@ -1566,7 +1577,7 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
     // draw the correct damage art for what we hit
     if (bPenetrating || bHandToHand)
     {
-        if (Other.IsA('DeusExMover'))
+       /* if (Other.IsA('DeusExMover'))
         {
             mov = DeusExMover(Other);
             if ((mov != None) && (hole == None))
@@ -1608,7 +1619,7 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
                         hole.Destroy();
                 }
             }
-        }
+        }*/
     }
 }
 
