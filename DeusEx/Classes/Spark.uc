@@ -57,6 +57,58 @@ function SpawnDecal(Name DecalName, vector HitLoc, vector HitNormal)
 
 }
 
+// Создать эффект попадания по Actor (DeusExDecoration?)
+// Примечание: лучше всего это будет работать с цилиндрическими декорациями!
+function SpawnActorEffect(Actor Actor, vector Loc)
+{
+   if (Actor == None)
+       return;
+
+   if (Actor.IsA('BarrelFire') || Actor.IsA('CrateUnbreakableSmall') || Actor.IsA('CrateUnbreakableMed') || Actor.IsA('CrateUnbreakableLarge') ||
+      (Actor.IsA('Barrel1') && Barrel1(Actor).SkinColor != SC_Wood) || Actor.IsA('FirePlug') || Actor.IsA('Trashcan1') || Actor.IsA('Trashcan2') ||
+       Actor.IsA('Trashcan3') || Actor.IsA('Trashcan4'))
+   {
+      Spawn(class'EM_MetalHit',,,Loc,);
+      PlayActorSound('Metal');
+   }
+   else if (Actor.IsA('Toilet2') || Actor.IsA('Toilet'))
+   {
+      //Spawn(class'EM_ConcreteHit',,,Loc,); // looks SCARY!
+      PlayActorSound('Ceramic');
+   }
+   else if (Actor.IsA('CrateBreakableMedMedical') || Actor.IsA('CrateBreakableMedGeneral') || Actor.IsA('CrateBreakableMedCombat'))
+   {
+      Spawn(class'EM_WoodHit',,,Loc,);
+      PlayActorSound('Wood');      
+   }
+      
+}
+
+function PlayActorSound(Name EffectGroup)
+{
+    local sound ActualSound;
+
+    switch(EffectGroup)
+    {
+        case 'Metal':
+            ActualSound = Metal[Rand(4)];
+            break;
+
+        case 'Ceramic':
+            ActualSound = Ceramic[Rand(4)];
+            break;
+
+        case 'Wood':
+            ActualSound = Wood[Rand(4)];
+            break;
+
+        default:
+            ActualSound = FallBack[Rand(4)];
+            break;
+    }
+    PlaySound(ActualSound, SLOT_None,1.2,, /*256*/157,);
+}
+
 function SpawnCoolEffect(Name TypeOfParticles, vector Loc)
 {
    if (TypeOfParticles == 'None') // На всякий случай...
@@ -98,11 +150,9 @@ function SpawnCoolEffect(Name TypeOfParticles, vector Loc)
 
 function MakeSound()
 {
-    local float rnd;
     local Sound ActualSound;
     local Name ImpactMaterial;
 
-    rnd = FRand();
     ImpactMaterial = GetImpactMaterial();
         
     switch(ImpactMaterial)
@@ -215,6 +265,8 @@ function name GetImpactMaterial()
                break;
             }
         }
+        if (!target.bWorldGeometry)
+            SpawnActorEffect(Target, HitLocation);
     }
     return texGroup;
 }
@@ -299,11 +351,11 @@ defaultproperties
      Snow[2];
      Snow[3];
 */
-     FallBack(0)=Sound'DXR_Impact.brick_impact_hard1'
+/*     FallBack(0)=Sound'DXR_Impact.brick_impact_hard1'
      FallBack(1)=Sound'DXR_Impact.brick_impact_hard2'
      FallBack(2)=Sound'DXR_Impact.brick_impact_hard3'
      FallBack(3)=Sound'DXR_Impact.brick_impact_hard4'
-
+*/
      LifeSpan=0.250000
      DrawType=DT_None
      Mesh=Mesh'DeusExItems.FlatFX'
