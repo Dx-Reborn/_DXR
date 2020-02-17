@@ -12,6 +12,7 @@ class NanoKeyRing extends SkilledTool;
 
 var localized string NoKeys;
 var localized string KeysAvailableLabel;
+var() travel float fField1; // Test
 
 struct SNanoKeyStruct
 {
@@ -19,7 +20,64 @@ struct SNanoKeyStruct
     var() localized String Description;
 };
 
-var() array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
+var() travel array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
+
+event SetInitialState()
+{
+   Super(RuntimePickup).SetInitialState();
+}
+
+function Sound GetBringUpSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetKeyRingBringUp(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetBringUpSound();
+    }
+    else return Super.GetBringUpSound();
+}
+
+function Sound GetPutDownSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetKeyRingPutDown(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetPutDownSound();
+    }
+    else return Super.GetPutDownSound();
+}
+
+function Sound GetUseSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetKeyRingUseSound(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetUseSound();
+    }
+    else return Super.GetUseSound();
+}
+
 
 // ----------------------------------------------------------------------
 // GetPlayer()
@@ -82,27 +140,23 @@ function GiveKey(Name newKeyID, String newDescription)
 // ----------------------------------------------------------------------
 // RemoveKey()
 // ----------------------------------------------------------------------
-
 function RemoveKey(Name KeyToRemove)
 {
-  local int x;
+   local int x;
 
-    if (GetPlayer() != None)
-    {
-     for (x=0; x<NanoKeys.Length; x++)
-   { 
-        if (NanoKeys[x].KeyID == KeyToRemove)
-        {
-            NanoKeys.Remove(x,1);
-    }
-     }
-  }
+   if (GetPlayer() != None)
+   {
+      for (x=0; x<NanoKeys.Length; x++)
+      {
+         if (NanoKeys[x].KeyID == KeyToRemove)
+             NanoKeys.Remove(x,1);
+      }
+   }
 }
 
 // ----------------------------------------------------------------------
 // RemoveAllKeys()
 // ----------------------------------------------------------------------
-
 function RemoveAllKeys()
 {
     NanoKeys.Length = 0;
@@ -112,7 +166,6 @@ function RemoveAllKeys()
 // ----------------------------------------------------------------------
 // GetKeyCount()
 // ----------------------------------------------------------------------
-
 function int GetKeyCount()
 {
     return NanoKeys.Length;
@@ -129,7 +182,7 @@ state UseIt
     }
 
 Begin:
-    PlaySound(useSound, SLOT_None);
+    PlaySound(GetuseSound(), SLOT_None,1.5);
     PlayAnim('UseBegin',, 0.1);
     FinishAnim();
     LoopAnim('UseLoop',, 0.1);
@@ -148,15 +201,27 @@ Begin:
     GotoState('Idle', 'DontPlaySelect');
 }
 
+event TravelPreAccept()
+{
+   log("TravelPreAccept() = "$self);
+}
+
 event TravelPostAccept()
 {
-    if (Pawn(Owner).FindInventoryType(class) != None)
+    local inventory Item;
+
+//    log("TravelPostAccept()"@self@fField1);
+
+    item = Pawn(Owner).FindInventoryType(class);
+    if (Item != None)
     {
-        destroy();
-        return;
+       Pawn(Owner).DeleteInventory(Item);
+       Item.Destroy();
+       GiveTo(Pawn(Owner));
     }
-   super.TravelPostAccept();
-   GiveTo(Pawn(Owner));
+    else
+       GiveTo(Pawn(Owner));
+
 }
 
 function GetKeysFromPockets()
@@ -170,7 +235,7 @@ function GetKeysFromPockets()
    {
       NanoKeys[x].KeyID = DeusExPlayer(Owner).NanoKeys[x].KeyID; // присвоить данные к элементу массива
       NanoKeys[x].Description = DeusExPlayer(Owner).NanoKeys[x].Description;
-     }
+   }
 }
 
 function BringUp()
@@ -194,7 +259,7 @@ function bool UpdateInfo(Object winInfo)
 
 //  winInfo.SetTitle(itemName);
     GUIScrollTextBox(winInfo).SetContent(KeysAvailableLabel);
-  GUIScrollTextBox(winInfo).AddText("_____________________________________");
+    GUIScrollTextBox(winInfo).AddText("_____________________________________");
 
     if (GetPlayer() != None)
     {
