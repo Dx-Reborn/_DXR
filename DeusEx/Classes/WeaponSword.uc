@@ -105,6 +105,24 @@ function Sound GetDownSound()
     else return Super.GetDownSound();
 }
 
+function Sound GetLandedSound()
+{
+    local DeusExGlobals gl;
+    local sound sound;
+
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    if (gl.bUseAltWeaponsSounds)
+    {
+        sound = class'DXRWeaponSoundManager'.static.GetSwordLanded(gl.WS_Preset);
+        if (sound != None)
+        return sound;
+        else
+        return Super.GetLandedSound();
+    }
+    else return Super.GetLandedSound();
+}
+
+
 
 
 defaultproperties
