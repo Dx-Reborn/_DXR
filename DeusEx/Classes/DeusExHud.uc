@@ -5,6 +5,7 @@
 class DeusExHUD extends MouseHUD;
 
 const DebugTraceDist = 512;
+var localized string TestUkr_String;
 
 var localized string strMeters;
 var bool bUseCameraTrick; // Как бы ЭТО назвать...
@@ -421,8 +422,14 @@ function RenderDebugInfo(Canvas c)
     local vector StartTrace, EndTrace, HitLoc, HitNormal;
     local DXRAiController control;
 
+    c.DrawColor = WhiteColor; 
+    c.Font = font'DXFonts.EU_10';
+    c.SetPos(150,150);
+    c.DrawText(TestUkr_String);
+
     c.Font = font'DXFonts.EU_9';
     c.DrawColor = GoldColor; 
+
 
     StartTrace = PlayerOwner.pawn.Location;
     EndTrace = PlayerOwner.pawn.Location + (Vector(PlayerOwner.pawn.GetViewRotation()) * DebugTraceDist);
@@ -871,7 +878,7 @@ function RenderToolBelt(Canvas C)
   if (dxc != none)
       dxc.SetCanvas(C);
 
-    c.Font=Font'DXFonts.DPix_7';
+    c.Font=Font'DXFonts.DPix_6';
 
     c.DrawColor = ToolBeltBG;//(127,127,127);
     C.SetPos(C.SizeX-544,C.SizeY-62);
@@ -888,7 +895,7 @@ function RenderToolBelt(Canvas C)
         holdX = C.CurX;
         holdY = C.CurY;
 
-        c.Font=Font'DXFonts.DPix_7';
+        c.Font=Font'DXFonts.DPix_6';
         c.DrawColor = ToolBeltBG;
         if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
@@ -960,6 +967,7 @@ function RenderToolBelt(Canvas C)
          c.DrawColor = ToolBeltText;
          C.Style = 1;
          c.SetPos(holdX, holdY);
+         c.Font = font'DPix_7'; //
          dxc.DrawTextJustified(string(beltIt), 2, holdX, holdY+2, holdX+42, holdY+13);
 
         sitem = SkilledTool(GetPlayer().Objects[beltIt]);
@@ -1030,52 +1038,52 @@ function renderToolBeltSelection(canvas u)
    if (p.InHand == P.Objects[1])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[1].positionX,u.SizeY-toolbeltSelPos[1].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[2])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[2].positionX,u.SizeY-toolbeltSelPos[2].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[3])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[3].positionX,u.SizeY-toolbeltSelPos[3].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[4])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[4].positionX,u.SizeY-toolbeltSelPos[4].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[5])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[5].positionX,u.SizeY-toolbeltSelPos[5].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[6])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[6].positionX,u.SizeY-toolbeltSelPos[6].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[7])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[7].positionX,u.SizeY-toolbeltSelPos[7].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[8])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[8].positionX,u.SizeY-toolbeltSelPos[8].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[9])
    {
      u.SetPos(u.SizeX-toolbeltSelPos[9].positionX,u.SizeY-toolbeltSelPos[9].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
    else if (p.InHand == P.Objects[0]) // NanoKeyRing
    {
      u.SetPos(u.SizeX-toolbeltSelPos[0].positionX,u.SizeY-toolbeltSelPos[0].positionY);
-     u.DrawTileStretched(texture'WhiteBorder', 44, 50);
+     u.DrawTileStretched(texture'WhiteBorder', 48, 54);
    }
   }
 }
@@ -1222,4 +1230,6 @@ defaultproperties
     InfoLinkText=(R=255,G=255,B=255,A=255)
     InfoLinkTitles=(R=255,G=233,B=177,A=255)
     InfoLinkFrame=(R=185,G=177,B=140,A=255)
+
+    TestUkr_String="А а Б б В в Г г Ґ ґ Д д Е е Є є Ж ж З з И и І і Ї ї Й й К к Л л М м Н н О о П п Р р С с Т т У у Ф ф Х х Ц ц Ч ч Ш ш Щ щ Ь ь Ю ю Я я"
 }
