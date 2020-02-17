@@ -1213,7 +1213,7 @@ function DoFrob(Actor Frobber, Inventory frobWith)
 // ----------------------------------------------------------------------
 function PickupNanoKey(NanoKey newKey)
 {
-  KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
+    KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
     KeyRing.GiveKey(newKey.KeyID, newKey.Description);
     ClientMessage(Sprintf(AddedNanoKey, newKey.Description));
 }
@@ -1344,6 +1344,7 @@ function InitializeSubSystems()
     }
 
     // Give the player a keyring
+    if (keyring == None)
     CreateKeyRing();
 }
 
@@ -1360,7 +1361,7 @@ function CreateKeyRing()
   KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
   if (KeyRing != None)
   {
-     /*hud.*/objects[0] = KeyRing;
+     objects[0] = KeyRing;
      return;
   }
 
@@ -1388,7 +1389,7 @@ event TravelPostAccept()
 
  if (!bTPA_OnlyOnce)
  {
-    log(self@"TravelPostAccept()");
+    log(self@"TravelPostAccept() and Weapon is"@weapon);
 
 //    hud.ClearBelt();
 //    hud.PopulateBelt();
@@ -1458,7 +1459,7 @@ event TravelPostAccept()
 
     /*hud.*/objects[0] = FindInventoryType(Class'NanoKeyRing');
 
-  bTPA_OnlyOnce = true;
+    bTPA_OnlyOnce = true;
  }
 }
 
