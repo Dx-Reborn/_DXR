@@ -1389,7 +1389,6 @@ simulated event PostRender(canvas C)
       return;
     }
 
-
 // Улучшает видимость с AugVision.
 
         if (bVisionActive)
@@ -1405,24 +1404,18 @@ simulated event PostRender(canvas C)
             DrawSpyDroneAugmentation(C);
         }
 
-        RenderPoisonEffectGray(C);
-        RenderPoisonEffectGreen(C);
-        RenderFrobTarget(C);
-        RenderSmallHUDHitDisplay(C);
-
-        //if (bTargetActive)
-//      {
-       
-//    }
-
+      RenderPoisonEffectGray(C);
+      RenderPoisonEffectGreen(C);
+      RenderFrobTarget(C);
+      RenderSmallHUDHitDisplay(C);
       RenderCrosshair(C);
       DisplayMessages(C);
-        RenderCompass(C); // Компас
-        RenderToolBelt(C); // Быстрый доступ
-        RenderAugsBelt(C); // Задействованные аугментации
-    RenderAmmoDisplay(C);
-    DrawTargetAugmentation(C);
-    RenderChargedPickups(C);
+      RenderCompass(C); // Компас
+      RenderToolBelt(C); // Быстрый доступ
+      RenderAugsBelt(C); // Задействованные аугментации
+      RenderAmmoDisplay(C);
+      DrawTargetAugmentation(C);
+      RenderChargedPickups(C);
 
 // DrawActor( Actor A, bool WireFrame, optional bool ClearZ, optional float DisplayFOV ) 
 //    c.DrawActor(None, false, true); // Clear the z-buffer here
@@ -2298,8 +2291,10 @@ function RenderAmmoDisplay(Canvas c)
 
     item = DeusExPlayer(playerowner.pawn).InHand;
 
-  if (item == none)
-      return;
+    if (item == none)
+        return;
+
+      c.Font = font'DxFonts.DPix_7';
 
           if (item.IsA('SkilledTool'))
           {
@@ -2501,7 +2496,7 @@ defaultproperties
 
 
 
-  toolbeltSelPos(1)=(positionX=535,positionY=60)
+/*  toolbeltSelPos(1)=(positionX=535,positionY=60)
   toolbeltSelPos(2)=(positionX=484,positionY=60)
   toolbeltSelPos(3)=(positionX=433,positionY=60)
   toolbeltSelPos(4)=(positionX=382,positionY=60)
@@ -2510,7 +2505,18 @@ defaultproperties
   toolbeltSelPos(7)=(positionX=229,positionY=60)
   toolbeltSelPos(8)=(positionX=178,positionY=60)
   toolbeltSelPos(9)=(positionX=127,positionY=60)
-  toolbeltSelPos(0)=(positionX=76,positionY=60) // KeyRing
+  toolbeltSelPos(0)=(positionX=76,positionY=60) */
+
+  toolbeltSelPos(1)=(positionX=537,positionY=62)
+  toolbeltSelPos(2)=(positionX=486,positionY=62)
+  toolbeltSelPos(3)=(positionX=435,positionY=62)
+  toolbeltSelPos(4)=(positionX=384,positionY=62)
+  toolbeltSelPos(5)=(positionX=333,positionY=62)
+  toolbeltSelPos(6)=(positionX=282,positionY=62)
+  toolbeltSelPos(7)=(positionX=231,positionY=62)
+  toolbeltSelPos(8)=(positionX=180,positionY=62)
+  toolbeltSelPos(9)=(positionX=129,positionY=62)
+  toolbeltSelPos(0)=(positionX=78,positionY=62) // KeyRing
 
     bUseAltVBarTexture=false
 
