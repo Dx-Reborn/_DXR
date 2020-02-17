@@ -4,6 +4,26 @@
 
 class DeusExPickup extends RuntimePickup abstract;
 
+event SetInitialState()
+{
+   local Sound pickSound;
+   local DeusExGlobals gl;
+
+   Super.SetInitialState();
+
+   gl = class'DeusExGlobals'.static.GetGlobals();
+   if (gl.bUseAltWeaponsSounds)
+   {
+       pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.ItemPickUp",class'Sound',true));
+
+       if (pickSound != None)
+           PickupSound = pickSound;
+   }
+   else
+       PickupSound = default.PickupSound;
+}
+
+
 function FixTheInventoryBug()
 {
    local DeusExGlobals gl;
@@ -23,11 +43,11 @@ function FixTheInventoryBug()
    }
 }
 
-function TravelPostAccept()
+/*function TravelPostAccept()
 {
     Super.TravelPostAccept();
     FixTheInventoryBug();
-}
+}*/
 
 function bool UpdateInfo(Object winInfo)
 {
@@ -200,12 +220,6 @@ function PlayLandingSound()
         }
     }
 }
-
-function material GetMeshTexture(optional int texnum)
-{
-  return class'dxutil'.static.GetMeshTexture(self, texnum);
-}
-
 
 auto state Pickup
 {
