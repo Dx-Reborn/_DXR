@@ -5,6 +5,7 @@
 class DeusExGameInfo extends GameInfoExt config;
 
 var bool bKeepSamePlayerStart;
+var bool bSceneEnded;
 
 function SpawnScript()
 {
@@ -61,6 +62,7 @@ event PostLogin(PlayerController NewPlayer)
     }
 
     NewPlayer.ClientSetHUD(class'DeusExHud',none);
+    SetWeaponViewShake(NewPlayer);
 //NewPlayer.Player.InteractionMaster.AddInteraction("DeusEx.DeusExInteraction", NewPlayer.Player);
 
     if (NewPlayer.Pawn != None)
@@ -277,6 +279,13 @@ function RestorePlayerData(string path)
   class'PackageManager'.static.unloadUnrealPackage(mr2);
 }
 
+event SceneEnded(SceneManager SM, Actor Other)
+{
+   log(SM@"Scene has been ended!");
+   SM.Destroy();
+//   bSceneEnded = true;
+}
+
 
 defaultproperties
 {
@@ -289,7 +298,6 @@ defaultproperties
     bTeamGame=false
     bDelayedStart=false
     bWaitingToStartMatch=false
-//    bRestartLevel=false
     bAllowVehicles=false
     MaxSpectators=0
 }
