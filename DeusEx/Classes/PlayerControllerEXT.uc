@@ -17,8 +17,8 @@ enum EMusicMode {
 
 var EMusicMode musicMode;
 var float savedSongPos;
-var float musicCheckTimer;
-var float musicChangeTimer;
+var transient float musicCheckTimer;
+var transient float musicChangeTimer;
 var int CombatMusicId;
 
 
@@ -55,6 +55,18 @@ var input float aExtra0;
 var bool bCheatsEnabled;
 
 var(flashFineTuning) float deltaStep, flashFogMult;
+
+event PostLoadSavedGame()
+{
+   log("musicMode = "$musicMode);
+   musicMode = MUS_Combat;
+}
+
+function ClientSetMusic(string NewSong, EMusicTransition NewTransition)
+{
+    Super.ClientSetMusic(NewSong, NewTransition);
+    log("EMusicTransition = "$NewTransition);
+}
 
 function UpdateDynamicMusic(float deltaTime)
 {
@@ -142,8 +154,9 @@ function UpdateDynamicMusic(float deltaTime)
                     else
                         savedSection = 255;*/
 
+                      ClientSetMusic(info.CombatMusic, MTRAN_Instant);
                     //ClientSetMusic(info.CombatMusic, MTRAN_FastFade);
-                    CombatMusicId = PlayMusic(info.CombatMusic, 2.0);
+                    //CombatMusicId = PlayMusic(info.CombatMusic, 2.0);
                     musicMode = MUS_Combat;
                 }
             }
@@ -158,9 +171,9 @@ function UpdateDynamicMusic(float deltaTime)
 
                     // fade slower for combat transitions
                     if (musicMode == MUS_Combat)
-                        ClientSetMusic(info.AmbientMusic, MTRAN_SlowFade);
+                        ClientSetMusic(info.AmbientMusic, /*MTRAN_SlowFade*/MTRAN_Instant);
                      else
-                        ClientSetMusic(info.AmbientMusic, MTRAN_Fade);
+                        ClientSetMusic(info.AmbientMusic, /*MTRAN_Fade*/MTRAN_Instant);
 
 
                     //savedSection = 255;
@@ -652,6 +665,7 @@ ignores SeePlayer, HearNoise, Bump;
 
         function PlayerTick(float DeltaTime)
         {
+            UpdateDynamicMusic(deltaTime);
             HighlightCenterObject();
             FrobTime += deltaTime;
 
@@ -662,7 +676,6 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdatePoison(deltaTime);
             Human(pawn).Bleed(deltaTime);
-            UpdateDynamicMusic(deltaTime);
             Human(pawn).RepairInventory();//
         
 
@@ -1105,6 +1118,7 @@ ignores SeePlayer, HearNoise, Bump;
         {
            local vector loc;
 
+           UpdateDynamicMusic(deltaTime);
            HighlightCenterObject();
            FrobTime += deltaTime;
 
@@ -1114,7 +1128,6 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).UpdateInHand();
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdateTimePlayed(DeltaTime);
-            UpdateDynamicMusic(deltaTime);
             Human(pawn).RepairInventory();
     
             pawn.SetWalking(true); // Перейти в режим ходьбы
@@ -1444,7 +1457,6 @@ Begin:
             bBehindView = true; 
     }
 }
-
 
 exec function QuickSave();
 
