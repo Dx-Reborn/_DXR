@@ -1,7 +1,7 @@
 //
 // DxUtil: набор вспомогательных статических функций.
 // Использование: class'DxUtil'.static.func()
-// 43834
+// 48272
 
 class DxUtil extends actor;
 

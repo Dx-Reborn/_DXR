@@ -7183,8 +7183,12 @@ defaultproperties
      HealthArmRight=100
 
      bCanCrouch=true
-     CrouchHeight=26.0
-     CrouchRadius=20.0
+
+     CrouchHeight=29.0
+     CrouchRadius=25.0
+
+//     CrouchHeight=26.0
+//     CrouchRadius=20.0
 
      bIsHuman=true
      AirSpeed=320.000000
@@ -7215,8 +7219,8 @@ defaultproperties
      SoundOcclusion=OCCLUSION_Default
      bCanFly=false
      CullDistance=8050 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
-     bFastTurnWhenAttacking=true
-     //bFastTurnWhenAttacking=false
+     //bFastTurnWhenAttacking=true
+     bFastTurnWhenAttacking=false
      bDirectHitWall=false
 
      TransientSoundVolume=+0.95
