@@ -28,6 +28,7 @@ function PlayFiring()
     if (bHasSilencer)
         Owner.PlaySound(GetSilencedSound(), SLOT_Misc,,, 2048);
     else
+//        Owner.PlaySound(GetFireSound(), SLOT_None,,, 2048, 1.0,);
         Owner.PlaySound(GetFireSound(), SLOT_Misc,,, 2048, 1.0,);
 }
 
@@ -55,26 +56,27 @@ function AssaultGunSmoke()
   if (amountOfShots > FirstThreshold)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.1;
+    extrapuff.Emitters[0].opacity = 0.05;
+    extrapuff.Emitters[0].InitialParticlesPerSecond=50.00;
   }
   if (amountOfShots > SecondThreshold)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.15;
+    extrapuff.Emitters[0].opacity = 0.07;
     extrapuff.Emitters[0].LifetimeRange.Min = 2.000000;
     extrapuff.Emitters[0].LifetimeRange.Max = 2.500000;
   }
   if (amountOfShots > Threshold3)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.2;
+    extrapuff.Emitters[0].opacity = 0.08;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.000000;
     extrapuff.Emitters[0].LifetimeRange.Max = 3.500000;
   }
   if (amountOfShots > Threshold4)
   {
     AddParticles();
-    extrapuff.Emitters[0].opacity = 0.25;
+    extrapuff.Emitters[0].opacity = 0.10;
     extrapuff.Emitters[0].LifetimeRange.Min = 3.500000;
     extrapuff.Emitters[0].LifetimeRange.Max = 4.000000;
   }
