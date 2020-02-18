@@ -1,7 +1,7 @@
 //=============================================================================
 // Mission15.
 //=============================================================================
-class Mission15 extends MissionScript;
+class Mission15_a extends MissionScript;
 
 struct sUCData
 {
@@ -50,7 +50,7 @@ function FirstFrame()
             // start the new helicopter interpolating
 //          foreach AllActors(class'InterpolateTrigger', trig, 'InterpolateTrigger')
             foreach AllActors(class'SceneManager', trig, 'Heli_explode')
-                trig.Trigger(Self, Player);
+                    trig.Trigger(Self, Player);
 
             jockTimer = Level.TimeSeconds;
             flags.SetBool('MS_BeginSabotage', True,, 16);
