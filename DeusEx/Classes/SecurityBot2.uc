@@ -76,8 +76,16 @@ defaultproperties
      Health=250
      UnderWaterTime=20.000000
      Mesh=mesh'DeusExCharacters.SecurityBot2'
+
      CollisionRadius=62.000000
      CollisionHeight=53.78
+
+     //CrouchRadius=62.000000
+     CrouchRadius=22.000000
+     CrouchHeight=43.78
+     //CrouchHeight=53.78
+     bCrouchToPassObstacles=true
+
      //CollisionHeight=58.279999
      Mass=800.000000
      Buoyancy=100.000000

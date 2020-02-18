@@ -83,7 +83,6 @@ defaultproperties
      BaseEyeHeight=1.000000
      Health=1
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Fear
      Physics=PHYS_Flying
      AmbientSound=Sound'DeusExSounds.Animal.FlyBuzz'
 //     Mesh=Mesh'DeusExCharacters.Fly'

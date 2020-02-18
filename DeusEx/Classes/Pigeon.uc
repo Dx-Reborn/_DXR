@@ -25,7 +25,6 @@ defaultproperties
      BaseEyeHeight=3.000000
      Health=20
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Fear
      Mesh=mesh'DeusExCharacters.Pigeon'
      CollisionRadius=10.000000
      CollisionHeight=3.000000

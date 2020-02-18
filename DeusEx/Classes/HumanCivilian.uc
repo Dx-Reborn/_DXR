@@ -95,7 +95,6 @@ defaultproperties
      AccelRate=500.000000
      BaseEyeHeight=40.000000
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Player.MalePainSmall'
      HitSound2=Sound'DeusExSounds.Player.MalePainMedium'
      die=Sound'DeusExSounds.Player.MaleDeath'

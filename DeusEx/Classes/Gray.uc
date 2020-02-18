@@ -227,7 +227,6 @@ defaultproperties
      ReducedDamageType=class'DM_Radiation'
      // ReducedDamagePct=1.000000
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.GrayPainSmall'
      HitSound2=Sound'DeusExSounds.Animal.GrayPainLarge'
      die=Sound'DeusExSounds.Animal.GrayDeath'

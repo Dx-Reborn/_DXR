@@ -7,7 +7,6 @@ defaultproperties
 {
      BindName="Fish2"
      WaterSpeed=30.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.Fish2'
      CollisionRadius=5.270000
      CollisionHeight=4.540000

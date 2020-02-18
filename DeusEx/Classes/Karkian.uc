@@ -237,7 +237,6 @@ defaultproperties
      BaseEyeHeight=12.500000
      Health=400
      UnderWaterTime=99999.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.KarkianPainSmall'
      HitSound2=Sound'DeusExSounds.Animal.KarkianPainLarge'
      die=Sound'DeusExSounds.Animal.KarkianDeath'

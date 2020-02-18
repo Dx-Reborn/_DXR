@@ -23,7 +23,6 @@ defaultproperties
      AirSpeed=144.000000
      AccelRate=500.000000
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.DogSmallGrowl'
      HitSound2=Sound'DeusExSounds.Animal.DogSmallBark1'
      die=Sound'DeusExSounds.Animal.DogSmallDie'

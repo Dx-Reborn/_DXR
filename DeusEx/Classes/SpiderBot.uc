@@ -21,7 +21,6 @@ defaultproperties
      AccelRate=500.000000
      Health=400
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SpiderBot'
 
      // Wider than 72 can't use green paths!

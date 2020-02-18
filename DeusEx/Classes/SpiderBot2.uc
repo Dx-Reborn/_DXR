@@ -22,7 +22,6 @@ defaultproperties
      AccelRate=500.000000
      Health=80
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.SpiderBot2'
      CollisionRadius=33.580002
      CollisionHeight=10.740000

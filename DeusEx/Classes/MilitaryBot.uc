@@ -62,7 +62,6 @@ defaultproperties
      AccelRate=500.000000
      Health=600
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      Mesh=mesh'DeusExCharacters.MilitaryBot'
 //     CollisionRadius=80.000000
      CollisionRadius=72.0

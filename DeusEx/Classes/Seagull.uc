@@ -25,7 +25,6 @@ defaultproperties
      BaseEyeHeight=3.000000
      Health=20
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Fear
      Mesh=mesh'DeusExCharacters.Seagull'
      CollisionRadius=16.000000
      CollisionHeight=6.500000

@@ -213,7 +213,7 @@ defaultproperties
      FamiliarName="Greasel"
      UnfamiliarName="Greasel"
      MinHealth=20.000000
-         CarcassType=Class'DeusEx.GreaselCarcass'
+     CarcassType=Class'DeusEx.GreaselCarcass'
      WalkingSpeed=0.080000
      bCanBleed=True
      ShadowScale=1.000000
@@ -230,7 +230,6 @@ defaultproperties
      BaseEyeHeight=12.500000
      Health=100
      UnderWaterTime=99999.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      HitSound1=Sound'DeusExSounds.Animal.GreaselPainSmall'
      HitSound2=Sound'DeusExSounds.Animal.GreaselPainLarge'
      die=Sound'DeusExSounds.Animal.GreaselDeath'

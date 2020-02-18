@@ -92,7 +92,6 @@ defaultproperties
      AirSpeed=144.000000
      AccelRate=100.000000
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      AmbientSound=Sound'DeusExSounds.Robot.RepairBotMove'
      Mesh=mesh'DeusExCharacters.RepairBot'
      SoundRadius=16

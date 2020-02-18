@@ -44,7 +44,6 @@ defaultproperties
      AccelRate=500.000000
      Health=150
      UnderWaterTime=20.000000
-     //  AttitudeToPlayer=ATTITUDE_Ignore
      AmbientSound=Sound'DeusExSounds.Robot.SecurityBot3Move'
      Mesh=mesh'DeusExCharacters.SecurityBot3'
      SoundRadius=16
@@ -54,5 +53,4 @@ defaultproperties
      //CollisionHeight=28.500000
      Mass=1000.000000
      Buoyancy=100.000000
-//     PrePivot=(X=0,Y=0,Z=-28.5)
 }
