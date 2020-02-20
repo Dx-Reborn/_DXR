@@ -24,7 +24,7 @@ function bool AddAmmo(int AmmoToAdd)
     return true;
 }
 
-function bool HandlePickupQuery( inventory Item )
+function bool HandlePickupQuery(inventory Item)
 {
 //  log("HandlePickupQuery "$item);
 
@@ -33,7 +33,7 @@ function bool HandlePickupQuery( inventory Item )
         if (AmmoAmount==MaxAmmo)
         return true;
 
-            Pawn(Owner).ClientMessage(PickupMessage @ ItemName, 'Pickup');
+        Pawn(Owner).ClientMessage(PickupMessage @ ItemName, 'Pickup');
 
         PlaySound(PickupSound);
         AddAmmo(Ammunition(item).AmmoAmount);

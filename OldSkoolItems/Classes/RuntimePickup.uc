@@ -20,7 +20,6 @@ var travel int              beltPos;           // Position on the object belt
 var travel bool bIsActive, bAmbientGlow;
 
 var   bool      bSleepTouch;          // Set when item is touched when leaving sleep state.
-//var   bool      bHeldItem;        // Set once an item has left pickup state.
 
 var() sound LandSound, PickupSound;
 var localized string CountLabel,msgTooMany,PickupMessage,msgUsed,M_Activated,M_Selected,M_Deactivated;
@@ -42,6 +41,7 @@ var() const vector PickupViewDrawScale3D;
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
 
+// DXR: Used to render debug information (ShowDebug).
 simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
     local string T;
@@ -54,9 +54,6 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
     Canvas.SetPos(4,YPos);
     Canvas.SetDrawColor(0,255,0);
     T = "     STATE: "$GetStateName()$" Timer: "$TimerCounter;
-
-//    if ( Default.ReloadCount > 0 )
-//        T = T$" Reload Count: "$ReloadCount;
 
     Canvas.DrawText(T, false);
     YPos += YL;
@@ -81,9 +78,6 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
         Canvas.SetPos(4,YPos);
     }
 }
-
-
-
 
 // DEUS_EX STM - added
 function PlayLandingSound()

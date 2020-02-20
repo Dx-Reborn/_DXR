@@ -1,7 +1,12 @@
 /*
-   Old-style Weapon base class (without using weird WeaponFire object).
+   Old-style Weapon base class.
+   Advantages:
+      Does not uses WeaponFire objects (these are not travel-friendly anyway).
+      Does not uses Pickup, so you place weapons onto your maps directly.
+      No more useless InventorySpots.
    Uses some parts from UE2Runtime.
 */
+
 class RuntimeWeapon extends DeusExWeaponBase
                             Abstract
                             placeable;
@@ -10,9 +15,9 @@ class RuntimeWeapon extends DeusExWeaponBase
 
 //-----------------------------------------------------------------------------
 // Weapon ammo information:
-var()   class<Ammunition> AmmoName;     // Type of ammo used.
-var     travel Ammunition   AmmoType;   // Inventory Ammo being used.
-var() class<projectile> ProjectileClass;
+var() travel class<Ammunition>     AmmoName;     // Type of ammo used.
+var() travel editconst Ammunition  AmmoType;   // Inventory Ammo being used.
+var() travel class<projectile> ProjectileClass;
 var() class<projectile> AltProjectileClass;
 var() int projectileSpeed;
 var() travel byte ReloadCount;          // Amount of ammo depletion before reloading. 0 if no reloading is done.
@@ -29,7 +34,6 @@ var     float   StopFiringTime; // repeater weapons use this
 var     int     AutoSwitchPriority;
 var     vector  FireOffset;         // Offset from first person eye position for projectile/trace start
 var     texture CrossHair;
-var     Powerups Affector;          // powerup chain currently affecting this weapon
 
 //-----------------------------------------------------------------------------
 // AI information
@@ -57,32 +61,12 @@ var() travel bool bInstantHit;
 var     bool bForceFire, bForceAltFire;
 
 //-----------------------------------------------------------------------------
+// DXR: These things are replaced by emitters
 // first person Muzzle Flash
 // weapon is responsible for setting and clearing bMuzzleFlash whenever it wants the
 // MFTexture drawn on the canvas (see RenderOverlays() )
-
-var                 float   FlashTime;          // time when muzzleflash will be cleared (set in RenderOverlays())
-var(MuzzleFlash)    float   MuzzleScale;        // scaling of muzzleflash
-var(MuzzleFlash)    float   FlashOffsetY;       // flash center offset from centered Y (as pct. of Canvas Y size) 
-var(MuzzleFlash)    float   FlashOffsetX;       // flash center offset from centered X (as pct. of Canvas X size) 
-var(MuzzleFlash)    float   FlashLength;        // How long muzzle flash should be displayed in seconds
-var(MuzzleFlash)    float   MuzzleFlashSize;    // size of (square) texture
-var                 texture MFTexture;          // first-person muzzle flash sprite
-var                 byte    FlashCount;         // when incremented, draw muzzle flash for current frame
-var                 bool    bAutoFire;          // when changed, draw muzzle flash for current frame
 var                 bool    bMuzzleFlash;       // if !=0 show first-person muzzle flash
-var                 bool    bSetFlashTime;      // reset FlashTime clock when false
-var                 bool    bDrawMuzzleFlash;   // enable first-person muzzle flash
 
-//-----------------------------------------------------------------------------
-// third person muzzleflash
-
-var bool    bMuzzleFlashParticles;
-var mesh    MuzzleFlashMesh;
-var float   MuzzleFlashScale;
-var ERenderStyle MuzzleFlashStyle;
-var texture MuzzleFlashTexture;
-var float FireAdjust;
 
 //
 // DEUS_EX AJY - additions (from old DeusExPickup)
@@ -100,9 +84,7 @@ var(ObjectBelt) travel int              beltPos;           // Position on the ob
 var localized String        beltDescription;   // Description used on the object belt
 var localized string PickupMessage;
 
-//var   bool bHeldItem;   // Set once an item has left pickup state.
 var   bool bSleepTouch; // Set when item is touched when leaving sleep state.
-//var() bool bWeaponStay;
 var() bool bAmbientGlow;
 
 // New from 1.1112fm
@@ -115,13 +97,14 @@ var float MinProjSpreadAcc;
 var(WeaponAI) bool    bWarnTarget;       // When firing projectile, warn the target
 var(WeaponAI) bool    bAltWarnTarget;    // When firing alternate projectile, warn the target
 
-/*----------------------------------------------------------------------------------------------------------------
- Properties to behave like old-style weapons. Third person mesh is not used, because there is better replacement.
-----------------------------------------------------------------------------------------------------------------*/
-var() mesh PickupViewMesh; // Only VertMesh is supported! But for powerups (like sodacan) any mesh type will work fine.
-                               // UE2.5 supports three types of models: Skeletal mesh (or just Mesh), StaticMesh and VertMesh.
-                               // VertMesh is like old-style meshes from Unreal. Use only when really required. Don't use
-                               // VertMesh for first-person items (two meshes will be always rendered).
+/* -----------------------------------------------------------------------------
+  Properties to behave like old-style weapons. Third person mesh is not used, 
+  because there is better replacement.
+----------------------------------------------------------------------------- */
+
+var() mesh PickupViewMesh;      // UE2.5 supports three types of models: Skeletal mesh (or just Mesh), StaticMesh and VertMesh.
+                                // VertMesh is like old-style meshes from Unreal. Use only when really required. Don't use
+                                // VertMesh for first-person items (two meshes will be always rendered).
 var() mesh FirstPersonViewMesh; // Skeletal mesh for FP view.
 
 var() const float  FirstPersonDrawScale;
@@ -132,6 +115,8 @@ var() const vector PickupViewDrawScale3D;
 // Do not fill these arrays if you want to leave all skins as defined in the package.
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
+
+var transient bool bPostTravel; // Используется в TravelPostAccept().
 
 function StopFireSound();
 
@@ -171,9 +156,6 @@ event TravelPostAccept()
         }
 
     }
-    if (self == Pawn(Owner).Weapon)
-        BringUp();
-    else GotoState('');
 }
 
 function GiveAmmo(Pawn Other)
