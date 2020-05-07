@@ -37,7 +37,7 @@ var float JoltMagnitude;  // magnitude of bounce imposed by heavy footsteps
 var travel String   TruePlayerName;
 var() travel int    PlayerSkin;
 
-var() transient bool bTPA_OnlyOnce;
+var() transient bool bTPA_OnlyOnce, bTPR_OnlyOnce;
 
 // Combat Difficulty, set only at new game time
 var travel float CombatDifficulty;
@@ -108,9 +108,9 @@ var editconst int   maxInvCols;         // Maximum number of inventory columns
 var() travel Inventory        inHand;             // The current object in hand
 var() travel Inventory        inHandPending;      // The pending item waiting to be put in hand
 var() travel Inventory        ClientinHandPending; // Client temporary inhand pending, for mousewheel use.
-var travel bool             bInHandTransition;  // The inHand is being swapped out
+var   travel bool             bInHandTransition;  // The inHand is being swapped out
 
-var travel Inventory VM_lastInHand;             // Last item in hand before PutInHand(None).
+var   travel Inventory        VM_lastInHand; // Last item in hand before PutInHand(None).
 
 // used by lots of stuff
 var name FloorMaterial;
@@ -1376,6 +1376,12 @@ function CreateKeyRing()
   }
 }
 
+// Вызывается 2 (!) раза.
+event TravelPreAccept()
+{
+
+}
+
 event TravelPostAccept()
 {
     local DeusExLevelInfo info;
@@ -1389,8 +1395,6 @@ event TravelPostAccept()
 
  if (!bTPA_OnlyOnce)
  {
-    log(self@"TravelPostAccept() and Weapon is"@weapon);
-
 //    hud.ClearBelt();
 //    hud.PopulateBelt();
 
@@ -1420,11 +1424,11 @@ event TravelPostAccept()
         AugmentationSystem.RefreshAugDisplay();
 
         foreach AllActors(class'Augmentation', aug)
-     if (aug != none)
-      aug.RestoreAugLevel();
+               if (aug != none)
+                   aug.RestoreAugLevel();
     }
 
-    // Make sure any objects that care abou the PlayerSkin
+    // Make sure any objects that care about the PlayerSkin
     // are notified
     UpdatePlayerSkin();
 
@@ -1460,6 +1464,9 @@ event TravelPostAccept()
     /*hud.*/objects[0] = FindInventoryType(Class'NanoKeyRing');
 
     bTPA_OnlyOnce = true;
+
+    if (inHand != None)
+        PutInHand(inHand);
  }
 }
 
@@ -1857,7 +1864,8 @@ function SpawnBlood(Vector HitLocation, float Damage)
 {
     local int i;
 
-    spawn(class'BloodSpurt',,,HitLocation);
+//    spawn(class'BloodSpurt',,,HitLocation);
+    spawn(class'EM_BloodHit',,,HitLocation);
     spawn(class'BloodDrop',,,HitLocation);
     for (i=0; i<int(Damage); i+=10)
         spawn(class'BloodDrop',,,HitLocation);
@@ -3147,6 +3155,7 @@ function UpdateInHand()
         {
             SetInHand(inHandPending);
             SelectedItem = Powerups(inHandPending);
+            mySelectedItem = Powerups(inHandPending); // DXR: New
 
             if (inHand != None)
             {
@@ -3212,6 +3221,9 @@ function UpdateInHand()
         }
 
     }
+
+    if (winInv != None)
+        WinInv.EnableButtons(); // 
 
     UpdateCarcassEvent();
 }
@@ -4213,13 +4225,13 @@ function inWaterRight()
 
 function inWaterLeft()
 {
-/*    local float rnd;
+    local float rnd;
 
     rnd = Frand();
     if (rnd < 0.5)
-    PlaySound(sound'Swimming', SLOT_Interact,,,, RandomPitch());
+    PlaySound(sound'Swimming', SLOT_None,0.5,,, RandomPitch());
         else
-    PlaySound(sound'Treading', SLOT_Interact,,,, RandomPitch());*/
+    PlaySound(sound'Treading', SLOT_None,0.5,,, RandomPitch());
 }
 
 exec function ToggleWalk()
@@ -4230,10 +4242,6 @@ exec function ToggleWalk()
  if (bAlwaysRun)
     bToggleWalk = !bToggleWalk;
 }
-
-// ----------------------------------------------------------------------
-// UpdateBeltText()
-// ----------------------------------------------------------------------
 
 function UpdateBeltText(Inventory item)
 {
@@ -4247,15 +4255,12 @@ function UpdateBeltText(Inventory item)
 }
 
 // ----------------------------------------------------------------------
-// UpdateAmmoBeltText()
-//
 // Loops through all the weapons in the player's inventory and updates
 // the ammo for any that matches the ammo type passed in.
 // ----------------------------------------------------------------------
-
 function UpdateAmmoBeltText(Ammunition ammo)
 {
-/*  local Inventory inv;
+  local Inventory inv;
 
     inv = Inventory;
     while(inv != None)
@@ -4264,7 +4269,7 @@ function UpdateAmmoBeltText(Ammunition ammo)
             UpdateBeltText(inv);
 
         inv = inv.Inventory;
-    }*/
+    }
 }
 
 
@@ -4278,10 +4283,90 @@ function ResetConversationHistory()
 
 function PlayTurning();
 
+
+/* 
+   ToDo: Добавить HandleParameters в DxrMenu\GUI_Player.uc, чтобы открывать нужную вкладку
+*/
 exec function ShowInventoryWindow()
 {
-    DeusExPlayerController(controller).ClientOpenMenu("DXRMenu.GUI_Player");
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "INV");
 }
+
+exec function ShowSkillsWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "SKILLS");
+}
+
+exec function ShowHealthWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "HEALTH");
+}
+
+exec function ShowImagesWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "IMG");
+}
+
+exec function ShowConversationsWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "CONVOS");
+}
+
+exec function ShowAugmentationsWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "AUGS");
+}
+
+exec function ShowGoalsWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "GOALS");
+}
+
+exec function ShowLogsWindow()
+{
+    local Object mi;
+
+    if (DeusExPlayerController(Controller).RestrictInput())
+        return;
+
+    mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "LOGS");
+}
+/**/
 
 
 function PostIntro()

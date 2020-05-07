@@ -1,7 +1,7 @@
 //=============================================================================
 // BarrelVirus.
 //=============================================================================
-class BarrelVirus extends Containers;
+class BarrelVirus extends Barrels;
 
 defaultproperties
 {

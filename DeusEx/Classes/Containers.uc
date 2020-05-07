@@ -7,6 +7,7 @@ class Containers extends DeusExDecoration
 var() int numThings;
 var() bool bGenerateTrash;
 
+
 //
 // copied from Engine.Decoration
 //
@@ -19,6 +20,7 @@ function Destroyed()
     local Vector loc;
     local TrashPaper trash;
     local Rat vermin;
+    local TinCanA tc; //
 
     // trace down to see if we are sitting on the ground
     loc = vect(0,0,0);
@@ -60,15 +62,24 @@ function Destroyed()
             if (vermin != None)
                 vermin.bTransient = true;
         }
+
+        // DXR: Spawn a tin can!
+        if (FRand() > 0.75)
+        {
+           loc = Location;
+           loc.Z -= CollisionHeight;
+           tc = spawn(class'TinCanA',,,loc);
+           tc.SetRotation(RotRand(true));
+        }
     }
 
-    if( (Human(Base) != None) && (Human(Base).CarriedDecoration == self) )
+    if((Human(Base) != None) && (Human(Base).CarriedDecoration == self))
         Human(Base).DropDecoration();
-    if( (Contents!=None) && !Level.bStartup )
+    if((Contents != None) && !Level.bStartup)
     {
         tempClass = Contents;
-        if (Content2!=None && FRand()<0.3) tempClass = Content2;
-        if (Content3!=None && FRand()<0.3) tempClass = Content3;
+        if (Content2!=None && FRand() < 0.3) tempClass = Content2;
+        if (Content3!=None && FRand() < 0.3) tempClass = Content3;
 
         for (i=0; i<numThings; i++)
         {

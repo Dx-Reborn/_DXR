@@ -9,6 +9,8 @@ class DeusExPlayerController extends DXRSaveSystem;
 
 event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
 {
+ Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
+
  if (pawn != none)
  {
   // check for spy drone and freeze player's view

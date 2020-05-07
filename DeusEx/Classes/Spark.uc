@@ -66,10 +66,15 @@ function SpawnActorEffect(Actor Actor, vector Loc)
 
    if (Actor.IsA('BarrelFire') || Actor.IsA('CrateUnbreakableSmall') || Actor.IsA('CrateUnbreakableMed') || Actor.IsA('CrateUnbreakableLarge') ||
       (Actor.IsA('Barrel1') && Barrel1(Actor).SkinColor != SC_Wood) || Actor.IsA('FirePlug') || Actor.IsA('Trashcan1') || Actor.IsA('Trashcan2') ||
-       Actor.IsA('Trashcan3') || Actor.IsA('Trashcan4'))
+       Actor.IsA('Trashcan3') || Actor.IsA('Trashcan4') || Actor.IsA('SecurityCamera'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
+   }
+   else if (Actor.IsA('RoadBlock'))
+   {
+      Spawn(class'EM_ConcreteHit',,,Loc,);
+      PlayActorSound('Ceramic');
    }
    else if (Actor.IsA('Toilet2') || Actor.IsA('Toilet'))
    {
@@ -81,7 +86,11 @@ function SpawnActorEffect(Actor Actor, vector Loc)
       Spawn(class'EM_WoodHit',,,Loc,);
       PlayActorSound('Wood');      
    }
-      
+   else if (Actor.IsA('Trashbag') || Actor.IsA('Trashbag2'))
+   {
+      Spawn(class'EM_NeutralHit',,,Loc,);
+      PlayActorSound('Plastic');      
+   }
 }
 
 function PlayActorSound(Name EffectGroup)
@@ -100,6 +109,10 @@ function PlayActorSound(Name EffectGroup)
 
         case 'Wood':
             ActualSound = Wood[Rand(4)];
+            break;
+
+        case 'Plastic':
+            ActualSound = plastic[Rand(4)];
             break;
 
         default:
@@ -160,6 +173,7 @@ function MakeSound()
         case 'Textile':
             ActualSound = Textile[Rand(4)];
             break;
+
         case 'Paper':
             ActualSound = Paper[Rand(4)];
             break;

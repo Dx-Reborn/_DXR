@@ -1,0 +1,1 @@
+class Barrels extends Containers;

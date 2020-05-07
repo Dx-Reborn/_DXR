@@ -17,12 +17,12 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     pmTabs = new(none) class'DXRTabControl';
     pmTabs.WinWidth = 665;//800.00;
-        pmTabs.WinHeight = 32.0;
+    pmTabs.WinHeight = 32.0;
     pmTabs.bBoundToParent = true;
-        pmTabs.bAcceptsInput = true;
-        pmTabs.bDockPanels = true;
-        pmTabs.bFillSpace = true;
-        pmTabs.TabStyle = "STY_DXR_MediumButton";
+    pmTabs.bAcceptsInput = true;
+    pmTabs.bDockPanels = true;
+    pmTabs.bFillSpace = true;
+    pmTabs.TabStyle = "STY_DXR_MediumButton";
     AppendComponent(pmTabs, true);
 
     GUIHeader(Controls[0]).DockedTabs = pmTabs;
@@ -45,10 +45,10 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 function bool InternalOnClick(GUIComponent Sender)
 {
   if (Sender==bExit)
-    CloseScreen("LOGOUT");
+      CloseScreen("LOGOUT");
 
   if (Sender==btnSpecial)
-        CloseScreen("SPECIAL");
+      CloseScreen("SPECIAL");
 
   return true;
 }
@@ -71,7 +71,6 @@ function InternalOnRendered(canvas u)
 function InitCameras()
 {
     local int cameraIndex;
-    //local name tag;//
     local name mytag;
     local SecurityCamera camera;
     local AutoTurret turret;
@@ -83,8 +82,8 @@ function InitCameras()
     {
       winCameras[cameraIndex] = pmTabs.AddTab(ComputerSecurity(compOwner).Views[cameraIndex].titleString,"DeusEx.Tab_cameraView");
 
-    Tab_CameraView(winCameras[cameraIndex]).compOwner = Computers(compOwner);
-    Tab_CameraView(winCameras[cameraIndex]).selectedCamera = none;
+      Tab_CameraView(winCameras[cameraIndex]).compOwner = Computers(compOwner);
+      Tab_CameraView(winCameras[cameraIndex]).selectedCamera = none;
 
         mytag = ComputerSecurity(compOwner).Views[cameraIndex].cameraTag;
         if (mytag != '')
@@ -110,14 +109,12 @@ function InitCameras()
                 Tab_CameraView(winCameras[cameraIndex]).door = door;
 
                 Tab_CameraView(winCameras[cameraIndex]).SetViewIndex(cameraIndex);
-        Tab_CameraView(winCameras[cameraIndex]).UpdateCameraStatus();
-        Tab_CameraView(winCameras[cameraIndex]).UpdateTurretStatus();
-        Tab_CameraView(winCameras[cameraIndex]).UpdateDoorStatus();
-        // Это важно, когда все данные уже обновлены и инициализированы!
-      Tab_CameraView(winCameras[cameraIndex]).CreateChoices();
-
-      Tab_CameraView(winCameras[cameraIndex]).winTerm = self.winTerm;
-
+                Tab_CameraView(winCameras[cameraIndex]).UpdateCameraStatus();
+                Tab_CameraView(winCameras[cameraIndex]).UpdateTurretStatus();
+                Tab_CameraView(winCameras[cameraIndex]).UpdateDoorStatus();
+                // Это важно, когда все данные уже обновлены и инициализированы!
+                Tab_CameraView(winCameras[cameraIndex]).CreateChoices();
+                Tab_CameraView(winCameras[cameraIndex]).winTerm = self.winTerm;
     }
 
     // Select the first security camera
@@ -141,15 +138,15 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
     {
         btnSpecial = new(none) class'GUIButton';
         btnSpecial.Caption = ButtonLabelSpecial;
-    btnSpecial.FontScale = FNS_Small;
-    btnSpecial.StyleName = "STY_DXR_MediumButton";
-    btnSpecial.bBoundToParent = true;
-    btnSpecial.OnClick = InternalOnClick;
-    btnSpecial.WinHeight = 23;
-    btnSpecial.WinWidth = 168;
-    btnSpecial.WinLeft = 400;
-    btnSpecial.WinTop = 565;
-    AppendComponent(btnSpecial, true);
+        btnSpecial.FontScale = FNS_Small;
+        btnSpecial.StyleName = "STY_DXR_MediumButton";
+        btnSpecial.bBoundToParent = true;
+        btnSpecial.OnClick = InternalOnClick;
+        btnSpecial.WinHeight = 23;
+        btnSpecial.WinWidth = 168;
+        btnSpecial.WinLeft = 400;
+        btnSpecial.WinTop = 565;
+        AppendComponent(btnSpecial, true);
     }
 
     // Check the user's skill level and possibly disable the Turret button

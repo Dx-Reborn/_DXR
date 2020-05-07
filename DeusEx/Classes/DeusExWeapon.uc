@@ -191,6 +191,7 @@ var(ShakeView) vector ShakeOffsetMag;        // max view offset vertically
 var(ShakeView) vector ShakeOffsetRate;       // how fast to offset view vertically
 var(ShakeView) float  ShakeOffsetTime;       // how much time to offset view
 
+var float holdShotTime;
 
 //
 // network replication
@@ -201,29 +202,6 @@ replication
     reliable if (Role<ROLE_Authority)
         ClipCount, LockTimer, Target, LockMode, TargetMessage, TargetRange;
 }
-
-event SetInitialState()
-{
-   local Sound pickSound;
-   local DeusExGlobals gl;
-
-   Super.SetInitialState();
-
-   gl = class'DeusExGlobals'.static.GetGlobals();
-   if (gl.bUseAltWeaponsSounds)
-   {
-       if (self.IsA('WeaponSword') || self.IsA('WeaponNanoSword'))
-           pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.ItemPickUp",class'Sound',true));
-       else
-           pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.WeaponPickUp",class'Sound',true));
-
-       if (pickSound != None)
-           PickupSound = pickSound;
-   }
-   else
-       PickupSound = default.PickupSound;
-}
-
 
 // Drop "physical" version of the used weapon, instead of disappearing to nowhere.
 function DropUsedWeapon();
@@ -308,25 +286,14 @@ function bool isPlayingIdleAnim()
    return false;
 }
 
-/**/
-function FixTheInventoryBug()
+function PutBackInHand()
 {
-/*   local DeusExGlobals gl;
-   local int i;
-
-   gl = class'DeusExGlobals'.static.GetGlobals();
-
-   for(i=0; i<gl.InvItems.Length; i++)
-   {
-      if (gl.InvItems[i].itemClass == class)
-      {
-         invPosX = gl.InvItems[i].positionX;
-         invPosY = gl.InvItems[i].positionY;
-         beltPos = gl.InvItems[i].beltPosition;
-         bInObjectBelt = gl.InvItems[i].bInObjectBelt;
-         break;
-      }
-   }*/
+    if (self == PlayerPawn(Owner).myWeapon)
+    {
+        PlayerPawn(Owner).PutInHand(self);
+        bPostTravel = false;
+    }
+    else GotoState('Idle2');
 }
 
 //
@@ -362,7 +329,8 @@ event TravelPostAccept()
             }
         }
     }
-    FixTheInventoryBug();
+    bPostTravel = true;
+    PutBackInHand();
 }
 
 singular function BaseChange()
@@ -1530,7 +1498,8 @@ function PlayIdleAnim()
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-    spawn(class'BloodSpurt',,,HitLocation+HitNormal);
+//    spawn(class'BloodSpurt',,,HitLocation+HitNormal);
+    spawn(class'EM_BloodHit',,,HitLocation+HitNormal);
     spawn(class'BloodDrop',,,HitLocation+HitNormal);
 
     if (FRand() < 0.5)
@@ -1540,9 +1509,6 @@ function SpawnBlood(Vector HitLocation, Vector HitNormal)
 function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float Damage)
 {
     local EM_NeutralHit puff;
-//    local int i;
-//    local BulletHole hole;
-//    local DeusExMover mov;
 
     if (Other == None)
     return;
@@ -1575,9 +1541,9 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
     }
 
     // draw the correct damage art for what we hit
-    if (bPenetrating || bHandToHand)
+    /*if (bPenetrating || bHandToHand)
     {
-       /* if (Other.IsA('DeusExMover'))
+        if (Other.IsA('DeusExMover'))
         {
             mov = DeusExMover(Other);
             if ((mov != None) && (hole == None))
@@ -1619,8 +1585,8 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other, float D
                         hole.Destroy();
                 }
             }
-        }*/
-    }
+        }
+    }*/
 }
 
 function name GetWallMaterial(vector HitLocation, vector HitNormal)
@@ -1660,24 +1626,7 @@ function GenerateBullet()
 //
 function PlayHitSound(actor destActor, Actor hitActor)
 {
-//    local float rnd;
     local sound snd;
-
-    //== Y|y: redundant, since this class is only invoked for bullets.  Kudos to Lork for finding this
-    // don't ricochet unless it's hit by a bullet
-    //if ((damageType != 'Shot') && (damageType != 'Sabot'))
-    //  return;
-
-//    rnd = FRand();
-
-/*    if (rnd < 0.25)
-        snd = sound'Ricochet1';
-    else if (rnd < 0.5)
-        snd = sound'Ricochet2';
-    else if (rnd < 0.75)
-        snd = sound'Ricochet3';
-    else
-        snd = sound'Ricochet4';*/
 
     // play a different ricochet sound if the object isn't damaged by normal bullets
     if (hitActor != None) 
@@ -1696,60 +1645,21 @@ function PlayHitSound(actor destActor, Actor hitActor)
         destActor.PlaySound(snd, SLOT_None,,, 1024, 1.1 - 0.2*FRand());
 }
 
-/*function PlayHitSound(actor destActor, Actor hitActor)
-{
-    local float rnd;
-    local sound snd;
-    local class<damageType> damageType;
-
-    damageType = WeaponDamageType();
-
-    // don't ricochet unless it's hit by a bullet
-    if ((damageType != class'DM_Shot') && (damageType != class'DM_Sabot'))
-        return;
-
-    rnd = FRand();
-
-    if (rnd < 0.25)
-        snd = sound'Ricochet1';
-    else if (rnd < 0.5)
-        snd = sound'Ricochet2';
-    else if (rnd < 0.75)
-        snd = sound'Ricochet3';
-    else
-        snd = sound'Ricochet4';
-
-    // play a different ricochet sound if the object isn't damaged by normal bullets
-    if (hitActor != None) 
-    {
-        if (hitActor.IsA('DeusExDecoration') && (DeusExDecoration(hitActor).minDamageThreshold > 10))
-            snd = sound'ArmorRicochet';
-        else if (hitActor.IsA('Robot'))
-            snd = sound'ArmorRicochet';
-    }
-
-    if (destActor != None)
-        destActor.PlaySound(snd, SLOT_Misc,,, 1024, 1.1 - 0.2*FRand());
-}*/
-
 function PlayLandingSound()
 {
     if (LandSound != None)
     {
         if (Velocity.Z <= -200)
         {
-            PlaySound(GetLandedSound() /*LandSound*/, SLOT_Misc, TransientSoundVolume,, 768);
+            PlaySound(GetLandedSound(), SLOT_Misc, TransientSoundVolume,, 768);
             class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
         }
     }
 }
 
-
-function GetWeaponRanges(out float wMinRange,
-                         out float wMaxAccurateRange,
-                         out float wMaxRange)
+function GetWeaponRanges(out float wMinRange,out float wMaxAccurateRange,out float wMaxRange)
 {
-    local Class<DeusExProjectile> dxProjectileClass;
+    local class<DeusExProjectile> dxProjectileClass;
 
     dxProjectileClass = Class<DeusExProjectile>(ProjectileClass);
     if (dxProjectileClass != None)
@@ -2040,7 +1950,6 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
         if ((Other == Level) || (Other.IsA('Mover')) || (Other.bWorldGeometry)) // DXR: Добавлена проверка на статикмеши
         {
             Other.TakeDamage(HitDamage * mult, Pawn(Owner), HitLocation, 1000.0*X, damageType);
-
             SpawnEffects(HitLocation, HitNormal, Other, HitDamage * mult);
         }
         else if ((Other != self) && (Other != Owner))
@@ -2246,8 +2155,6 @@ state NormalFire
                 if (mult == -1.0)
                     mult = 1.0;
             }
-
-//            log("GetShotTime() = "@ShotTime * mult);
             return (ShotTime * mult);
         }
     }
@@ -2302,6 +2209,7 @@ Begin:
     if (bAutomatic)
     {
         GenerateBullet();
+        Sleep(holdShotTime);
         Goto('Begin');
     }
     bFiring = False;

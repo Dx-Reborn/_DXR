@@ -121,14 +121,18 @@ function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 
 function Draw_DebugLine()
 {
-   if (AIDirReach_Location != vect(0,0,0))
-       DrawStayingDebugLine(Location, AIDirReach_Location, 255, 221, 100);
+//   if (AIDirReach_Location != vect(0,0,0))
+//       DrawStayingDebugLine(Location, AIDirReach_Location, 255, 221, 100);
 
-   if (AIPickRandom_Location != vect(0,0,0))
-       DrawStayingDebugLine(Location, AIPickRandom_Location, 0, 0, 255);
+//   if (AIPickRandom_Location != vect(0,0,0))
+//       DrawStayingDebugLine(Location, AIPickRandom_Location, 0, 0, 255);
 
     if (destPoint != None)
         DrawStayingDebugLine(Location, DestPoint.Location, 55, 121, 100);
+
+    if (destLoc != vect(0,0,0))
+        DrawStayingDebugLine(Location, destLoc, 55, 121, 100);
+
 }
 
 event AnimEnd(int channel)
@@ -7187,9 +7191,6 @@ defaultproperties
      CrouchHeight=29.0
      CrouchRadius=25.0
 
-//     CrouchHeight=26.0
-//     CrouchRadius=20.0
-
      bIsHuman=true
      AirSpeed=320.000000
      AccelRate=200.000000
@@ -7219,8 +7220,7 @@ defaultproperties
      SoundOcclusion=OCCLUSION_Default
      bCanFly=false
      CullDistance=8050 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
-     //bFastTurnWhenAttacking=true
-     bFastTurnWhenAttacking=false
+     bFastTurnWhenAttacking=true
      bDirectHitWall=false
 
      TransientSoundVolume=+0.95

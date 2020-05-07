@@ -23,6 +23,7 @@ const STATE_SHADOWING_DIST = 900;
 const HIDEPOINT_CHECK_RADIUS = 10000;
 
 const FALLBACK_IF_STUCK_VALUE = -10.00;
+const CHAIR_IS_CLOSE_DIST = 70;
 
 // Из Unreal, для постановки состояния в очередь.
 var name NextState;
@@ -600,7 +601,7 @@ function Actor GetNextWaypoint(Actor MyDestination)
     else if (ActorReachable(MyDestination))
         aMoveTarget = MyDestination;
     else
-        aMoveTarget = FindPathToward(MyDestination, false);
+        aMoveTarget = FindPathToward(MyDestination, true); // false
 
     return aMoveTarget;
 }
@@ -3472,7 +3473,7 @@ MoveToSeat:
 
         scriptedPawn(pawn).destLoc = GetDestinationPosition(scriptedPawn(pawn).SeatActor);
 
-        if ((VSize(scriptedPawn(pawn).SeatActor.Location - Pawn.Location) < 50) && ActorReachable(scriptedPawn(pawn).SeatActor))
+        if ((VSize(scriptedPawn(pawn).SeatActor.Location - Pawn.Location) < CHAIR_IS_CLOSE_DIST) && ActorReachable(scriptedPawn(pawn).SeatActor))
         {
             log("Chair is close, gonna use it now ");
              Goto('MoveToPosition');
@@ -5603,7 +5604,7 @@ Begin:
     ScriptedPawn(pawn).destLoc = vect(0,0,0);
 
 BeginHitNormal:
-    ScriptedPawn(pawn).Acceleration = vect(0,0,0);
+    pawn.Acceleration = vect(0,0,0);
     FindBackupPoint();
 
     if (!DoorEncroaches())
@@ -5613,7 +5614,7 @@ BeginHitNormal:
     ScriptedPawn(pawn).PlayRunning();
 
     TurnTo(FocusDirection());
-//    FinishRotation();
+    FinishRotation();//
     MoveTo(ScriptedPawn(pawn).destLoc,,false);
 
     if (DoorEncroaches())

@@ -5,11 +5,11 @@ class CeilingFan extends DeusExDecoration;
 
 enum ESkinColor
 {
-	SC_WoodBrass,
-	SC_DarkWoodIron,
-	SC_White,
-	SC_WoodBrassFancy,
-	SC_WoodPlastic
+    SC_WoodBrass,
+    SC_DarkWoodIron,
+    SC_White,
+    SC_WoodBrassFancy,
+    SC_WoodPlastic
 };
 
 var() ESkinColor SkinColor;
@@ -17,16 +17,24 @@ var() ESkinColor SkinColor;
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
+    SetSkin();
+}
 
-	switch (SkinColor)
-	{
-		case SC_WoodBrass:		Skins[0] = Texture'CeilingFanTex1'; break;
-		case SC_DarkWoodIron:	Skins[0] = Texture'CeilingFanTex2'; break;
-		case SC_White:			Skins[0] = Texture'CeilingFanTex3'; break;
-		case SC_WoodBrassFancy:	Skins[0] = Texture'CeilingFanTex4'; break;
-		case SC_WoodPlastic:	Skins[0] = Texture'CeilingFanTex5'; break;
-	}
+function SetSkin()
+{
+    // DXR: Если заменяем модель то не меняем скин 
+    if (DrawType == DT_StaticMesh && StaticMesh != None)
+    return;
+
+    switch (SkinColor)
+    {
+        case SC_WoodBrass:      Skins[0] = Texture'CeilingFanTex1'; break;
+        case SC_DarkWoodIron:   Skins[0] = Texture'CeilingFanTex2'; break;
+        case SC_White:          Skins[0] = Texture'CeilingFanTex3'; break;
+        case SC_WoodBrassFancy: Skins[0] = Texture'CeilingFanTex4'; break;
+        case SC_WoodPlastic:    Skins[0] = Texture'CeilingFanTex5'; break;
+    }
 }
 
 

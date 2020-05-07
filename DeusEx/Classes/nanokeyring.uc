@@ -12,7 +12,6 @@ class NanoKeyRing extends SkilledTool;
 
 var localized string NoKeys;
 var localized string KeysAvailableLabel;
-var() travel float fField1; // Test
 
 struct SNanoKeyStruct
 {
@@ -22,15 +21,36 @@ struct SNanoKeyStruct
 
 var() travel array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
 
-event SetInitialState()
+event TravelPreAccept()
 {
-   Super(RuntimePickup).SetInitialState();
+  // None
+}
+
+event TravelPostAccept()
+{
+    local inventory Item;
+
+    item = Pawn(Owner).FindInventoryType(class);
+    if (Item != None)
+    {
+       Pawn(Owner).DeleteInventory(Item);
+       Item.Destroy();
+       GiveTo(Pawn(Owner));
+    }
+    else
+       GiveTo(Pawn(Owner));
+
+    bPostTravel = true;
+    PutBackInHand(); // Тебе особое приглашение нужно?!
 }
 
 function Sound GetBringUpSound()
 {
     local DeusExGlobals gl;
     local sound sound;
+
+    if (bPostTravel)
+        return None;
 
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
@@ -199,29 +219,6 @@ state StopIt
 Begin:
     PlayAnim('UseEnd',, 0.1);
     GotoState('Idle', 'DontPlaySelect');
-}
-
-event TravelPreAccept()
-{
-   log("TravelPreAccept() = "$self);
-}
-
-event TravelPostAccept()
-{
-    local inventory Item;
-
-//    log("TravelPostAccept()"@self@fField1);
-
-    item = Pawn(Owner).FindInventoryType(class);
-    if (Item != None)
-    {
-       Pawn(Owner).DeleteInventory(Item);
-       Item.Destroy();
-       GiveTo(Pawn(Owner));
-    }
-    else
-       GiveTo(Pawn(Owner));
-
 }
 
 function GetKeysFromPockets()

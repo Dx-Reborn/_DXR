@@ -1,7 +1,7 @@
 //=============================================================================
 // CrateUnbreakableMed.
 //=============================================================================
-class CrateUnbreakableMed extends Containers;
+class CrateUnbreakableMed extends MetalBoxes;
 
 defaultproperties
 {

@@ -1,7 +1,7 @@
 //=============================================================================
 // CrateExplosiveSmall.
 //=============================================================================
-class CrateExplosiveSmall extends Containers;
+class CrateExplosiveSmall extends MetalBoxes;
 
 defaultproperties
 {

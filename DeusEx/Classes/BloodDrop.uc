@@ -14,7 +14,8 @@ auto state Flying
     simulated function BeginState()
     {
         Velocity = VRand() * 100;
-        SetDrawScale(1.0 + FRand());
+        //SetDrawScale(1.0 + FRand());
+        SetDrawScale(default.DrawScale + FRand());
         SetRotation(Rotator(Velocity));
 
         // Gore check
@@ -41,9 +42,12 @@ simulated function Tick(float deltaTime)
 
 defaultproperties
 {
-     Style=STY_Modulated
-     Mesh=Mesh'DeusExItems.BloodDrop'
+     //Style=STY_Modulated
+//     Skins[0]=shader'DXR_FX.Particles.DarkRed_Modulated'
+     DrawScale=0.1
+//     Mesh=Mesh'DeusExItems.BloodDrop'
      CollisionRadius=0.000000
      CollisionHeight=0.000000
      bBounce=False
+     DrawType=DT_None
 }

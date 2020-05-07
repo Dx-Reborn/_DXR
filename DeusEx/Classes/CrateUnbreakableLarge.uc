@@ -1,7 +1,7 @@
 //=============================================================================
 // CrateUnbreakableLarge.
 //=============================================================================
-class CrateUnbreakableLarge extends Containers;
+class CrateUnbreakableLarge extends MetalBoxes;
 
 defaultproperties
 {

@@ -1,7 +1,7 @@
 //=============================================================================
 // BoxLarge.
 //=============================================================================
-class BoxLarge extends Containers;
+class BoxLarge extends CardBoardBoxes;
 
 defaultproperties
 {

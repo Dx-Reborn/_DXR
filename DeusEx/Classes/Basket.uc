@@ -1,7 +1,7 @@
 //=============================================================================
 // Basket.
 //=============================================================================
-class Basket extends Containers;
+class Basket extends BoxesWithStuff;
 
 defaultproperties
 {

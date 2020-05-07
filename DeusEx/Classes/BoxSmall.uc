@@ -1,7 +1,7 @@
 //=============================================================================
 // BoxSmall.
 //=============================================================================
-class BoxSmall extends Containers;
+class BoxSmall extends CardBoardBoxes;
 
 singular function SupportActor(Actor standingActor)  //CyberP: hack lazy patch
 {

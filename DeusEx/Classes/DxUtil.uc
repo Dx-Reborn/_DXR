@@ -20,6 +20,50 @@ var array<HtmlChar> SpecialChars;
 var localized string January,February,March,April,May,June,July,August,September,October,November,December;
 var localized string Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday;
 
+/*  */
+static function HSLToRGB(float h, float sl, float l, out float r, out float g, out float b)
+{
+    local float v;
+    local float m;
+    local float sv;
+    local int sextant;
+    local float fract, vsf, mid1, mid2;
+
+    if (l <= 0.5)
+        v = (l * (1.0 + sl));
+    else
+        v = (l + sl - l * sl);
+
+    if (v <= 0)
+    {
+        r = 0.0;
+        g = 0.0;
+        b = 0.0;
+    }
+    else
+    {
+        m = l + l - v;
+        sv = (v - m) / v;
+        h *= 6.0;
+        sextant = h;
+        fract = h - sextant;
+        vsf = v * sv * fract;
+        mid1 = m + vsf;
+        mid2 = v - vsf;
+
+        switch(sextant)
+        {
+            case 0: r = v; g = mid1; b = m; break;
+            case 1: r = mid2; g = v; b = m; break;
+            case 2: r = m; g = v; b = mid1; break;
+            case 3: r = m; g = mid2; b = v; break;
+            case 4: r = mid1; g = m; b = v; break;
+            case 5: r = v; g = m; b = mid2; break;
+        }
+    }
+}
+
+
 /* Взято из The Nameless Mod SDK */
 static final function string GetMonthStr(int Month)
 {
@@ -585,6 +629,72 @@ simulated final static function Vector VDiskRand2D(float DiskRadius)
 
    return Point;
 }
+
+/*-------------------------------------------------------------
+  Converts a float value to a 0-255 byte, assuming a range of
+  0.f to 1.f.
+  
+  inputFloat - float to convert
+  bSigned - optional, assume a range of -1.f to 1.f
+  returns byte value 0-255
+-------------------------------------------------------------*/
+static final function byte FloatToByte(float inputFloat, optional bool bSigned)
+{
+    if (bSigned)
+    {
+        // handle a 0.02f threshold so we can guarantee valid 0/255 values
+        if (inputFloat > 0.98f)
+        {
+            return 255;
+        }
+        else
+        if (inputFloat < -0.98f)
+        {
+            return 0;
+        }
+        else
+        {
+            return byte((inputFloat+1.f)*128.f);
+        }
+    }
+    else
+    {
+        if (inputFloat > 0.98f)
+        {
+            return 255;
+        }
+        else
+        if (inputFloat < 0.02f)
+        {
+            return 0;
+        }
+        else
+        {
+            return byte(inputFloat*255.f);
+        }
+    }
+}
+
+/*-------------------------------------------------------------
+  Converts a 0-255 byte to a float value, to a range of 0.f
+  to 1.f.
+
+  inputByte - byte to convert
+  bSigned - optional, spit out -1.f to 1.f instead
+  returns newly converted value
+-------------------------------------------------------------*/
+static final function float ByteToFloat(byte inputByte, optional bool bSigned)
+{
+    if (bSigned)
+    {
+        return ((float(inputByte)/128.f)-1.f);
+    }
+    else
+    {
+        return (float(inputByte)/255.f);
+    }
+}
+
 
 /*-------------------------------------------------------------
   Return file as array of bytes.

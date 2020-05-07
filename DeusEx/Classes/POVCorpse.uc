@@ -23,6 +23,10 @@ var travel bool wasFemale;
 var travel String flagName;
 var travel bool wasImportant;
 
+event SetInitialState()
+{
+   Super(RuntimePickup).SetInitialState();
+}
 
 defaultproperties
 {

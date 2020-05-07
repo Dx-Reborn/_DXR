@@ -10,6 +10,8 @@ const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
 
 var travel inventory objects[10]; // for toolbelt
+var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
+var() travel Powerups mySelectedItem; // Same...
 
 var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
@@ -131,7 +133,7 @@ function int StandingCount()
 }
 
 function p_HandleWalking();
-
+exec function PutInHand(optional Inventory inv);
 
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
 
@@ -324,6 +326,9 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
         SelectedItem.DisplayDebug(Canvas,YL,YPos);
 }
 
+function DropDecoration();
+
+// Just changed to pendingWeapon
 function ChangedWeapon()
 {
     local Weapon OldWeapon;
@@ -334,11 +339,11 @@ function ChangedWeapon()
     {
         if (Weapon == None)
             SwitchToBestWeapon();
-        else if (Weapon.IsInState('DownWeapon'))
+        else if (Weapon.IsInState('DownWeapon')) 
             Weapon.BringUp();
         if (Weapon != None)
             Weapon.SetDefaultDisplayProperties();
-        Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
+        Inventory.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
         PendingWeapon = None;
         return;
     }
@@ -347,18 +352,17 @@ function ChangedWeapon()
 //      PendingWeapon = Weapon;
 
     PlayWeaponSwitch(PendingWeapon);
-//  if ((PendingWeapon != None) && (PendingWeapon.Mass > 20) && (carriedDecoration != None))
-//      DropDecoration();
+    if ((PendingWeapon != None) && (PendingWeapon.Mass > 20) && (carriedDecoration != None))
+        DropDecoration();
     if (Weapon != None)
         Weapon.SetDefaultDisplayProperties();
         
     Weapon = PendingWeapon;
-    Controller.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
-    if ( Weapon != None )
+    myWeapon = PendingWeapon; // DXR: New
+    Inventory.ChangedWeapon(); // tell inventory that weapon changed (in case any effect was being applied)
+    if (Weapon != None)
     {
         Weapon.BringUp(OldWeapon);
-        if ( (Level.Game != None) && (Level.Game.GameDifficulty > 1) )
-            MakeNoise(0.1 * Level.Game.GameDifficulty);
     }
     PendingWeapon = None;
 }

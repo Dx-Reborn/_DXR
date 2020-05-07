@@ -12,7 +12,6 @@ var() sound     useSound;
 var bool        bBeingUsed;
 
 // DXR: New stuff
-var int ToolsFOV;
 var sound BringUpSound;
 var sound PutDownSound;
 
@@ -114,6 +113,7 @@ Begin:
     bOnlyOwnerSee = True;
     PlayAnim('Select',, 0.1);
     Owner.PlaySound(GetBringUpSound(), SLOT_Misc,,, 2048); // DXR: Play "bring up" sound
+    RestorePostTravelValue();
 DontPlaySelect:
     FinishAnim();
     PlayAnim('Idle1',, 0.1);
@@ -211,7 +211,6 @@ defaultproperties
     DrawType=DT_Mesh
     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768) 
     CountLabel="Uses:"
-    ToolsFOV=75
     bHidden=true
     SoundVolume=250
     bFullVolume=true

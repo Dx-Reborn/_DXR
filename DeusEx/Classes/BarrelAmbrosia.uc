@@ -1,7 +1,7 @@
 //=============================================================================
 // BarrelAmbrosia.
 //=============================================================================
-class BarrelAmbrosia extends Containers;
+class BarrelAmbrosia extends Barrels;
 
 defaultproperties
 {

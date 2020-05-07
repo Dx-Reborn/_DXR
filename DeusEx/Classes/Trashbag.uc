@@ -1,7 +1,7 @@
 //=============================================================================
 // Trashbag.
 //=============================================================================
-class Trashbag extends Containers;
+class Trashbag extends TrashBags;
 
 defaultproperties
 {
@@ -10,10 +10,14 @@ defaultproperties
      FragType=Class'DeusEx.PaperFragment'
      bGenerateFlies=True
      ItemName="Trashbag"
-     mesh=mesh'DeusExDeco.Trashbag'
+//     mesh=mesh'DeusExDeco.Trashbag'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes10.TrashBag_b'
      CollisionRadius=26.360001
      CollisionHeight=26.760000
      Mass=30.000000
      Buoyancy=40.000000
-     skins[0]=Texture'DeusExDeco.Skins.TrashbagTex1'
+     skins[0]=Shader'DeusExStaticMeshes10.Plastic.TrashBag_b_SH'
+//     skins[0]=Texture'DeusExDeco.Skins.TrashbagTex1'
 }
+

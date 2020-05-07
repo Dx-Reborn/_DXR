@@ -424,8 +424,8 @@ function RenderDebugInfo(Canvas c)
 
     c.DrawColor = WhiteColor; 
     c.Font = font'DXFonts.EU_10';
-    c.SetPos(150,150);
-    c.DrawText(TestUkr_String);
+//    c.SetPos(150,150);
+//    c.DrawText(TestUkr_String);
 
     c.Font = font'DXFonts.EU_9';
     c.DrawColor = GoldColor; 

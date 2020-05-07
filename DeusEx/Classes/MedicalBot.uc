@@ -6,9 +6,7 @@ class MedicalBot extends Robot;
 var int healAmount;
 var int healRefreshTime;
 var float lastHealTime;
-// ----------------------------------------------------------------------
-// PostBeginPlay()
-// ----------------------------------------------------------------------
+
 
 function PostBeginPlay()
 {
@@ -17,10 +15,6 @@ function PostBeginPlay()
     lastHealTime = -healRefreshTime;
 }
 
-// ----------------------------------------------------------------------
-// StandStill()
-// ----------------------------------------------------------------------
-
 function StandStill()
 {
     Controller.GotoState('Idle', 'Idle');
@@ -28,11 +22,8 @@ function StandStill()
 }
 
 // ----------------------------------------------------------------------
-// Frob()
-//
 // Invoke the Augmentation Upgrade 
 // ----------------------------------------------------------------------
-
 function Frob(Actor Frobber, Inventory frobWith)
 {
     local DeusExPlayer player;
@@ -50,30 +41,25 @@ function Frob(Actor Frobber, Inventory frobWith)
     
     if (player != None)
     {
-    // First check to see if the player has any augmentation cannisters.
-    // If so, then we'll pull up the Add Augmentations screen.  
-    // Otherwise pull up the Health screen first.
+       // First check to see if the player has any augmentation cannisters.
+       // If so, then we'll pull up the Add Augmentations screen.  
+       // Otherwise pull up the Health screen first.
+       augCan = AugmentationCannister(player.FindInventoryType(Class'AugmentationCannister'));
 
-    augCan = AugmentationCannister(player.FindInventoryType(Class'AugmentationCannister'));
-
-    if (augCan != None)
-    {
-        gl.lastMedBot = self;
-        mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "AUGS");
-        MedBotInterface(mi).SetMedicalBot(Self, True);
+       if (augCan != None)
+       {
+          gl.lastMedBot = self;
+          mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "AUGS");
+          MedBotInterface(mi).SetMedicalBot(Self, True);
+       }
+       else
+       {
+          gl.lastMedBot = self;
+          mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "HEALTH");
+          MedBotInterface(mi).SetMedicalBot(Self, True);
+       }
     }
-    else
-    {
-        gl.lastMedBot = self;
-        mi = pc.OpenMenuEx("DeusEx.MedBotInterface",false, "HEALTH");
-        MedBotInterface(mi).SetMedicalBot(Self, True);
-    }
- }
 }
-
-// ----------------------------------------------------------------------
-// HealPlayer()
-// ----------------------------------------------------------------------
 
 function int HealPlayer(DeusExPlayer player)
 {
@@ -89,19 +75,12 @@ function int HealPlayer(DeusExPlayer player)
 }
 
 // ----------------------------------------------------------------------
-// CanHeal()
-// 
 // Returns whether or not the bot can heal the player
 // ----------------------------------------------------------------------
-
 function bool CanHeal()
 {   
     return (Level.TimeSeconds - lastHealTime > healRefreshTime);
 }
-
-// ----------------------------------------------------------------------
-// GetRefreshTimeRemaining()
-// ----------------------------------------------------------------------
 
 function float GetRefreshTimeRemaining()
 {
@@ -111,13 +90,13 @@ function float GetRefreshTimeRemaining()
 // Mesh notify
 function MedBotHoldArm()
 {
-  freezeAnimAt(7);
+   freezeAnimAt(7);
 }
 
 // Mesh notify
 function HoldUpAndScan()
 {
-  freezeAnimAt(6);
+   freezeAnimAt(6);
 }
 
 

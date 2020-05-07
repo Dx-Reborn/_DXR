@@ -4,50 +4,27 @@
 
 class DeusExPickup extends RuntimePickup abstract;
 
-event SetInitialState()
+event TravelPostAccept()
 {
-   local Sound pickSound;
-   local DeusExGlobals gl;
+   Super.TravelPostAccept();
 
-   Super.SetInitialState();
-
-   gl = class'DeusExGlobals'.static.GetGlobals();
-   if (gl.bUseAltWeaponsSounds)
-   {
-       pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.ItemPickUp",class'Sound',true));
-
-       if (pickSound != None)
-           PickupSound = pickSound;
-   }
-   else
-       PickupSound = default.PickupSound;
+   bPostTravel = true;
+   PutBackInHand();
 }
 
-
-function FixTheInventoryBug()
+function RestorePostTravelValue()
 {
-   local DeusExGlobals gl;
-   local int i;
-
-   gl = class'DeusExGlobals'.static.GetGlobals();
-
-   for(i=0; i<gl.InvItems.Length; i++)
-   {
-      if (gl.InvItems[i].itemClass == class)
-      {
-         invPosX = gl.InvItems[i].positionX;
-         invPosY = gl.InvItems[i].positionY;
-         beltPos = gl.InvItems[i].beltPosition;
-         bInObjectBelt = gl.InvItems[i].bInObjectBelt;
-      }
-   }
+    bPostTravel = false;
 }
 
-/*function TravelPostAccept()
+function PutBackInHand()
 {
-    Super.TravelPostAccept();
-    FixTheInventoryBug();
-}*/
+    if (self == PlayerPawn(Owner).mySelectedItem)
+    {
+        PlayerPawn(Owner).PutInHand(self);
+    }
+    else GotoState('Idle2');
+}
 
 function bool UpdateInfo(Object winInfo)
 {
@@ -141,7 +118,6 @@ singular function BaseChange()
 // If the bCanHaveMultipleCopies variable is set to True, then we want
 // to stack items of this type in the player's inventory.
 // ----------------------------------------------------------------------
-
 function bool HandlePickupQuery(inventory Item)
 {
     local DeusExPlayer player;
@@ -199,15 +175,28 @@ function bool HandlePickupQuery(inventory Item)
     return Inventory.HandlePickupQuery(Item);
 }
 
-event RenderOverlays(canvas Canvas)
+/*event RenderOverlays(canvas Canvas)
 {
     if ((Instigator == None) || (Instigator.Controller == None))
         return;
     super.RenderOverlays(Canvas);
-  bDrawingFirstPerson = true;
-  Canvas.DrawActor(self, false, true);
-  bDrawingFirstPerson = false;
+    bDrawingFirstPerson = true;
+    Canvas.DrawActor(self, false, true, class'Weapon'.default.DisplayFOV);
+    bDrawingFirstPerson = false;
+}*/
+
+event RenderOverlays(canvas Canvas)
+{
+    if ((Instigator == None) || (Instigator.Controller == None))
+        return;
+
+    SetLocation( Instigator.Location + Instigator.CalcDrawOffset(self) );
+    SetRotation( Instigator.GetViewRotation() );
+    bDrawingFirstPerson = true;
+    Canvas.DrawActor(self, false, true, class'DeusExWeapon'.default.DisplayFOV);
+    bDrawingFirstPerson = false;
 }
+
 
 function PlayLandingSound()
 {

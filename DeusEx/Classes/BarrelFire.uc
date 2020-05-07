@@ -1,14 +1,14 @@
 //=============================================================================
 // BarrelFire.
 //=============================================================================
-class BarrelFire extends Containers;
+class BarrelFire extends Barrels;
 
 enum EBarrelFireType
 {
-	BFT_Always, // Spawn extra flame emitter
-	BFT_Random, // Same as first, but randomly
-	BFT_Off, // No flame emitter, just regular BarrelFire
-	BFT_NoFlame // No flame at all
+    BFT_Always, // Spawn extra flame emitter
+    BFT_Random, // Same as first, but randomly
+    BFT_Off, // No flame emitter, just regular BarrelFire
+    BFT_NoFlame // No flame at all
 };
 
 var() EBarrelFireType TypeOfFire;
@@ -17,15 +17,15 @@ var float lastDamageTime;
 
 function DamageOther(Actor Other)
 {
-	if ((Other != None) && !Other.IsA('ScriptedPawn'))
-	{
-		// only take damage every second
-		if (Level.TimeSeconds - lastDamageTime >= 1.0)
-		{
-			Other.TakeDamage(5, None, Location, vect(0,0,0), class'DM_Burned');
-			lastDamageTime = Level.TimeSeconds;
-		}
-	}
+    if ((Other != None) && !Other.IsA('ScriptedPawn'))
+    {
+        // only take damage every second
+        if (Level.TimeSeconds - lastDamageTime >= 1.0)
+        {
+            Other.TakeDamage(5, None, Location, vect(0,0,0), class'DM_Burned');
+            lastDamageTime = Level.TimeSeconds;
+        }
+    }
 }
 
 function SpawnFlame()
@@ -46,32 +46,32 @@ function SpawnFlame()
     return;
   }
 
-	if (flame != None)
-	{
-		flame.SetBase(self);
-	}
+    if (flame != None)
+    {
+        flame.SetBase(self);
+    }
 }
 
 function beginPlay()
 {
-		Super.BeginPlay();
-		SpawnFlame();
+        Super.BeginPlay();
+        SpawnFlame();
 }
 
 singular function SupportActor(Actor Other)
 {
   if (TypeOfFire != BFT_NoFlame)
-	    DamageOther(Other);
+        DamageOther(Other);
 
-	Super.SupportActor(Other);
+    Super.SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
   if (TypeOfFire != BFT_NoFlame)
-	    DamageOther(Other);
+        DamageOther(Other);
 
-	Super.Bump(Other);
+    Super.Bump(Other);
 }
 
 
@@ -99,8 +99,8 @@ defaultproperties
      LightRadius=3
      Mass=260.000000
      Buoyancy=270.000000
-		 skins[0]=Texture'DeusExDeco.Skins.BarrelFireTex1'
-		 skins[1]=Texture'DeusExDeco.Skins.BarrelFireTex1'
+         skins[0]=Texture'DeusExDeco.Skins.BarrelFireTex1'
+         skins[1]=Texture'DeusExDeco.Skins.BarrelFireTex1'
      skins[2]=Shader'Effects_EX.Fire.flameJ_SH'
 
      bDynamicLight=true

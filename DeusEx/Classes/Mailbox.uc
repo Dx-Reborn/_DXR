@@ -1,7 +1,7 @@
 //=============================================================================
 // Mailbox.
 //=============================================================================
-class Mailbox extends Containers;
+class Mailbox extends BoxesWithStuff;
 
 defaultproperties
 {

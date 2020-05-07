@@ -6,14 +6,14 @@ class Computers extends ElectronicDevices
 
 struct sSpecialOptions
 {
-    var()  string   Text; // localized
-    var()  string   TriggerText; // localized
+    var() localized string   Text; // localized
+    var() localized string   TriggerText; // localized
     var() string            userName;
     var() name              TriggerEvent;
     var() name              UnTriggerEvent;
     var() bool              bTriggerOnceOnly;
     var bool                bAlreadyTriggered;
-    var() string ButtonToolTip; // New for DXR. Allows to add tooltip for the button.
+    var() localized string ButtonToolTip; // New for DXR. Allows to add tooltip for the button.
 };
 var() sSpecialOptions specialOptions[4];
 
@@ -47,7 +47,7 @@ var() sUserInfo userList[8];
 
 // specific location information
 var() string nodeName;
-var() string titleString;
+var() localized string titleString;
 var() texture titleTexture;
 
 // NEW STUFF!!
@@ -405,7 +405,7 @@ defaultproperties
      titleString="United Nations Anti-Terrorist Coalition (UNATCO)"
      titleTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoUNATCO'
      TextPackage="DeusExText"
-/* Ну вот что тебе не так?!!   NodeInfo(0)=(nodeName="UNATCO",nodeDesc="",nodeAddress="UN//UNATCO//RESTRICTED//923.128.6430",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoUNATCO'),
+/*    NodeInfo(0)=(nodeName="UNATCO",nodeDesc="",nodeAddress="UN//UNATCO//RESTRICTED//923.128.6430",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoUNATCO'),
     NodeInfo(1)=(nodeName="VersaLife",nodeDesc="VersaLife",nodeAddress="VERSALIFECORP//GLOBAL//3939.39.8",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoVersaLife'),
     NodeInfo(2)=(nodeName="Queens Tower",nodeDesc="Queens Tower Luxury Suites",nodeAddress="QT_UTIL//LOCAL//673.9845.09531",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoQueensTower'),
     NodeInfo(3)=(nodeName="USN",nodeDesc="United States Navy",nodeAddress="USGOV//MIL//USN//GLOBAL//0001",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoUSNavy'),
@@ -421,7 +421,6 @@ defaultproperties
     NodeInfo(13)=(nodeName="Lucky Money",nodeDesc="Lucky Money Club",nodeAddress="PUB//HKNET//LUCKYMONEY/BUSSYS.294",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoLuckyMoney'),
     NodeInfo(14)=(nodeName="IIS",nodeDesc="Illuminati Information Systems",nodeAddress="SECURE//IIS.INFTRANS.SYS//UEU",nodeTexture=Texture'DeusExUI.UserInterface.ComputerLogonLogoIlluminati'),*/
      alarmTimeout=30
-//     CompInUseMsg="The computer is already in use by %s."
      Mass=20.000000
      Buoyancy=5.000000
 }

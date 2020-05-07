@@ -24,27 +24,6 @@ function string GetDescription()
 function string GetbeltDescription()  // Description used on the object belt
 {return beltdescription;}
 
-event SetInitialState()
-{
-   local Sound pickSound;
-   local DeusExGlobals gl;
-
-   Super.SetInitialState();
-
-   gl = class'DeusExGlobals'.static.GetGlobals();
-   if (gl.bUseAltWeaponsSounds)
-   {
-       pickSound = Sound(DynamicLoadObject("DESO_Flam.Pickup.AmmoPickUp",class'Sound',true));
-       if (pickSound != None)
-           PickupSound = pickSound;
-   }
-   else
-       PickupSound = default.PickupSound;
-}
-
-
-
-
 
 defaultproperties
 {

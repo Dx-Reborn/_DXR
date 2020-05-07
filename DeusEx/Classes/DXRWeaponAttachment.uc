@@ -6,7 +6,10 @@ var vector StartTrace, EndTrace, EndTraceExtra;
 event ThirdPersonEffects()
 {
     CheckForSplash();
+    FixRelativeRotation(Instigator);
 }
+
+function FixRelativeRotation(Pawn Inst);
 
 function CheckForSplash()
 {

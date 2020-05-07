@@ -4,20 +4,18 @@
 
 class ConPlayBase extends Actor transient;
 
-const INV_SUFF = "inv";
-
 var enum EPlayModes
 {
     PM_Passive,
     PM_Active
-} playMode;
+}playMode;
 
 var enum EDisplayMode
 {
     DM_FirstPerson,
     DM_ThirdPerson, 
     DM_Bark
-} displayMode;
+}displayMode;
 
 // Possible Event Actions
 // (from ConObject.uc)

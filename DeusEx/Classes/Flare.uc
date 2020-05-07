@@ -25,9 +25,8 @@ state Activated
         Super.BeginState();
 
         // Create a Flare and throw it
-    flare = Spawn(class'FlareActual',owner);
-    LightFlare(flare);
-
+        flare = Spawn(class'FlareActual',owner);
+        LightFlare(flare);
         UseOnce();
     }
 Begin:
@@ -40,9 +39,8 @@ function LightFlare(FlareActual pk)
 
     if (pk.gen == None)
     {   
-      pk.bDynamicLight = true;
         pk.LifeSpan = 30;
-        pk.bUnlit = True;
+//        pk.bUnlit = true;
         pk.LightType = LT_Steady;
         pk.AmbientSound = Sound'Flare';
 
@@ -63,7 +61,7 @@ function LightFlare(FlareActual pk)
         pk.gen = Spawn(class'EM_FlareSmoke', pk,, pk.Location, rot(16384,0,0));
         if (pk.gen != None)
         {
-            pk.gen.attachTag = pk.Name;
+            //pk.gen.attachTag = pk.Name;
             pk.gen.SetBase(pk);
         }
     }

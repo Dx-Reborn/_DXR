@@ -4,10 +4,10 @@ class flareActual extends DeusExDecoration;
 
 var EM_FlareSmoke gen;
 
-function PhysicsVolumeChange(PhysicsVolume NewVolume)
+event PhysicsVolumeChange(PhysicsVolume NewVolume)
 {
     if (NewVolume.bWaterVolume)
-      ExtinguishFlare();
+        ExtinguishFlare();
 
         Super.PhysicsVolumeChange(NewVolume);
 }
@@ -43,10 +43,13 @@ defaultproperties
 
      HitPoints=10
      FragType=Class'DeusEx.PaperFragment'
-     LightEffect=1
-     LightBrightness=255
+     LightBrightness=200
      LightHue=16
      LightSaturation=96
-     LightRadius=8
+     LightRadius=4
+     bDynamicLight=true
+
      bCanbeBase=true
+
+     SoundRadius=8
 }

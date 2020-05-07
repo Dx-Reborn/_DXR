@@ -2,7 +2,7 @@
 // Barrel1.
 // ScriptedBarrel (C)
 //=============================================================================
-class Barrel1 extends Containers;
+class Barrel1 extends Barrels;
 
 #exec OBJ LOAD FILE=Ambient
 
@@ -29,7 +29,7 @@ var bool bGenCreated; // Только один генератор частиц на одну бочку. Иначе он ко
 
 function SetInitialState()
 {
-        super.SetInitialState();
+    super.SetInitialState();
 
     if (bPreDamage)
         TakeDamage(1, None, Location, vect(0,0,0), class'DM_shot');
@@ -38,18 +38,71 @@ function SetInitialState()
 
 function SetDefaultSkin(material material)
 {
-    default.Skins[0] = material;
+//    default.Skins[0] = material;
     Skins[0] = material;
 }
 
-function BeginPlay()
+function ResetScaleGlow()
 {
-    Super.BeginPlay();
+   SetSkin();
+}
 
+function SetStuff()
+{
+    switch (SkinColor)
+    {
+        case SC_Biohazard:          
+           HitPoints = 12;
+                    break;
+
+        case SC_Explosive:          
+        bExplosive = True;
+    explosionDamage = 400;
+   explosionRadius = 1000;
+            HitPoints = 4;
+                    break;
+
+  case SC_FlammableLiquid:    
+        bExplosive = True;
+            HitPoints = 8;
+                    break;
+
+   case SC_FlammableSolid:     
+        bExplosive = True;
+    explosionDamage = 200;
+            HitPoints = 8;
+                    break;
+
+           case SC_Poison:             
+           HitPoints = 12;
+                    break;
+
+      case SC_RadioActive:        
+       bInvincible = True;
+    LightType = LT_Steady;
+          LightRadius = 8;
+    LightBrightness = 128;
+            LightHue = 64;
+     LightSaturation = 96;
+        AmbientSound = sound'GeigerLoop';
+          SoundRadius = 8;
+        SoundVolume = 255;
+            bUnlit = True;
+          ScaleGlow = 0.4;
+                    break;
+
+              case SC_Wood:               
+   FragType = Class'DeusEx.WoodFragment'; //CyberP
+                     break;
+
+    }
+}
+
+function SetSkin()
+{
     switch (SkinColor)
     {
         case SC_Biohazard:          SetDefaultSkin(Texture'Barrel1Tex1');
-                                    HitPoints = 12;
                                     break;
 
         case SC_Blue:               SetDefaultSkin(Texture'Barrel1Tex2'); 
@@ -62,48 +115,33 @@ function BeginPlay()
                                     break;
 
         case SC_Explosive:          SetDefaultSkin(Texture'Barrel1Tex5');
-                                    bExplosive = True;
-                                    explosionDamage = 400;
-                                    explosionRadius = 1000;
-                                    HitPoints = 4;
                                     break;
 
         case SC_FlammableLiquid:    SetDefaultSkin(Texture'Barrel1Tex6');
-                                    bExplosive = True;
-                                    HitPoints = 8;
                                     break;
 
         case SC_FlammableSolid:     SetDefaultSkin(Texture'Barrel1Tex7');
-                                    bExplosive = True;
-                                    explosionDamage = 200;
-                                    HitPoints = 8;
                                     break;
 
         case SC_Poison:             SetDefaultSkin(Texture'Barrel1Tex8');
-                                    HitPoints = 12;
                                     break;
 
         case SC_RadioActive:        SetDefaultSkin(Texture'Barrel1Tex9');
-                                    bInvincible = True;
-                                    LightType = LT_Steady;
-                                    LightRadius = 8;
-                                    LightBrightness = 128;
-                                    LightHue = 64;
-                                    LightSaturation = 96;
-                                    AmbientSound = sound'GeigerLoop';
-                                    SoundRadius = 8;
-                                    SoundVolume = 255;
-                                    bUnlit = True;
-                                    ScaleGlow = 0.4;
                                     break;
 
         case SC_Wood:               SetDefaultSkin(Texture'Barrel1Tex10');
-                                    FragType = Class'DeusEx.WoodFragment'; //CyberP
                                     break;
 
         case SC_Yellow:             SetDefaultSkin(Texture'Barrel1Tex11');
                                     break;
     }
+}
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+    SetSkin();
+    SetStuff();
 }
 
 auto state Active
@@ -176,7 +214,7 @@ auto state Active
              PlaySound(sound'wood04gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
             }
 
-            if (HitPoints-Damage <= 0)
+            if (HitPoints - Damage <= 0)
             {
                 foreach BasedActors(class'Actor', A)
                 {

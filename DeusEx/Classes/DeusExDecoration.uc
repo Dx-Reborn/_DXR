@@ -81,8 +81,11 @@ var() finalBlend HoldTexture; // вариант "в руках" //??
    in Game Settings menu. 
    Use ShadowDirection to set direction of the shadow (sounds obviously :D)
 */
-var transient ShadowProjectorStatic Shadow; // Transient for safety. When savegame is loaded, shadow must be recreated .
-var() vector ShadowDirection;
+var() transient ShadowProjectorStatic Shadow; // Transient for safety. When savegame is loaded, shadow must be recreated .
+var(DynamicShadow) vector ShadowDirection;
+var(DynamicShadow) float ShadowLightDistance;
+var(DynamicShadow) float ShadowMaxTraceDistance;
+
 
 function AddShadow()
 {
@@ -94,8 +97,8 @@ function AddShadow()
       Shadow.bLevelStatic = true;
       Shadow.ShadowActor = self;
       Shadow.LightDirection = Normal(ShadowDirection);
-      Shadow.LightDistance = 1200;
-      Shadow.MaxTraceDistance = 1050;
+      Shadow.LightDistance = ShadowLightDistance; //1200;
+      Shadow.MaxTraceDistance = ShadowMaxTraceDistance; //1050;
       Shadow.CullDistance = 1200;
       Shadow.InitShadow();
     }
@@ -172,10 +175,10 @@ function PreBeginPlay()
 
     Super.PreBeginPlay();
 
-    if (bGenerateFlies && (FRand() < 0.1))
+/*    if (bGenerateFlies && (FRand() < 0.1))
         flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
     else
-        flyGen = None;
+        flyGen = None;*/
 }
 
 
@@ -1222,12 +1225,17 @@ defaultproperties
      bBlockActors=True
      bBlockPlayers=True
      physics=PHYS_Falling
-        
+
      AmountOfFire=2 //  оличество источников огн€. 
      bUseDynamicLights=true // „тобы более-менее освещались от AugLight
-     bFullVolume=true
+     bFullVolume=false
      bHardAttach=false
      bIgnoreOutOfWorld=true
      bLightingVisibility=false
      bActorShadows=false
+
+     bUseCylinderCollision=true
+
+     ShadowLightDistance=1200
+     ShadowMaxTraceDistance=1050
 }

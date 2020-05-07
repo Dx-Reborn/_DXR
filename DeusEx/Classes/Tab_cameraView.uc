@@ -45,103 +45,103 @@ var() float panMod, camFOV;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
-	player = DeusExPlayer(PlayerOwner().pawn);
+    Super.Initcomponent(MyController, MyOwner);
+    player = DeusExPlayer(PlayerOwner().pawn);
 
-	winterm = ComputerScreenSecurity(PageOwner).winTerm; // Указатель на NetworkTerminal
-	//log("Init Component--winterm is "@winterm);
-	CreateControls();
+    winterm = ComputerScreenSecurity(PageOwner).winTerm; // Указатель на NetworkTerminal
+    //log("Init Component--winterm is "@winterm);
+    CreateControls();
 }
 
 function CreateControls()
 {
-  BackImage = new(none) class'GUIImage';
-  BackImage.Image=texture'DXR_ComputerSecurityBG';
-  BackImage.bBoundToParent = true;
-	BackImage.WinHeight = 512;
-  BackImage.WinWidth = 665;
-  BackImage.WinLeft = 0;//55;
-  BackImage.WinTop = 32;//0;
-	AppendComponent(BackImage, true);
+    BackImage = new(none) class'GUIImage';
+    BackImage.Image=texture'DXR_ComputerSecurityBG';
+    BackImage.bBoundToParent = true;
+    BackImage.WinHeight = 512;
+    BackImage.WinWidth = 665;
+    BackImage.WinLeft = 0;//55;
+    BackImage.WinTop = 32;//0;
+    AppendComponent(BackImage, true);
 
-	winPanSlider = new(none) class'DXRSpecialSlider';
-	winPanSlider.winLeft = 313; //368;
-	winPanSlider.winTop = 178;
-	winPanSlider.OnChange = SliderOnChange;
-	AppendComponent(winPanSlider, true);
-	winPanSlider.SetTicks(numPanTicks, lowPanValue, highPanValue);
-	SliderOnChange(winPanSlider);
+    winPanSlider = new(none) class'DXRSpecialSlider';
+    winPanSlider.winLeft = 313; //368;
+    winPanSlider.winTop = 178;
+    winPanSlider.OnChange = SliderOnChange;
+    AppendComponent(winPanSlider, true);
+    winPanSlider.SetTicks(numPanTicks, lowPanValue, highPanValue);
+    SliderOnChange(winPanSlider);
 
-	/*-- Zoom in && Zoom out --------------------------------------*/
-	btnZoomIn = new(none) class'GUIDXRButton';
-	btnZoomIn.bBoundToParent = true;
-	btnZoomIn.Button_Pressed = texture'SecurityButtonZoomIn_Pressed';
-	btnZoomIn.Button_Normal = texture'SecurityButtonZoomIn_Normal';
-	btnZoomIn.OnClick = InternalOnClick;
-	btnZoomIn.WinHeight = 19;
-	btnZoomIn.WinWidth = 25;
-	btnZoomIn.winLeft = 323; //378;
-	btnZoomIn.winTop = 63;
-	AppendComponent(btnZoomIn, true);
+    /*-- Zoom in && Zoom out --------------------------------------*/
+    btnZoomIn = new(none) class'GUIDXRButton';
+    btnZoomIn.bBoundToParent = true;
+    btnZoomIn.Button_Pressed = texture'SecurityButtonZoomIn_Pressed';
+    btnZoomIn.Button_Normal = texture'SecurityButtonZoomIn_Normal';
+    btnZoomIn.OnClick = InternalOnClick;
+    btnZoomIn.WinHeight = 19;
+    btnZoomIn.WinWidth = 25;
+    btnZoomIn.winLeft = 323; //378;
+    btnZoomIn.winTop = 63;
+    AppendComponent(btnZoomIn, true);
 
-	btnZoomOut = new(none) class'GUIDXRButton';
-	btnZoomOut.bBoundToParent = true;
-	btnZoomOut.Button_Pressed = texture'SecurityButtonZoomOut_Pressed';
-	btnZoomOut.Button_Normal = texture'SecurityButtonZoomOut_Normal';
-	btnZoomOut.OnClick = InternalOnClick;
-	btnZoomOut.WinHeight = 19;
-	btnZoomOut.WinWidth = 25;
-	btnZoomOut.winLeft = 349; //404;
-	btnZoomOut.winTop = 63;
-	AppendComponent(btnZoomOut, true);
+    btnZoomOut = new(none) class'GUIDXRButton';
+    btnZoomOut.bBoundToParent = true;
+    btnZoomOut.Button_Pressed = texture'SecurityButtonZoomOut_Pressed';
+    btnZoomOut.Button_Normal = texture'SecurityButtonZoomOut_Normal';
+    btnZoomOut.OnClick = InternalOnClick;
+    btnZoomOut.WinHeight = 19;
+    btnZoomOut.WinWidth = 25;
+    btnZoomOut.winLeft = 349; //404;
+    btnZoomOut.winTop = 63;
+    AppendComponent(btnZoomOut, true);
 
   /*-- Camera movement ------------------------------------------*/
- 	btnPanUp = new(none) class'GUIDXRButton';
-	btnPanUp.bBoundToParent = true;
-	btnPanUp.Button_Pressed = texture'SecurityButtonPanUp_Pressed';
-	btnPanUp.Button_Normal = texture'SecurityButtonPanUp_Normal';
-	btnPanUp.OnClick = InternalOnClick;
-	btnPanUp.WinHeight = 19;
-	btnPanUp.WinWidth = 25;
-	btnPanUp.winLeft = 335;//390;
-	btnPanUp.winTop = 90;
-	AppendComponent(btnPanUp, true);
+    btnPanUp = new(none) class'GUIDXRButton';
+    btnPanUp.bBoundToParent = true;
+    btnPanUp.Button_Pressed = texture'SecurityButtonPanUp_Pressed';
+    btnPanUp.Button_Normal = texture'SecurityButtonPanUp_Normal';
+    btnPanUp.OnClick = InternalOnClick;
+    btnPanUp.WinHeight = 19;
+    btnPanUp.WinWidth = 25;
+    btnPanUp.winLeft = 335;//390;
+    btnPanUp.winTop = 90;
+    AppendComponent(btnPanUp, true);
 
-	btnPanDown = new(none) class'GUIDXRButton';
-	btnPanDown.bBoundToParent = true;
-	btnPanDown.Button_Pressed = texture'SecurityButtonPanDown_Pressed';
-	btnPanDown.Button_Normal = texture'SecurityButtonPanDown_Normal';
-	btnPanDown.OnClick = InternalOnClick;
-	btnPanDown.WinHeight = 19;
-	btnPanDown.WinWidth = 25;
-	btnPanDown.winLeft = 335;//390;
-	btnPanDown.winTop = 130;
-	AppendComponent(btnPanDown, true);
+    btnPanDown = new(none) class'GUIDXRButton';
+    btnPanDown.bBoundToParent = true;
+    btnPanDown.Button_Pressed = texture'SecurityButtonPanDown_Pressed';
+    btnPanDown.Button_Normal = texture'SecurityButtonPanDown_Normal';
+    btnPanDown.OnClick = InternalOnClick;
+    btnPanDown.WinHeight = 19;
+    btnPanDown.WinWidth = 25;
+    btnPanDown.winLeft = 335;//390;
+    btnPanDown.winTop = 130;
+    AppendComponent(btnPanDown, true);
 
-	btnPanLeft = new(none) class'GUIDXRButton';
-	btnPanLeft.bBoundToParent = true;
-	btnPanLeft.Button_Pressed = texture'SecurityButtonPanLeft_Pressed';
-	btnPanLeft.Button_Normal = texture'SecurityButtonPanLeft_Normal';
-	btnPanLeft.OnClick = InternalOnClick;
-	btnPanLeft.WinHeight = 19;
-	btnPanLeft.WinWidth = 25;
-	btnPanLeft.winLeft = 309;//364;
-	btnPanLeft.winTop = 110;
-	AppendComponent(btnPanLeft, true);
+    btnPanLeft = new(none) class'GUIDXRButton';
+    btnPanLeft.bBoundToParent = true;
+    btnPanLeft.Button_Pressed = texture'SecurityButtonPanLeft_Pressed';
+    btnPanLeft.Button_Normal = texture'SecurityButtonPanLeft_Normal';
+    btnPanLeft.OnClick = InternalOnClick;
+    btnPanLeft.WinHeight = 19;
+    btnPanLeft.WinWidth = 25;
+    btnPanLeft.winLeft = 309;//364;
+    btnPanLeft.winTop = 110;
+    AppendComponent(btnPanLeft, true);
 
-	btnPanRight = new(none) class'GUIDXRButton';
-	btnPanRight.bBoundToParent = true;
-	btnPanRight.Button_Pressed = texture'SecurityButtonPanRight_Pressed';
-	btnPanRight.Button_Normal = texture'SecurityButtonPanRight_Normal';
-	btnPanRight.OnClick = InternalOnClick;
-	btnPanRight.WinHeight = 19;
-	btnPanRight.WinWidth = 25;
-	btnPanRight.winLeft = 361;//416;
-	btnPanRight.winTop = 110;
-	AppendComponent(btnPanRight, true);
+    btnPanRight = new(none) class'GUIDXRButton';
+    btnPanRight.bBoundToParent = true;
+    btnPanRight.Button_Pressed = texture'SecurityButtonPanRight_Pressed';
+    btnPanRight.Button_Normal = texture'SecurityButtonPanRight_Normal';
+    btnPanRight.OnClick = InternalOnClick;
+    btnPanRight.WinHeight = 19;
+    btnPanRight.WinWidth = 25;
+    btnPanRight.winLeft = 361;//416;
+    btnPanRight.winTop = 110;
+    AppendComponent(btnPanRight, true);
 
-	/*-- Text labels -----------------------------------*/
-	lOptions = new(none) class'GUILabel';
+    /*-- Text labels -----------------------------------*/
+  lOptions = new(none) class'GUILabel';
   lOptions.bBoundToParent = true;
   lOptions.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
   lOptions.caption = ActiveWindowOptionsHeader;
@@ -150,13 +150,13 @@ function CreateControls()
   lOptions.TextAlign = TXTA_Left;
   lOptions.VertAlign = TXTA_Center;
   lOptions.FontScale = FNS_Small;
- 	lOptions.WinHeight = 20;
+  lOptions.WinHeight = 20;
   lOptions.WinWidth = 267;
   lOptions.WinLeft = 11;//66;
   lOptions.WinTop = 38;
   AppendComponent(lOptions, true);
 
-	lMovement = new(none) class'GUILabel';
+  lMovement = new(none) class'GUILabel';
   lMovement.bBoundToParent = true;
   lMovement.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
   lMovement.caption = CameraOptionsHeader;
@@ -165,13 +165,13 @@ function CreateControls()
   lMovement.TextAlign = TXTA_Left;
   lMovement.VertAlign = TXTA_Center;
   lMovement.FontScale = FNS_Small;
- 	lMovement.WinHeight = 20;
+  lMovement.WinHeight = 20;
   lMovement.WinWidth = 160;
   lMovement.WinLeft = 295;//350;
   lMovement.WinTop = 38;
   AppendComponent(lMovement, true);
 
-	lPanSpeed = new(none) class'GUILabel';
+  lPanSpeed = new(none) class'GUILabel';
   lPanSpeed.bBoundToParent = true;
   lPanSpeed.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
   lPanSpeed.caption = PanZoomSpeedHeader;
@@ -180,7 +180,7 @@ function CreateControls()
   lPanSpeed.TextAlign = TXTA_Center;
   lPanSpeed.VertAlign = TXTA_Center;
   lPanSpeed.FontScale = FNS_Small;
- 	lPanSpeed.WinHeight = 28;
+  lPanSpeed.WinHeight = 28;
   lPanSpeed.WinWidth = 124;
   lPanSpeed.WinLeft = 297;//352;
   lPanSpeed.WinTop = 152;
@@ -196,7 +196,7 @@ function CreateControls()
   winTitle.TextAlign = TXTA_Left;
   winTitle.VertAlign = TXTA_Center;
   winTitle.FontScale = FNS_Small;
- 	winTitle.WinHeight = 20;
+  winTitle.WinHeight = 20;
   winTitle.WinWidth = 500;
   winTitle.WinLeft = 6;//61;
   winTitle.WinTop = 205;
@@ -211,7 +211,7 @@ function CreateControls()
   winDoorStatus.TextAlign = TXTA_Left;
   winDoorStatus.VertAlign = TXTA_Center;
   winDoorStatus.FontScale = FNS_Small;
- 	winDoorStatus.WinHeight = 28;
+  winDoorStatus.WinHeight = 28;
   winDoorStatus.WinWidth = 300;
   winDoorStatus.WinLeft = 348;//403;
   winDoorStatus.WinTop = 504;
@@ -226,7 +226,7 @@ function CreateControls()
   winCameraStatus.TextAlign = TXTA_Left;
   winCameraStatus.VertAlign = TXTA_Center;
   winCameraStatus.FontScale = FNS_Small;
- 	winCameraStatus.WinHeight = 20;
+  winCameraStatus.WinHeight = 20;
   winCameraStatus.WinWidth = 300;
   winCameraStatus.WinLeft = 9;//64;
   winCameraStatus.WinTop = 501;
@@ -241,7 +241,7 @@ function CreateControls()
   winTurretStatus.TextAlign = TXTA_Left;
   winTurretStatus.VertAlign = TXTA_Center;
   winTurretStatus.FontScale = FNS_Small;
- 	winTurretStatus.WinHeight = 20;
+  winTurretStatus.WinHeight = 20;
   winTurretStatus.WinWidth = 300;
   winTurretStatus.WinLeft = 9;//64;
   winTurretStatus.WinTop = 515;
@@ -307,11 +307,11 @@ function CreateChoices()
   AppendComponent(Choice_DoorAccess, true);
   Choice_DoorAccess.SetCameraView(self);
 
-  // Как в оригинале, котроль турели только на максимальном уровне навыка.
-  if ((winTerm.GetSkillLevel()  < 2) && (winTerm.bHacked))
-	{
-    DisableTurretControl();
-  }
+   // Как в оригинале, котроль турели только на максимальном уровне навыка.
+   if ((winTerm.GetSkillLevel()  < 2) && (winTerm.bHacked))
+   {
+      DisableTurretControl();
+   }
 }
 
 function DisableTurretControl()
@@ -342,117 +342,117 @@ function InternalOnRendered(canvas u)
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-		switch(Sender)
-		{
-			case btnPanUp:
-				PanCamera(IK_Up);
-				break;
+        switch(Sender)
+        {
+            case btnPanUp:
+                PanCamera(IK_Up);
+                break;
 
-			case btnPanDown:
-				PanCamera(IK_Down);
-				break;
+            case btnPanDown:
+                PanCamera(IK_Down);
+                break;
 
-			case btnPanLeft:
-				PanCamera(IK_Left);
-				break;
+            case btnPanLeft:
+                PanCamera(IK_Left);
+                break;
 
-			case btnPanRight:
-				PanCamera(IK_Right);
-				break;
+            case btnPanRight:
+                PanCamera(IK_Right);
+                break;
 
-			case btnZoomIn:
-				PanCamera(IK_GreyPlus);
-				break;
+            case btnZoomIn:
+                PanCamera(IK_GreyPlus);
+                break;
 
-			case btnZoomOut: 
-				PanCamera(IK_GreyMinus);
-				break;
+            case btnZoomOut: 
+                PanCamera(IK_GreyMinus);
+                break;
 
-			default:
-				bHandled = False;
-				break;
-		}
+            default:
+                bHandled = False;
+                break;
+        }
 
-	if (bHandled)
-		return True;
+    if (bHandled)
+        return True;
 }
 
 function PanCamera(Interactions.EInputKey key)
 {
-//	local bool bKeyHandled;
-	local Rotator rot;
-	local float fov;
-	local float localPanMod;
+//  local bool bKeyHandled;
+    local Rotator rot;
+    local float fov;
+    local float localPanMod;
 
-	if (selectedCamera == None)
-		return;
+    if (selectedCamera == None)
+        return;
 
-	localPanMod = panMod;
+    localPanMod = panMod;
 
    if (controller.ShiftPressed)
-		localPanMod = Max(localPanMod * 2, 5.0);
+        localPanMod = Max(localPanMod * 2, 5.0);
 
-	rot = selectedCamera.DesiredRotation;
-	fov = CamFov;
+    rot = selectedCamera.DesiredRotation;
+    fov = CamFov;
 
-	switch(key)
-	{
-		case IK_Left:		
-		rot.Yaw -= localPanMod * panSize * (fov / 90.0);
-		break;
+    switch(key)
+    {
+        case IK_Left:       
+        rot.Yaw -= localPanMod * panSize * (fov / 90.0);
+        break;
 
-		case IK_Right:		
-		rot.Yaw += localPanMod * panSize * (fov / 90.0);
-		break;
+        case IK_Right:      
+        rot.Yaw += localPanMod * panSize * (fov / 90.0);
+        break;
 
-		case IK_Up:			
-		rot.Pitch += localPanMod * panSize * (fov / 90.0);
-		break;
+        case IK_Up:         
+        rot.Pitch += localPanMod * panSize * (fov / 90.0);
+        break;
 
-		case IK_Down:		
-		rot.Pitch -= localPanMod * panSize * (fov / 90.0);
-		break;
+        case IK_Down:       
+        rot.Pitch -= localPanMod * panSize * (fov / 90.0);
+        break;
 
-//		case IK_GreyPlus:
-		case IK_Equals:		
-		case IK_MouseWheelUp:
+//      case IK_GreyPlus:
+        case IK_Equals:     
+        case IK_MouseWheelUp:
     fov -= localPanMod * zoomSize;
-		break;
+        break;
 
-		case IK_GreyMinus:
-		case IK_Minus:
-		case IK_MouseWheelDown: // DXR: Mouse wheel added
+        case IK_GreyMinus:
+        case IK_Minus:
+        case IK_MouseWheelDown: // DXR: Mouse wheel added
     fov += localPanMod * zoomSize;
-		break;
-	}
+        break;
+    }
 
-	selectedCamera.DesiredRotation = rot;
+    selectedCamera.DesiredRotation = rot;
 
-	// limit the zoom level
-	fov = FClamp(fov, 5, 90);
-	camFOV = fov;
+    // limit the zoom level
+    fov = FClamp(fov, 5, 90);
+    camFOV = fov;
 }
 
 function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
-	local Interactions.EInputKey iKey;
+    local Interactions.EInputKey iKey;
 
-	iKey = EInputKey(Key);
+    iKey = EInputKey(Key);
 
-	if ((State == 2) && (iKey == IK_RightMouse)) // Удержание левой кнопки мыши
-	{
+    if ((State == 2) && (iKey == IK_RightMouse)) // Удержание левой кнопки мыши
+    {
 
-//	  log("hold..."$iKey);
-	}
+//    log("hold..."$iKey);
+    }
 
-	if (state == 1)
-	{
-   PanCamera(ikey);
-  }
+    if (state == 1)
+    {
+        PanCamera(ikey);
+    }
   return true;
 }
 
@@ -461,201 +461,201 @@ function SliderOnChange(GUIComponent Sender)
   if (Sender==winPanSlider)
   {
     panMod = winPanSlider.Value;    
- 	}
+    }
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 function ToggleCameraState()
 {
-	local SecurityCamera cam;
+    local SecurityCamera cam;
 
-		cam = selectedCamera;
+        cam = selectedCamera;
 
-		if (cam != None)
-		{
-			if (cam.bActive)
-				cam.UnTrigger(compOwner, player);
-			else
-				cam.Trigger(compOwner, player);
+        if (cam != None)
+        {
+            if (cam.bActive)
+                cam.UnTrigger(compOwner, player);
+            else
+                cam.Trigger(compOwner, player);
 
-			// Make sure the camera isn't in bStasis=True
-			// so it responds to our every whim.
-			cam.bStasis = false;
+            // Make sure the camera isn't in bStasis=True
+            // so it responds to our every whim.
+            cam.bStasis = false;
 
-      UpdateCameraStatus();
-		}
+            UpdateCameraStatus();
+        }
 }
 
 function ToggleDoorLock()
 {
-	local DeusExMover M;
+    local DeusExMover M;
 
-	if (door != None)
-	{
-		// be sure to lock/unlock all matching tagged doors
-		foreach player.AllActors(class'DeusExMover', M, door.Tag)
-			M.bLocked = !M.bLocked;
+    if (door != None)
+    {
+        // be sure to lock/unlock all matching tagged doors
+        foreach player.AllActors(class'DeusExMover', M, door.Tag)
+            M.bLocked = !M.bLocked;
 
-    UpdateDoorStatus();
-	}
+        UpdateDoorStatus();
+    }
 }
 
 function TriggerDoor()
 {
-	local DeusExMover M;
+    local DeusExMover M;
 
-	if (door != None)
-	{
-		// be sure to trigger all matching tagged doors
-		foreach player.AllActors(class'DeusExMover', M, door.Tag)
-			M.Trigger(compOwner, player);
+    if (door != None)
+    {
+        // be sure to trigger all matching tagged doors
+        foreach player.AllActors(class'DeusExMover', M, door.Tag)
+            M.Trigger(compOwner, player);
 
-		UpdateDoorStatus();
-	}
+        UpdateDoorStatus();
+    }
 }
 
 function SetTurretState(bool bActive, bool bDisabled)
 {
-	if (turret != None)
-	{
-		turret.bActive   = bActive;
-		turret.bDisabled = bDisabled;
-		UpdateTurretStatus();
-	}
+    if (turret != None)
+    {
+        turret.bActive   = bActive;
+        turret.bDisabled = bDisabled;
+        UpdateTurretStatus();
+    }
 }
 
 function SetTurretTrackMode(bool bTrackPlayers, bool bTrackPawns)
 {
-	if (turret != None)
-	{
-		turret.bTrackPlayersOnly = bTrackPlayers;
-		turret.bTrackPawnsOnly = bTrackPawns;
-    UpdateTurretStatus();
-	}
+    if (turret != None)
+    {
+        turret.bTrackPlayersOnly = bTrackPlayers;
+        turret.bTrackPawnsOnly = bTrackPawns;
+        UpdateTurretStatus();
+    }
 }
 /*----------------------------------------------------------------------------------------------------------------------------------*/
 function SetTitle(String newTitle)
 {
-	winTitle.Caption = newTitle;
+    winTitle.Caption = newTitle;
 }
 
 function SetViewIndex(int newViewIndex)
 {
-	viewIndex = newViewIndex;
+    viewIndex = newViewIndex;
 }
 
 function HideCameraLabels()
 {
-	winCameraStatus.bVisible = false;
-	winDoorStatus.bVisible = false;
-	winTurretStatus.bVisible = false;
+    winCameraStatus.bVisible = false;
+    winDoorStatus.bVisible = false;
+    winTurretStatus.bVisible = false;
 }
 
 function UpdateCameraStatus()
 {
-/*	if (camera == None)
-	{
-		winCamera.EnableViewport(False);
-		winCamera.Lower();
-		btnCamera.SetStatic();
-		SetTitle(NoSignalLabel);
-		winCameraStatus.Hide();
-		HideCameraLabels();
-	}
-	else
-	{
-		winCamera.SetViewportActor(camera);
-		winCamera.EnableViewport(True);
-		winCamera.SetDefaultTexture(None);
-		winCamera.Lower();
-		SetTitle(CameraLabel @ "|&" $ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
-		winCameraStatus.Show();
-		SetCameraStatus(camera.bActive);
-	}*/
-	if (selectedCamera != none)
-	{
-		SetTitle(CameraLabel @ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
-		winCameraStatus.Show();
-		SetCameraStatus(selectedCamera.bActive);
-	}
+/*  if (camera == None)
+    {
+        winCamera.EnableViewport(False);
+        winCamera.Lower();
+        btnCamera.SetStatic();
+        SetTitle(NoSignalLabel);
+        winCameraStatus.Hide();
+        HideCameraLabels();
+    }
+    else
+    {
+        winCamera.SetViewportActor(camera);
+        winCamera.EnableViewport(True);
+        winCamera.SetDefaultTexture(None);
+        winCamera.Lower();
+        SetTitle(CameraLabel @ "|&" $ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
+        winCameraStatus.Show();
+        SetCameraStatus(camera.bActive);
+    }*/
+    if (selectedCamera != none)
+    {
+        SetTitle(CameraLabel @ String(viewIndex + 1) @ ":" @ ComputerSecurity(compOwner).Views[viewIndex].titleString);
+        winCameraStatus.Show();
+        SetCameraStatus(selectedCamera.bActive);
+    }
 }
 
 function ShowTurretLabel(bool bNewShow)
 {
-	winTurretStatus.bVisible = bNewShow;
+    winTurretStatus.bVisible = bNewShow;
 }
 
 function UpdateTurretStatus()
 {
-	local string str;
+    local string str;
 
-	if (turret == None)
-	{
-		ShowTurretLabel(False);
-	}
-	else
-	{
-		ShowTurretLabel(True);
+    if (turret == None)
+    {
+        ShowTurretLabel(false);
+    }
+    else
+    {
+        ShowTurretLabel(true);
 
-		str = TurretStatusLabel;
+        str = TurretStatusLabel;
 
-		if (turret.bDisabled)
-			str = str @ DisabledLabel;
+        if (turret.bDisabled)
+            str = str @ DisabledLabel;
 
-		else if (turret.bTrackPlayersOnly)
-			str = str @ AttackingAlliesLabel;
+        else if (turret.bTrackPlayersOnly)
+            str = str @ AttackingAlliesLabel;
 
-		else if (turret.bTrackPawnsOnly)
-			str = str @ AttackingEnemiesLabel;
+        else if (turret.bTrackPawnsOnly)
+            str = str @ AttackingEnemiesLabel;
 
-		else
-			str = str @ AttackingEverythingLabel;
+        else
+            str = str @ AttackingEverythingLabel;
 
-		winTurretStatus.Caption = str;
-	}
+        winTurretStatus.Caption = str;
+    }
 }
 
 function SetCameraStatus(bool bOn)
 {
-	if (bOn)
-		winCameraStatus.Caption = CameraStatusLabel @ OnLabel;
-	else
-		winCameraStatus.Caption = CameraStatusLabel @ OffLabel;
+    if (bOn)
+        winCameraStatus.Caption = CameraStatusLabel @ OnLabel;
+    else
+        winCameraStatus.Caption = CameraStatusLabel @ OffLabel;
 }
 
 function ShowDoorLabel(bool bNewShow)
 {
-	winDoorStatus.bVisible = bNewShow;
+    winDoorStatus.bVisible = bNewShow;
 }
 
 function UpdateDoorStatus()
 {
-	local string str;
+    local string str;
 
-	if ((door == None) || (door.bDestroyed))
-	{
-		ShowDoorLabel(False);		
-	}
-	else
-	{
-		ShowDoorLabel(True);		
+    if ((door == None) || (door.bDestroyed))
+    {
+        ShowDoorLabel(False);       
+    }
+    else
+    {
+        ShowDoorLabel(True);        
 
-		str = DoorStatusLabel;
+        str = DoorStatusLabel;
 
-		if (door.KeyNum != 0)
-			str = str @ OpenLabel;
-		else
-			str = str @ ClosedLabel;
+        if (door.KeyNum != 0)
+            str = str @ OpenLabel;
+        else
+            str = str @ ClosedLabel;
 
-		str = str $ ",";
+        str = str $ ",";
 
-		if (door.bLocked)
-			str = str @ LockedLabel;
-		else
-			str = str @ UnlockedLabel;
+        if (door.bLocked)
+            str = str @ LockedLabel;
+        else
+            str = str @ UnlockedLabel;
 
-		winDoorStatus.Caption = str;
-	}
+        winDoorStatus.Caption = str;
+    }
 }
 
 
@@ -689,11 +689,11 @@ defaultproperties
     LockedLabel="Locked"
     UnlockedLabel="Unlocked"
 
-  onRendered=InternalOnRendered
-  OnKeyEvent=InternalOnKeyEvent
+    onRendered=InternalOnRendered
+    OnKeyEvent=InternalOnKeyEvent
 
-  portalSizeX=652
-  portalSizeY=272
-  portalCorrectionX=-1//56
-  portalCorrectionY=-223
+    portalSizeX=652
+    portalSizeY=272
+    portalCorrectionX=-1//56
+    portalCorrectionY=-223
 }

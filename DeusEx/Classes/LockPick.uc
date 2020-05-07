@@ -8,6 +8,9 @@ function Sound GetBringUpSound()
     local DeusExGlobals gl;
     local sound sound;
 
+    if (bPostTravel)
+        return None;
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {

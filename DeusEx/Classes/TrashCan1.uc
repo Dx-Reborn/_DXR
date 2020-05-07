@@ -1,7 +1,7 @@
 //=============================================================================
 // TrashCan1.
 //=============================================================================
-class TrashCan1 extends Containers;
+class TrashCan1 extends TrashCans;
 
 defaultproperties
 {

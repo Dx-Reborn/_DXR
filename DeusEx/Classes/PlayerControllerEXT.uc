@@ -7,7 +7,8 @@ class PlayerControllerEXT extends DeusExPlayerControllerBase;
 
 #exec OBJ LOAD FILE=DeusExSounds
 
-enum EMusicMode {
+enum EMusicMode 
+{
     MUS_Ambient,
     MUS_Combat,
     MUS_Conversation,
@@ -20,7 +21,6 @@ var float savedSongPos;
 var transient float musicCheckTimer;
 var transient float musicChangeTimer;
 var int CombatMusicId;
-
 
 var private editconst float savedMusicVolume, savedSpeechVolume, savedSoundVolume;
 var config  bool bIsAmericanWeek; // влияет только на первый день недели.
@@ -1459,6 +1459,7 @@ Begin:
 }
 
 exec function QuickSave();
+
 
 function ShowMidGameMenu(bool bPause)
 {

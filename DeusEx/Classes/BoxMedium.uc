@@ -1,7 +1,7 @@
 //=============================================================================
 // BoxMedium.
 //=============================================================================
-class BoxMedium extends Containers;
+class BoxMedium extends CardBoardBoxes;
 
 defaultproperties
 {

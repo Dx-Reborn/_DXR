@@ -176,7 +176,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     {
         if ((damageType != class'DM_Munch') && (damageType != class'DM_Tantalus'))
         {
-            spawn(class'BloodSpurt',,,HitLocation);
+            //spawn(class'BloodSpurt',,,HitLocation);
+            spawn(class'EM_BloodHit',,,HitLocation);
             spawn(class'BloodDrop',,, HitLocation);
             for (i=0; i<Damage; i+=10)
                spawn(class'BloodDrop',,, HitLocation);
@@ -409,9 +410,9 @@ function Timer()
 {
     if (bGenerateFlies)
     {
-        flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
+        /*flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
         if (flyGen != None)
-            flyGen.SetBase(self);
+            flyGen.SetBase(self);*/
     }
 }
 
@@ -667,7 +668,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                                     // display a line in the Log
 
                                     AddReceivedItem(player, item, 1);
-                                    P.ClientMessage(/*Item.PickupMessage*/ msgSearching @ Item.itemName, 'Pickup');
+                                    P.ClientMessage(msgSearching @ Item.itemName, 'Pickup');
                                     //PlaySound(Item.PickupSound);
                                 }
                             }

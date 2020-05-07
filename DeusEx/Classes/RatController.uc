@@ -12,6 +12,9 @@ state Wandering
 
     event bool NotifyBump(actor bumper)
     {
+        if (Pawn == None)
+            return true;
+
         if (Rat(pawn).bAcceptBump)
         {
             // If we get bumped by another actor while we wait, start wandering again
@@ -26,22 +29,15 @@ state Wandering
 
     event bool NotifyHitWall(vector HitNormal, actor Wall)
     {
+        if (Pawn == None)
+            return true;
+
         if (pawn.Physics == PHYS_Falling)
             return true;
         Global.NotifyHitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
         return false;
     }
-
-/*    function BeginState()
-    {
-        Super.BeginState();
-    }
-
-    function EndState()
-    {
-        Super.EndState();
-    }*/
 
     function PickDestination()
     {
@@ -94,7 +90,7 @@ GoHome:
     Rat(pawn).bAcceptBump = false;
     Rat(pawn).TweenToWalking(0.15);
     WaitForLanding();
-    Rat(pawn).FinishAnim();
+    FinishAnim();
     Rat(pawn).PlayWalking();
 
 Wander:
@@ -121,12 +117,12 @@ Pausing:
     Sleep(Rat(pawn).sleepTime);
     Rat(pawn).Disable('AnimEnd');
     Rat(pawn).bAcceptBump = False;
-    Rat(pawn).FinishAnim();
+    FinishAnim();
     Goto('Wander');
 
 ContinueWander:
 ContinueFromDoor:
-    Rat(pawn).FinishAnim();
+    FinishAnim();
     Rat(pawn).PlayWalking();
     Goto('Wander');
 }

@@ -1,7 +1,7 @@
 //=============================================================================
 // CrateBreakableMedGeneral.
 //=============================================================================
-class CrateBreakableMedGeneral extends Containers;
+class CrateBreakableMedGeneral extends BoxesWithStuff;
 
 // From HardCoreDX mod...
 auto state Active

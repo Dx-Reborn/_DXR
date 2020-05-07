@@ -130,6 +130,9 @@ function Sound GetSelectSound()
     local DeusExGlobals gl;
     local sound sound;
 
+    if (bPostTravel)
+        return None;
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {
@@ -272,7 +275,8 @@ defaultproperties
      InventoryGroup=4
      ItemName="Assault Rifle"
 //     PlayerViewOffset=(X=16.000000,Y=-5.000000,Z=-11.500000)
-     PlayerViewOffset=(X=9.000000,Y=9.000000,Z=-11.500000)
+     PlayerViewOffset=(X=19.000000,Y=9.000000,Z=-13.500000)
+//     PlayerViewOffset=(X=8.00,Y=-5.00,Z=-11.50)
 
      Icon=Texture'DeusExUI.Icons.BeltIconAssaultGun'
      CollisionRadius=15.000000
