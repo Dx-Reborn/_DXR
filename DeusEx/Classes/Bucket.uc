@@ -10,4 +10,5 @@ defaultproperties
      Mass=20.000000
      Buoyancy=10.000000
      Skins[0]=Shader'DeusExStaticMeshes10.Metal.Bucket_a_SH'
+     HitPoints=25
 }

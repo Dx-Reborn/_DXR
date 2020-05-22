@@ -16,7 +16,6 @@ defaultproperties
 {
      bBlockSight=True
      HitPoints=12 //5
-     FragType=Class'DeusEx.PaperFragment'
      ItemName="Cardboard Box"
      mesh=mesh'DeusExDeco.BoxSmall'
      CollisionRadius=13.000000

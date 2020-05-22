@@ -267,6 +267,30 @@ function Touch(actor toucher)
       DXRAIController(controller).NotifyTouch(toucher);
 }
 
+function sound GetBulletHitSound()
+{
+    local DeusExGlobals gl;
+    local sound aSound;
+    local int SoundNum;
+
+    SoundNum = Rand(4);
+    gl = class'DeusExGlobals'.static.GetGlobals();
+
+    if (SoundNum == 3)
+        aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_a", class'Sound', false));
+    else if (SoundNum == 2)
+        aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_b", class'Sound', false));
+    else if (SoundNum == 1)
+        aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_c", class'Sound', false));
+    else if (SoundNum == 0)
+        aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_d", class'Sound', false));
+
+
+    log("sound ="@SoundNum @ aSound);
+
+    return aSound;
+}
+
 
 // ----------------------------------------------------------------------
 // PreBeginPlay()
@@ -336,6 +360,8 @@ event Destroyed()
     // Pass a message to conPlay, if it exists in the player, that 
     // this pawn has been destroyed.  This is used to prevent 
     // bad things from happening in converseations.
+
+    ClearStayingDebugLines(); //
 
     player = DeusExPlayer(GetPlayerPawn());
 
@@ -3020,6 +3046,12 @@ function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
 
     SetDistressTimer();
     PlaySound(hitSound, SLOT_Pain, volume,,, RandomPitch());
+
+    // DXR: Added bulletHitSounds
+    if (damageType == class'DM_Shot' || damageType == class'DM_AutoShot')
+        PlaySound(GetBulletHitSound(), SLOT_Misc,volume * 2,,1024.00,);
+            log("volume = "@volume);
+
     if ((hitSound != None) && bEmitDistress)
         class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio, volume);
 }
