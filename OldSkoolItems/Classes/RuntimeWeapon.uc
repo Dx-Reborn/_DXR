@@ -118,6 +118,11 @@ var() array<material> FirstPersonViewSkins; // materials for FP version
 
 var transient bool bPostTravel; // Используется в TravelPostAccept().
 
+function Sound GetPickupSound()
+{
+   return default.PickupSound;
+}
+
 function StopFireSound();
 
 event SetInitialState()
@@ -144,7 +149,9 @@ event TravelPostAccept()
         AmmoType = RuntimeAmmunition(Pawn(Owner).FindInventoryType(AmmoName));
         if (AmmoType == None)
         {
-            AmmoType = Spawn(AmmoName,,,); // Create ammo type required
+            //AmmoType = Spawn(AmmoName,,,); // Create ammo type required
+            //it just ordinary casting like Pawn( SpawnEx(...) );
+            AmmoType = RuntimeAmmunition(SpawnEx(AmmoName,,,)); // Create ammo type required // DXR: Создать в любом случае, даже если нет места.
             Pawn(Owner).AddInventory(AmmoType);     // and add to player's inventory
             AmmoType.AmmoAmount = PickUpAmmoCount; 
             AmmoType.GotoState('Idle2');
@@ -168,7 +175,8 @@ function GiveAmmo(Pawn Other)
         AmmoType.AddAmmo(PickUpAmmoCount);
     else
     {
-        AmmoType = Spawn(AmmoName); // Create ammo type required        
+        //AmmoType = Spawn(AmmoName); // Create ammo type required        
+        AmmoType = Ammunition(SpawnEx(AmmoName,,,)); // DXR: Создать в любом случае, даже если нет места.
         Other.AddInventory(AmmoType); // and add to player's inventory
         AmmoType.BecomeItem();
         AmmoType.AmmoAmount = PickUpAmmoCount; 
@@ -199,7 +207,7 @@ function bool HandlePickupQuery(inventory Item)
         }
         P.ClientMessage(RuntimeWeapon(Item).PickupMessage @ Item.itemName, 'Pickup');
 
-        Item.PlaySound(RuntimeWeapon(Item).PickupSound);
+        Item.PlaySound(RuntimeWeapon(Item).GetPickupSound());
         Item.Destroy();//SetRespawn();
         return true;
     }
@@ -543,7 +551,7 @@ auto state() Pickup
         {
             SpawnCopy(Pawn(Other));
                 Pawn(Other).ClientMessage(PickupMessage @ itemName, 'Pickup');
-            PlaySound(PickupSound);     
+            PlaySound(GetPickupSound());     
             if (Level.Game.GameDifficulty > 1)
                 Other.MakeNoise(0.1 * Level.Game.GameDifficulty);
         }
@@ -772,4 +780,5 @@ defaultproperties
    FirstPersonDrawScale3D=(X=1.00,Y=1.00,Z=1.00)
    PickupViewDrawScale=1.00
    PickupViewDrawScale3D=(X=1.00,Y=1.00,Z=1.00)
+   bUseCylinderCollision=true
 }

@@ -41,6 +41,18 @@ var() const vector PickupViewDrawScale3D;
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
 
+var transient bool bPostTravel; // Используется в TravelPostAccept().
+
+event SetInitialState()
+{
+   GoToState('Auto');
+}
+
+function Sound GetPickupSound()
+{
+   return default.PickupSound;
+}
+
 // DXR: Used to render debug information (ShowDebug).
 simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
@@ -188,7 +200,8 @@ function BecomePickup()
     bOnlyOwnerSee = false;
     bHidden       = false;
     NetPriority   = 1.4;
-    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+//    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+    SetCollision(true, false, false);       // make things block actors as well - DEUS_EX CNN
 }
 
 function BecomeItem()
@@ -278,9 +291,12 @@ auto state Pickup
         {
             Copy = SpawnCopy(Pawn(Other));
 
-            if (bActivatable && bAutoActivate && Pawn(Other).bAutoActivate) Copy.Activate();
+            if (bActivatable && bAutoActivate && Pawn(Other).bAutoActivate) 
+                Copy.Activate();
+
                 Pawn(Other).ClientMessage(PickupMessage @ itemName, 'Pickup');
-            PlaySound(PickupSound,,2.0);
+
+            PlaySound(GetPickupSound(),,2.0);
             //RuntimePickup(Copy).PickupFunction(Pawn(Other));
         }
     }
@@ -373,6 +389,9 @@ defaultproperties
     bCanHaveMultipleCopies=true     // if player can possess more than one of this
     bAutoActivate=false            // automatically activated when picked up
     bActivatable=true      // Whether item can be activated/deactivated (if true, must auto activate)
+    bCollideWorld=true
+    bUseCylinderCollision=true
+
     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=-32768)
     drawType=DT_Mesh
     NumCopies=1

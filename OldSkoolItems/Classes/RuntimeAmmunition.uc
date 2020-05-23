@@ -78,7 +78,8 @@ function BecomePickup()
     bOnlyOwnerSee = false;
     bHidden       = false;
     NetPriority   = 1.4;
-    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+//    SetCollision(true, true, false);       // make things block actors as well - DEUS_EX CNN
+    SetCollision(true, false, false);       // make things block actors as well - DEUS_EX CNN
 }
 
 function BecomeItem()
@@ -104,4 +105,6 @@ defaultproperties
     PickupMessage="Found ammo:"
     bCollideActors=false
     bOrientOnSlope=true
+    bCollideWorld=true
+    bUseCylinderCollision=true
 }
