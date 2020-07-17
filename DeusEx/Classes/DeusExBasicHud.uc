@@ -16,18 +16,19 @@
   все ауги, изменяющие цвет и т.д., и только потом собственно HUD.
   21/06/2018: Как мне реализовать цветовые темы ? :))) 
   11/07/2018: Исправлено растягивание перекрестия с оружием в руке.
+  18/06/2020: Реавлизован индикатор повреждения (за основу взят код из GMDX)
 -------------------------------------------------------------------------------------------------------*/
 
-//#exec Texture Import File=Textures\ItemNameBox.bmp Name=ItemNameBox Mips=Off
+
 #exec OBJ LOAD FILE=DeusExUIExtra
 #exec OBJ LOAD FILE=DxFonts
 #exec OBJ LOAD FILE=Effects
-//#exec OBJ LOAD FILE=EpicParticles
 #EXEC OBJ LOAD FILE=GuiContent.utx
 
 class DeusExBasicHUD extends HUD;
 
-// Used in DrawTargetAugmentation().
+// Максимальная дистанция для работы аугментаций
+// CullDistance для ScriptedPawn также 8000.
 const TRACE_LOS_DIST = 8000;
 
 struct sToolBeltSelectedItem
@@ -37,55 +38,54 @@ struct sToolBeltSelectedItem
 };
 var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
 
-/*------------------------*/
-  var() color MessageBG;   // ClientMessage Background
-  var() color MessageText; // ClientMessage Text
-  var() color MessageFrame;
 
-  var() color ToolBeltBG;
-  var() color ToolBeltText;
-  var() color ToolBeltFrame;
-  var() color ToolBeltHighlight;
+var(ThemeColors) color MessageBG;   // Фон сообщений
+var(ThemeColors) color MessageText; // Текст сообщений
+var(ThemeColors) color MessageFrame;
 
-  var() color AugsBeltBG;
-  var() color AugsBeltText;
-  var() color AugsBeltFrame;
-  var() color AugsBeltActive;
-  var() color AugsBeltInActive;
+var(ThemeColors) color ToolBeltBG;
+var(ThemeColors) color ToolBeltText;
+var(ThemeColors) color ToolBeltFrame;
+var(ThemeColors) color ToolBeltHighlight;
 
-  var() color AmmoDisplayBG;
-  var() color AmmoDisplayFrame;
+var(ThemeColors) color AugsBeltBG;
+var(ThemeColors) color AugsBeltText;
+var(ThemeColors) color AugsBeltFrame;
+var(ThemeColors) color AugsBeltActive;
+var(ThemeColors) color AugsBeltInActive;
 
-  var() color compassBG;
-  var() color compassFrame;
+var(ThemeColors) color AmmoDisplayBG;
+var(ThemeColors) color AmmoDisplayFrame;
 
-  var() color HealthBG;
-  var() color HealthFrame;
+var(ThemeColors) color compassBG;
+var(ThemeColors) color compassFrame;
 
-  var() color BooksBG;
-  var() color BooksText;
-  var() color BooksFrame;
+var(ThemeColors) color HealthBG;
+var(ThemeColors) color HealthFrame;
 
-  var() color InfoLinkBG;
-  var() color InfoLinkText;
-  var() color InfoLinkTitles;
-  var() color InfoLinkFrame;
+var(ThemeColors) color BooksBG;
+var(ThemeColors) color BooksText;
+var(ThemeColors) color BooksFrame;
 
-  var() color AIBarksBG;
-  var() color AIBarksText;
-  var() color AIBarksHeader;
-  var() color AIBarksFrame;
+var(ThemeColors) color InfoLinkBG;
+var(ThemeColors) color InfoLinkText;
+var(ThemeColors) color InfoLinkTitles;
+var(ThemeColors) color InfoLinkFrame;
 
-  var() color FrobBoxColor;
-  var() color FrobBoxShadow;
-  var() color FrobBoxText;
-/*------------------------*/
+var(ThemeColors) color AIBarksBG;
+var(ThemeColors) color AIBarksText;
+var(ThemeColors) color AIBarksHeader;
+var(ThemeColors) color AIBarksFrame;
+
+var(ThemeColors) color FrobBoxColor;
+var(ThemeColors) color FrobBoxShadow;
+var(ThemeColors) color FrobBoxText;
 
 
 var color colAmmoLowText, colAmmoText;
-var Color crossColor;
+var Color crossColor; // цвет перекрестия
 
-var transient DxCanvas dxc;
+var transient DxCanvas dxc; // Transient для безопасности
 
 // Из FrobDisplayWindow
 var() float margin, marginX, corner;
@@ -144,46 +144,44 @@ var localized string strUses;
 
 var(ChargedPickups) float HI_BorderX, HI_BorderY, HI_IconX, HI_IconY, HI_Back_X, HI_Back_Y;
 
-// Default Colors
-//var Color colBackground;
-//var Color colBorder;
+
 var Color colHeaderText;
 var Color colText;
 
-var Texture T;
+var float CrosshairCorrectionX,CrosshairCorrectionY;
+var texture CrosshairTex;
 var texture ItemNameBoxT;
+var texture HudHitBase, HudHitFrame, HudHitBody,HudHitArmL,  HudHitArmR,HudHitLegL, HudHitLegR,HudHitHead, HudHitTorso;
+var material HitMarkerMat;
+var material INBox;
+
+
 var PlayerController Player;
 
-var texture HudHitBase, HudHitFrame, HudHitBody,
-                                                HudHitArmL,  HudHitArmR,
-                                        HudHitLegL, HudHitLegR,
-                                                HudHitHead, HudHitTorso;
 
-var/*(CrosshairCorrection)*/ float CrosshairCorrectionX,CrosshairCorrectionY;
-
-var/*()*/ float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
-var/*()*/ int ItemNameOffsetV, ItemNameOffSetH;
-var/*()*/ int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
+var float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
+var int ItemNameOffsetV, ItemNameOffSetH;
+var int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
 
 var(FrobColoredBars) float TopBarOffset, LowerBarOffSet;
 var float Health, HealthHead, HealthTorso, HealthLegLeft, HealthLegRight, HealthArmLeft, HealthArmRight;
 
-var material INBox;
 
-var/*(Energy)*/ int bePosX,bePosY, o2PosX, o2PosY;
-var/*(Energy)*/ int beBarPosX,beBarPosY, o2BarPosX,o2BarPosY;
+
+var int bePosX,bePosY, o2PosX, o2PosY;
+var int beBarPosX,beBarPosY, o2BarPosX,o2BarPosY;
 
 var float   BioEnergy;
 var float   BioEnergyMax;
 
-var/*(PoisonEffects)*/ bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
+var bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
 var bool bUseAltVBarTexture;
 
 var bool bUnderwater;
 var float   breathPercent;
-var/*(o2cr)*/ float o2cr; // корректор индикатора кислорода
+var float o2cr; // корректор индикатора кислорода
 
-var/*() */ bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключают весь ГДИ, midMenuMode растягивает скриншот на фоне.
+var bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключают весь ГДИ, midMenuMode растягивает скриншот на фоне.
 
 var bool bDrawInfo;
 
@@ -201,9 +199,9 @@ var int targetLevel;
 var Actor lastTarget;
 var float lastTargetTime;
 
-var /*(AugVision)*/ bool bVisionActive;
-var /*(AugVision)*/ int visionLevel;
-var/* (AugVision)*/ float visionLevelValue;
+var bool bVisionActive;
+var int visionLevel;
+var float visionLevelValue;
 var int activeCount;
 
 // Можно удалить, поскольку теперь это выводится через оверлей.
@@ -319,7 +317,7 @@ function DrawTargetAugmentation(Canvas C)
     crossColor.R = 255;
     crossColor.G = 255;
     crossColor.B = 255;
-  crossColor.A = 255;
+    crossColor.A = 255;
 
     C.Font = LoadProgressFont();
 
@@ -781,8 +779,8 @@ function DrawVisionAugmentation(Canvas C)
 
     // Улучшает видимость
     C.ColorModulate.X = 8;
-  C.ColorModulate.Y = 8;
-  C.ColorModulate.Z = 8;
+    C.ColorModulate.Y = 8;
+    C.ColorModulate.Z = 8;
     C.ColorModulate.W = 8;
 
     boxW = C.SizeX / 2;
@@ -1409,6 +1407,7 @@ simulated event PostRender(canvas C)
       RenderFrobTarget(C);
       RenderSmallHUDHitDisplay(C);
       RenderCrosshair(C);
+      RenderHitMarker(c);
       DisplayMessages(C);
       RenderCompass(C); // Компас
       RenderToolBelt(C); // Быстрый доступ
@@ -1442,24 +1441,23 @@ function RenderCrosshair(Canvas C)
    if (bDrawInfo)
    return;
 
-   X=C.ClipX * 0.5 + CrosshairCorrectionX;
-   Y=C.ClipY * 0.5 + CrosshairCorrectionY;
+   X = C.ClipX * 0.5 + CrosshairCorrectionX;
+   Y = C.ClipY * 0.5 + CrosshairCorrectionY;
 
-  if (DeusExPlayer(PlayerOwner.pawn).bCrosshairVisible)
-  {
-     C.SetPos(X,Y);
-     //C.SetDrawColor(255,255,255); // TODO: Добавить IFF
-     c.DrawColor = crossColor;
-     C.DrawIcon(T, 1);
-  }
+    if (DeusExPlayer(PlayerOwner.pawn).bCrosshairVisible)
+    {
+      C.SetPos(X,Y);
+      c.DrawColor = crossColor;
+      C.DrawIcon(CrosshairTex, 1);
+    }
 
     if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon) != none)
     {
-   if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).bCanTrack == true)
-   {
-     MStarget = DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).TargetMessage;
-       c.SetPos(X + 35,Y + 35); // Чтобы не перекрывало прицел
-     c.font=font'DxFonts.EUX_8'; //font'DxFonts.TB_9';
+      if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).bCanTrack == true)
+      {
+         MStarget = DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).TargetMessage;
+         c.SetPos(X + 35,Y + 35); // Чтобы не перекрывало прицел
+         c.font=font'DxFonts.EUX_8'; //font'DxFonts.TB_9';
 
             if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).LockMode == LOCK_Locked)
                 c.SetDrawColor(255,0,0); // красный
@@ -1467,9 +1465,29 @@ function RenderCrosshair(Canvas C)
                 c.SetDrawColor(255,255,0); // желтый
             else
                 c.SetDrawColor(0,255,0); // зеленый
-     c.DrawText(MStarget);
-   }
+         c.DrawText(MStarget);
+      }
   }
+}
+
+function RenderHitMarker(canvas c)
+{
+   local float X,Y;
+
+   if (bDrawInfo)
+   return;
+
+   if (playerowner.pawn == None)
+   return;
+
+   if (PlayerPawn(playerowner.pawn).HitMarkerTime > 0.05)
+   {
+        X = (C.SizeX * 0.5) -32;
+        Y = (C.SizeY * 0.5) -32;
+        c.SetPos(X,Y);
+        c.SetDrawColor(255,0,0);
+        c.DrawIconEx(HitMarkerMat,1.0);
+   }
 }
 
 function RenderSmallHUDHitDisplay(Canvas C)
@@ -1489,10 +1507,10 @@ function RenderSmallHUDHitDisplay(Canvas C)
          else
          c.Style = ERenderStyle.STY_Alpha;
 
-   C.SetPos(0,0);
-   C.DrawColor = HealthFrame;
+     C.SetPos(0,0);
+     C.DrawColor = HealthFrame;
      C.DrawIcon(HudHitFrame,1);
-     }
+   }
    C.Style = ERenderStyle.STY_Translucent;
    C.SetPos(24,16);
      C.DrawIcon(HudHitBody,1);
@@ -1573,25 +1591,25 @@ function RenderFrobTarget(Canvas C)
    local float  X,Y, tH,tW, nH, nW;
    local Actor  FrobName;
    local String FrobStr;
-     local int      numTools;
-     local string   strInfo;
+   local int      numTools;
+   local string   strInfo;
 
-        local vector sp1, sp2;
-        local Vector            centerLoc, v1, v2;
-        local float             boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-        local float             fcorner;//, xF, yF;
-        local int               i, j, k, offset;
-        local DeusExMover fMover;
+   local vector sp1, sp2;
+   local Vector            centerLoc, v1, v2, v3;
+   local float             boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+   local float             fcorner;//, xF, yF;
+   local int               i, j, k, offset;
+   local DeusExMover fMover;
 
-        if (!bDrawFrobBox)
-        return;
+   if (!bDrawFrobBox)
+       return;
 
-      X=C.ClipX * 0.5;
-      Y=C.ClipY * 0.5;
-        C.SetPos(X,Y);
+   X=C.ClipX * 0.5;
+   Y=C.ClipY * 0.5;
+   C.SetPos(X,Y);
 
-    C.Font = LoadProgressFont();
-    FrobName = DeusExPlayer(playerOwner.pawn).frobTarget; //DeusExPlayerController(Player).FrobTarget;
+   C.Font = LoadProgressFont();
+   FrobName = DeusExPlayer(playerOwner.pawn).frobTarget; //DeusExPlayerController(Player).FrobTarget;
 
    if ((FrobName != None) && (DeusExPlayerController(Player).IsHighlighted(frobName)) && (!bDrawInfo))
    {
@@ -1605,16 +1623,29 @@ function RenderFrobTarget(Canvas C)
             {
                 fMover.GetBoundingBox(v1, v2);
                 centerLoc = v1 + (v2 - v1) * 0.5;
-                v1.X = 16;
-                v1.Y = 16;
-                v1.Z = 16;
+
+                // Если большой DeusExMover то соотвествуюющий размер.
+                fMover.GetBoundingBoxSize(v3);
+                if (vSize(v3) > 100) // Для стандартных дверей 128x64x4
+                {
+                  v1.X = 16;
+                  v1.Y = 16;
+                  v1.Z = 16;
+                }
+                else // Для маленьких. 
+                {
+                  v1.X = 8;
+                  v1.Y = 8;
+                  v1.Z = 8;
+                }
+
             }
             else
             {
-        centerLoc = FrobName.Location;
-        v1.X = FrobName.CollisionRadius;
-        v1.Y = FrobName.CollisionRadius;
-        v1.Z = FrobName.CollisionHeight;
+               centerLoc = FrobName.Location;
+               v1.X = FrobName.CollisionRadius;
+               v1.Y = FrobName.CollisionRadius;
+               v1.Z = FrobName.CollisionHeight;
             }
 
             // берется расположение цели, выдается X(горизонтальная) и Y(вертикальная)
@@ -2488,35 +2519,22 @@ FontSansSerif_8_Bold
 
 defaultproperties
 {
-  HI_Back_X=4.5
-  HI_Back_Y=7.0
+    HI_Back_X=4.5
+    HI_Back_Y=7.0
 
-  HI_IconX=4.5
-  HI_IconY=7.0
+    HI_IconX=4.5
+    HI_IconY=7.0
 
-
-
-/*  toolbeltSelPos(1)=(positionX=535,positionY=60)
-  toolbeltSelPos(2)=(positionX=484,positionY=60)
-  toolbeltSelPos(3)=(positionX=433,positionY=60)
-  toolbeltSelPos(4)=(positionX=382,positionY=60)
-  toolbeltSelPos(5)=(positionX=331,positionY=60)
-  toolbeltSelPos(6)=(positionX=280,positionY=60)
-  toolbeltSelPos(7)=(positionX=229,positionY=60)
-  toolbeltSelPos(8)=(positionX=178,positionY=60)
-  toolbeltSelPos(9)=(positionX=127,positionY=60)
-  toolbeltSelPos(0)=(positionX=76,positionY=60) */
-
-  toolbeltSelPos(1)=(positionX=537,positionY=62)
-  toolbeltSelPos(2)=(positionX=486,positionY=62)
-  toolbeltSelPos(3)=(positionX=435,positionY=62)
-  toolbeltSelPos(4)=(positionX=384,positionY=62)
-  toolbeltSelPos(5)=(positionX=333,positionY=62)
-  toolbeltSelPos(6)=(positionX=282,positionY=62)
-  toolbeltSelPos(7)=(positionX=231,positionY=62)
-  toolbeltSelPos(8)=(positionX=180,positionY=62)
-  toolbeltSelPos(9)=(positionX=129,positionY=62)
-  toolbeltSelPos(0)=(positionX=78,positionY=62) // KeyRing
+    toolbeltSelPos(1)=(positionX=537,positionY=62)
+    toolbeltSelPos(2)=(positionX=486,positionY=62)
+    toolbeltSelPos(3)=(positionX=435,positionY=62)
+    toolbeltSelPos(4)=(positionX=384,positionY=62)
+    toolbeltSelPos(5)=(positionX=333,positionY=62)
+    toolbeltSelPos(6)=(positionX=282,positionY=62)
+    toolbeltSelPos(7)=(positionX=231,positionY=62)
+    toolbeltSelPos(8)=(positionX=180,positionY=62)
+    toolbeltSelPos(9)=(positionX=129,positionY=62)
+    toolbeltSelPos(0)=(positionX=78,positionY=62) // KeyRing
 
     bUseAltVBarTexture=false
 
@@ -2531,24 +2549,19 @@ defaultproperties
     bePosX=4
     bePosY=70
 
-// Все это нужно для точной настройки элементов ГДИ
-// и скорее всего только один раз :D
     ItemNameFrameOffsetV=15
-  ItemNameFrameOffSetH=10
+    ItemNameFrameOffSetH=10
     ItemNameOffsetV=17
     ItemNameOffSetH=15
 
-// Переместить сообщения вниз как в Reborn
     ConsoleMessagePosX=0.01
     ConsoleMessagePosY=0.9
 //  ConsoleMessageCount=8 // Максимум 8
 //  MessageLifeTime=10 // сколько секунд показывать сообщения.
     ProgressFadeTime=10.0
-    T=Texture'CrossSquare'
-    ItemNameBoxT=Texture'ItemNameBox'
 
     TopBarOffset=0
-  LowerBarOffSet=0
+    LowerBarOffSet=0
 
     CrosshairCorrectionX=-8
     CrosshairCorrectionY=-8
@@ -2556,16 +2569,20 @@ defaultproperties
     HHframeY=-21
     HHframeX=-21
 
-  HudHitBase=       texture'DeusExUi.UserInterface.HUDHitDisplayBackground_1'
-  HudHitFrame=  texture'DeusExUi.UserInterface.HUDHitDisplayBorder_1'
-  HudHitBody=       texture'DeusExUi.UserInterface.HUDHitDisplay_Body'
-    HudHitArmL=     texture'DeusExUi.UserInterface.HUDHitDisplay_ArmLeft'
-    HudHitArmR=     texture'DeusExUi.UserInterface.HUDHitDisplay_ArmRight'
-    HudHitLegL=     texture'DeusExUi.UserInterface.HUDHitDisplay_LegLeft'
-    HudHitLegR=     texture'DeusExUi.UserInterface.HUDHitDisplay_LegRight'
-    HudHitHead=     texture'DeusExUi.UserInterface.HUDHitDisplay_Head'
-    HudHitTorso=    texture'DeusExUi.UserInterface.HUDHitDisplay_Torso'
-    INBox=              FinalBlend'DeusExUiExtra.F_ItemNameBox'
+    HitMarkerMat=TexRotator'DeusExUIExtra.HUD.HitMarker_TXR'
+    CrosshairTex=Texture'CrossSquare'
+    ItemNameBoxT=Texture'ItemNameBox'
+
+    HudHitBase=texture'DeusExUi.UserInterface.HUDHitDisplayBackground_1'
+    HudHitFrame=texture'DeusExUi.UserInterface.HUDHitDisplayBorder_1'
+    HudHitBody=texture'DeusExUi.UserInterface.HUDHitDisplay_Body'
+    HudHitArmL=texture'DeusExUi.UserInterface.HUDHitDisplay_ArmLeft'
+    HudHitArmR=texture'DeusExUi.UserInterface.HUDHitDisplay_ArmRight'
+    HudHitLegL=texture'DeusExUi.UserInterface.HUDHitDisplay_LegLeft'
+    HudHitLegR=texture'DeusExUi.UserInterface.HUDHitDisplay_LegRight'
+    HudHitHead=texture'DeusExUi.UserInterface.HUDHitDisplay_Head'
+    HudHitTorso=texture'DeusExUi.UserInterface.HUDHitDisplay_Torso'
+    INBox=FinalBlend'DeusExUiExtra.F_ItemNameBox'
 
 //-------------------------------------------------------
 
@@ -2578,8 +2595,7 @@ defaultproperties
     margin=70.00 // Для рамки выделения!!!
     barLength=50.00
 
-        strUses="X "
-
+    strUses="X "
     NotAvailable="N/A"
     msgReloading="---"
     AmmoLabel="AMMO"
@@ -2627,7 +2643,7 @@ defaultproperties
 
 //----------------------------------------------------------------------------------------------------------------------
     ProgressFontName="DXFonts.MSS_8"
-        FontArrayNames(0)="DXFonts.EUX_9"
+    FontArrayNames(0)="DXFonts.EUX_9"
     FontArrayNames(1)="DXFonts.EUX_9"
     FontArrayNames(2)="DXFonts.EUX_9"
     FontArrayNames(3)="DXFonts.EUX_9"
@@ -2660,6 +2676,6 @@ defaultproperties
     colAmmoText=(R=0,G=255,B=0,A=255)
     colAmmoLowText=(R=255,G=0,B=0,A=255)
 
-      cubemapmode=false
-      bDrawFrobBox=true
+    cubemapmode=false
+    bDrawFrobBox=true
 }

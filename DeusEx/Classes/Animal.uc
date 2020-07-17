@@ -305,8 +305,13 @@ function PlayEatingSound();
 
 function float GetMaxDistance(Actor foodActor)
 {
-  if (bool(foodActor))
-      return (foodActor.CollisionRadius + default.CollisionRadius);
+  local float maxDist;
+
+  if (foodActor != None)
+  {
+      maxDist = foodActor.CollisionRadius + CollisionRadius;
+      return maxDist;
+  }
 
   return 0.0;
 }
@@ -321,7 +326,7 @@ function bool IsInRange(Actor foodActor)
   return false;
 
       range = VSize(foodActor.Location-Location);
-      col_sum = GetMaxDistance(foodActor) + 20;//25;
+      col_sum = GetMaxDistance(foodActor) + 20;
       bIsInRange = (range <= col_sum);
 
       return bIsInRange;
@@ -330,31 +335,27 @@ function bool IsInRange(Actor foodActor)
   return false;
 }
 
-/*event AnimEnd(int channel)
-{
-    Super.AnimEnd(channel);
-    ClearStayingDebugLines();
-} */
-
-
 function bool GetFeedSpot(Actor foodActor, out vector feedSpot)
 {
     local rotator rot;
     local bool bFoodReachable;
     local float MaxDist;
+    local DestLocMarker marker;
 
     if (IsInRange(foodActor))
     {
         feedSpot = Location;
-        log(self@"FeedSpot matches with location!");
         return true;
     }
     else
     {
         rot = Rotator(foodActor.Location - Location);
         maxDist = GetMaxDistance(foodActor);
-        //bFoodReachable = AIDirectionReachable(foodActor.Location, rot.Yaw, rot.Pitch, 0, GetMaxDistance(foodActor), feedSpot);
         bFoodReachable = AIDirectionReachable(foodActor.Location, rot.Yaw, rot.Pitch, 0, MaxDist, feedSpot);
+
+        marker = DXRAiController(Controller).mark;
+        if (marker != None) // Маркер
+            marker.SetLocation(feedspot);
 
         return bFoodReachable;
     }

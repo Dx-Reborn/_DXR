@@ -1,22 +1,20 @@
 //=============================================================================
 // DeusExDecoration.
 //=============================================================================
-class DeusExDecoration extends Decoration
-    abstract;
+class DeusExDecoration extends DeusExDecorationBase;
 
-var(Decoration) class<inventory> content2;
-var(Decoration) class<inventory> content3;
-var int AmountOfFire;
-
+#exec obj load file=DXR_PoolTable_Set.ukx
 #exec obj load file=DeusExDeco.ukx
 #exec OBJ LOAD FILE=Effects
 #exec OBJ LOAD FILE=Effects_EX // шейдеры
 #exec OBJ LOAD FILE=DeusExSounds
 #exec obj load file=DeusExStaticMeshes.usx
-#exec obj load file=CoreTexMetal
-#exec obj load file=CoreTexWood
 #exec obj load file=DeusExDeco_EX.utx // двухсторонние шейдеры
 
+
+var(Decoration) class<inventory> content2;
+var(Decoration) class<inventory> content3;
+var int AmountOfFire;
 
 // Conversation Related Variables - DEUS_EX AJY
 var(Conversation) String BindName;                  // Used to bind conversations
@@ -27,13 +25,11 @@ var travel   float       LastConEndTime;            // Time when last conversati
 var(Conversation) float  ConStartInterval;          // Amount of time required between two convos.
 var(Conversation) editconst transient array<ConDialogue> conlist; // Диалоги хранятся здесь.
 
-var bool                                            bOnlyTriggerable;
-// End additional variables - DEUS_EX STM
 
 // DEUS_EX AMSD Added to make vision aug run faster.  If true, the vision aug needs to check this object more closely.
 // Used for heat sources as well as things that blind.
-var bool bVisionImportant;
-
+var bool    bVisionImportant;
+var bool    bOnlyTriggerable;
 var float   BaseEyeHeight;
 
 // for destroying them
@@ -59,20 +55,17 @@ var() float explosionRadius;        // how big is the explosion?
 var() bool bHighlight;              // should this object not highlight when focused?
 var() bool bCanBeBase;              // can an actor stand on this decoration?
 var() bool bGenerateFlies;          // does this actor generate flies?
-
+var bool bCanBePushedByDamage;      // for cart (and maybe some other decos?)
 var sound pushSoundId;              // used to stop playing the push sound
 
 var int gradualHurtSteps;           // how many separate explosions for the staggered HurtRadius
 var int gradualHurtCounter;         // which one are we currently doing
 
-var name NextState;                 // for queueing states
-var name NextLabel;                 // for queueing states
 
 var FlyGenerator flyGen;            // fly generator
 
-//var localized string itemArticle; 
-var localized string itemName;      // human readable name
-var() finalBlend HoldTexture; // вариант "в руках" //??
+var() localized string itemName;      // human readable name
+var() finalBlend HoldTexture;         // вариант "в руках"
 
 /*
    DXR: A note about shadows for decoratons. These shadows are true FPS devourers, 
@@ -81,26 +74,33 @@ var() finalBlend HoldTexture; // вариант "в руках" //??
    in Game Settings menu. 
    Use ShadowDirection to set direction of the shadow (sounds obviously :D)
 */
-var() transient ShadowProjectorStatic Shadow; // Transient for safety. When savegame is loaded, shadow must be recreated .
+var transient ShadowProjectorStatic Shadow; // Transient for safety. When savegame is loaded, shadow must be recreated .
 var(DynamicShadow) vector ShadowDirection;
 var(DynamicShadow) float ShadowLightDistance;
 var(DynamicShadow) float ShadowMaxTraceDistance;
 
+var name NextState;                 // for queueing states
+var name NextLabel;                 // for queueing states
+
+
+// Сдвинуть при нанесении урона
+function DamageForce(int Damage);
 
 function AddShadow()
 {
-  if (!bActorShadows)
-     return;
+    if (!bActorShadows)
+        return;
     Shadow = Spawn(class'ShadowProjectorStatic',Self,'',Location);
+
     if (Shadow != none)
     {
-      Shadow.bLevelStatic = true;
-      Shadow.ShadowActor = self;
-      Shadow.LightDirection = Normal(ShadowDirection);
-      Shadow.LightDistance = ShadowLightDistance; //1200;
-      Shadow.MaxTraceDistance = ShadowMaxTraceDistance; //1050;
-      Shadow.CullDistance = 1200;
-      Shadow.InitShadow();
+        Shadow.bLevelStatic = true;
+        Shadow.ShadowActor = self;
+        Shadow.LightDirection = Normal(ShadowDirection);
+        Shadow.LightDistance = ShadowLightDistance; //1200;
+        Shadow.MaxTraceDistance = ShadowMaxTraceDistance; //1050;
+        Shadow.CullDistance = 1200;
+        Shadow.InitShadow();
     }
 }
 
@@ -111,7 +111,7 @@ function FinalBlend CreateHoldMaterial()
    {
       HoldTexture.Material = GetMeshTexture(0);
       HoldTexture.FrameBufferBlending = FB_Brighten;
-      HoldTexture.ZWrite = true;
+      HoldTexture.ZWrite = false; //true;
       HoldTexture.ZTest = true;
       HoldTexture.AlphaTest = true;
       HoldTexture.TwoSided = false;
@@ -488,19 +488,17 @@ event PhysicsVolumeChange(PhysicsVolume Volume)
 // copied from Engine\Classes\Decoration.uc
 // modified so we can have strength modify what you can push
 // ----------------------------------------------------------------------
-
-function Bump(actor Other)
+event Bump(actor Other)
 {
     local int augLevel, augMult;
     local float maxPush, velscale;
     local DeusExPlayer player;
-//  local Rotator rot;
+    local Rotator rot;
 
     player = DeusExPlayer(Other);
 
     // if we are bumped by a burning pawn, then set us on fire
-//  if (Other.IsA('Pawn') && Pawn(Other).bOnFire && !Other.IsA('Robot') && !PhysicsVolume.bWaterVolume && bFlammable)
-    if (Other.IsA('Human') && Human(Other).bOnFire && !Other.IsA('Robot') && !PhysicsVolume.bWaterVolume && bFlammable)
+    if (Other.IsA('DeusExPawn') && DeusExPawn(Other).bOnFire && !Other.IsA('Robot') && !PhysicsVolume.bWaterVolume && bFlammable)
         GotoState('Burning');
 
     // if we are bumped by a burning decoration, then set us on fire
@@ -512,13 +510,10 @@ function Bump(actor Other)
     {
         // if we are being carried, ignore Bump()
         if (player.CarriedDecoration == Self)
-            {
-                log("try to bump"@self);
-                return;
-            }
+            return;
     }
 
-    if (bPushable && (Human(Other)!=None) && (Other.Mass > 40) && (Physics != PHYS_Falling))
+    if (bPushable && (PlayerPawn(Other) != None) && (Other.Mass > 40))// && (Physics != PHYS_Falling))
     {
         // A little bit of a hack...
         // Make sure this decoration isn't being bumped from above or below
@@ -555,19 +550,41 @@ function Bump(actor Other)
 
                 if (!bFloating && !bPushSoundPlaying && (Mass > 15))
                 {
-          pushSoundId = PlaySoundEx(PushSound, SLOT_Misc,,, 128);
+                    //pushSoundId = PlaySoundEx(PushSound, SLOT_Misc, , true, 128,,true);
+                    AmbientSound = PushSound;
+                    class'EventManager'.static.AIStartEvent(self,'LoudNoise', EAITYPE_Audio, , 128);
                     bPushSoundPlaying = True;
                 }
 
-                SetTimer(0.3, False);
+                if (!bFloating && (Physics != PHYS_Falling))
+                    SetPhysics(PHYS_Walking);
+
+                SetTimer(0.2, False);
                 Instigator = Pawn(Other);
 
-                Super.Bump(other);
+                // Impart angular velocity (yaw only) based on where we are bumped from
+                // NOTE: This is faked, but it looks cool
+                rot = Rotator((Other.Location - Location) << Rotation);
+                rot.Pitch = 0;
+                rot.Roll = 0;
+
+                // ignore which side we're pushing from
+                if (rot.Yaw >= 24576)
+                    rot.Yaw -= 32768;
+                else if (rot.Yaw >= 8192)
+                    rot.Yaw -= 16384;
+                else if (rot.Yaw <= -24576)
+                    rot.Yaw += 32768;
+                else if (rot.Yaw <= -8192)
+                    rot.Yaw += 16384;
+
+                // scale it down based on mass and apply the new "rotational force"
+                rot.Yaw *= velscale * 0.025;
+                SetRotation(Rotation+rot);
             }
         }
     }
 }
-
 
 
 // ----------------------------------------------------------------------
@@ -579,9 +596,13 @@ function Timer()
 {
     if (bPushSoundPlaying)
     {
-        class'DxUtil'.static.StopSound(self, PushSoundId);
+//        class'DxUtil'.static.StopSound(self, PushSoundId);
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
+        AmbientSound = default.AmbientSound;
+
+        acceleration = vect(0,0,0);
+        velocity = vect(0,0,0);
     }
 }
 
@@ -597,7 +618,7 @@ function DropThings()
 
     // drop everything that is on us
     foreach BasedActors(class'Actor', A)
-        if (!A.IsA('ParticleGenerator'))
+        if (!A.IsA('DeusExEmitter'))
             A.SetPhysics(PHYS_Falling);
 }
 
@@ -792,6 +813,9 @@ auto state Active
     function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, class<DamageType> DamageType)
     {
         local float avg;
+        local float MassMult;
+
+        MassMult = 0.85; //DXR: For now
 
         if (bStatic || bInvincible)
             return;
@@ -804,6 +828,13 @@ auto state Active
 
         if (DamageType == class'DM_HalonGas')
             ExtinguishFire();
+
+        // DXR: Сдвинуть декорацию если возможно
+        if ((Mass <= 100) && (bPushable) && (bCanBePushedByDamage))
+        {
+            Velocity = (Momentum*0.125) * damage * 0.8 * massmult; 
+            DamageForce(Damage);
+        }
 
         if ((DamageType == class'DM_Burned') || (DamageType == class'DM_Flamed'))
         {
@@ -827,7 +858,7 @@ auto state Active
                 HitPoints -= Damage * 0.25;
             else if (damageType == class'DM_GrenadeDeath')
                 HitPoints -= Damage * 0.25;
-                                else if (damageType == class'DM_Decapitated')
+            else if (damageType == class'DM_Decapitated')
                 HitPoints -= Damage * 0.5;
         }
 
@@ -1208,6 +1239,7 @@ function float GetLastConEndTime()  // Time when last conversation ended
 
 defaultproperties
 {
+     ShadowDirection=(X=1.00,Y=1.00,Z=6.00)
      HitPoints=20
      FragType=Class'DeusEx.MetalFragment'
      Flammability=30.000000
@@ -1233,8 +1265,8 @@ defaultproperties
      bIgnoreOutOfWorld=true
      bLightingVisibility=false
      bActorShadows=false
-
-     bUseCylinderCollision=true
+     bCanBePushedByDamage=false
+     bUseCylinderCollision=true // Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
 
      ShadowLightDistance=1200
      ShadowMaxTraceDistance=1050

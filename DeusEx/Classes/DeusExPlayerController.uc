@@ -433,13 +433,12 @@ state Paralyzed
 {
     ignores all;
 
-//  function pawn.TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType);
     exec function Fire(optional float F)
     {
-      if ((GetLevelInfo().MapName~="00_Intro") || (GetFlagBase().GetBool('PlayerTraveling')))
-      return;
+      if (GetLevelInfo().MapName~="00_Intro") //|| (GetFlagBase().GetBool('PlayerTraveling')))
+          return;
       else
-    ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
+          ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
     }
 
     exec function AltFire(optional float F)

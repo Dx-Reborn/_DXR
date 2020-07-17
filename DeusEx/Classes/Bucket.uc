@@ -1,4 +1,4 @@
-class Bucket extends DeusExDecoration;
+class Bucket extends Buckets;
 
 defaultproperties
 {

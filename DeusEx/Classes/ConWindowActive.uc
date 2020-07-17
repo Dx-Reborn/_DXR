@@ -6,7 +6,9 @@
 class ConWindowActive extends floatingwindow
                               transient;
 
-const WHEEL_SCROLL_DELAY = 0.05;
+const WHEEL_SCROLL_DELAY = 0.05; // Максимальноый интервал для "проматывания" диалогов.
+const SINGLE_ITEM_DELAY = 1.0f;
+const AMOUNT_OF_CHOICES = 10;
 
 enum EMoveModes
 {
@@ -16,10 +18,14 @@ enum EMoveModes
 };
 var EMoveModes moveMode;
 
+var array<Inventory> ReceivedItems;
+
+
+
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;                     // Number of choice buttons
-var() transient ConChoiceWindow conChoices[10];   // Maximum of ten buttons
+var() transient ConChoiceWindow conChoices[AMOUNT_OF_CHOICES];   // Maximum of ten buttons
 var transient ConPlay conplay;
 var DeusExPlayer player;
 var bool bRestrictInput;
@@ -30,7 +36,7 @@ var bool bCanBeClosed;
 
 var string speech;
 var bool bForcePlay;
-var bool bSafeToClose; // 
+var bool bSafeToClose;
 var float conStartTime;
 var float movePeriod;
 var float aTime;
@@ -121,7 +127,6 @@ function AbortCinematicConvo()
         script.FinishCinematic();
 }
 
-// Ii?ao oie?oi?eou eo oie ooieoeae?
 function RemoveChoices()
 {
     local int buttonIndex;
@@ -141,8 +146,9 @@ function RemoveChoices()
 
 function InternalOnClose(optional Bool bCanceled)
 {
-    Super.OnClose(bCanceled);
     RemoveChoices();
+    Super.OnClose(bCanceled);
+//    RemoveChoices();
 }
 
 
@@ -171,7 +177,7 @@ function DisplayChoice(ConChoice choice)
 // DisplaySkillChoice()
 // Displays a Skilled choice, a choice that's only visible if the user
 // has a particular skill at a certain skill level
-// A i?eaeiaeuiie ea?a ia eniieuciaaeinu.
+// ToDo: Проверить что это работает?
 // ----------------------------------------------------------------------
 function DisplaySkillChoice(ConChoice choice)
 {
@@ -187,32 +193,31 @@ function DisplaySkillChoice(ConChoice choice)
 
 event Opened(GUIComponent Sender)                   // Called when the Menu Owner is opened
 {
-  Super.Opened(Sender);
+   Super.Opened(Sender);
 
-    conStartTime = DeusExPlayer(playerOwner().pawn).level.TimeSeconds;
-    DeusExHud((PlayerOwner()).myHUD).cubemapmode = true;
+   conStartTime = DeusExPlayer(playerOwner().pawn).level.TimeSeconds;
+   DeusExHud((PlayerOwner()).myHUD).cubemapmode = true;
 
-  i_FrameBG.ImageColor.A = 0;
-  i_FrameBG2.ImageColor.A = 0;
+   i_FrameBG.ImageColor.A = 0;
+   i_FrameBG2.ImageColor.A = 0;
 
-  moveMode     = MM_Enter;
-    bTickEnabled = true;
+   moveMode     = MM_Enter;
+   bTickEnabled = true;
 }
 
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
 {
-  Super.Closed(Sender, bCancelled);
+   Super.Closed(Sender, bCancelled);
 
-    DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
-
-  moveMode     = MM_None;
-  bTickEnabled = false;
+   DeusExHud((PlayerOwner()).myHUD).SafeRestore();
+   moveMode     = MM_None;
+//   bTickEnabled = false;
 }
 
-event Free() // Aie?ii ono?aieou aueao ia ia?aoe? ESC.
+event Free()
 {
-  DeusExHud((PlayerOwner()).myHUD).SafeRestore(); //cubemapmode = false;
-  Super.Free();
+   DeusExHud((PlayerOwner()).myHUD).SafeRestore();
+   Super.Free();
 }
 
 
@@ -237,7 +242,7 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
 {
     local ConChoiceWindow newButton;
 
-    newButton = new(none) class'ConChoiceWindow';
+    newButton = new class'ConChoiceWindow';
     newButton.bFocusOnWatch = true;
     newButton.CaptionAlign = TXTA_Left;
     newButton.WinHeight = 15;
@@ -246,17 +251,17 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     newButton.WinLeft = 0.0;
     newButton.Hint = "";
     newButton.RenderWeight = 0.4;
-    newButton.TabOrder = Controls.length+1;
-    newButton.bBoundToParent = true;  //true;
+    newButton.TabOrder = Controls.length + 1;
+    newButton.bBoundToParent = true;
     newButton.OnClick=InternalOnClick;
     AppendComponent(newButton, true);
 
     return newButton;
 }
 
-function bool FloatingPreDraw(Canvas C)
+function bool FloatingPreDraw(Canvas u)
 {
-    return Super.FloatingPreDraw(C);
+    return Super.FloatingPreDraw(u);
 }
 
 function bool AlignFrame(Canvas C)
@@ -283,46 +288,48 @@ function Tick(float deltaTime)
   a += deltaTime;
   aTime += deltaTime;
 
-    switch( moveMode )
+    switch(moveMode)
     {
-    case MM_Enter:
-     if (a <= 0.1)
-         fadeAlpha += 1;
+       case MM_Enter:
+       if (a <= 0.1)
+           fadeAlpha += 1;
 
-     if (i_FrameBG.ImageColor.A < 255)
-     {
-       i_FrameBG.ImageColor.A = FadeAlpha;
-       i_FrameBG2.ImageColor.A = FadeAlpha;
-     }
-        break;
-
-        case MM_Exit:
-     if (a <= 0.1)
-         fadeAlpha -= 1;
-
-     if (i_FrameBG.ImageColor.A > 254)
-     {
-       i_FrameBG.ImageColor.A = FadeAlpha;
-       i_FrameBG2.ImageColor.A = FadeAlpha;
+       if (i_FrameBG.ImageColor.A < 255)
+       {
+           i_FrameBG.ImageColor.A = FadeAlpha;
+           i_FrameBG2.ImageColor.A = FadeAlpha;
        }
-        break;
+       break;
+
+       case MM_Exit:
+       if (a <= 0.1)
+           fadeAlpha -= 1;
+
+       if (i_FrameBG.ImageColor.A > 254)
+       {
+         i_FrameBG.ImageColor.A = FadeAlpha;
+         i_FrameBG2.ImageColor.A = FadeAlpha;
+       }
+       break;
 
         default:
-            bTickEnabled = False;
+        bTickEnabled = False;
     }
 }
 
 
-function FloatingRendered(Canvas C)
+function FloatingRendered(Canvas u)
 {
     if (bMoving)
-    { //I?eciae ia?aiauaiey ieia. Oioy caanu yoi ia io?ii.
-        C.SetPos(FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()), FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
-        C.SetDrawColor(255,255,255,255);
-        C.DrawTileStretched(Controller.WhiteBorder, ActualWidth(), ActualHeight());
+    { 
+        u.SetPos(FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()), FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
+        u.SetDrawColor(255,255,255,255);
+        u.DrawTileStretched(Controller.WhiteBorder, ActualWidth(), ActualHeight());
     }
-  if (bTickEnabled)
-      Tick(controller.renderDelta); // Eae oaeiaie ooieoee Tick iao, ii ii?ii eniieuciaaou RenderDelta.
+    if (bTickEnabled)
+        Tick(controller.renderDelta); // Как таковой Tick() не предусмотрен, но можно использовать RenderDelta.
+
+    RenderExtraStuff(u);
 }
 
 function AddSystemMenu()
@@ -342,7 +349,7 @@ function AddSystemMenu()
     b_ExitButton.bRepeatClick = False;
 }
 
-// HEX eiau eeaaeo 
+// HEX коды клавиш
 // 0x20 -- пробел, 0x1B -- ESC
 function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 {
@@ -350,71 +357,78 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 
     iKey = EInputKey(Key);
 
+    // Не реагировать на нажатия если не прошло достаточно времени.
+    if ((playerOwner().level.TimeSeconds - conStartTime < 2) && (!bForcePlay))
+        return true;
+
     if (bForcePlay)
     {
-    if (Key == 0x1B && state == 1) // 1--ia?aoi
-    {
+      //if (Key == 0x1B && state == 1)
+      if ((iKey == IK_Escape) || (iKey == IK_LeftMouse) || (iKey == IK_RightMouse) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown) || (ikey == IK_Space) && State == 1)
+      {
         AbortCinematicConvo();
         bCanBeClosed = true;
-      log("ESC in OnKeyEvent()"); //Срабатывает...
-          return false; //true;
+        Controller.CloseMenu(true);
+        return true;
+      }
     }
-  }
-  else
-  if (Key == 0x1B && state == 1) // 1--ia?aoi
-    {
-        ConPlay.TerminateConversation();
-        bCanBeClosed = true;
-      log("ESC in OnKeyEvent()"); //Срабатывает...
-          return false; //true;
-    }
-
-
-    // I?iaae || eieaneei iuoe
+    else
     if ((key == 0x20) || (ikey == IK_MouseWheelUp) || (ikey == IK_MouseWheelDown))
     {
         if (NumChoices < 1)
         {
-          if (aTime > WHEEL_SCROLL_DELAY) // so conversations history will be recorded completely, without skipping last event.
-          conPlay.PlayNextEvent();
-          aTime = 0;
+           if (aTime > WHEEL_SCROLL_DELAY) // so conversations history will be recorded completely, without skipping last event.
+               conPlay.PlayNextEvent();
+           aTime = 0;
         }
         return true;
     }
- return true; //false;
+ return true;
 }
 
-// Убрать ESC, оставить остальное? Или писать свой аналог через Interactions + оверлей?
-function bool OnCanClose(optional bool bCancelled)
+function InternalOnMouseRelease(GUIComponent Sender)
 {
-//  if (bForcePlay)
-//  {
-//      AbortCinematicConvo();
-//      return true;
-//  }
+    if (bForcePlay)
+    {
+        AbortCinematicConvo();
+        bCanBeClosed = true;
+        Controller.CloseMenu(true);
+        return;
+    }
+    else if (playerOwner().level.TimeSeconds - conStartTime < 2)
+    {
+        return;
+    }
+    else
+    {
+        if (NumChoices < 1)
+            conPlay.PlayNextEvent();
+        return;
+    }
+}
 
-/*     if (NumChoices == 0)// < 1)
-     {
-      if (ConPlay != none)
-      {
-       conPlay.PlayNextEvent();
-       //return false;
-      }
-      else return true;
-     }
 
-   if (ConPlay == none)
-       return true;*/
-       if (conPlay == none)
-       bCanBeClosed = true;
+// Срабатывает при нажатии ESC, вернуть true = позволить закрыть окно, вернуть false = не закрывать.
+function bool CanCloseWindow(optional bool bCancelled)
+{
+    return bCanBeClosed;
+}
 
-  return bCanBeClosed; // false = ignore ESC key
+function RenderExtraStuff(canvas u)
+{
+    u.SetOrigin(self.ActualLeft(), self.ActualTop());
+    u.SetClip(self.ActualWidth(), self.ActualHeight());
+    u.font = font'dxFonts.MSS_10';
+    u.SetDrawColor(128,255,128,255); // RGB Alpha
+    u.SetPos(20,200);
+
+    u.DrawText("Canvas: Test text here! Coords X="$u.CurX @"Y="$u.CurY);
 }
 
 
 function ShowReceivedItem(Inventory invItem, int count)
 {
-    // Iiea caaeooea
+    // ToDo: Нарисовать окошки
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -434,7 +448,7 @@ function bool InternalOnClick(GUIComponent Sender)
         if (sender == conChoices[buttonIndex])
         {
             conPlay.PlayChoice(ConChoice(conChoices[buttonIndex].GetUserObject()));
-            ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText); // ioia?aceou aa?eaio ioaaoa eae oaeno.
+            ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText);
 
             // Clear the screen
             RemoveChoices();
@@ -444,40 +458,41 @@ function bool InternalOnClick(GUIComponent Sender)
     return true;
 }
 
-function InternalOnMouseRelease(GUIComponent Sender)
-{
-        if (playerOwner().pawn.level.TimeSeconds - conStartTime < 2)
-        {
-                return;
-        }
-        else
-        {
-            if (NumChoices < 1)
-            conPlay.PlayNextEvent();
-            return;
-        }
-}
-
 function Clear();
 
-function bool isVisible();
+function bool isVisible()
+{
+   return false;
+}
 
 function Destroy()
 {
-   bCanBeClosed = true;
-   Controller.closeMenu();
+    Close();
 }
 
 function close()
 {
-   Destroy();
+    SetTimer(movePeriod, false);
+    moveMode     = MM_Exit;
+    bTickEnabled = true;
+    bCanBeClosed = true;
+}
+
+event Timer()
+{
+    Controller.closeMenu(true);
 }
 
 defaultproperties
 {
-    colConTextFocus=(R=255,G=255,B=0,A=0),
-    colConTextChoice=(R=0,G=0,B=255,A=0),
-    colConTextSkill=(R=255,G=0,B=0,A=0),
+    OnCanClose=CanCloseWindow
+    OnPreDraw=InternalOnPreDraw
+    OnKeyEvent=ConWindowActive.InternalOnKeyEvent
+    OnMouseRelease=ConWindowActive.InternalOnMouseRelease
+
+    colConTextFocus=(R=255,G=255,B=0,A=0)
+    colConTextChoice=(R=0,G=0,B=255,A=0)
+    colConTextSkill=(R=255,G=0,B=0,A=0)
 
     DefaultWidth=1.0 //0.2
     DefaultHeight=1.0 //0.6
@@ -498,26 +513,26 @@ defaultproperties
     ChoiceBeginningChar="  "
     movePeriod=0.60
 
-        Begin Object class=GUIScrollTextBox Name=MySubTitles
-            RenderWeight=0.8
-            WinWidth=0.98
-            WinHeight=0.18
-            WinLeft=0.01
-            WinTop=0.825
+    Begin Object class=GUIScrollTextBox Name=MySubTitles
+        RenderWeight=0.8
+        WinWidth=0.98
+        WinHeight=0.18
+        WinLeft=0.01
+        WinTop=0.825
         TabOrder=2
         bVisibleWhenEmpty=false
         bNoTeletype=false
-                CharDelay=0.005
-                EOLDelay=0.75
-                RepeatDelay=3.0
-                StyleName="STY_DXR_DXSubTitles"
-                FontScale=FNS_Small
-// Auaeyaeo ?ooei 0_o        TextAlign=TXTA_Center
-        End Object
-        winSpeech=MySubtitles
+        CharDelay=0.005
+        EOLDelay=0.75
+        RepeatDelay=3.0
+        StyleName="STY_DXR_DXSubTitles"
+        FontScale=FNS_Small
+//        TextAlign=TXTA_Center
+    End Object
+    winSpeech=MySubtitles
 
     Begin Object Class=GUILabel Name=MySpeaker
-        Caption=" "
+        Caption=""
         TextAlign=TXTA_Left
         TextColor=(B=255,G=255,R=255)
         FontScale=FNS_Small
@@ -531,14 +546,11 @@ defaultproperties
         bScaleToParent=True
         menustate=MSAT_Blurry
     End Object
-        SpeakerName=MySpeaker
+    SpeakerName=MySpeaker
 
 
 //      i_FrameBG=none //FloatingFrameBackground
 //     onDraw=ConWindowActive.OnDraw
 //     OnPreDraw=ConWindowActive.OnPreDraw
 //     OnClose=DeusExMidGameMenu.InternalOnClose
-         OnPreDraw=InternalOnPreDraw
-     OnMouseRelease=ConWindowActive.InternalOnMouseRelease
-     OnKeyEvent=ConWindowActive.InternalOnKeyEvent
 }

@@ -198,7 +198,10 @@ function ConWinFinished()
     else
     {
         if (conWinThird != None)
-            conWinThird.Destroy();
+        {
+            conWinThird.bCanBeClosed = true;
+            conWinThird.Close(); //Destroy();
+        }
 
         // Show the hud display if this was a third-person convo
         if (!bForcePlay)

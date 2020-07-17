@@ -2,7 +2,7 @@
 // Fishes.
 //=============================================================================
 class Fishes extends Animal
-	abstract;
+    abstract;
 
 var   float leaderTimer;
 var   float forwardTimer;
@@ -14,90 +14,91 @@ var() bool  bStayHorizontal;
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	ResetLeaderTimer();
-	forwardTimer = -1;
-	bumpTimer    = 0;
-	abortTimer   = -1;
-	breatheTimer = 0;
+    ResetLeaderTimer();
+    forwardTimer = -1;
+    bumpTimer    = 0;
+    abortTimer   = -1;
+    breatheTimer = 0;
 }
 
 function ResetLeaderTimer()
 {
-	leaderTimer = FRand()*10.0+5;
+    leaderTimer = FRand()*10.0+5;
 }
 
 function ResetForwardTimer()
 {
-	forwardTimer = FRand()*10.0+2;
+    forwardTimer = FRand()*10.0+2;
 }
 
 function bool IsNearHome(vector position)
 {
-	local bool          bNear;
-	local PawnGenerator genOwner;
+    local bool          bNear;
+    local PawnGenerator genOwner;
 
-	bNear = true;
-	if (bUseHome)
-	{
-		genOwner = PawnGenerator(Owner);
-		if (genOwner == None)
-		{
-			if (VSize(HomeLoc-((position-Location)+genOwner.FlockCenter)) > HomeExtent)
-				bNear = false;
-		}
-		else
-		{
-			if (VSize(HomeLoc-position) > HomeExtent)
-				bNear = false;
-		}
-	}
+    bNear = true;
+    if (bUseHome)
+    {
+        genOwner = PawnGenerator(Owner);
+        if (genOwner == None)
+        {
+            if (VSize(HomeLoc-((position-Location)+genOwner.FlockCenter)) > HomeExtent)
+                bNear = false;
+        }
+        else
+        {
+            if (VSize(HomeLoc-position) > HomeExtent)
+                bNear = false;
+        }
+    }
 
-	return bNear;
+    return bNear;
 }
 
 function PlayWalking()
 {
-	LoopAnimPivot('Swim');
+    LoopAnimPivot('Swim');
 }
+
 function TweenToWalking(float tweentime)
 {
-	TweenAnimPivot('Swim', tweentime);
+    TweenAnimPivot('Swim', tweentime);
 }
 
 
 // Approximately five million stubbed out functions...
 function ReactToInjury(Pawn instigatedBy, class<DamageType> damageType, EHitLocation hitPos);
-function PlayRunningAndFiring() {}
-function TweenToShoot(float tweentime) {}
-function PlayShoot() {}
-function TweenToAttack(float tweentime) {}
-function PlayAttack() {}
-function PlayPanicRunning() {}
-function PlaySittingDown() {}
-function PlaySitting() {}
-function PlayStandingUp() {}
-function PlayRubbingEyesStart() {}
-function PlayRubbingEyes() {}
-function PlayRubbingEyesEnd() {}
-function PlayStunned() {}
-function PlayFalling() {}
-function PlayLanded(float impactVel) {}
-function PlayDuck() {}
-function PlayRising() {}
-function PlayCrawling() {}
-function PlayPushing() {}
+function PlayRunningAndFiring();
+function TweenToShoot(float tweentime);
+function PlayShoot();
+function TweenToAttack(float tweentime);
+function PlayAttack();
+function PlayPanicRunning();
+function PlaySittingDown();
+function PlaySitting();
+function PlayStandingUp();
+function PlayRubbingEyesStart();
+function PlayRubbingEyes();
+function PlayRubbingEyesEnd();
+function PlayStunned();
+function PlayFalling();
+function PlayLanded(float impactVel);
+function PlayDuck();
+function PlayRising();
+function PlayCrawling();
+function PlayPushing();
 function PlayFiring(float Rate, name FiringMode);
-function PlayTakingHit(EHitLocation hitPos) {}
+function PlayTakingHit(EHitLocation hitPos);
 
-function PlayTurning() {}
-function TweenToRunning(float tweentime) {}
-function PlayRunning() {}
-function TweenToWaiting(float tweentime) {}
-function PlayWaiting() {}
-function TweenToSwimming(float tweentime) {}
-function PlaySwimming() {}
+function PlayTurning();
+function TweenToRunning(float tweentime);
+function PlayRunning();
+function TweenToWaiting(float tweentime);
+function PlayWaiting();
+function TweenToSwimming(float tweentime);
+function PlaySwimming();
 
 
 defaultproperties

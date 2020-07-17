@@ -1,10 +1,10 @@
 class GlassThings extends DeusExDecoration
-                          abstract;
+                          Abstract;
 
 defaultproperties
 {
      DrawType=DT_StaticMesh
      Mass=10.000000
      Buoyancy=10.000000
-     FragType=Class'DeusEx.GlassFragment'
+     FragType=class'DeusEx.GlassFragment'
 }

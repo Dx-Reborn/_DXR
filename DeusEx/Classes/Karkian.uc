@@ -209,6 +209,7 @@ function PlayCriticalDamageSound()
 
 defaultproperties
 {
+bAIDebugLogMessages=true
      bPlayDying=True
      FoodClass=Class'DeusEx.DeusExCarcass'
      bPauseWhenEating=True

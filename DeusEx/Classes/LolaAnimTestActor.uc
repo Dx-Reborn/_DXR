@@ -1,6 +1,12 @@
-class LolaAnimTestActor extends ScaledSprite;
+/*
+   Для проверки моделей с анимацией.
+
+*/
+
+class LolaAnimTestActor extends DeusExDecoration; //ScaledSprite;
 
 var mesh m;
+var float BarrelRotation;
 
 event BeginPlay()
 {
@@ -12,16 +18,35 @@ event BeginPlay()
         SetDrawType(DT_Mesh);
     }
 
-    if (mesh != None)
-        LoopAnim('Death');
+//    if (mesh != None)
+//        LoopAnim('Death');
 }
 
 function FindMesh()
 {
-    m = Mesh(DynamicLoadObject("P_TestChar.TestChar", class'Mesh', True));      
+    m = Mesh(DynamicLoadObject("Package.Model", class'Mesh', True));
+}
+
+event Tick(float dt)
+{
+    local Rotator R;
+
+    if (mesh != None)
+    {
+       BarrelRotation += dt * 65535.0 * 8.0 / 8;
+
+       R.Roll = BarrelRotation;
+       SetBoneRotation('Bone002', R, 0);
+    }
 }
 
 defaultproperties
 {
-    bStatic=false
+    DrawType=DT_Sprite
+/*    bStatic=false
+    bLightingVisibility=false
+    bCollideActors=true
+    bBlockActors=true
+    bAcceptsProjectors=true*/
 }
+

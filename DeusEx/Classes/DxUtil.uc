@@ -580,7 +580,7 @@ static function PrepareShotForSaveGame(Level Level, string path)
 
     class'GraphicsManager'.static.TakeScreenShot(Level, shot);
     class'GraphicsManager'.static.ScaleTexture(shot, 512, 256, ScaleStretch);
-    class'GraphicsManager'.static.SaveTexture(path$"\\ScreenShot.jpg", shot, JPG_QUALITY);
+    class'GraphicsManager'.static.SaveTextureJpeg(path$"\\ScreenShot.jpg", shot, JPG_QUALITY);
 
     gl.default.lastScreenShot = shot;
     //log(shot @ gl.default.lastScreenShot, 'ScreenShot');

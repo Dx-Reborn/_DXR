@@ -3,7 +3,7 @@ class TrashBagC extends TrashBags;
 defaultproperties
 {
     DrawType=DT_StaticMesh
-    StaticMesh=StaticMesh'DeusExStaticMeshes10.TrashBag_F'
+    StaticMesh=StaticMesh'DXR_TrashBags.TrashBag_F'
     CollisionRadius=14.00
     CollisionHeight=20.00
     bGenerateTrash=True
@@ -13,5 +13,5 @@ defaultproperties
     ItemName="Trashbag"
     Mass=30.000000
     Buoyancy=40.000000
-    skins[0]=Shader'DeusExStaticMeshes10.Plastic.TrashBag_F_SH'
+    skins[0]=Shader'DXR_TrashBags.Plastic.TrashBag_F_SH'
 }

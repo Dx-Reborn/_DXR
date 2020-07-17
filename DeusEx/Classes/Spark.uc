@@ -76,6 +76,11 @@ function SpawnActorEffect(Actor Actor, vector Loc)
       Spawn(class'EM_ConcreteHit',,,Loc,);
       PlayActorSound('Ceramic');
    }
+   else if (Actor.IsA('CementBag')) // Cement
+   {
+      Spawn(class'EM_ConcreteHit_a',,,Loc,);
+      PlayActorSound('Ceramic');
+   }
    else if (Actor.IsA('Toilet2') || Actor.IsA('Toilet'))
    {
       //Spawn(class'EM_ConcreteHit',,,Loc,); // looks SCARY!

@@ -26,7 +26,7 @@ struct SNanoKeyInitStruct
 
 var() SNanoKeyInitStruct NanoKeyData[8];
 
-function SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have such event
+event SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have such event
 {
     local int i;
     local ScriptedPawn P;

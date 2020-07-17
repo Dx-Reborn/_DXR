@@ -99,6 +99,8 @@ function Sound GetDownSound()
     local DeusExGlobals gl;
     local sound sound;
 
+    bPostTravel = false;
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {
@@ -163,7 +165,8 @@ defaultproperties
      PlayerViewOffset=(X=20.000000,Y=10.000000,Z=-35.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconRifle'
-     CollisionRadius=26.000000
-     CollisionHeight=2.000000
+     CollisionRadius=26.00
+     CollisionHeight=3.00
+//     CollisionHeight=2.000000
      Mass=30.000000
 }

@@ -518,6 +518,11 @@ function RenderDebugInfo(Canvas c)
       }
 }
 
+function DrawDamagedIndicator(canvas u)
+{
+
+}
+
 function Timer()
 {
    cubeMapMode = false;

@@ -104,6 +104,8 @@ function Sound GetDownSound()
     local DeusExGlobals gl;
     local sound sound;
 
+    bPostTravel = false;
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {
@@ -172,8 +174,9 @@ defaultproperties
      PlayerViewOffset=(X=25.00,Y=8.00,Z=-14.00)  //(X=25.000000,Y=13.000000,Z=-14.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconCrossbow'
-     CollisionRadius=8.000000
-     CollisionHeight=1.000000
+     CollisionRadius=8.00
+     CollisionHeight=3.00
+//     CollisionHeight=1.000000
      Mass=15.000000
 
      FirstPersonViewSkins(0)=Texture'DeusExItems.Skins.MiniCrossbowTex1'

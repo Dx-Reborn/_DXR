@@ -2,7 +2,7 @@ class JerryCan extends Canisters;
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes0.Cannister_a'
+    StaticMesh=StaticMesh'DeusExStaticMeshes11.Scripted.JerryCan_a'
     CollisionRadius=10.000000
     CollisionHeight=13.200000
     DrawType=DT_StaticMesh

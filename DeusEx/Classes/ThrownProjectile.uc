@@ -150,7 +150,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 }
 
-function Timer()
+event Timer()
 {
     if (bProximityTriggered)
         bArmed = True;
@@ -394,7 +394,7 @@ auto state Flying
     }
 }
 
-singular function PhysicsVolumeChange(PhysicsVolume Volume)
+singular event PhysicsVolumeChange(PhysicsVolume Volume)
 {
     local float splashsize;
     local actor splash;
@@ -421,7 +421,7 @@ singular function PhysicsVolumeChange(PhysicsVolume Volume)
     }
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

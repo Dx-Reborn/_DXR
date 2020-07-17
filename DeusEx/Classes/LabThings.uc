@@ -1,0 +1,2 @@
+class LabThings extends DeusExDecoration;
+

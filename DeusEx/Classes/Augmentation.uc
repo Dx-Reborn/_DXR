@@ -64,6 +64,16 @@ var() sound ActivateSound;
 var() sound DeactivateSound;
 var() sound LoopSound;
 
+//
+event PostLoadSavedGame()
+{
+    if (bIsActive)
+    {
+        Deactivate();
+        Activate();
+    }
+}
+
 function RestoreAugLevel()
 {
   local int a;
@@ -75,10 +85,10 @@ function RestoreAugLevel()
   {
     if (gl.mySavedAugs[a].InternalAugmentationName == InternalAugmentationName)
     {
-     bHasIt = gl.mySavedAugs[a].bHasIt; // присвоить данные к элементу массива
-     currentLevel = gl.mySavedAugs[a].currentLevel;
-     HotKeyNum = gl.mySavedAugs[a].HotKeyNum;
-     btempVar = gl.mySavedAugs[a].bIsActive;
+      bHasIt = gl.mySavedAugs[a].bHasIt; // присвоить данные к элементу массива
+      currentLevel = gl.mySavedAugs[a].currentLevel;
+      HotKeyNum = gl.mySavedAugs[a].HotKeyNum;
+      btempVar = gl.mySavedAugs[a].bIsActive;
       if (btempVar)
           Activate();
       log("Restored aug"@self);

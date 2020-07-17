@@ -5,11 +5,10 @@
 class PlayerPawn extends DeusExPlayerPawn
                          config (DXRConfig);
 
-// Это для возврата назад, поскольку .default будет заменен нативной функцией.
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
 
-var travel inventory objects[10]; // for toolbelt
+var travel inventory objects[10]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 
@@ -61,6 +60,7 @@ var config bool bConfirmSaveDeletes;          // ToDo: Implement this.
 var config bool bConfirmNoteDeletes;          // ToDo: Implement this.
 var config bool bAskedToTrain;                // Useless now? 
 var config bool bSoundsForLadderVolumes;      // Play sounds when moving in LadderVolume
+
 // DXR: New options (from Vanilla Matters, but can be turned on/off)
 var config bool bLeftClickForLastItem;
 var config int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
@@ -83,7 +83,7 @@ var config bool bAlwaysRun;             // True to default to running
 var bool bToggleWalk;
 var bool bToggleCrouch;             // True to let key toggle crouch
 var bool bIsCrouching;
-var travel byte lastbDuck;              // used by toggle crouch
+var travel byte lastbDuck;          // used by toggle crouch
 
 var transient cameraeffect ce;    // Указатель на эффект камеры
 var bool bMblurActive;
@@ -98,6 +98,7 @@ var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
 
 var travel float MyAutoAim;
+var float hitmarkerTime; // Для индикатора попадания
 
 var ConHistory conHistory;           // Conversation History
 
@@ -468,78 +469,25 @@ function bool AddInventory( inventory NewItem )
     return true;
 }
 
-/*
-   Code from Postal2. Fixes a bug,
-   when inventory items are duplicated 
-   after traveling to new map.
-*/
-/*function bool AddInventory(inventory NewItem)
+function HitMarkerTick(float deltaTime)
 {
-    // Skip if already in the inventory.
-    local inventory Inv;
-    local Inventory currinv;
-    local actor Last;
+    local DeusExHUD hd;
 
-    Last = self;
-    
-    // The item should not have been destroyed if we get here.
-    if (NewItem ==None)
+    hd = DeusExHud(DeusExPlayerController(Controller).myHUD);
+
+    if (hitmarkerTime > 0)
     {
-        Warn("PlayerPawn.AddInventory(): tried to add none inventory to "$self);
-        return false;
+        if (hd != None)
+        {
+            hitmarkerTime -= deltaTime;
+
+            if (hitmarkerTime < 0.05 || IsInState('Dying'))
+            {
+                hitmarkerTime = 0;
+            }
+        }
     }
-
-    for(Inv=Inventory; Inv!=None; Inv=Inv.Inventory)
-    {
-        if(Inv == NewItem)
-            return false;
-        Last = Inv;
-    }
-
-    //log("addinventory "$NewItem);
-    // Check if we already have a class of this type in our inventory.
-    // If so, try to just add more of it
-    currinv = FindInventoryType(NewItem.class);
-//    log(self@"currInv ="@currinv);
-    // You'll only have this in your inventory *and* have this function
-    // get called if you've just done a level warp. Normally after a pickup
-    // this function won't get called if you already have ammo.
-    if(Ammunition(currinv) != None)
-    {
-        // This is touchy and may not work. This was a work around for the
-        // original ammo bug from Epic in here. The problem was if you picked
-        // up a weapon and then warped to a new level, it duplicated the ammo
-        // in your inventory.
-        // Now, the pickup adds ammo to the weapon, and then when you warp
-        // your weapon is added, and ammo (from the inventory which also travelled)
-        // is added THEN to your weapon. Before both was happening, so you'd
-        // get both things in a warp.
-        currinv.Destroy();
-        return false;
-
-        // Trying to figure out why ammo is added again when you warp 
-        //  between levels.
-        Ammunition(currinv).AddAmmo(Ammunition(NewItem).AmmoAmount);
-//        log("tried to add me again, even though i'm already here "$currinv);
-//        currinv.Destroy();
-//        return false;
-
-    }
-    else
-    {
-        // Add to back of inventory chain (so minimizes net replication effect).
-        NewItem.SetOwner(Self);
-        NewItem.Inventory = None;
-        Last.Inventory = NewItem;
-
-        if (Controller != None)
-            Controller.NotifyAddInventory(NewItem);
-
-    log("Added inventory item --"@NewItem);
-    }
-
-    return true;
-}*/
+}
 
 
 defaultproperties

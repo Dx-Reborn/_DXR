@@ -156,6 +156,7 @@ defaultproperties
     Description="The sawed-off, pump-action shotgun features a truncated barrel resulting in a wide spread at close range and will accept either buckshot or sabot shells."
     beltDescription="SAWED-OFF"
     CollisionRadius=12.00
-    CollisionHeight=0.90
+    CollisionHeight=3.00
+//    CollisionHeight=0.90
     Mass=15.00
 }

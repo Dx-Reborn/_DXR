@@ -11,7 +11,7 @@ var() bool bGenerateTrash;
 //
 // copied from Engine.Decoration
 //
-function Destroyed()
+event Destroyed()
 {
     local actor dropped;
     local class<actor> tempClass;
@@ -42,10 +42,8 @@ function Destroyed()
                 trash = Spawn(class'TrashPaper',,, loc);
                 if (trash != None)
                 {
-                    trash.SetPhysics(PHYS_Flying);  //(PHYS_Rolling);
+                    trash.SetPhysics(PHYS_Walking);  //(PHYS_Rolling);
                     trash.rot = RotRand(True);
-                        trash.Velocity = VRand() * 50;
-//                      trash.Velocity.Z=Frand();
                     trash.rot.Yaw = 0;
                     trash.dir = VRand() * 20 + vect(20,20,0);
                     trash.dir.Z = 0;
@@ -109,5 +107,4 @@ defaultproperties
      numThings=1
      bFlammable=True
      bCanBeBase=True
-//     Mesh=None
 }

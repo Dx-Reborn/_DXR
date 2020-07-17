@@ -15,7 +15,6 @@ enum EMusicMode
     MUS_Outro,
     MUS_Dying
 };
-
 var EMusicMode musicMode;
 var float savedSongPos;
 var transient float musicCheckTimer;
@@ -35,10 +34,7 @@ var transient DeusExGlobals gl; // if not Transient, game will instantly crash w
 
 var int SavedbRun;
 
-// Расстояние на котором можно использовать объекты
-// Функция UT2004 нереально косая, надо адаптировать из оригинала!!!
-// 09/07/2017 -- Сделано!
-var float MaxFrobDistance;
+var float MaxFrobDistance; // Расстояние на котором можно использовать объекты
 var Actor FrobTarget;
 var float FrobTime;
 var float curLeanDist;
@@ -55,6 +51,8 @@ var input float aExtra0;
 var bool bCheatsEnabled;
 
 var(flashFineTuning) float deltaStep, flashFogMult;
+
+var transient Texture CurrentCubeMapTexture;
 
 event PostLoadSavedGame()
 {
@@ -677,6 +675,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).UpdatePoison(deltaTime);
             Human(pawn).Bleed(deltaTime);
             Human(pawn).RepairInventory();//
+            Human(pawn).HitMarkerTick(deltaTime); // DXR: for HitMarker
         
 
             if (Human(pawn).bOnFire)
@@ -1129,6 +1128,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdateTimePlayed(DeltaTime);
             Human(pawn).RepairInventory();
+            Human(pawn).HitMarkerTick(deltaTime);
     
             pawn.SetWalking(true); // Перейти в режим ходьбы
             bRun=-1;
@@ -1294,6 +1294,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).Bleed(deltaTime);
             Human(pawn).UpdateTimePlayed(DeltaTime);
             Human(pawn).RepairInventory(); //
+            Human(pawn).HitMarkerTick(deltaTime);
 
         if (Human(pawn).bOnFire)
             {
@@ -1458,7 +1459,71 @@ Begin:
     }
 }
 
+exec function TestCubeMap()
+{
+     GoToState('GenerateCubeMap');
+}
+
+//    RotateNoneFlipNone, Rotate90FlipNone, Rotate180FlipNone, Rotate270FlipNone,
+//    RotateNoneFlipX, Rotate90FlipX, Rotate180FlipX, Rotate270FlipX
+
+state GenerateCubeMap extends PlayerWalking
+{
+begin:
+      bZeroRoll = false; // 1 на 90 градусов
+      SetRotation(rot(0,0,16384));
+      Sleep(1.5); // Без этого не работает 
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate270FlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_0.bmp", CurrentCubeMapTexture);
+
+
+      bZeroRoll = false; // 2 на 90 градусов
+      SetRotation(rot(0,32768,-16384));
+      Sleep(1.5);
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate90FlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_1.bmp", CurrentCubeMapTexture);
+
+
+      bZeroRoll = false; // 3 на 180
+      SetRotation(rot(0,16384,32768));
+      Sleep(1.5);
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate180FlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_2.bmp", CurrentCubeMapTexture);
+
+
+      bZeroRoll = false; // 4 не поворачивать
+      SetRotation(rot(0,-16384,0));
+      Sleep(1.5);
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, RotateNoneFlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_3.bmp", CurrentCubeMapTexture);
+
+
+      bZeroRoll = false; // 5 ?
+      SetRotation(rot(16384,0,16384));
+      Sleep(1.5);
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate270FlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_4.bmp", CurrentCubeMapTexture);
+
+
+      bZeroRoll = false; // 6 ?
+      SetRotation(rot(-16384,32768,16384));
+      Sleep(1.5);
+      class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
+      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate90FlipX);
+//      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate270FlipNone);
+      class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_5.bmp", CurrentCubeMapTexture);
+
+      // Back to walking state
+      GoToState('PlayerWalking');
+}
+
 exec function QuickSave();
+
 
 
 function ShowMidGameMenu(bool bPause)
@@ -1468,13 +1533,13 @@ function ShowMidGameMenu(bool bPause)
        ClientOpenMenu(class'GameEngine'.default.MainMenuClass);
    else
    {
-     class'DxUtil'.static.PrepareShotForSaveGame(self.XLevel, ConsoleCommand("get System savepath"));
+       class'DxUtil'.static.PrepareShotForSaveGame(self.XLevel, ConsoleCommand("get System savepath"));
 
-    // Pause if not already
-   if(bPause && Level.Pauser == None)
-       SetPause(true);
-     StopForceFeedback();  // jdf - no way to pause feedback
-     ClientOpenMenu(MidGameMenuClass);
+      // Pause if not already
+      if(bPause && Level.Pauser == None)
+         SetPause(true);
+       StopForceFeedback();  // jdf - no way to pause feedback
+       ClientOpenMenu(MidGameMenuClass);
    }
 }
 
@@ -1483,8 +1548,6 @@ function DeusExGameInfo getFlagBase()
   return DeusExGameInfo(Level.Game);
 }
 
-
-// Перемещено из DxrNativePlayerController
 function SetInstantMusicVolume(float vol)
 {
   savedMusicVolume = float(ConsoleCommand("get ini:Engine.Engine.AudioDevice MusicVolume"));
@@ -1510,5 +1573,5 @@ function RestoreSoundVolume()
 defaultproperties
 {
   MaxFrobDistance=112.00
-//  bWantsLedgeCheck=false
 }
+

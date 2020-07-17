@@ -62,14 +62,34 @@ function Tick(float deltaTime)
     {
         // turn off the sound when it stops
         AmbientSound = None;
-        SoundPitch = Default.SoundPitch;
+        SoundPitch = default.SoundPitch;
     }
+}
+
+//CyberP: damage pushes cart
+function DamageForce(int Damage)
+{
+    local Actor Act;
+
+    if (Damage > 20)
+        Damage = 20;
+    else if (Damage < 10)
+        Damage = 10;
+
+//    if (!standingActorGlobal.IsA('DeusExPlayer'))  // no bump if landing on cart
+       foreach BasedActors(class'Actor', Act)
+       {
+          if (!Act.IsA('PlayerPawn'))
+              StartRolling(0.25*Velocity*(Damage*0.1));
+       }
+
 }
 
 
 
 defaultproperties
 {
+     bCanBePushedByDamage=true
      bCanBeBase=True
      ItemName="Utility Push-Cart"
      mesh=mesh'DeusExDeco.Cart'
@@ -79,4 +99,5 @@ defaultproperties
      Mass=40.000000
      Buoyancy=45.000000
      Skins[0]=Texture'DeusExDeco.Skins.CartTex1'
+     HitPoints=60 // So you can have enough HitPoints to push it
 }

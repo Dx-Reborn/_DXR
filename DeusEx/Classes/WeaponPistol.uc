@@ -44,14 +44,6 @@ function PistolFireEnd()
     Skins[2] = texture'PinkMaskTex'; //class'ObjectManager'.static.GetActorMeshTexture(self, 2);
 }
 
-/*function WeaponTick(float dt)
-{
-  if (extrapuff != none)
-     AttachToBone(extrapuff, '163'); // ближайшая косточка
-
-  Super.WeaponTick(dt);
-}*/
-
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
 {
     local ShellCasing10mm s;
@@ -76,7 +68,9 @@ function Sound GetSelectSound()
     local sound sound;
 
     if (bPostTravel)
+    {
         return None;
+    }
 
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
@@ -128,6 +122,8 @@ function Sound GetDownSound()
 {
     local DeusExGlobals gl;
     local sound sound;
+
+    bPostTravel = false;
 
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
@@ -187,8 +183,9 @@ defaultproperties
      PlayerViewOffset=(X=22.000000,Y=19.000000,Z=-16.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconPistol'
-     CollisionRadius=7.000000
-     CollisionHeight=1.000000
+     CollisionRadius=7.00
+     CollisionHeight=3.00
 
+     // Test
      IconCoords=(X1=-1)
 }

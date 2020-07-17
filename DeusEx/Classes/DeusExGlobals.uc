@@ -33,6 +33,8 @@ var config bool bUseAltWeaponsSounds; // »спользовать подхват из дополнительные 
 var config int WS_Preset;
 var config string WS_PresetString;
 
+var config bool bHitmarkerOn; // ѕеремещено из PlayerPawn
+
 
 // »спользовать эффект текста, по€вл€ющегос€ за курсором?
 var config bool bUseCursorEffects;

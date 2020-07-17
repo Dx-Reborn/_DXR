@@ -19,8 +19,8 @@ state Wandering
         {
             // If we get bumped by another actor while we wait, start wandering again
             Rat(pawn).bAcceptBump = False;
-            Rat(pawn).Disable('AnimEnd');
-            Rat(pawn).GotoState('Wandering', 'Wander');
+            /*Rat(pawn).*/Disable('AnimEnd');
+            /*Rat(pawn).*/GotoState('Wandering', 'Wander');
         }
         // Handle conversations, if need be
         Global.Bump(bumper);

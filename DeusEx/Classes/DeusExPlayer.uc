@@ -390,13 +390,13 @@ function AddNote(optional array<String> strNote, optional Bool bUserNote, option
     // Optionally show the note in the log
     if (bShowInLog)
     {
-   if (ConPlay.dMsg != none) // DXR: Show these messages later.
-       ConPlay.dMsg.AddMessage(NoteAdded, sound'DeusExSounds.UserInterface.LogNoteAdded');
-   else
-   {
-        ClientMessage(NoteAdded);
-        PlaySound(Sound'LogNoteAdded');
-     }
+       if (ConPlay.dMsg != none) // DXR: Show these messages later.
+           ConPlay.dMsg.AddMessage(NoteAdded, sound'DeusExSounds.UserInterface.LogNoteAdded');
+       else
+       {
+           ClientMessage(NoteAdded);
+           PlaySound(Sound'LogNoteAdded');
+       }
     }
 }
 
@@ -4157,20 +4157,6 @@ function name GetFloorMaterial()
             }
         }
     }
-/*    if (texGroup == 'None') // None? Fallback to Trace()! Usually for StaticMeshes.
-    {
-     Start = Location - Vect(0,0,1)*CollisionHeight;
-     EndTrace = Start - Vect(0,0,32);
-       Trace(HitLocation, HitNormal, EndTrace, Start, false, , mat);
-
-       if (mat != none)
-       {
-         texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
-          SpecTex = class'DxUtil'.static.GetMaterialName(mat);
-       }
-    }*/
-
-//    log(target @ texGroup);
 
     SpecTex = texName;
     return texGroup;

@@ -35,6 +35,7 @@ var vector PrevLookVector;
 var bool bSeatIsPointInCylinder;
 
 var Actor PrevLookActor;
+var DestLocMarker mark;
 
 /** Utilities ********************************************************************************************************************************************************************/
 
@@ -42,6 +43,8 @@ function WaitForMover(Mover M);
 function NotifyTouch(actor toucher);
 function SwitchToBestWeapon();
 
+// Приходит из ScriptedPawn, передаем в другую функцию. Нужно для переопределения в состояниях. 
+// Global(NotifyTakeDamage(...)) вызовет именно этот вариант.
 function NotifyTakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
 {
    ScriptedPawn(Pawn).TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
@@ -54,11 +57,18 @@ function FallBackIfStuck()
       ScriptedPawn(Pawn).BackOff();
 }
 
-/*event MayFall()
+// Срабатывает когда NPC стоит на краю и может упасть.
+event MayFall()
 {
+   log(pawn@" May Fall ?");
    Pawn.bCanJump = true;
    Pawn.Velocity = EAdjustJump(0,Pawn.GroundSpeed);
-} */
+} 
+
+event NotifyMissedJump()
+{
+   log(pawn@" MissedJump ?");
+}
 
 //
 // LookAtActor - DEUS_EX STM
@@ -107,8 +117,8 @@ function LookAtVector(vector lookTo, bool bRotate,
         rate = 1.0;
 
     // Head movement angles
-    hAngle = 54; //5461;  // 30 degrees horizontally // ToDo: чтобы повернуть голову, нужно повернуть её кость. У имеющихся моделей в голове и шее
-    vAngle = 27; //2731;  // 15 degrees vertically // ОЧЕНЬ много костей, мне их все поворачивать ?! В оригинале на остаток NPC доворачивал голову в нужном направлении.
+    hAngle = 54; //5461;  // 30 degrees horizontally // ToDo: модель с капризами стоит +- 500$
+    vAngle = 27; //2731;  // 15 degrees vertically // В оригинале на остаток NPC доворачивал голову в нужном направлении.
 
     // Determine our angle to the target
     lookFrom  = pawn.Location + (vect(0,0,1)*pawn.CollisionHeight*0.9);
@@ -344,6 +354,9 @@ function int GetProjectileList(out ScriptedPawn.NearbyProjectileList projList, v
 
 simulated event SetInitialState()
 {
+    if (mark == None)
+        mark = Spawn(class'DestLocMarker');
+
     GotoState('Auto');
 }
 
@@ -2113,7 +2126,7 @@ State Attacking
       }
     }
 
-    // DXR: Застряла(а)? Тогда перезапустить состояние с другой позиции. Сейчас уже должно быть исправлено (теоретически)ю
+    // DXR: Застряла(а)? Тогда перезапустить состояние с другой позиции. Сейчас уже должно быть исправлено (теоретически).
     event RecoverFromBadStateCode()                                                                         
     {
         log(self$"."$pawn$" State Attacking: something gone WRONG, fallback to Surprise:",'DXRAIController');
@@ -4907,6 +4920,9 @@ state Wandering
                 // Choose our destination, based on whether we have a home base
                 if (!ScriptedPawn(pawn).bUseHome)
                     bSuccess = AIPickRandomDestination(100, magnitude, 0, 0, 0, 0, 1, FRand()*0.4+0.35, ScriptedPawn(pawn).destLoc);
+                if (mark != None) // Маркер
+                   mark.SetLocation(ScriptedPawn(pawn).destLoc);
+
                 else
                 {
                     if (magnitude > ScriptedPawn(pawn).HomeExtent)
@@ -4927,18 +4943,21 @@ state Wandering
             // If we got a destination, go there
             if (iterations <= 0)
             {
-                ScriptedPawn(pawn).destLoc = ScriptedPawn(pawn).Location;
-                //log(pawn$" -- iterations are over, gonna stay at my location");
+                //ScriptedPawn(pawn).destLoc = ScriptedPawn(pawn).Location;
+                log(pawn$" -- iterations are over, gonna stay at my location, Giving extra 10 seconds!");
+                if (MoveTimer >= -20);
+                    MoveTimer = 10;
+
             }
         }
     }
 
-    function AnimEnd(int channel)
+    event AnimEnd(int channel)
     {
         pawn.PlayWaiting();
     }
 
-    function BeginState()
+    event BeginState()
     {
         ScriptedPawn(pawn).StandUp();
         SetEnemy(None, ScriptedPawn(pawn).EnemyLastSeen, true);
@@ -4950,7 +4969,7 @@ state Wandering
         ScriptedPawn(pawn).EnableCheckDestLoc(false);
     }
 
-    function EndState()
+    event EndState()
     {
       local int i;
 
@@ -6339,8 +6358,8 @@ State Alerting
 
         bInRange = false;
         if ((alarm != None) && !alarm.bDeleteMe)
-           if ((VSize((alarm.Location - pawn.Location)*vect(1,1,0)) < (pawn.CollisionRadius+alarm.CollisionRadius+24)) 
-               && (Abs(alarm.Location.Z - pawn.Location.Z) < (pawn.CollisionHeight+alarm.CollisionHeight)))
+           if ((VSize((alarm.Location - pawn.Location)*vect(1,1,0)) < (pawn.CollisionRadius+alarm.CollisionRadius+24)) && 
+               (Abs(alarm.Location.Z - pawn.Location.Z) < (pawn.CollisionHeight+alarm.CollisionHeight)))
                 bInRange = true;
 
         return (bInRange);
@@ -6565,8 +6584,8 @@ defaultproperties
     bStasis=false
     bAdjustFromWalls=true
     FovAngle=+90.00
-    MinHitWall=9999999827968.00
-//    MinHitWall=-0.2
+//    MinHitWall=9999999827968.00
+    MinHitWall=999999999827968.00
 //  RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
     RotationRate=(Pitch=4096,Yaw=90000,Roll=3072)
     Skill=2.00

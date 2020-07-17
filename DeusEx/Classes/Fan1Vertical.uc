@@ -1,7 +1,7 @@
 //=============================================================================
 // Fan1Vertical.
 //=============================================================================
-class Fan1Vertical extends DeusExDecoration;
+class Fan1Vertical extends Fans;
 
 defaultproperties
 {

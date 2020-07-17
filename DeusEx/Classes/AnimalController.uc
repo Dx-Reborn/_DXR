@@ -3,6 +3,8 @@
 */
 class AnimalController extends DXRAiController;
 
+var int AnimNotifyCount;
+
 
 function GotoDisabledState(class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos)
 {
@@ -30,6 +32,7 @@ state Eating
         if (pawn.Physics == PHYS_Falling)
             return true;
 
+        Global.NotifyHitWall(HitNormal, Wall); //
         CheckOpenDoor(HitNormal, Wall);
         return true;
     }
@@ -91,11 +94,12 @@ GoToFood:
     if (!Animal(pawn).GetFeedSpot(Animal(pawn).Food, Animal(pawn).destLoc))
         FollowOrders();
 
-    FinishRotation();
+//    FinishRotation();
 
+//    if (pawn.Acceleration != vect(0,0,0))
     Animal(pawn).PlayRunning();
-    MoveTo(Animal(pawn).destLoc,,false);// MaxDesiredSpeed);
-//    MoveTo(Animal(pawn).food.location,,false);// MaxDesiredSpeed);
+    MoveTo(Animal(pawn).destLoc,,false);
+
     if (!Animal(pawn).IsInRange(Animal(pawn).Food))
         Goto('GoToFood');
 
@@ -126,14 +130,17 @@ Eat:
         Goto('StopEating');
     Animal(pawn).PlayEatingSound();
     Animal(pawn).PlayEating();
-//  if (Animal(pawn).bAnimNotify)
-//   if (bControlAnimations) //?
-//        FinishAnim();
-  //  else
-//    {
+
+//    AnimNotifyCount = GetAnimNotifyCount();
+//    log(Pawn@"AnimNotifyCount ="@AnimNotifyCount);
+
+    if (AnimNotifyCount > 0) // NOTE: Same as bAnimNotify = true
+        FinishAnim();
+    else
+    {
         FinishAnim();
         Animal(pawn).Munch(Animal(pawn).Food);
-//    }
+    }
     if (!Animal(pawn).bPauseWhenEating || (FRand() > 0.1))
         Goto('Eat');
 

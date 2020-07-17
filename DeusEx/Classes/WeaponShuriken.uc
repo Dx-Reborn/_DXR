@@ -45,6 +45,8 @@ function Sound GetDownSound()
     local DeusExGlobals gl;
     local sound sound;
 
+    bPostTravel = false;
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     if (gl.bUseAltWeaponsSounds)
     {
@@ -92,9 +94,11 @@ defaultproperties
      ProjectileClass=Class'DeusEx.Shuriken'
      InventoryGroup=12
      ItemName="Throwing Knives"
-     PlayerViewOffset=(X=24.000000,Y=18.000000,Z=-30.000000)
+     PlayerViewOffset=(X=24.000000,Y=18.000000,Z=-21.000000)
+//     PlayerViewOffset=(X=24.000000,Y=18.000000,Z=-30.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconShuriken'
-     CollisionRadius=7.500000
-     CollisionHeight=0.300000
+     CollisionRadius=7.50
+     CollisionHeight=3.00
+//     CollisionHeight=0.300000
 }

@@ -56,6 +56,18 @@ var localized string    msgPicking;             // message when the door is bein
 var localized string    msgAlreadyUnlocked;     // message when the door is already unlocked
 var localized string    msgNoNanoKey;           // message when the player doesn't have the right nanokey
 
+// Для размера рамки на ГДИ (16 или 8).
+final function bool GetBoundingBoxSize(out vector boxSize)
+{
+  local box korobka;
+
+  korobka = class'ObjectManager'.static.GetMoverBoundingBox(self);
+
+  boxSize = /*korobka.Min +*/ korobka.Max;
+
+  return (korobka.IsValid > 0);
+}
+
 // Actor
 final function bool GetBoundingBox(out vector MinVect, out vector MaxVect)
 {
@@ -68,6 +80,7 @@ final function bool GetBoundingBox(out vector MinVect, out vector MaxVect)
 
   return (korobka.IsValid > 0);
 }
+
 // Mover
 private final function bool GetBoundingBoxForAI(out vector MinVect, out vector MaxVect)
 {
@@ -270,7 +283,10 @@ function BlowItUp(Pawn instigatedBy)
             if (FragmentTexture != None)
                 frag.Skins[0] = FragmentTexture;
             if (bFragmentTranslucent)
+            {
                 frag.Style = STY_Translucent;
+                frag.Skins[0] = frag.CreateTranslucentMaterial(); // DXR: Прозрачные фрагменты
+            }
             if (bFragmentUnlit)
                 frag.bUnlit = True;
         }
@@ -379,18 +395,17 @@ function bool EncroachingOn(actor Other)
 
     // If we have a bump-player event, and Other is a pawn, do the bump thing.
     P = Pawn(Other);
-    if( P!=None && P.IsPlayerPawn()) // P.bIsPlayer )
+    if(P!=None && P.IsPlayerPawn()) // P.bIsPlayer )
     {
-        if ( PlayerBumpEvent!='' )
+        if (PlayerBumpEvent!='')
             Bump( Other );
-        if ( (MyMarker != None) && (P.Base != self) 
-            && (P.Location.Z < MyMarker.Location.Z - P.CollisionHeight - 0.7 * MyMarker.CollisionHeight) )
+        if ((MyMarker != None) && (P.Base != self) && (P.Location.Z < MyMarker.Location.Z - P.CollisionHeight - 0.7 * MyMarker.CollisionHeight) )
             // pawn is under lift - tell him to move
             P.Controller.UnderLift(self);
     }
 
     // Stop, return, or whatever.
-    if( MoverEncroachType == ME_StopWhenEncroach )
+    if(MoverEncroachType == ME_StopWhenEncroach)
     {
         Leader.MakeGroupStop();
         return true;
@@ -400,7 +415,7 @@ function bool EncroachingOn(actor Other)
         Leader.MakeGroupReturn();
         if ( Other.IsA('Pawn') )
         {
-            if ( Pawn(Other).IsPlayerPawn()) //bIsPlayer )
+            if (Pawn(Other).IsPlayerPawn()) //bIsPlayer )
             Pawn(Other).PlayMoverHitSound();
 //              Pawn(Other).PlaySound(Pawn(Other).Land, SLOT_None);         // DEUS_EX CNN - Changed from SLOT_Talk
             else
@@ -432,10 +447,10 @@ function tick(float deltatime)
     If (bUseDXCollision)
     {
         if ((bInterpolating) && (MoverEncroachType == ME_IgnoreWhenEncroach))
-            {
-                SetCollision(true,false); // Выключить коллизию
-            }
-            else
+        {
+            SetCollision(true,false); // Выключить коллизию
+        }
+        else
             SetCollision(default.bCollideActors,default.bBlockActors); // Коллизия восстановлена в стандартное значение.
     }
 }
@@ -477,19 +492,19 @@ function Timer()
         }
 
         // are we done with this pick?
-        else if (numPicks <= 0)
+        else
+            if (numPicks <= 0)
             StopPicking();
 
         // check to see if we've moved too far away from the door to continue
         else if (pickPlayer.frobTarget != Self)
-            StopPicking();
+             StopPicking();
 
         // check to see if we've put the lockpick away
         else if (pickPlayer.inHand != curPick)
-            StopPicking();
+             StopPicking();
     }
 }
-
 
 
 //
@@ -725,8 +740,6 @@ state() TriggerPound
     }
 }
 
-function bool BlockSight()
-{ return bBlockSight;}
 
 defaultproperties
 {

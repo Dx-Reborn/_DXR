@@ -7,18 +7,18 @@ class HackableDevices extends ElectronicDevices
 var() bool              bHackable;              // can this device be hacked?
 var() float             hackStrength;           // "toughness" of the hack on this device - 0.0 is easy, 1.0 is hard
 var() name              UnTriggerEvent[4];      // event to UnTrigger when hacked
-var editconst bool bWasHacked;
+var   editconst bool    bWasHacked;             // DXR: Добавление для окна ввода.
 
-var bool                   bHacking;                // a multitool is currently being used
+var bool                bHacking;               // a multitool is currently being used
 var float               hackValue;              // how much this multitool is currently hacking
 var float               hackTime;               // how much time it takes to use a single multitool
 var int                 numHacks;               // how many times to reduce hack strength
-var float            TicksSinceLastHack;   // num 0.1 second ticks done since last hackstrength update(includes partials)
-var float            TicksPerHack;         // num 0.1 second ticks needed for a hackstrength update(includes partials)
-var float            LastTickTime;         // time last tick occurred.
+//var float               TicksSinceLastHack;     // num 0.1 second ticks done since last hackstrength update(includes partials)
+//var float               TicksPerHack;           // num 0.1 second ticks needed for a hackstrength update(includes partials)
+//var float               LastTickTime;           // time last tick occurred.
 
 var DeusExPlayer        hackPlayer;             // the player that is hacking
-var MultiTool            curTool;                // the multitool that is being used
+var MultiTool           curTool;                // the multitool that is being used
 
 var localized string    msgMultitoolSuccess;    // message when the device is hacked
 var localized string    msgNotHacked;           // message when the device is not hacked
@@ -89,11 +89,6 @@ function Timer()
             StopHacking();
     }
 }
-
-//
-// Called to deal with resetting the device
-//
-
 
 //
 // Stops the current hack-in-progress

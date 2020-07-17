@@ -50,7 +50,7 @@ defaultproperties
      bBlood=True
      bStickToWall=True
      DamageType=class'DM_shot'
-     spawnAmmoClass=Class'DeusEx.AmmoDart'
+     spawnAmmoClass=class'DeusEx.AmmoDart'
      bIgnoresNanoDefense=True
      ItemName="Dart"
      speed=2000.000000
@@ -60,5 +60,6 @@ defaultproperties
      ImpactSound=Sound'DeusExSounds.Generic.BulletHitFlesh'
      Mesh=Mesh'DeusExItems.Dart'
      CollisionRadius=3.000000
-     CollisionHeight=0.500000
+     CollisionHeight=2.300000 // DXR: Так можно подобрать предмет, застрявший в StaticMeshActor
+//     CollisionHeight=0.500000
 }

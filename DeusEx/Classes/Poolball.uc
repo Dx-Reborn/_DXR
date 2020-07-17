@@ -25,6 +25,8 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 var bool bJustHit;
+var StaticMesh OtherModels[16];
+
 
 function BeginPlay()
 {
@@ -32,7 +34,7 @@ function BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_1:      Skins[0] = Texture'PoolballTex1'; break;
+/*        case SC_1:      Skins[0] = Texture'PoolballTex1'; break;
         case SC_2:      Skins[0] = Texture'PoolballTex2'; break;
         case SC_3:      Skins[0] = Texture'PoolballTex3'; break;
         case SC_4:      Skins[0] = Texture'PoolballTex4'; break;
@@ -47,11 +49,27 @@ function BeginPlay()
         case SC_13:     Skins[0] = Texture'PoolballTex13'; break;
         case SC_14:     Skins[0] = Texture'PoolballTex14'; break;
         case SC_15:     Skins[0] = Texture'PoolballTex15'; break;
-        case SC_Cue:    Skins[0] = Texture'PoolballTex16'; break;
+        case SC_Cue:    Skins[0] = Texture'PoolballTex16'; break;*/
+        case SC_1:      SetStaticMesh(OtherModels[0]); break;
+        case SC_2:      SetStaticMesh(OtherModels[1]); break;
+        case SC_3:      SetStaticMesh(OtherModels[2]); break;
+        case SC_4:      SetStaticMesh(OtherModels[3]); break;
+        case SC_5:      SetStaticMesh(OtherModels[4]); break;
+        case SC_6:      SetStaticMesh(OtherModels[5]); break;
+        case SC_7:      SetStaticMesh(OtherModels[6]); break;
+        case SC_8:      SetStaticMesh(OtherModels[7]); break;
+        case SC_9:      SetStaticMesh(OtherModels[8]); break;
+        case SC_10:     SetStaticMesh(OtherModels[9]); break;
+        case SC_11:     SetStaticMesh(OtherModels[10]); break;
+        case SC_12:     SetStaticMesh(OtherModels[11]); break;
+        case SC_13:     SetStaticMesh(OtherModels[12]); break;
+        case SC_14:     SetStaticMesh(OtherModels[13]); break;
+        case SC_15:     SetStaticMesh(OtherModels[14]); break;
+        case SC_Cue:    SetStaticMesh(OtherModels[15]); break;
     }
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float speed;
 
@@ -77,8 +95,8 @@ event HitWall(vector HitNormal, actor HitWall)
     // if we hit the ground, make sure we are rolling
     if (HitNormal.Z == 1.0)
     {
-        class'ActorManager'.static.SetPhysicsEx(self,PHYS_Projectile, HitWall);
-        if (Physics == PHYS_Projectile)
+        class'ActorManager'.static.SetPhysicsEx(self,PHYS_Walking, HitWall);
+        if (Physics == PHYS_Walking)
         {
             bFixedRotationDir = False;
             Velocity = vect(0,0,0);
@@ -92,12 +110,12 @@ event HitWall(vector HitNormal, actor HitWall)
     SetLocation(newloc);
 }
 
-function Timer()
+event Timer()
 {
     bJustHit = False;
 }
 
-function Bump(actor Other)
+event Bump(actor Other)
 {
     local Vector HitNormal;
 
@@ -109,8 +127,8 @@ function Bump(actor Other)
             HitNormal = Normal(Location - Other.Location);
             Velocity = HitNormal * VSize(Other.Velocity);
             Velocity.Z = 0;
-            bJustHit = True;
-            Poolball(Other).bJustHit = True;
+//            bJustHit = True;
+//            Poolball(Other).bJustHit = True;
             SetTimer(0.02, False);
             Poolball(Other).SetTimer(0.02, False);
         }
@@ -126,11 +144,30 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
+     OtherModels[0]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_1'
+     OtherModels[1]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_2'
+     OtherModels[2]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_3'
+     OtherModels[3]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_4'
+     OtherModels[4]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_5'
+     OtherModels[5]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_6'
+     OtherModels[6]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_7'
+     OtherModels[7]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_8'
+     OtherModels[8]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_9'
+     OtherModels[9]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_10'
+     OtherModels[10]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_11'
+     OtherModels[11]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_12'
+     OtherModels[12]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_13'
+     OtherModels[13]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_14'
+     OtherModels[14]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_15'
+     OtherModels[15]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_White'
+
      bInvincible=True
      ItemName="Poolball"
      bPushable=False
-     Physics=PHYS_Projectile //Rolling
-     mesh=mesh'DeusExDeco.Poolball'
+     Physics=PHYS_Walking
+//     mesh=mesh'DeusExDeco.Poolball'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_PoolTable_Set.Pool_Ball_White'
      CollisionRadius=1.700000
      CollisionHeight=1.700000
      bBounce=True

@@ -139,13 +139,15 @@ var() editconst int conActorCount;
 
 var transient DelayedMessage dMsg;
 
-// Использовать DelayedMessage только если есть события типа AddGoal или AddNote (возможно какие-то еще?).
+/*
+  Использовать DelayedMessage только если есть события типа AddGoal или AddNote (возможно какие-то еще?).
+*/
 function bool UseDelayedMessage()
 {
   local int i;
 
   if (con == none)
-     return false;
+      return false;
 
   for (i=0; i<con.EventList.length; i++)
   {
@@ -302,7 +304,7 @@ function TerminateConversation(optional bool bContinueSpeech, optional bool bNoP
     if (!bContinueSpeech)
     {
      if (player != none)
-   class'DxUtil'.static.StopSound(player, playingSoundid);
+     class'DxUtil'.static.StopSound(player, playingSoundid);
 //   log("TerminateConversation : stopped sound"@ player @ playingSoundid);
   }
 

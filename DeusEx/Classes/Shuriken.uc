@@ -37,5 +37,6 @@ defaultproperties
      ImpactSound=Sound'DeusExSounds.Generic.BulletHitFlesh'
      Mesh=Mesh'DeusExItems.ShurikenPickup'
      CollisionRadius=5.000000
-     CollisionHeight=0.300000
+     CollisionHeight=2.300000 // DXR: Так можно подобрать предмет, застрявший в StaticMeshActor
+//     CollisionHeight=0.300000
 }

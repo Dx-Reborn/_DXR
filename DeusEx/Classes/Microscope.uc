@@ -1,7 +1,7 @@
 //=============================================================================
 // Microscope.
 //=============================================================================
-class Microscope extends DeusExDecoration;
+class Microscope extends LabThings;
 
 defaultproperties
 {

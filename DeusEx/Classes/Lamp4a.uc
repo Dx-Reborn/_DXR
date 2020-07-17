@@ -8,7 +8,7 @@ defaultproperties
     ItemName="Desk Lamp"
 
     DrawType=DT_StaticMesh
-    StaticMesh=StaticMesh'DeusExStaticMeshes.LightFixture.Lamp2'
+//    StaticMesh=StaticMesh'DeusExStaticMeshes.LightFixture.Lamp2'
     DrawScale3D=(X=0.600000,Y=0.600000,Z=0.600000)
     CollisionRadius=13.000000
     CollisionHeight=23.400000

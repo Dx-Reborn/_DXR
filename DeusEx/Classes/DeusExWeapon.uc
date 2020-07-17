@@ -288,10 +288,13 @@ function bool isPlayingIdleAnim()
 
 function PutBackInHand()
 {
+    log(self@"  PutBackInHand() ?");
+
     if (self == PlayerPawn(Owner).myWeapon)
     {
+        bPostTravel = true;
         PlayerPawn(Owner).PutInHand(self);
-        bPostTravel = false;
+//        bPostTravel = false;
     }
     else GotoState('Idle2');
 }
@@ -1013,7 +1016,9 @@ event Tick(float deltaTime)
             {
                 if (!bNearWall || (GetAnimSequence() == 'Select'))
                 {
-                    PlayAnim('PlaceBegin',, 0.1);
+                   if (HasAnim('PlaceBegin')) // DXR: Для метательных ножей
+                       PlayAnim('PlaceBegin',, 0.1);
+
                     bNearWall = True;
                 }
             }
@@ -1021,7 +1026,8 @@ event Tick(float deltaTime)
             {
                 if (bNearWall)
                 {
-                    PlayAnim('PlaceEnd',, 0.1);
+                   if (HasAnim('PlaceBegin'))  // DXR: Для метательных ножей
+                       PlayAnim('PlaceEnd',, 0.1);
                     bNearWall = False;
                 }
             }
@@ -1455,7 +1461,6 @@ function PlayFiring()
     anim = 'Shoot';
 
     if (bAutomatic)
-//        PlayAnim(anim,, 0.1);
         LoopAnim(anim,, 0.1);
     else
     {
@@ -1471,6 +1476,8 @@ function PlayFiring()
         }
         PlayAnim(anim,,0.1);
     }
+
+    IncrementFlashCount(0); // DXR: Для эффектов в 3drPersonActor
 
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);

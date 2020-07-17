@@ -62,7 +62,7 @@ struct InventoryItem
 // ----------------------------------------------------------------------
 // Variables
 
-var() WanderPoint      lastPoints[2];
+var() WanderPoint    lastPoints[2];
 var float            Restlessness;  // 0-1
 var float            Wanderlust;    // 0-1
 var float            Cowardice;     // 0-1
@@ -113,10 +113,11 @@ function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
     Super.DisplayDebug(Canvas, YL, YPos);
 
     Canvas.DrawText("я EnemyLastSeen = "$EnemyLastSeen $ 
+    lastPoints[0] @"0 LastPoints 1"@ lastPoints[1]);
 //                    " CycleIndex = "$CycleIndex$
-                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
-                    " bbCheckEnemy = " $bbCheckEnemy $
-                    " AIVisibility = " $ AIVisibility(self, false));
+//                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
+//                    " bbCheckEnemy = " $bbCheckEnemy $
+//                    " AIVisibility = " $ AIVisibility(self, false));
 }
 
 function Draw_DebugLine()
@@ -127,17 +128,17 @@ function Draw_DebugLine()
 //   if (AIPickRandom_Location != vect(0,0,0))
 //       DrawStayingDebugLine(Location, AIPickRandom_Location, 0, 0, 255);
 
-    if (destPoint != None)
-        DrawStayingDebugLine(Location, DestPoint.Location, 55, 121, 100);
+//    if (destPoint != None)
+//        DrawStayingDebugLine(Location, DestPoint.Location, 55, 121, 100);
 
-    if (destLoc != vect(0,0,0))
-        DrawStayingDebugLine(Location, destLoc, 55, 121, 100);
+//    if (destLoc != vect(0,0,0))
+//        DrawStayingDebugLine(Location, destLoc, 55, 121, 100);
 
 }
 
 event AnimEnd(int channel)
 {
-   ClearStayingDebugLines();
+//   ClearStayingDebugLines();
 }
 
 event PreSaveGame()
@@ -180,8 +181,8 @@ event PostLoadSavedGame()
 
 event ObstacleTimerIsOver()
 {
-//  if ((Controller != None) && (controller.MoveTarget != None))
-//   Controller.Focus = controller.MoveTarget;
+  if ((Controller != None) && (controller.MoveTarget != None))
+   Controller.Focus = controller.MoveTarget;
 }
 
 // Заглушка, для того чтобы собиралось.
@@ -190,7 +191,7 @@ final function float ParabolicTrace(out vector finalLocation,optional vector sta
                                     optional float  granularity)
 {
    finalLocation = Controller.Enemy.Location;
-   return 1.0f;
+   return 1.2f + FRand();
 }
 
 function float GetCrouchHeight()
@@ -284,9 +285,6 @@ function sound GetBulletHitSound()
         aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_c", class'Sound', false));
     else if (SoundNum == 0)
         aSound = sound(DynamicLoadObject("DESO_Flam.BodyHit.BodyHit_d", class'Sound', false));
-
-
-    log("sound ="@SoundNum @ aSound);
 
     return aSound;
 }
@@ -2334,8 +2332,6 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
     GenerateTotalHealth();
 
-//    log("hit position:"@hitpos);
-
     return hitPos;
 }
 
@@ -2378,6 +2374,13 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     ImpartMomentum(momentum, instigatedBy);
 
     actualDamage = ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType, momentum);
+
+    // DXR: Added Hitmarker.
+    if (instigatedBy != None && instigatedBy.IsA('PlayerPawn'))
+    {
+       if ((class'DeusExGlobals'.static.GetGlobals().bHitmarkerOn) && (PlayerPawn(instigatedBy) != None))
+            PlayerPawn(instigatedBy).hitmarkerTime = 0.5;
+    }
 
     if (actualDamage > 0)
     {
@@ -3050,7 +3053,6 @@ function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
     // DXR: Added bulletHitSounds
     if (damageType == class'DM_Shot' || damageType == class'DM_AutoShot')
         PlaySound(GetBulletHitSound(), SLOT_Misc,volume * 2,,1024.00,);
-            log("volume = "@volume);
 
     if ((hitSound != None) && bEmitDistress)
         class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio, volume);
@@ -3638,10 +3640,8 @@ function PlayRunning()
 
 function PlayPushing()
 {
-//  ClientMessage("PlayPushing()");
     PlayAnimPivot('PushButton', , 0.15);
 }
-
 
 function PlayStunned()
 {
@@ -6735,7 +6735,7 @@ function HandleHacking(Name event, EAIEventState state, XAIParams params)
             {
                 SetDistressTimer();
                 SetEnemy(pawnActor, , true);
-                GotoState('Fleeing');
+                Controller.GotoState('Fleeing');
             }
             else  // only players can hack
                 ReactToFutz();
@@ -6766,7 +6766,7 @@ function HandleWeapon(Name event, EAIEventState state, XAIParams params)
                 {
                     SetDistressTimer();
                     SetEnemy(pawnActor, , true);
-                    GotoState('Fleeing');
+                    Controller.GotoState('Fleeing');
                 }
                 else if (pawnActor.controller.bIsPlayer)
                     ReactToFutz();
@@ -6798,7 +6798,7 @@ function HandleShot(Name event, EAIEventState state, XAIParams params)
             {
                 SetDistressTimer();
                 SetEnemy(pawnActor, , true);
-                GotoState('Fleeing');
+                Controller.GotoState('Fleeing');
             }
             else if (pawnActor.Controller.bIsPlayer)
                 ReactToFutz();
@@ -7233,9 +7233,6 @@ defaultproperties
      bAcceptsProjectors=true
      ControllerClass=class'DXRAiController'
 
-     bCanWalkOffLedges=true
-     bAvoidLedges=false      // don't get too close to ledges
-     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
      bCanClimbLadders=true
 
      bSpecialCalcView=true
@@ -7251,10 +7248,16 @@ defaultproperties
      bCrouchToPassObstacles=false
      SoundOcclusion=OCCLUSION_Default
      bCanFly=false
-     CullDistance=8050 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
+     CullDistance=8000 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
      bFastTurnWhenAttacking=true
      bDirectHitWall=false
 
      TransientSoundVolume=+0.95
      TransientSoundRadius=+50.00
+
+//     bIgnoreLedges=true
+//     bDoNotStopAtLedges=true
+     bCanWalkOffLedges=true
+     bAvoidLedges=false      // don't get too close to ledges
+     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
 }

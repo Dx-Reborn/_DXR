@@ -1,10 +1,15 @@
 /*
-   Для сцены на дороге
+   Для сцены на дороге (JC Denton в кабине на месте пассажира)
 */
 
 class FakePassenger extends ScaledSprite;
 
 event PostBeginPlay()
+{
+   LoopAnim('SitBreathe');
+}
+
+event PostLoadSavedGame()
 {
    LoopAnim('SitBreathe');
 }

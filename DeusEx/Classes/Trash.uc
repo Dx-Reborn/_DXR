@@ -11,7 +11,7 @@ var float rnd;
 var bool bStopped;
 var Vector lastLoc;
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 
@@ -35,7 +35,7 @@ function Tick(float deltaTime)
     }
 }
 
-function Timer()
+event Timer()
 {
     Destroy();
 }
@@ -56,7 +56,7 @@ function StopMoving()
     RotateTrash();
 
     bFixedRotationDir = False;
-    SetCollisionSize(Default.CollisionRadius, 0.1);
+    SetCollisionSize(default.CollisionRadius, 0.1);
     SetPhysics(PHYS_Falling);
     PlayAnim('Still');
     bStopped = True;
@@ -73,12 +73,12 @@ event PhysicsVolumeChange(PhysicsVolume Volume)
     Super.PhysicsVolumeChange(Volume);
 } 
 
-function HitWall(vector HitNormal, actor Wall)
+event HitWall(vector HitNormal, actor Wall)
 {
     Velocity = (Velocity dot HitNormal) * HitNormal * (-2.0) + Velocity;
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

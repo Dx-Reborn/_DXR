@@ -5,6 +5,9 @@ var vector StartTrace, EndTrace, EndTraceExtra;
 
 event ThirdPersonEffects()
 {
+    if (Instigator == None)
+    return; // DXR: Никого нет, не посылать спам в лог.
+
     CheckForSplash();
     FixRelativeRotation(Instigator);
 }
