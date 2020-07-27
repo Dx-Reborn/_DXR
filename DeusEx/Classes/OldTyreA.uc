@@ -3,7 +3,7 @@ class OldTyreA extends DeusExDecoration;
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes11.Scripted.OldTyre_a'
+    StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.OldTyre_a'
     DrawType=DT_StaticMesh
     CollisionRadius=14.000000
     CollisionHeight=4.400000

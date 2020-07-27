@@ -2,7 +2,7 @@ class OldRimA extends DeusExDecoration;
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes11.Scripted.OldRim_a'
+    StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.OldRim_a'
     DrawType=DT_StaticMesh
     CollisionRadius=10.000000
     CollisionHeight=4.400000

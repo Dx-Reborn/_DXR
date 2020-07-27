@@ -2,7 +2,7 @@ class OldWheelA extends DeusExDecoration;
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes11.Scripted.OldWheel_a'
+    StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.OldWheel_a'
     DrawType=DT_StaticMesh
     CollisionRadius=14.000000
     CollisionHeight=4.400000

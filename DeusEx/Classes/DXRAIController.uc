@@ -3191,10 +3191,12 @@ state Sitting
         if (pawn.Physics == PHYS_Falling)
             return true;
 
+        Global.HitWall(HitNormal, Wall);
+
         if (!scriptedPawn(pawn).bAcceptBump)
             scriptedPawn(pawn).NextDirection = TURNING_None;
 
-        Global.HitWall(HitNormal, Wall);
+//        Global.HitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
         return !ScriptedPawn(pawn).bCrouchToPassObstacles;
     }

@@ -8,7 +8,7 @@ class MailLetter extends TrashObjects;
 defaultproperties
 {
      DrawType=DT_StaticMesh
-     StaticMesh=StaticMesh'DeusExStaticMeshes10.Scripted.MailLetter_a'
+     StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.MailLetter_a'
      ItemName="Mail letter"
      CollisionRadius=4.000000
      CollisionHeight=2.000000

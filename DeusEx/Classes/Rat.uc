@@ -88,7 +88,7 @@ defaultproperties
      CrouchHeight=1.75
 
 //     CollisionHeight=3.500000
-//     bBlockActors=False
+     bBlockActors=False
      Mass=2.000000
      Buoyancy=2.000000
      RotationRate=(Yaw=65530)

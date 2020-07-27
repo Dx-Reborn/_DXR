@@ -1515,6 +1515,8 @@ begin:
       Sleep(1.5);
       class'GraphicsManager'.static.TakeScreenShot(self.XLevel, CurrentCubeMapTexture,);
       class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate90FlipX);
+      class'GraphicsManager'.static.FlipTexture(CurrentCubeMapTexture);
+      // + Перевернуть горизонтально!
 //      class'GraphicsManager'.static.RotateFlipTexture(CurrentCubeMapTexture, Rotate270FlipNone);
       class'GraphicsManager'.static.SaveTextureBmp("..\\GeneratedCubeMaps\\Face_5.bmp", CurrentCubeMapTexture);
 

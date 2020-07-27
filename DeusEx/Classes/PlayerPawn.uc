@@ -80,6 +80,8 @@ var travel bool bCrouchOn;              // used by toggle crouch // travel
 var travel bool bWasCrouchOn;           // used by toggle crouch
 var config bool bAlwaysRun;             // True to default to running
 
+var travel int LighterUseCount; // Lighter use counter
+
 var bool bToggleWalk;
 var bool bToggleCrouch;             // True to let key toggle crouch
 var bool bIsCrouching;

@@ -2,7 +2,7 @@ class TrashBeerCanD extends TrashObjects;
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes10.Scripted.tp_can4'
+    StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.tp_can4'
     ItemName="Empty beer can"
     FragType=Class'DeusEx.MetalFragment'
 }

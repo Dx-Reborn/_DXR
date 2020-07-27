@@ -78,8 +78,8 @@ defaultproperties
      CollisionRadius=17.000000
      CollisionHeight=6.8
      //CollisionHeight=11.300000
-     //bBlockActors=False
-     bBlockActors=True
+     bBlockActors=False
+//     bBlockActors=True
      Mass=10.000000
      Buoyancy=97.000000
      RotationRate=(Yaw=100000)

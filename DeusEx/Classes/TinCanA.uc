@@ -3,7 +3,7 @@ class TinCanA extends TrashObjects;
 defaultproperties
 {
      ItemName="Tin can"
-     StaticMesh=StaticMesh'DeusExStaticMeshes10.Scripted.TinCan'
+     StaticMesh=StaticMesh'DXR_TrashObjects.Scripted.TinCan'
      PrePivot=(Z=7.000000)
      CollisionRadius=2.600000
      CollisionHeight=5.000000
