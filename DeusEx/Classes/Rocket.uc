@@ -5,7 +5,7 @@ class Rocket extends DeusExProjectile;
 
 var EM_ThinTrail fsGen;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
     SpawnRocketEffects();

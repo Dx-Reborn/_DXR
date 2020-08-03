@@ -18,7 +18,7 @@ event Timer()
         Destroy();
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

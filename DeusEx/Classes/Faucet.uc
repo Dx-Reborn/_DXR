@@ -52,7 +52,7 @@ function Frob(actor Frobber, Inventory frobWith)
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local Vector loc;
 

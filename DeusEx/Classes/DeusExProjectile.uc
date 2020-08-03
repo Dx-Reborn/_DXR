@@ -52,7 +52,7 @@ function sound GetExplosionSound()
     return default.ImpactSound;
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
     if (bEmitDanger)

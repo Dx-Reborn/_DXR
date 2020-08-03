@@ -61,7 +61,7 @@ event Destroyed()
     Super.Destroyed();
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

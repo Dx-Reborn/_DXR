@@ -121,7 +121,7 @@ function bool PlayTurnHead(ELookDirection newLookDir, float rate, float tweentim
 }
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

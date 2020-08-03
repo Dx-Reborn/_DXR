@@ -20,7 +20,7 @@ event Timer()
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
     SetTimer(4.0 + 2.0 * FRand(), True);

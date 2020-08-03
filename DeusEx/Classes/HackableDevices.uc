@@ -26,7 +26,7 @@ var localized string    msgHacking;             // message when the device is be
 var localized string    msgAlreadyHacked;       // message when the device is already hacked
 
 //-----------------------------------------------------------------------------------------
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

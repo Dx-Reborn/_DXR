@@ -204,7 +204,7 @@ function FinishNotify()
 }
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

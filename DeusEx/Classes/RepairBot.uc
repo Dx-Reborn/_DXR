@@ -8,7 +8,7 @@ var int chargeRefreshTime;
 var Float lastchargeTime;
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

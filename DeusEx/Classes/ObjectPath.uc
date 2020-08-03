@@ -134,7 +134,7 @@ event BeginPlay()
     Enable('Trigger');
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

@@ -8,7 +8,7 @@ var int healRefreshTime;
 var float lastHealTime;
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

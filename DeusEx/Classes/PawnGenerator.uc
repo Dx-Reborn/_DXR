@@ -64,7 +64,7 @@ var   float          StatusTimer;      // Should we do a StatusUpdate this frame
 // PostBeginPlay()
 // ----------------------------------------------------------------------
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local int i;
     local int count;

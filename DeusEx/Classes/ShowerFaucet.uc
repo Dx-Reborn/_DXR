@@ -60,7 +60,7 @@ function Frob(actor Frobber, Inventory frobWith)
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local ShowerHead head, linkedHead;
     local Vector loc;

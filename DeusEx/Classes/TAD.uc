@@ -63,7 +63,7 @@ event Timer()
     }
 }*/
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

@@ -113,7 +113,7 @@ event Destroyed()
     Super.Destroyed();
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
      local DeusExPlayer player;
 

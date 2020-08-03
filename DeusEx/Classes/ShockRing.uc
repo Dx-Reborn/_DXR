@@ -13,7 +13,7 @@ event Tick(float deltaTime)
     ScaleGlow = LifeSpan / Default.LifeSpan;
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

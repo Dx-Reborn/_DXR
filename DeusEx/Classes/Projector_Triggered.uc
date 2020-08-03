@@ -7,7 +7,7 @@ class Projector_Triggered extends Projector;
 var() bool bInitialyOn;
 var   bool bIsOn;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
   AttachProjector();
   if (bProjectActor)

@@ -25,7 +25,7 @@ function Frob(actor Frobber, Inventory frobWith)
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

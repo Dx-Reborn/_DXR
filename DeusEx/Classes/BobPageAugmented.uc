@@ -3,11 +3,11 @@
 //=============================================================================
 class BobPageAugmented extends DeusExDecoration;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	LoopAnim('Idle');
+    LoopAnim('Idle');
 }
 
 defaultproperties

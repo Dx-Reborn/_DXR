@@ -28,7 +28,7 @@ function Frob(Actor Frobber, Inventory frobWith)
     ResetScaleGlow();
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     if (bOn)
         LightType = LT_Steady;

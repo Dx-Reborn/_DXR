@@ -4,7 +4,7 @@
 
 class WaterRing extends DeusExEmitter;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local float F;
     Super.PostBeginPlay();

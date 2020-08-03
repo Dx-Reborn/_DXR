@@ -5,7 +5,7 @@ class WeaponGEPGun extends DeusExWeapon;
 
 var localized String shortName;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

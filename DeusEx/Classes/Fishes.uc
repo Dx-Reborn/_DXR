@@ -12,7 +12,7 @@ var   float breatheTimer;
 var() bool  bFlock;
 var() bool  bStayHorizontal;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 

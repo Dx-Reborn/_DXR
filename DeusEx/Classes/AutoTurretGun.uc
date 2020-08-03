@@ -40,7 +40,7 @@ function HackAction(Actor Hacker, bool bHacked)
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local AutoTurret turret;
 

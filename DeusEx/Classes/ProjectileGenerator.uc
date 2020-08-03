@@ -50,7 +50,7 @@ var float Time;
 // PostBeginPlay()
 // ----------------------------------------------------------------------------
 
-function PostBeginPlay() // Should probably be simulated.
+event PostBeginPlay() // Should probably be simulated.
 {
    local Actor A;
 

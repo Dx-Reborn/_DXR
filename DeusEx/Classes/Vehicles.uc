@@ -2,7 +2,7 @@
 // Vehicles.
 //=============================================================================
 class Vehicles extends DeusExDecoration
-	abstract;
+    abstract;
 
 //
 // bInWorld stuff copied from ScripedPawn
@@ -10,27 +10,27 @@ class Vehicles extends DeusExDecoration
 var() bool bInWorld;
 var vector WorldPosition;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	if (!bInWorld)
-	{
-		// tricky
-		bInWorld = true;
-		LeaveWorld();
-	}
+    if (!bInWorld)
+    {
+        // tricky
+        bInWorld = true;
+        LeaveWorld();
+    }
 }
 
 function StartInterpolation()
 {
-  	SetCollision(false, false, false);
-		bCollideWorld = False;
-		SetPhysics(PHYS_Interpolating);
-		bInterpolating = True;
-		bStasis = false;
-		bFloating = false;//
-		GotoState('Interpolating');
+    SetCollision(false, false, false);
+        bCollideWorld = False;
+        SetPhysics(PHYS_Interpolating);
+        bInterpolating = True;
+        bStasis = false;
+        bFloating = false;//
+        GotoState('Interpolating');
 }
 
 
@@ -40,12 +40,12 @@ state Interpolating
   {
     //
   }
-	// check to see if we are done interpolating, if so, then destroy us
-	function FinishedInterpolation()
-	{
-	    Super.FinishedInterpolation();
-			Destroy();
-	}
+    // check to see if we are done interpolating, if so, then destroy us
+    function FinishedInterpolation()
+    {
+        Super.FinishedInterpolation();
+            Destroy();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ state Interpolating
 
 function EnterWorld()
 {
-	PutInWorld(true);
+    PutInWorld(true);
 }
 
 
@@ -64,7 +64,7 @@ function EnterWorld()
 
 function LeaveWorld()
 {
-	PutInWorld(false);
+    PutInWorld(false);
 }
 
 
@@ -74,27 +74,27 @@ function LeaveWorld()
 
 function PutInWorld(bool bEnter)
 {
-	if (bInWorld && !bEnter)
-	{
-		bInWorld = false;
-		bHidden       = true;
-		bDetectable   = false;
-		WorldPosition = Location;
-		SetCollision(false, false, false);
-		bCollideWorld = false;
-		SetPhysics(PHYS_None);
-		SetLocation(Location+vect(0,0,20000));  // move it out of the way
-	}
-	else if (!bInWorld && bEnter)
-	{
-		bInWorld    = true;
-		bHidden     = default.bHidden;
-		bDetectable = default.bDetectable;
-		SetLocation(WorldPosition);
-		SetCollision(default.bCollideActors, default.bBlockActors, default.bBlockPlayers);
-		bCollideWorld = default.bCollideWorld;
-		SetPhysics(default.Physics);
-	}
+    if (bInWorld && !bEnter)
+    {
+        bInWorld = false;
+        bHidden       = true;
+        bDetectable   = false;
+        WorldPosition = Location;
+        SetCollision(false, false, false);
+        bCollideWorld = false;
+        SetPhysics(PHYS_None);
+        SetLocation(Location+vect(0,0,20000));  // move it out of the way
+    }
+    else if (!bInWorld && bEnter)
+    {
+        bInWorld    = true;
+        bHidden     = default.bHidden;
+        bDetectable = default.bDetectable;
+        SetLocation(WorldPosition);
+        SetCollision(default.bCollideActors, default.bBlockActors, default.bBlockPlayers);
+        bCollideWorld = default.bCollideWorld;
+        SetPhysics(default.Physics);
+    }
 }
 
 defaultproperties

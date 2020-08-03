@@ -1254,7 +1254,7 @@ function bool CanBeLifted(DeusExDecoration deco)
 }
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     local DeusExLevelInfo info;
     local int levelInfoCount;

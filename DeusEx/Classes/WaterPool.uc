@@ -7,7 +7,7 @@ var float spreadTime;
 var float maxDrawScale;
 var float time;
 
-function PostBeginPlay(); // Don't execute this event from parent class.
+event PostBeginPlay(); // Don't execute this event from parent class.
 
 event Tick(float deltaTime)
 {

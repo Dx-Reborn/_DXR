@@ -23,20 +23,20 @@ event PostLoadSavedGame()
 }
 
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
-	if(DestTexture != None)
-	{
-		DestTexture.Client = Self;
-		SetTimer(1.0 / RefreshRate,true);
-		Enable('Timer');
-	}
+    if(DestTexture != None)
+    {
+        DestTexture.Client = Self;
+        SetTimer(1.0 / RefreshRate,true);
+        Enable('Timer');
+    }
 }
 
 event Timer()
 {
  if (bEnabled)
-	DestTexture.Revision++;
+    DestTexture.Revision++;
 }
 
 

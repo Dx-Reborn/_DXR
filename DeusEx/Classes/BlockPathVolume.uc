@@ -4,10 +4,10 @@
 
 class BlockPathVolume extends BlockingVolume;
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
-	Super.PostBeginPlay();
-	Destroy();
+    Super.PostBeginPlay();
+    Destroy();
 }
 
 defaultproperties

@@ -51,7 +51,7 @@ event BeginPlay()
     }
 }
 
-function PostBeginPlay()
+event PostBeginPlay()
 {
     Super.PostBeginPlay();
 
