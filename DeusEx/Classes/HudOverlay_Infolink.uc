@@ -227,7 +227,7 @@ function AppendText(String newText)
 }
 
 // Необходимо для того чтобы сообщение ползло снизу вверх.
-function Timer()
+event Timer()
 {
     if((Level.TimeSeconds - ttyCounter)/ttyRate > 4)
     {

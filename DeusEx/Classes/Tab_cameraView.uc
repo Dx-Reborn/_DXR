@@ -250,7 +250,7 @@ function CreateControls()
   SetTimer(0.25, true);
 }
 
-function Timer()
+event Timer()
 {
   UpdateDoorStatus();
 }

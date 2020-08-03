@@ -44,7 +44,7 @@ function SetLightColor(ESkinColor color)
     }
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

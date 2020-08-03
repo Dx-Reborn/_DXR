@@ -169,7 +169,7 @@ function UnTrigger(Actor Other, Pawn Instigator)
     Super.UnTrigger(Other, Instigator);
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

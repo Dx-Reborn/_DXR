@@ -5,7 +5,7 @@ class AugDefense extends Augmentation;
 
 state Active
 {
-    function Timer()
+    event Timer()
     {
         local DeusExProjectile proj, minproj;
         local float dist, mindist;

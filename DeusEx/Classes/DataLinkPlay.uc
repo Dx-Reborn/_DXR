@@ -387,7 +387,7 @@ function AbortAndSaveHistory()
 // transmission
 // ----------------------------------------------------------------------
 
-function Timer()
+event Timer()
 {
 // log("CurrentEvent="$currentEvent,'Infolink');
 
@@ -660,7 +660,7 @@ state WaitForSpeech
 {
     // We get here when the timer we set when playing the sound
     // has finished.  We want to play the next event.
-    function Timer()
+    event Timer()
     {
         GotoState('WaitForSpeech', 'SpeechFinished');
     }

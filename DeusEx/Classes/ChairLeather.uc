@@ -14,7 +14,7 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

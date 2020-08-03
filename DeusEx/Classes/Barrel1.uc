@@ -137,7 +137,7 @@ function SetSkin()
     }
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
     SetSkin();

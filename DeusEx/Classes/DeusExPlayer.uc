@@ -2319,7 +2319,7 @@ function CatchFire()
 // continually burn and do damage
 // ----------------------------------------------------------------------
 
-function Timer()
+event Timer()
 {
     if (!InConversation() && bOnFire)
     {

@@ -27,7 +27,7 @@ event SetInitialState()
 }
 
 
-function Timer()
+event Timer()
 {
     Destroy();
 }

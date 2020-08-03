@@ -3,7 +3,7 @@
 //=============================================================================
 class FireExtinguisher extends DeusExPickup;
 
-function Timer()
+event Timer()
 {
     Destroy();
 }

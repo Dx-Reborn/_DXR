@@ -5,16 +5,16 @@ class Beam extends Light;
 
 //native final function SetDrawType(EDrawType NewDrawType);
 
-function BeginPlay()
+event BeginPlay()
 {
-//	SetDrawType(DT_None); // Нужно для того чтобы лампочка не висела перед игроком :)
-	SetTimer(1.0, True);
-	setCollision(false,false,false);
+//  SetDrawType(DT_None); // Нужно для того чтобы лампочка не висела перед игроком :)
+    SetTimer(1.0, True);
+    setCollision(false,false,false);
 }
 
-function Timer()
+event Timer()
 {
-	MakeNoise(0.3);
+    MakeNoise(0.3);
 }
 
 defaultproperties
@@ -44,5 +44,5 @@ defaultproperties
     bDynamicLight=true //false
     bDirectional=false //true
     bLightingVisibility=False
-		bCollideActors=False
+        bCollideActors=False
 }

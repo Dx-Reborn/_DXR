@@ -48,7 +48,7 @@ function PostBeginPlay()
     turret = AutoTurret(Owner);
 }
 
-function BeginPlay();
+event BeginPlay();
 //simulated event FellOutOfWorld(eKillZType KillType);
 
 defaultproperties

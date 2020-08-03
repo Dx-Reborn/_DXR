@@ -5,24 +5,24 @@ class ExplosionLight extends Light;
 
 var int size;
 
-function Timer()
+event Timer()
 {
-	if (size > 0)
-	{
-		LightRadius = Clamp(size, 1, 16);
-		size = -1;
-	}
+    if (size > 0)
+    {
+        LightRadius = Clamp(size, 1, 16);
+        size = -1;
+    }
 
-	LightRadius-=1;
-	if (LightRadius < 1)
-		Destroy();
+    LightRadius-=1;
+    if (LightRadius < 1)
+        Destroy();
 }
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	SetTimer(0.1, True);
+    SetTimer(0.1, True);
 }
 
 

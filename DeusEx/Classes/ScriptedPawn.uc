@@ -5639,7 +5639,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 // ----------------------------------------------------------------------
 // Timer()
 // ----------------------------------------------------------------------
-function Timer()
+event Timer()
 {
     UpdateFire();
 }

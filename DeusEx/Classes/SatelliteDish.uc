@@ -47,7 +47,7 @@ event Tick(float deltaTime)
     Super.Tick(deltaTime);
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

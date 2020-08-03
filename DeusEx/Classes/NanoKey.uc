@@ -19,7 +19,7 @@ var() ESkinColor SkinColor;
 // BeginPlay()
 // ----------------------------------------------------------------------
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

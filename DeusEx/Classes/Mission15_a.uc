@@ -75,7 +75,7 @@ function PreTravel()
 // Main state machine for the mission
 // ----------------------------------------------------------------------
 
-function Timer()
+event Timer()
 {
     local PhysicsVolume zone;
     local Fan1 fan;
@@ -92,7 +92,7 @@ function Timer()
     local DeusExMover M;
     local LifeSupportBase Lbase;
     local BobPageAugmented tempPage;
-  local vector loc;
+    local vector loc;
     local SphereEffect sphere;
     local ScriptedPawn pawn;
 

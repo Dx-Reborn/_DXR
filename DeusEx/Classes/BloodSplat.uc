@@ -3,7 +3,7 @@
 //=============================================================================
 class BloodSplat extends DeusExDecal;
 
-function BeginPlay()
+event BeginPlay()
 {
     local float rnd;
 

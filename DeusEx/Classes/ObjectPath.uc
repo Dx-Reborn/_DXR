@@ -44,7 +44,7 @@ var vector  lastPosition;       // Where the actor was in the most recent frame
 var rotator lastRotation;       // The orientation of the actor in the most recent frame
 
 
-function BeginPlay()
+event BeginPlay()
 {
     local int i, l;
     local PathPoint tempPP;

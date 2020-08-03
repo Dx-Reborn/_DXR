@@ -13,7 +13,7 @@ var Actor sittingActor[4];
 var int numSitPoints;
 var vector InitialPosition;
 
-function BeginPlay()
+event BeginPlay()
 {
     local int i;
 

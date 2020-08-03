@@ -9,7 +9,7 @@ var float time;
 
 function PostBeginPlay(); // Don't execute this event from parent class.
 
-function BeginPlay()
+event BeginPlay()
 {
     // Gore check
     if (Level.Game.bLowGore)

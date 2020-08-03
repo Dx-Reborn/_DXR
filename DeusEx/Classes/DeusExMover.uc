@@ -458,7 +458,7 @@ event Tick(float deltatime)
 //
 // Called every 0.1 seconds while the pick is actually picking
 //
-function Timer()
+event Timer()
 {
     local DeusExMover M;
 

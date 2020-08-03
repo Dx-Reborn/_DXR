@@ -21,9 +21,9 @@ var   byte       OriginalNum;               // Number to count at startup time.
 //
 // Init for play.
 //
-function BeginPlay()
+event BeginPlay()
 {
-	OriginalNum = NumToCount;
+    OriginalNum = NumToCount;
 }
 
 //
@@ -31,7 +31,7 @@ function BeginPlay()
 //
 function Reset()
 {
-	NumToCount = OriginalNum;
+    NumToCount = OriginalNum;
 }
 
 //
@@ -39,44 +39,44 @@ function Reset()
 //
 function Trigger( actor Other, pawn EventInstigator )
 {
-	local string S;
-	local string Num;
-	local int i;
-	local actor A;
+    local string S;
+    local string Num;
+    local int i;
+    local actor A;
 
-	if( NumToCount > 0 )
-	{
-		if( --NumToCount == 0 )
-		{
-			// Trigger all matching actors.
-			if( bShowMessage && CompleteMessage != "" )
-				EventInstigator.ClientMessage( CompleteMessage );
-			if( Event != '' )
-				foreach AllActors( class 'Actor', A, Event )
-					A.Trigger( Other, EventInstigator );
-		}
-		else if( bShowMessage && CountMessage != "" )
-		{
-			// Still counting down.
-			switch( NumToCount )
-			{
-				case 1:  Num="one"; break;
-				case 2:  Num="two"; break;
-				case 3:  Num="three"; break;
-				case 4:  Num="four"; break;
-				case 5:  Num="five"; break;
-				case 6:  Num="six"; break;
-				default: Num=string(NumToCount); break;
-			}
-			S = CountMessage;
-			while( InStr(S, "%i") >= 0 )
-			{
-				i = InStr(S, "%i");
-				S = Left(S,i) $ Num $ Mid(S,i+2);
-			}
-			EventInstigator.ClientMessage( S );
-		}
-	}
+    if( NumToCount > 0 )
+    {
+        if( --NumToCount == 0 )
+        {
+            // Trigger all matching actors.
+            if( bShowMessage && CompleteMessage != "" )
+                EventInstigator.ClientMessage( CompleteMessage );
+            if( Event != '' )
+                foreach AllActors( class 'Actor', A, Event )
+                    A.Trigger( Other, EventInstigator );
+        }
+        else if( bShowMessage && CountMessage != "" )
+        {
+            // Still counting down.
+            switch( NumToCount )
+            {
+                case 1:  Num="one"; break;
+                case 2:  Num="two"; break;
+                case 3:  Num="three"; break;
+                case 4:  Num="four"; break;
+                case 5:  Num="five"; break;
+                case 6:  Num="six"; break;
+                default: Num=string(NumToCount); break;
+            }
+            S = CountMessage;
+            while( InStr(S, "%i") >= 0 )
+            {
+                i = InStr(S, "%i");
+                S = Left(S,i) $ Num $ Mid(S,i+2);
+            }
+            EventInstigator.ClientMessage( S );
+        }
+    }
 }
 
 defaultproperties

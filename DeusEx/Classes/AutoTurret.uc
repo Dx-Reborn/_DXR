@@ -308,7 +308,7 @@ function PreBeginPlay()
 
 
 // turn off the muzzle flash
-function Timer()
+event Timer()
 {
     gun.LightType = LT_None;
     gun.Skins[2] = None;
@@ -526,7 +526,7 @@ function Pawn GetPlayerPawn()
     return Level.GetLocalPlayerController().Pawn;
 }
 
-function BeginPlay();
+event BeginPlay();
 event FellOutOfWorld(eKillZType KillType);
 
 

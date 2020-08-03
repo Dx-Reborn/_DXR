@@ -197,10 +197,10 @@ event SetInitialState()
 //
 // if we are already floating, then set our ref points
 // ----------------------------------------------------------------------
-function BeginPlay()
+event BeginPlay()
 {
     local Mover M;
-    local EmptyClass Stub;
+    local EmptyClass Stub; // DXR: Заглушка для того чтобы удерживаемая декорация не жила своей жизнью.
 
     Super.BeginPlay();
 
@@ -229,8 +229,7 @@ function BeginPlay()
         pushSound = sound'PushWood';
     else if (fragType == class'Rockchip')
         pushSound = sound'PushPlastic';
-// Не знаю как ЭТО объяснить. Но в оригинале такого не было.
-// А может и было, но работало из C++ ;)
+
     if (stub==none)
     {
         Stub=Spawn(class'EmptyClass', Self,, Location, rot(16384,0,0));
@@ -592,7 +591,7 @@ event Bump(actor Other)
 //
 // shuts off the looping push sound
 // ----------------------------------------------------------------------
-function Timer()
+event Timer()
 {
     if (bPushSoundPlaying)
     {
@@ -780,7 +779,7 @@ state Exploding
 {
     ignores Explode;
 
-    function Timer()
+    event Timer()
     {
         HurtRadius
         (
@@ -977,7 +976,7 @@ state Burning
     }
 
     // continually burn and do damage
-    function Timer()
+    event Timer()
     {
         if (bPushSoundPlaying)
         {

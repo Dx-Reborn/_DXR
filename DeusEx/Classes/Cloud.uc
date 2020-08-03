@@ -30,7 +30,7 @@ event PhysicsVolumeChange(PhysicsVolume NewVolume)
         LifeSpan = 2.0;
 }
 
-function Timer()
+event Timer()
 {
     local Actor A;
     local Vector offset;
@@ -71,7 +71,7 @@ event Tick(float deltaTime)
     }
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

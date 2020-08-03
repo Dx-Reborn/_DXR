@@ -157,7 +157,7 @@ state DeActivated
 
 state Activated
 {
-    function Timer()
+    event Timer()
     {
         local DeusExPlayer Player;
 

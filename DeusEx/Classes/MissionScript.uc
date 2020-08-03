@@ -163,7 +163,7 @@ function PreTravel()
 //
 // Main state machine for the mission
 // ----------------------------------------------------------------------
-function Timer()
+event Timer()
 {
     // make sure our flags are initialized correctly
     if (flags == None)

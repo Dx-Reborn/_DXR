@@ -9,25 +9,25 @@ class NetworkTerminalPublic extends NetworkTerminal;
 
 function CloseScreen(String action)
 {
-	Super.CloseScreen(action);
+    Super.CloseScreen(action);
 
-	// Based on the action, proceed!
-	if (action == "LOGOUT")
-		Super.CloseScreen("EXIT");
+    // Based on the action, proceed!
+    if (action == "LOGOUT")
+        Super.CloseScreen("EXIT");
 }
 
 function bool OnCanClose(optional Bool bCancelled)
 {
-  return true;
+   return true;
 }
 
-function Timer()
+event Timer()
 {
- local bool bDone;
+   local bool bDone;
 
-  if (!bDone)
-     Controller.CloseMenu();
-  bDone = true;
+   if (!bDone)
+       Controller.CloseMenu();
+   bDone = true;
 }
 
 

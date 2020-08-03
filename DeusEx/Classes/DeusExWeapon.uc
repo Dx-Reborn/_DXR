@@ -1304,7 +1304,7 @@ function EraseMuzzleFlashTexture()
 //    Skins[2] = None;
 }
 
-function Timer()
+event Timer()
 {
 //    EraseMuzzleFlashTexture();
 }
@@ -2350,7 +2350,7 @@ state Idle
         
     }
 
-    function Timer()
+    event Timer()
     {
         PlayIdleAnim();
     }

@@ -7,18 +7,18 @@ class MoverCollider extends Keypoint;
 var() name moverTag;
 
 // attach us to the mover that we are tagged to
-function BeginPlay()
+event BeginPlay()
 {
-	local Mover M;
+    local Mover M;
 
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	if (moverTag != '')
-		foreach AllActors(class'Mover', M, moverTag)
-		{
-			SetBase(M);
-			SetPhysics(PHYS_None);
-		}
+    if (moverTag != '')
+        foreach AllActors(class'Mover', M, moverTag)
+        {
+            SetBase(M);
+            SetPhysics(PHYS_None);
+        }
 }
 
 defaultproperties

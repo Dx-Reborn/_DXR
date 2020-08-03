@@ -5,25 +5,25 @@ class ClothesRack extends HangingDecoration;
 
 enum ESkinColor
 {
-	SC_Blue,
-	SC_Yellow,
-	SC_Green,
-	SC_Black
+    SC_Blue,
+    SC_Yellow,
+    SC_Green,
+    SC_Black
 };
 
 var() ESkinColor SkinColor;
 
-function BeginPlay()
+event BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_Blue:		Skins[0] = Texture'ClothesRackTex1'; break;
-		case SC_Yellow:	Skins[0] = Texture'ClothesRackTex2'; break;
-		case SC_Green:	Skins[0] = Texture'ClothesRackTex3'; break;
-		case SC_Black:	Skins[0] = Texture'ClothesRackTex4'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_Blue:       Skins[0] = Texture'ClothesRackTex1'; break;
+        case SC_Yellow: Skins[0] = Texture'ClothesRackTex2'; break;
+        case SC_Green:  Skins[0] = Texture'ClothesRackTex3'; break;
+        case SC_Black:  Skins[0] = Texture'ClothesRackTex4'; break;
+    }
 }
 
 

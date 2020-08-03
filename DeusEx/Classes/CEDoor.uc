@@ -10,10 +10,10 @@ class CEDoor extends DeusExMover;
 
 var bool bIsMoving;
 
-function BeginPlay()
+event BeginPlay()
 {
-	Super.BeginPlay();
-	bIsMoving = False;
+    Super.BeginPlay();
+    bIsMoving = False;
 }
 
 defaultproperties

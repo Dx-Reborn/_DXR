@@ -177,7 +177,7 @@ function SetSkin(EButtonType type, bool lit)
     }
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 
@@ -190,7 +190,7 @@ function Trigger(Actor Other, Pawn Instigator)
         Timer();
 }
 
-function Timer()
+event Timer()
 {
     PlaySound(buttonSound2, SLOT_None);
     SetSkin(ButtonType, bLit);

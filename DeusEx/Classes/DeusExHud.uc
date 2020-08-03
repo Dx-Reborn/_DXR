@@ -523,7 +523,7 @@ function DrawDamagedIndicator(canvas u)
 
 }
 
-function Timer()
+event Timer()
 {
    cubeMapMode = false;
 }

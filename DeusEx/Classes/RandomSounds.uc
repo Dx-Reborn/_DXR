@@ -111,7 +111,7 @@ event Tick(float deltaTime)
     mytimer += deltaTime;
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     local int i;
 

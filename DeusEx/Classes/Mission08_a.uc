@@ -59,7 +59,7 @@ function PreTravel()
 // Main state machine for the mission
 // ----------------------------------------------------------------------
 
-function Timer()
+event Timer()
 {
     local ScriptedPawn pawn;
     local RiotCop cop;

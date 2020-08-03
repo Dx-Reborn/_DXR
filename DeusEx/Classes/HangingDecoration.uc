@@ -23,7 +23,7 @@ var float windPeriod;
 var float windTimer;
 //var Rotator origRot;
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 
@@ -33,7 +33,7 @@ function BeginPlay()
         Timer();
 }
 
-function Timer()
+event Timer()
 {
     originalWind.Pitch = 4096 - FRand() * 8192;
     originalWind.Yaw = 4096 - FRand() * 8192;

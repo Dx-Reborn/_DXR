@@ -5,25 +5,25 @@ class OfficeChair extends Seat;
 
 enum ESkinColor
 {
-	SC_GrayLeather,
-	SC_BrownLeather,
-	SC_BrownCloth,
-	SC_GrayCloth
+    SC_GrayLeather,
+    SC_BrownLeather,
+    SC_BrownCloth,
+    SC_GrayCloth
 };
 
 var() ESkinColor SkinColor;
 
-function BeginPlay()
+event BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	switch (SkinColor)
-	{
-		case SC_GrayLeather:	Skins[0] = Texture'OfficeChairTex1'; break;
-		case SC_BrownLeather:	Skins[0] = Texture'OfficeChairTex2'; break;
-		case SC_BrownCloth:		Skins[0] = Texture'OfficeChairTex3'; break;
-		case SC_GrayCloth:		Skins[0] = Texture'OfficeChairTex4'; break;
-	}
+    switch (SkinColor)
+    {
+        case SC_GrayLeather:    Skins[0] = Texture'OfficeChairTex1'; break;
+        case SC_BrownLeather:   Skins[0] = Texture'OfficeChairTex2'; break;
+        case SC_BrownCloth:     Skins[0] = Texture'OfficeChairTex3'; break;
+        case SC_GrayCloth:      Skins[0] = Texture'OfficeChairTex4'; break;
+    }
 }
 
 

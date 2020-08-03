@@ -38,7 +38,7 @@ event SetInitialState()
     InfoLinkFrame = h.InfoLinkFrame;
 }
 
-function Timer()
+event Timer()
 {
     Destroy();
 }

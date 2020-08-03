@@ -5,22 +5,22 @@ class Pinball extends ElectronicDevices;
 
 var bool bUsing;
 
-function Timer()
+event Timer()
 {
-	bUsing = False;
+    bUsing = False;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
 
-	if (bUsing)
-		return;
+    if (bUsing)
+        return;
 
-	SetTimer(2.0, False);
-	bUsing = True;
+    SetTimer(2.0, False);
+    bUsing = True;
 
-	PlaySound(sound'PinballMachine',,,, 256);
+    PlaySound(sound'PinballMachine',,,, 256);
 }
 
 

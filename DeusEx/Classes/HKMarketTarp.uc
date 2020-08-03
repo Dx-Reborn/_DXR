@@ -6,7 +6,7 @@ class HKMarketTarp extends HongKongDecoration;
 var() bool bRandomize;
 var bool bBlowing;
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

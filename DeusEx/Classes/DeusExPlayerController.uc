@@ -368,7 +368,7 @@ ignores SeePlayer, HearNoise, KilledBy, SwitchWeapon, NextWeapon, PrevWeapon;
         SetRotation(ViewRotation);
     }
 
-    function Timer()
+    event Timer()
     {
         if (!bFrozen)
             return;

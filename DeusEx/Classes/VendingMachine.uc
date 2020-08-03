@@ -18,7 +18,7 @@ var localized String msgNoCredits;
 var int numUses;
 var localized String msgEmpty;
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

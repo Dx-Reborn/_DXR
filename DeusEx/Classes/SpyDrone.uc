@@ -32,7 +32,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
     Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, damageType);
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     // do nothing
 }

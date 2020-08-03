@@ -104,7 +104,7 @@ function PutDown()
 // ----------------------------------------------------------------------
 state Idle
 {
-    function Timer()
+    event Timer()
     {
         PlayIdleAnim();
     }

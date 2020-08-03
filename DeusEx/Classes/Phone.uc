@@ -52,7 +52,7 @@ event Tick(float deltaTime)
     }
 }
 
-function Timer()
+event Timer()
 {
     bUsing = False;
 }

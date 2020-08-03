@@ -325,7 +325,7 @@ function GoToSleep()
 }
 
 // wait for the timer to expire
-function Timer()
+event Timer()
 {
     Next();
 }

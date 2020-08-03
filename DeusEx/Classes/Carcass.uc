@@ -63,7 +63,7 @@ Begin:
     
 state Dead 
 {
-    function Timer()
+    event Timer()
     {
         if (!PlayerCanSeeMe())
             Destroy();

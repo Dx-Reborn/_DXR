@@ -263,7 +263,7 @@ state Exploding
 {
     ignores ProcessTouch, HitWall, Explode;
 
-    function Timer()
+    event Timer()
     {
         HurtRadius
         (

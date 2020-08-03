@@ -52,7 +52,7 @@ function SpawnFlame()
     }
 }
 
-function beginPlay()
+event BeginPlay()
 {
         Super.BeginPlay();
         SpawnFlame();

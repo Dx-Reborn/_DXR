@@ -64,14 +64,14 @@ function Activate()
 
 state DelayedMessages
 {
-  function IncreaseCounter()
-  {
-    counter++;
-    if (counter >= messages.length) // No messages left?
-       Destroy(); // ... then destroy yourself.
-  }
+   function IncreaseCounter()
+   {
+      counter++;
+      if (counter >= messages.length) // No messages left?
+          Destroy(); // ... then destroy yourself.
+   }
 
-  function Timer()
+  event Timer()
   {
     player.clientMessage(messages[counter].Message);
 

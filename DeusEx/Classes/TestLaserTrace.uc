@@ -9,17 +9,17 @@ var actor LastHitActor;
 
 var EM_LaserBeam emitter;
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 
-        LastHitActor = None;
-        emitter = Spawn(class'EM_Laserbeam');
-        if (emitter != none)
-        {
-            BeamEmitter(emitter.Emitters[0]).BeamDistanceRange.Min=MaxDistance;
+    LastHitActor = None;
+    emitter = Spawn(class'EM_Laserbeam');
+    if (emitter != none)
+    {
+        BeamEmitter(emitter.Emitters[0]).BeamDistanceRange.Min=MaxDistance;
         BeamEmitter(emitter.Emitters[0]).BeamDistanceRange.Max=MaxDistance;
-      }
+    }
 }
 
 event Tick(float deltatime)

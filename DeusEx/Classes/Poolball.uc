@@ -28,7 +28,7 @@ var bool bJustHit;
 var StaticMesh OtherModels[16];
 
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 

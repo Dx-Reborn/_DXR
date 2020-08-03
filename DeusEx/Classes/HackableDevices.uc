@@ -57,7 +57,7 @@ function HackAction(Actor Hacker, bool bHacked)
 //
 // Called every 0.1 seconds while the multitool is actually hacking
 //
-function Timer()
+event Timer()
 {
     if (bHacking)
     {

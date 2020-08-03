@@ -8,45 +8,45 @@ var() bool bFollowKeyframes;
 
 var bool bIsMoving;
 
-function BeginPlay()
+event BeginPlay()
 {
-	Super.BeginPlay();
-	bIsMoving = False;
+    Super.BeginPlay();
+    bIsMoving = False;
 }
 
 function SetSeq(int seqnum)
 {
-	if (bIsMoving)
-		return;
+    if (bIsMoving)
+        return;
 
-	if (KeyNum != seqnum)
-	{
-		KeyNum = seqnum;
-		GotoState('ElevatorMoverEx', 'Next');
-	}
+    if (KeyNum != seqnum)
+    {
+        KeyNum = seqnum;
+        GotoState('ElevatorMoverEx', 'Next');
+    }
 }
 
 //  аронеЁлеватор работает только если им€ стэйта отличаетс€ от имени класса.
 // «десь скорее всего аналогично...
 auto state() ElevatorMoverEx
 {
-	event KeyFrameReached()
-	{
-		if (bFollowKeyframes)
-			Super.KeyFrameReached();
-	}
-//	function InterpolateEnd(actor Other){if (bFollowKeyframes) Super.InterpolateEnd(Other);}
+    event KeyFrameReached()
+    {
+        if (bFollowKeyframes)
+            Super.KeyFrameReached();
+    }
+//  function InterpolateEnd(actor Other){if (bFollowKeyframes) Super.InterpolateEnd(Other);}
 
 Next:
-	bIsMoving = True;
-	PlaySound(OpeningSound);
-	AmbientSound = MoveAmbientSound;
-	InterpolateTo(KeyNum, MoveTime);
-	FinishInterpolation();
-	AmbientSound = None;
-	FinishedOpening();
-	bIsMoving = False;
-	Stop;
+    bIsMoving = True;
+    PlaySound(OpeningSound);
+    AmbientSound = MoveAmbientSound;
+    InterpolateTo(KeyNum, MoveTime);
+    FinishInterpolation();
+    AmbientSound = None;
+    FinishedOpening();
+    bIsMoving = False;
+    Stop;
 }
 
 

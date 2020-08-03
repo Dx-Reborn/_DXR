@@ -64,7 +64,7 @@ function PlayFlying()
     initialRate = GetAnimRate();
 }
 
-function BeginPlay()
+event BeginPlay()
 {
     Super.BeginPlay();
 //  AIClearEventCallback('WeaponFire');

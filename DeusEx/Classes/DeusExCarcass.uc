@@ -406,7 +406,7 @@ event Tick(float deltaSeconds)
 }
 
 
-function Timer()
+event Timer()
 {
     if (bGenerateFlies)
     {
@@ -780,7 +780,7 @@ function DeleteInventory(inventory Item)
 // ----------------------------------------------------------------------
 auto state Dead
 {
-    function Timer()
+    event Timer()
     {
         // overrides goddamned lifespan crap
         Global.Timer();
