@@ -8,12 +8,12 @@ var() sound beepSound;
 var HighLight light;
 var bool bOn;
 
-/*
+
 event Timer()
 {
     local DeusExPlayer player;
 
-    player = DeusExPlayer(GetPlayerPawn());
+    player = DeusExPlayer(Level.GetLocalPlayerController().Pawn); //(GetPlayerPawn());
     if (player != None)
     {
         if (light == None)
@@ -36,20 +36,20 @@ event Timer()
                     PlaySound(beepSound, SLOT_Misc,,, 512);
                     if (light != None)
                         light.LightType = LT_Steady;
-                    Skin = Texture'TADTex2';
+                    Skins[0] = Texture'TADTex2';
                 }
                 else
                 {
                     if (light != None)
                         light.LightType = LT_None;
-                    Skin = Texture'TADTex1';
+                    Skins[0] = Texture'TADTex1';
                 }
             }
             else
             {
                 if (light != None)
                     light.LightType = LT_None;
-                Skin = Texture'TADTex1';
+                Skins[0] = Texture'TADTex1';
             }
         }
         else
@@ -57,11 +57,11 @@ event Timer()
             // turn off the light
             if (light != None)
                 light.Destroy();
-            Skin = Texture'TADTex1';
+            Skins[0] = Texture'TADTex1';
             SetTimer(0.1, False);
         }
     }
-}*/
+}
 
 event PostBeginPlay()
 {
