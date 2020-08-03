@@ -78,7 +78,7 @@ function UpdateBeltText()
     // Stub for now...
 }
 
-simulated function BreakItSmashIt(class<fragment> FragType, float size) 
+function BreakItSmashIt(class<fragment> FragType, float size) 
 {
     local int i;
     local DeusExFragment s;

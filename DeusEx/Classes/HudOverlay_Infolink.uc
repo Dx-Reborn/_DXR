@@ -238,7 +238,7 @@ function Timer()
     }
 }
 
-function SetInitialState()
+event SetInitialState()
 {
   local DeusExHUD h;
 

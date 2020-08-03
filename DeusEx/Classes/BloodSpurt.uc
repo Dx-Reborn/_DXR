@@ -5,7 +5,7 @@ class BloodSpurt extends Effects;
 
 auto state Flying
 {
-    simulated function BeginState()
+    function BeginState()
     {
         Velocity = vect(0,0,0);
         SetDrawScale(FRand() * 0.5); // -=

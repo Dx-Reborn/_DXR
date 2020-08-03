@@ -116,7 +116,7 @@ function EndAlarm()
     bStasis = default.bStasis;
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 
@@ -144,7 +144,7 @@ function ChangePlayerVisibility(bool bInviso)
 
 state On
 {
-    function Tick(float deltaTime)
+    event Tick(float deltaTime)
     {
         Global.Tick(deltaTime);
 

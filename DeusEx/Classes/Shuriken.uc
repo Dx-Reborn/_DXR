@@ -4,7 +4,7 @@
 class Shuriken extends DeusExProjectile;
 
 // set it's rotation correctly
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local Rotator rot;
 

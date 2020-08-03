@@ -484,7 +484,7 @@ function ReloadNewAmmo()
 }
 
 // Note we need to control what's calling this...but I'll get rid of the access nones for now
-simulated function float GetWeaponSkill()
+function float GetWeaponSkill()
 {
     local DeusExPlayer player;
     local float value;
@@ -697,7 +697,7 @@ function bool LoadAmmo(int ammoNum)
 // ----------------------------------------------------------------------
 // Returns True if this ammo type can be used with this weapon
 // ----------------------------------------------------------------------
-simulated function bool CanLoadAmmoType(Ammunition ammo)
+function bool CanLoadAmmoType(Ammunition ammo)
 {
     local int  ammoIndex;
     local bool bCanLoad;
@@ -1702,7 +1702,7 @@ function Vector ComputeProjectileStart(Vector X, Vector Y, Vector Z)
 //
 // Modified to work better with scripted pawns
 //
-simulated function vector CalcDrawOffset()
+function vector CalcDrawOffset()
 {
     local vector        DrawOffset, WeaponBob;
     local ScriptedPawn  SPOwner;

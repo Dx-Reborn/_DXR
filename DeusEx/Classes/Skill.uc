@@ -49,7 +49,7 @@ function ResetSkill()
        DeusExGameInfo(Level.Game).DeleteFlag("SKL_"$InternalSkillName);
 }
 
-function SetInitialState()
+event SetInitialState()
 {
   super.SetInitialState();
   restoreSkillLevel();

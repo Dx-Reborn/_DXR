@@ -18,7 +18,7 @@ singular function Touch(Actor Other)
     // does nothing when touched
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local Actor A;
     local AdaptiveArmor armor;
@@ -182,7 +182,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
     }
 }
 
-function Destroyed()
+event Destroyed()
 {
     if (emitter != None)
     {

@@ -16,7 +16,7 @@ var() float WindSpeed;      // wind speed in ft/sec
 var() ETrashType TrashType;
 var float mytimer;
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local Trash trash;
 

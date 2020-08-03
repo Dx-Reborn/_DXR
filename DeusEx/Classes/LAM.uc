@@ -20,7 +20,7 @@ function sound GetExplosionSound()
     else return Super.GetExplosionSound();
 }
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float blinkRate;
 

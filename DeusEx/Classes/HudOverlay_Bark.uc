@@ -12,12 +12,12 @@ var() private string fpsSpeech;
 var() localized font TitleFont, SpeechFont;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
-function SetInitialState()
+event SetInitialState()
 {
   local DeusExHUD h;
 
-	dxc = new(Outer) class'DxCanvas';
-	Super.SetInitialState();
+    dxc = new(Outer) class'DxCanvas';
+    Super.SetInitialState();
 
   h = DeusExHUD(level.GetLocalPlayerController().myHUD);
   InfoLinkBG = h.InfoLinkBG;
@@ -29,24 +29,24 @@ function SetInitialState()
 
 function Timer()
 {
-	Destroy();
+    Destroy();
 }
 
 function AddBark(string text, float newDisplayTime, Actor speakingActor)
 {
-	if (class'DxUtil'.static.TrimSpaces(text) != "")
-	{
-		Speaker = speakingActor.GetFamiliarName();
-		fpsSpeech = text;
-		SetTimer(newDisplayTime, false);
-	}
+    if (class'DxUtil'.static.TrimSpaces(text) != "")
+    {
+        Speaker = speakingActor.GetFamiliarName();
+        fpsSpeech = text;
+        SetTimer(newDisplayTime, false);
+    }
 }
 
 // == Прорисовка AI Barks == //
-simulated function Render(Canvas C)
+function Render(Canvas C)
 {
-	local float w,h,holdX,holdY;
-	local texture border;
+    local float w,h,holdX,holdY;
+    local texture border;
 
      dxc.SetCanvas(C);
 
@@ -162,9 +162,9 @@ simulated function Render(Canvas C)
         c.SetPos(8,0); //x,y
         c.DrawColor = InfoLinkTitles;
         dxc.DrawText(Speaker); // кто
-				
-				//Нарисовать линию с тенью
-	      dxc.DrawHorizontal(int(c.CurY)+3,596);
+                
+                //Нарисовать линию с тенью
+          dxc.DrawHorizontal(int(c.CurY)+3,596);
         c.SetDrawColor(0,0,0);
         dxc.DrawHorizontal(int(c.CurY)+4,596);
         c.SetDrawColor(255,255,255);
@@ -174,13 +174,13 @@ simulated function Render(Canvas C)
         c.DrawColor = InfoLinkText;
         dxc.DrawText(fpsSpeech); // текст
 
-	      c.reset();
+          c.reset();
         c.SetClip(c.SizeX, c.SizeY);
     }
 }
 
 defaultProperties
 {
-	TitleFont = Font'DxFonts.EUX_9B'
-	SpeechFont= Font'DxFonts.EU_10'
+    TitleFont = Font'DxFonts.EUX_9B'
+    SpeechFont= Font'DxFonts.EU_10'
 }

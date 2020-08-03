@@ -22,7 +22,7 @@ function addItem(inventory newItem)
   log("Added item: "$newItem);
 }
 
-function SetInitialState()
+event SetInitialState()
 {
   local DeusExHUD h;
 

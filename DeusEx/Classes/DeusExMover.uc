@@ -440,7 +440,7 @@ function bool EncroachingOn(actor Other)
 // native(262) final function SetCollision( optional bool NewColActors, optional bool NewBlockActors, optional bool NewBlockPlayers ); // NOTE - bBlockPlayers is obsolete
 // Ќесмотр€ на параметр MoverEncroachType == ME_IgnoreWhenEncroach, двери все равно тащат игрока за собой!
 // Ќужно попробовать избавитьс€ от этого.
-function tick(float deltatime)
+event Tick(float deltatime)
 {
     Super.tick(deltatime);
 

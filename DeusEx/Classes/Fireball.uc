@@ -5,7 +5,7 @@ class Fireball extends DeusExProjectile;
 
 #exec OBJ LOAD FILE=Effects
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float value;
     local float sizeMult;

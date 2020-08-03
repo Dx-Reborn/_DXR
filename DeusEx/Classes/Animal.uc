@@ -429,7 +429,7 @@ function bool ShouldDropWeapon()
     return false;
 }
 
-function Tick(float deltaSeconds)
+event Tick(float deltaSeconds)
 {
     local Actor  curFood;
     local int    lastIndex;

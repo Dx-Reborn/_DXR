@@ -1,14 +1,14 @@
-//========================================//
-// DeusExHUD - Графический дисплей игрока //
-//========================================//
+/*
+   DeusExHUD - Графический дисплей игрока.
+   ToDo: Implement layout with all HUD parts in lower part of the screen.
+*/
 
 class DeusExHUD extends MouseHUD;
 
 const DebugTraceDist = 512;
-var localized string TestUkr_String;
+var localized string TestUkr_String; // Для проверки Украинского языка
 
 var localized string strMeters;
-var bool bUseCameraTrick; // Как бы ЭТО назвать...
 var int BinocularsMaxRange;
 var() bool bUseBinocularView;
 
@@ -45,7 +45,7 @@ function RefreshHUDDisplay(float DT)
 //    UpdateInHand();
 }
 
-function SetInitialState()
+event SetInitialState()
 {
    LoadColorTheme();
    PopulateBelt();
@@ -1200,7 +1200,6 @@ defaultproperties
 
     RadarBackground=Texture'UT2k4Extra.RadarQ'
 
-    bUseCameraTrick=true
     BinocularsMaxRange=2000
     strMeters="meters"
 

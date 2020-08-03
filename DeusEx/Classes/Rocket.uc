@@ -11,14 +11,14 @@ function PostBeginPlay()
     SpawnRocketEffects();
 }
 
-simulated function SpawnRocketEffects()
+function SpawnRocketEffects()
 {
   fsGen = Spawn(class'EM_ThinTrail', Self);
     if (fsGen != None)
         fsGen.SetBase(Self);
 }
 
-simulated function Destroyed()
+event Destroyed()
 {
   if (fsGen != None)
         fsGen.Kill();

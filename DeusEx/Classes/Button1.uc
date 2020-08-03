@@ -221,14 +221,14 @@ function Bump(actor Other)
     // do nothing
 }
 
-simulated function Tick( float deltaTime )
+event Tick(float deltaTime)
 {                           
-            // Our replicated location changed which means the button has come to rest
-            if (lastLoc != rpcLocation)
-            {
-                SetLocation(rpcLocation);
-                lastLoc = rpcLocation;
-            }
+    // Our replicated location changed which means the button has come to rest
+    if (lastLoc != rpcLocation)
+    {
+         SetLocation(rpcLocation);
+         lastLoc = rpcLocation;
+    }
     Super.Tick(deltaTime);
 }
 

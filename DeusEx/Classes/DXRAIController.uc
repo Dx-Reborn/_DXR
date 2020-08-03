@@ -352,7 +352,7 @@ function int GetProjectileList(out ScriptedPawn.NearbyProjectileList projList, v
 }
 
 
-simulated event SetInitialState()
+event SetInitialState()
 {
     if (mark == None)
         mark = Spawn(class'DestLocMarker');
@@ -1159,7 +1159,7 @@ auto state StartUp
     ScriptedPawn(pawn).ResetReactions();
   }
 
-  function Tick(float deltaSeconds)
+  event Tick(float deltaSeconds)
   {
    Global.Tick(deltaSeconds);
    SetFall();//
@@ -1362,7 +1362,7 @@ State Seeking
         }
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         ScriptedPawn(pawn).animTimer[1] += deltaSeconds;
         Global.Tick(deltaSeconds);
@@ -1972,7 +1972,7 @@ State Attacking
             scriptedPawn(pawn).PlayNewTargetSound();
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         local float  yaw;
         local vector lastLocation;
@@ -2412,7 +2412,7 @@ State Fleeing
         return (bSeat);
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         ScriptedPawn(pawn).UpdateActorVisibility(Enemy, deltaSeconds, 1.0, false);
         if (ScriptedPawn(pawn).IsValidEnemy(DeusExPawn(Enemy)))
@@ -3224,7 +3224,7 @@ state Sitting
              return false;//true;
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         local vector endPos;
         local vector newPos;
@@ -3915,7 +3915,7 @@ Ducking:
 // Диалог от третьего лица.
 state Conversation
 {
-    function Tick(float deltaTime)
+    event Tick(float deltaTime)
     {
         Global.Tick(deltaTime);
 
@@ -4058,7 +4058,7 @@ Begin:
 //--------------------------------------------//
 state FirstPersonConversation
 {
-   function Tick(float deltatime)
+   event Tick(float deltatime)
    {
       Global.Tick(deltaTime);
 //    ScriptedPawn(pawn).LipSynch(deltaTime);
@@ -4618,7 +4618,7 @@ state Standing
         return !ScriptedPawn(pawn).bCrouchToPassObstacles;
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         ScriptedPawn(pawn).animTimer[1] += deltaSeconds;
         Global.Tick(deltaSeconds);
@@ -5811,7 +5811,7 @@ state Following
         return !ScriptedPawn(pawn).bCrouchToPassObstacles;
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         Global.Tick(deltaSeconds);
 
@@ -5977,7 +5977,7 @@ State Shadowing
         StartFalling('Shadowing', 'ContinueShadow');
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         local bool  bMove;
         local float deltaValue;
@@ -6300,7 +6300,7 @@ State Alerting
         StartFalling('Alerting', 'ContinueAlert');
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         Global.Tick(deltaSeconds);
     }

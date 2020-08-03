@@ -27,7 +27,7 @@ var bool bLeaking;
 var float radTimer;
 var bool bGenCreated; // Только один генератор частиц на одну бочку. Иначе он корректно не уничтожается.
 
-function SetInitialState()
+event SetInitialState()
 {
     super.SetInitialState();
 
@@ -146,7 +146,7 @@ function BeginPlay()
 
 auto state Active
 {
-    function Tick(float deltaTime)
+    event Tick(float deltaTime)
     {
         local Actor A;
         local Vector offset;

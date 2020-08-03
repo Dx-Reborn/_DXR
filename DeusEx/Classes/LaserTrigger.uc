@@ -49,7 +49,7 @@ function EndAlarm()
     bStasis = Default.bStasis;
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local AdaptiveArmor armor;
     local bool bTrigger;
@@ -222,7 +222,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
     }
 }
 
-function Destroyed()
+event Destroyed()
 {
     if (emitter != None)
     {

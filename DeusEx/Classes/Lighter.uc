@@ -58,9 +58,6 @@ defaultproperties
      beltDescription="LIGHTER"
      ItemName="Lighter"
      Icon=Texture'DeusExUI.Icons.BeltIconNanoKey'
-//     Mesh=Mesh'DeusExItems.NanoKey'
-  //   PickupViewMesh=Mesh'DeusExItems.NanoKey'
-//     FirstPersonViewMesh=Mesh'DeusExItems.NanoKey'
 
      bUsePickupViewStaticMesh=true
      DrawType=DT_StaticMesh

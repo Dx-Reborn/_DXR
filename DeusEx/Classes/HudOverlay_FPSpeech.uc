@@ -14,7 +14,7 @@ var() font TitleFont, SpeechFont, SpeechFontRus;
 var bool bIsVisible, bRestrictInput;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
-function SetInitialState()
+event SetInitialState()
 {
    local DeusExHUD h;
 
@@ -34,7 +34,7 @@ function Timer()
 }
 
 // == Прорисовка диалогов == //
-simulated function Render(Canvas C)
+function Render(Canvas C)
 {
     local float w,h,holdX,holdY;
     local texture border;

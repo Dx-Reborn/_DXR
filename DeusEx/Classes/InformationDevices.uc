@@ -98,7 +98,7 @@ function GivePlayerImage()
 }
 
 // Удаляет оверлей из массива.
-function tick(float deltatime)
+event Tick(float deltatime)
 {
     local DeusExPlayerController pc;
     local DeusExPlayer player;

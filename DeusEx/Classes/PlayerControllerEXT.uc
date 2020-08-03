@@ -1327,7 +1327,7 @@ state PlayerMousing
       return;
    }
 
-   simulated function PlayerMove(float DeltaTime)
+   function PlayerMove(float DeltaTime)
    {
       local vector MouseV, ScreenV;
 

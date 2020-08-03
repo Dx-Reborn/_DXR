@@ -5,62 +5,62 @@ class SpyDrone extends ThrownProjectile;
 
 auto state Flying
 {
-	function ProcessTouch (Actor Other, Vector HitLocation)
-	{
-		// do nothing
-	}
-	simulated function HitWall (vector HitNormal, actor HitWall)
-	{
-		// do nothing
-	}
+    function ProcessTouch (Actor Other, Vector HitLocation)
+    {
+        // do nothing
+    }
+    function HitWall (vector HitNormal, actor HitWall)
+    {
+        // do nothing
+    }
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	// do nothing
+    // do nothing
 }
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Momentum, class<damageType> damageType)
 {
-	// fall to the ground if EMP'ed
-	if ((DamageType == class'DM_EMP') && !bDisabled)
-	{
-		SetPhysics(PHYS_Falling);
-		bBounce = True;
-		LifeSpan = 10.0;
-	}
-	Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, damageType);
+    // fall to the ground if EMP'ed
+    if ((DamageType == class'DM_EMP') && !bDisabled)
+    {
+        SetPhysics(PHYS_Falling);
+        bBounce = True;
+        LifeSpan = 10.0;
+    }
+    Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, damageType);
 }
 
 function BeginPlay()
 {
-	// do nothing
+    // do nothing
 }
 
-function Destroyed()
+event Destroyed()
 {
-	if ( DeusExPlayer(Owner) != None )
-		DeusExPlayer(Owner).aDrone = None;
+    if (DeusExPlayer(Owner) != None)
+        DeusExPlayer(Owner).aDrone = None;
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 
-simulated function bool SpecialCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation, bool bBehindView)
+function bool SpecialCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation, bool bBehindView)
 {
-	local vector HitNormal, HitLocation;
+    local vector HitNormal, HitLocation;
 
-	log(self@"SpecialCalcView");
-	viewactor = self;
+    log(self@"SpecialCalcView");
+    viewactor = self;
 
-	if (!bBehindView)
+    if (!bBehindView)
         CameraLocation = Location + (vect(-800,0,300) >> Rotation);
 //        CameraLocation = Location + (MortarCameraOffset >> Rotation);
     else
         CameraLocation = Location + (vect(-800,0,300) >> CameraRotation);
 
     if( Trace( HitLocation, HitNormal, CameraLocation, Location,false,vect(10,10,10) ) != None )
-		CameraLocation = HitLocation;
+        CameraLocation = HitLocation;
 
     return True;
 }

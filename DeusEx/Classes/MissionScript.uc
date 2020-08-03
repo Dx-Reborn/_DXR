@@ -26,7 +26,7 @@ var bool bFirstFrame;
 //
 // Set the timer
 // ----------------------------------------------------------------------
-function SetInitialState()
+event SetInitialState()
 {
     // start the script
     SetTimer(checkTime, True);

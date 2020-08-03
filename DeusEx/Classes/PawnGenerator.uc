@@ -116,7 +116,7 @@ function PostBeginPlay()
 // Destroyed()
 // ----------------------------------------------------------------------
 
-function Destroyed()
+event Destroyed()
 {
     local int i;
 

@@ -59,7 +59,7 @@ function SpawnSmoke()
 }
 
 
-simulated function SawedOffCockSound()
+function SawedOffCockSound()
 {
     EjectShell();
 

@@ -30,7 +30,7 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
     }
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 
@@ -50,7 +50,7 @@ function Tick(float deltaTime)
     }
 }
 
-function Destroyed()
+event Destroyed()
 {
     if (EE_emitter != None)
     {

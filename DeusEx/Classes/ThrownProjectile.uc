@@ -21,7 +21,7 @@ var() float             AISoundLevel;       // sound level at which to alert AI 
 var() bool              bDamaged;         // was this blown up via damage?
 var bool                bDoExplode;     // Used for communication into a simulated chain
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local ScriptedPawn P;
     local DeusExPlayer Player;

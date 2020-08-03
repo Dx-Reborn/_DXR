@@ -236,7 +236,7 @@ function float RandomPitch()
   Only if it doesn't find one, it takes one from the ObjectPool.
   That CameraEffect will be returned.
 */
-simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, optional byte mBlurStrength)
+function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, optional byte mBlurStrength)
 {
   local PlayerController PC;
   local CameraEffect CameraEffectFound;
@@ -274,7 +274,7 @@ simulated function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffec
   there. The CameraEffect will be put back in the ObjectPool if no other
   references to it are left in the CameraEffects array.
 */
-simulated function RemoveCameraEffect(CameraEffect CameraEffect)
+function RemoveCameraEffect(CameraEffect CameraEffect)
 {
   local PlayerController PlayerControllerLocal;
   local int i;
@@ -314,7 +314,7 @@ exec function unblur()
 }
 
 
-simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
+function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
    Super.DisplayDebug(Canvas, YL, YPos);
 

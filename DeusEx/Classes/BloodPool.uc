@@ -20,7 +20,7 @@ function BeginPlay()
     Super.BeginPlay();
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     time += deltaTime;
 

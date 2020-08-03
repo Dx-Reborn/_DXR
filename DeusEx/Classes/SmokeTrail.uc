@@ -17,7 +17,7 @@ var bool bFrozen;
 
 auto state Flying
 {
-    simulated function Tick(float deltaTime)
+    event Tick(float deltaTime)
     {
         // if we are frozen, don't update
         if (bFrozen && (Owner != None))
@@ -40,7 +40,7 @@ auto state Flying
             ScaleGlow = LifeSpan / OrigLifeSpan;    // this actually sets the alpha from 1.0 to 0.0
     }
 
-    simulated function BeginState()
+    function BeginState()
     {
         Super.BeginState();
 

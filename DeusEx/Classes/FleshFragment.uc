@@ -5,7 +5,7 @@ class FleshFragment extends DeusExFragment;
 
 auto state Flying
 {
-    simulated function BeginState()
+    function BeginState()
     {
         Super.BeginState();
 

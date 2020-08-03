@@ -11,7 +11,7 @@ var Actor               origBase;
 #exec OBJ LOAD FILE=Effects
 #exec OBJ LOAD FILE=Effects_EX // шейдеры
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 
@@ -23,7 +23,7 @@ simulated function Tick(float deltaTime)
     AmbientSound=none;
 }
 
-simulated function SetInitialState()
+event SetInitialState()
 {
     Super.SetInitialState();
 
@@ -42,7 +42,7 @@ simulated function SetInitialState()
         SetBase(origBase);
 } */
 
-simulated event Destroyed()
+event Destroyed()
 {
     if (smokeGen != None)
     {
@@ -63,7 +63,7 @@ simulated event Destroyed()
     Super.Destroyed();
 }
 
-simulated function SpawnSmokeEffects()
+function SpawnSmokeEffects()
 {
     smokeGen = Spawn(class'EM_BlackSmoke', Self,, Location, rot(16384,0,0));
     smokeGen.SetPhysics(PHYS_Trailer);
@@ -73,7 +73,7 @@ simulated function SpawnSmokeEffects()
 //    }
 }
 
-simulated function AddFire(optional float fireLifeSpan)
+function AddFire(optional float fireLifeSpan)
 {
     if (fireLifeSpan == 0.0)
         fireLifeSpan = 0.5;

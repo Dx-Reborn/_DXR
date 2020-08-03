@@ -186,7 +186,7 @@ function PreBeginPlay()
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
 // ----------------------------------------------------------------------
-function SetInitialState()
+event SetInitialState()
 {
     super.SetInitialState();
     ConBindEvents();
@@ -402,7 +402,7 @@ singular function BaseChange()
 // Покачивание декорации на поверхности воды (или в воздухе)
 // ----------------------------------------------------------------------
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float        ang;
     local rotator      rot;
@@ -1033,7 +1033,7 @@ state Burning
 // copied from Engine.Decoration
 // modified so fragments will smoke and use the skin of their parent object
 // ----------------------------------------------------------------------
-simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags) 
+function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFrags) 
 {
     local int i;
     local actor A, Toucher;
@@ -1073,7 +1073,7 @@ simulated function Frag(class<fragment> FragType, vector Momentum, float DSize, 
 // Destroyed()
 // ----------------------------------------------------------------------
 
-function Destroyed()
+event Destroyed()
 {
     local DeusExPlayer Player;
 

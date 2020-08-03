@@ -37,7 +37,7 @@ function Bump(actor Other)
 //
 // simulate less friction (wheels)
 //
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 

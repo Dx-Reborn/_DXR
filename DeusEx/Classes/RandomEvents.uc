@@ -11,66 +11,66 @@ class RandomEvents extends Keypoint;
 
 var() Name Events[8];
 var() float frequency[8];
-var() bool bLOSRequired;		// if true, then events only happen when player is looking
+var() bool bLOSRequired;        // if true, then events only happen when player is looking
 var byte num;
 var float mytimer;
 
 //
 // check for percentage every second
 //
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	local int i;
-	local float rnd, freq;//, diff;
-	local Actor A;
+    local int i;
+    local float rnd, freq;//, diff;
+    local Actor A;
 
-	Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-	if (bLOSRequired && !PlayerCanSeeMe())
-		return;
+    if (bLOSRequired && !PlayerCanSeeMe())
+        return;
 
-	// test for a new event possibility
-	if (mytimer >= 1.0)
-	{
-		rnd = FRand();
-		freq = 0;
-		for (i=0; i<num; i++)
-		{
-			// make the test percentage cumulative
-			freq += frequency[i];
+    // test for a new event possibility
+    if (mytimer >= 1.0)
+    {
+        rnd = FRand();
+        freq = 0;
+        for (i=0; i<num; i++)
+        {
+            // make the test percentage cumulative
+            freq += frequency[i];
 
-			if (rnd < freq)
-			{
-				// trigger it!
-				if(Events[i] != '')
-					foreach AllActors(class 'Actor', A, Events[i])
-						A.Trigger(Self, None);
+            if (rnd < freq)
+            {
+                // trigger it!
+                if(Events[i] != '')
+                    foreach AllActors(class 'Actor', A, Events[i])
+                        A.Trigger(Self, None);
 
-				mytimer = 0;
-				return;
-			}
-		}
+                mytimer = 0;
+                return;
+            }
+        }
 
-		mytimer -=1.0;
-	}
+        mytimer -=1.0;
+    }
 
-	mytimer += deltaTime;
+    mytimer += deltaTime;
 }
 
 function BeginPlay()
 {
-	local int i;
+    local int i;
 
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	num = 0;
-	mytimer = 0;
-	for (i=0; i<8; i++)
-	{
-		if (Events[i] == '')
-			break;
-		num++;
-	}
+    num = 0;
+    mytimer = 0;
+    for (i=0; i<8; i++)
+    {
+        if (Events[i] == '')
+            break;
+        num++;
+    }
 }
 
 defaultproperties

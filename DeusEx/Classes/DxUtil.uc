@@ -616,7 +616,7 @@ static function string HtmlStripB(string src)
   http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=12035&start=105
   Could be optimized.
 -------------------------------------------------------------*/
-simulated final static function Vector VDiskRand2D(float DiskRadius)
+final static function Vector VDiskRand2D(float DiskRadius)
 {
    local float  Radius, Angle;
    local Vector Point;

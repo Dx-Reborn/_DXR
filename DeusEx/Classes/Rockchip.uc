@@ -6,13 +6,13 @@ class Rockchip extends DeusExFragment;
 
 auto state Flying
 {
-	simulated function BeginState()
-	{
-		Super.BeginState();
+    function BeginState()
+    {
+        Super.BeginState();
 
-		Velocity = VRand() * 100;
-		SetDrawScale((DrawScale * 0.1) + FRand() * 0.25);
-	}
+        Velocity = VRand() * 100;
+        SetDrawScale((DrawScale * 0.1) + FRand() * 0.25);
+    }
 }
 
 

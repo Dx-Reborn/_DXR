@@ -15,7 +15,7 @@ var transient DxCanvas dxc;
 
 var color BooksBG, BooksText, BooksFrame;
 
-function SetInitialState()
+event SetInitialState()
 {
   local DeusExHUD h;
 
@@ -27,7 +27,7 @@ function SetInitialState()
   Super.SetInitialState();
 }
 
-simulated function Render(Canvas C)
+function Render(Canvas C)
 {
     local string infoBuffer;
     local float holdX, holdY, w, h;

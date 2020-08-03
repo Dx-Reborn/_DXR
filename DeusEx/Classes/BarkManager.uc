@@ -34,7 +34,7 @@ var transient Sound speechAudio;
 // Tick()
 // ----------------------------------------------------------------------
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 

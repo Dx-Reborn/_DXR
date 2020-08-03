@@ -7,7 +7,7 @@ class ShockRing extends Effects;
 
 var float size;
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     SetDrawScale(size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan);
     ScaleGlow = LifeSpan / Default.LifeSpan;

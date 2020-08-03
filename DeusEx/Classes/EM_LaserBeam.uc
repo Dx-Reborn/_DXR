@@ -106,14 +106,14 @@ function TurnOff()
     }
 }
 
-function Destroyed()
+event Destroyed()
 {
     TurnOff();
     Kill();
     Super.Destroyed();
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     if (bIsOn)
         CalcTrace(deltaTime);

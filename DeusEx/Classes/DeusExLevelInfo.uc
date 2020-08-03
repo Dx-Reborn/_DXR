@@ -96,7 +96,7 @@ function SpawnScript()
     }
 }
 
-function SetInitialState()
+event SetInitialState()
 {
     SpawnScript();
 }

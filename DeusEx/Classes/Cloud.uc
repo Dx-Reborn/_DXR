@@ -9,74 +9,74 @@ var float damageInterval;
 
 auto state Flying
 {
-	function HitWall(vector HitNormal, actor Wall)
-	{
-		// do nothing
-		Velocity = vect(0,0,0);
-	}
+    function HitWall(vector HitNormal, actor Wall)
+    {
+        // do nothing
+        Velocity = vect(0,0,0);
+    }
 
-	function ProcessTouch (Actor Other, Vector HitLocation)
-	{
-		// do nothing
-	}
+    function ProcessTouch (Actor Other, Vector HitLocation)
+    {
+        // do nothing
+    }
 }
 
 event PhysicsVolumeChange(PhysicsVolume NewVolume)
 {
-	Super.PhysicsVolumeChange(NewVolume);
+    Super.PhysicsVolumeChange(NewVolume);
 
-	// clouds can't live underwater, so kill us quickly if we enter the water
-	if ((NewVolume.bWaterVolume) && (LifeSpan > 2.0))
-		LifeSpan = 2.0;
+    // clouds can't live underwater, so kill us quickly if we enter the water
+    if ((NewVolume.bWaterVolume) && (LifeSpan > 2.0))
+        LifeSpan = 2.0;
 }
 
 function Timer()
 {
-	local Actor A;
-	local Vector offset;
+    local Actor A;
+    local Vector offset;
 
-	// check to see if anything has entered our effect radius
-	// don't damage our owner
-	foreach VisibleActors(class'Actor', A, cloudRadius)
-		if (A != Owner)
-		{
-			// be sure to damage the torso
-			offset = A.Location;
-			A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
-		}
+    // check to see if anything has entered our effect radius
+    // don't damage our owner
+    foreach VisibleActors(class'Actor', A, cloudRadius)
+        if (A != Owner)
+        {
+            // be sure to damage the torso
+            offset = A.Location;
+            A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
+        }
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	local float value;
-	local float sizeMult;
+    local float value;
+    local float sizeMult;
 
-	// don't Super.Tick() becuase we don't want gravity to affect the stream
-	time += deltaTime;
+    // don't Super.Tick() becuase we don't want gravity to affect the stream
+    time += deltaTime;
 
-	value = 1.0+time;
-	if (MinDrawScale > 0)
-		sizeMult = MaxDrawScale/MinDrawScale;
-	else
-		sizeMult = 1;
+    value = 1.0+time;
+    if (MinDrawScale > 0)
+        sizeMult = MaxDrawScale/MinDrawScale;
+    else
+        sizeMult = 1;
 
-	SetDrawScale(MinDrawScale*(drawScale-sizeMult/(value*value) + (sizeMult+1)));
-	ScaleGlow = FClamp(LifeSpan*0.5, 0.0, 1.0);
+    SetDrawScale(MinDrawScale*(drawScale-sizeMult/(value*value) + (sizeMult+1)));
+    ScaleGlow = FClamp(LifeSpan*0.5, 0.0, 1.0);
 
-	// make it swim around a bit at random
-	if (bFloating)
-	{
-		Acceleration = VRand() * 15;
-		Acceleration.Z = 0;
-	}
+    // make it swim around a bit at random
+    if (bFloating)
+    {
+        Acceleration = VRand() * 15;
+        Acceleration.Z = 0;
+    }
 }
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	// set the cloud damage timer
-	SetTimer(damageInterval, True);
+    // set the cloud damage timer
+    SetTimer(damageInterval, True);
 }
 
 defaultproperties

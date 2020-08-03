@@ -3296,12 +3296,12 @@ function PlayFootStep()
     }
 }
 
-simulated function PlayFootStepLeft()
+function PlayFootStepLeft()
 {
     PlayFootStep();
 }
 
-simulated function PlayFootStepRight()
+function PlayFootStepRight()
 {
     PlayFootStep();
 }
@@ -3849,7 +3849,7 @@ function PlayTakingHit(EHitLocation hitPos)
 // ----------------------------------------------------------------------
 // PlayDying()
 // ----------------------------------------------------------------------
-simulated event PlayDying(class<DamageType> DamageType, vector HitLoc)
+event PlayDying(class<DamageType> DamageType, vector HitLoc)
 {
     local Vector X, Y, Z;
     local float dotp;
@@ -6326,7 +6326,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
 }
 
 
-function SetInitialState()
+event SetInitialState()
 {
     GoToState('Auto');
 //  Super.SetInitialState();
@@ -6525,7 +6525,7 @@ state Dying
         SetPhysics(PHYS_Walking);
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         Global.Tick(deltaSeconds);
 

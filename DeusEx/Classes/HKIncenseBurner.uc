@@ -7,7 +7,7 @@ var EM_IncenseBurner smokeGen;
 
 #exec OBJ LOAD FILE=Effects
 
-function Destroyed()
+event Destroyed()
 {
     if (smokeGen != None)
         smokeGen.Kill();

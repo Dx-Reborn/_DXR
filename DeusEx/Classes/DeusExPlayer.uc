@@ -369,7 +369,7 @@ function Reloading(DeusExWeapon weapon, float reloadTime)
         PlayAnim('Reload', 1.0 / reloadTime, 0.1);
 }
 
-simulated function bool CanThrowWeapon()
+function bool CanThrowWeapon()
 {
     return true;// ((Weapon != None) && Weapon.CanThrow());
 }

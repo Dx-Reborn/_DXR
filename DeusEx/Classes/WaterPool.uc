@@ -9,7 +9,7 @@ var float time;
 
 function PostBeginPlay(); // Don't execute this event from parent class.
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     time += deltaTime;
 

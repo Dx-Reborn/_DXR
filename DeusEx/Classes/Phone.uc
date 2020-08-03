@@ -27,7 +27,7 @@ var float ringTimer;
 var bool bUsing;
 var localized String messages[4]; // Отображать сообщения телефона в текстовом виде.
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 

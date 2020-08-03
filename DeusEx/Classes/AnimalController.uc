@@ -48,7 +48,7 @@ state Eating
         pawn.PlayWaiting();
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         if (Animal(pawn).bFoodOverridesAttack && (Animal(pawn).checkAggTimer <= 0))
         {
@@ -190,7 +190,7 @@ state Wandering
             Animal(pawn).destLoc = pawn.Location;
     }
 
-    function Tick(float deltaSeconds)
+    event Tick(float deltaSeconds)
     {
         local pawn fearPawn;
 

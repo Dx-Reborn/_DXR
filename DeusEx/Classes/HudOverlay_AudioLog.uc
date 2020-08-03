@@ -10,7 +10,7 @@ var() float captionX, captionY;
 var DeusExHUD hd;
 
 
-function SetInitialState()
+event SetInitialState()
 {
     hd = DeusExHUD(Level.GetLocalPlayerController().myHUD);
     hd.AddHudOverlay(self);

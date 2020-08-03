@@ -54,13 +54,13 @@ function AlarmHeard(Name event, eventManager.EAIEventState state) //, XAIParams 
     }
 }
 
-function SetInitialState()
+event SetInitialState()
 {
     SetTimer(0.1, true);
 }
 
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local DeusExPawn pawn;
     local ScriptedPawn sp;
@@ -261,7 +261,7 @@ function UnTrigger(Actor Other, Pawn EventInstigator)
     Super.UnTrigger(Other, EventInstigator);
 }
 
-function Destroyed()
+event Destroyed()
 {
     if (gun != None)
     {
@@ -527,7 +527,7 @@ function Pawn GetPlayerPawn()
 }
 
 function BeginPlay();
-simulated event FellOutOfWorld(eKillZType KillType);
+event FellOutOfWorld(eKillZType KillType);
 
 
 defaultproperties

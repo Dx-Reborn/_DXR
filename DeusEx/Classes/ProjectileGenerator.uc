@@ -106,8 +106,7 @@ function Trigger(Actor Other, Pawn EventInstigator)
 // ----------------------------------------------------------------------------
 // Tick()
 // ----------------------------------------------------------------------------
-
-simulated function Tick( float DeltaTime )
+event Tick( float DeltaTime )
 {
    local int    i;//, j;
    local int    Count;
@@ -119,7 +118,7 @@ simulated function Tick( float DeltaTime )
    Super.Tick(DeltaTime);
 
    // If the owner that I'm attached to is dead, kill me. - REV_HAN: Sucks.
-   if ( AttachTag!='' && Owner==None )
+   if (AttachTag!='' && Owner==None)
       Destroy();
 
    // Update timers

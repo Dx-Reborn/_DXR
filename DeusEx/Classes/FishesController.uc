@@ -70,7 +70,7 @@ state Wandering
         return true;
     }
 
-    function Tick(float deltatime)
+    event Tick(float deltatime)
     {
         Super.Tick(deltatime);
         Fishes(pawn).leaderTimer  -= deltaTime;

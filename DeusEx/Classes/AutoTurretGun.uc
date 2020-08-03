@@ -3,49 +3,49 @@
 //=============================================================================
 class AutoTurretGun extends HackableDevices;
 
-function Destroyed()
+event Destroyed()
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	turret = AutoTurret(Owner);
-	if (turret != None)
-	{
-		turret.gun = None;
-		turret.Destroy();
-		SetOwner(None);
-	}
+    turret = AutoTurret(Owner);
+    if (turret != None)
+    {
+        turret.gun = None;
+        turret.Destroy();
+        SetOwner(None);
+    }
 
-	Super.Destroyed();
+    Super.Destroyed();
 }
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	Super.HackAction(Hacker, bHacked);
+    Super.HackAction(Hacker, bHacked);
 
-	turret = AutoTurret(Owner);
-	if (bHacked && (turret != None))
-	{
-		if (!turret.bDisabled)
-		{
-			turret.UnTrigger(Hacker, Pawn(Hacker));
-			turret.bDisabled = True;
-		}
-		else
-		{
-			turret.bDisabled = False;
-			turret.Trigger(Hacker, Pawn(Hacker));
-		}
-	}
+    turret = AutoTurret(Owner);
+    if (bHacked && (turret != None))
+    {
+        if (!turret.bDisabled)
+        {
+            turret.UnTrigger(Hacker, Pawn(Hacker));
+            turret.bDisabled = True;
+        }
+        else
+        {
+            turret.bDisabled = False;
+            turret.Trigger(Hacker, Pawn(Hacker));
+        }
+    }
 }
 
 function PostBeginPlay()
 {
-	local AutoTurret turret;
+    local AutoTurret turret;
 
-	Super.PostBeginPlay();
-	turret = AutoTurret(Owner);
+    Super.PostBeginPlay();
+    turret = AutoTurret(Owner);
 }
 
 function BeginPlay();

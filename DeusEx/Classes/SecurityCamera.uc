@@ -10,7 +10,7 @@ var() int cameraFOV;
 var() int cameraRange;
 var float memoryTime;
 var() bool bActive;
-var() bool bNoAlarm;			// if True, does NOT sound alarm
+var() bool bNoAlarm;            // if True, does NOT sound alarm
 //var Rotator origRot;
 var Rotator ReplicatedRotation; // for net propagation
 var bool bTrackPlayer;
@@ -20,12 +20,12 @@ var bool bFoundCurPlayer;  // in multiplayer, if we found a player this tick.
 var float lastSeenTimer;
 var float playerCheckTimer;
 var float swingTimer;
-var bool bConfused;				// used when hit by EMP
-var float confusionTimer;		// how long until camera resumes normal operation
-var float confusionDuration;	// how long does EMP hit last?
-var float triggerDelay;			// how long after seeing the player does it trigger?
-var float triggerTimer;			// timer used for above
-var vector playerLocation;		// last seen position of player
+var bool bConfused;             // used when hit by EMP
+var float confusionTimer;       // how long until camera resumes normal operation
+var float confusionDuration;    // how long does EMP hit last?
+var float triggerDelay;         // how long after seeing the player does it trigger?
+var float triggerTimer;         // timer used for above
+var vector playerLocation;      // last seen position of player
 
 // DEUS_EX AMSD Used for multiplayer target acquisition.
 var Actor curTarget;          // current view target
@@ -36,7 +36,7 @@ var Pawn safeTarget;          // in multiplayer, this actor is strictly off-limi
 var localized string msgActivated;
 var localized string msgDeactivated;
 
-var int team;						// Keep track of team the camera is  on
+var int team;                       // Keep track of team the camera is  on
 
 // ------------------------------------------------------------------------------------
 // Network replication
@@ -44,47 +44,47 @@ var int team;						// Keep track of team the camera is  on
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-	if (bConfused)
-		return;
+    if (bConfused)
+        return;
 
-	Super.Trigger(Other, Instigator);
+    Super.Trigger(Other, Instigator);
 
-	if (!bActive)
-	{
-		if (Instigator != None)
-			Instigator.ClientMessage(msgActivated);
-		bActive = True;
-		LightType = LT_Steady;
-		LightHue = 80;
-		Skins[2] = Texture'GreenLightTex';
-		AmbientSound = sound'CameraHum';
-	}
+    if (!bActive)
+    {
+        if (Instigator != None)
+            Instigator.ClientMessage(msgActivated);
+        bActive = True;
+        LightType = LT_Steady;
+        LightHue = 80;
+        Skins[2] = Texture'GreenLightTex';
+        AmbientSound = sound'CameraHum';
+    }
 }
 
 
 function UnTrigger(Actor Other, Pawn Instigator)
 {
-	if (bConfused)
-		return;
+    if (bConfused)
+        return;
 
-	Super.UnTrigger(Other, Instigator);
+    Super.UnTrigger(Other, Instigator);
 
-	if (bActive)
-	{
-		if (Instigator != None)
-			Instigator.ClientMessage(msgDeactivated);
-			TriggerEventX(False);
-		bActive = False;
-		TurnOff();
-	}
+    if (bActive)
+    {
+        if (Instigator != None)
+            Instigator.ClientMessage(msgDeactivated);
+            TriggerEventX(False);
+        bActive = False;
+        TurnOff();
+    }
 }
 
 function TurnOff()
 {
-	LightType = LT_None;
-	AmbientSound = None;
-	DesiredRotation = origRot;
-	hackStrength = 0.0;
+    LightType = LT_None;
+    AmbientSound = None;
+    DesiredRotation = origRot;
+    hackStrength = 0.0;
 }
 
 
@@ -92,174 +92,174 @@ function TurnOff()
 // Конфликт с таким-же событием в UT2004, придется переименовать
 function TriggerEventX(bool bTrigger)
 {
-	bEventTriggered = bTrigger;
-	bTrackPlayer = bTrigger;
-	triggerTimer = 0;
+    bEventTriggered = bTrigger;
+    bTrackPlayer = bTrigger;
+    triggerTimer = 0;
 
-	// now, the camera sounds its own alarm
-	if (bTrigger)
-	{
-		AmbientSound = Sound'Klaxon2';
-		SoundVolume = 128;
-		SoundRadius = 64;
-		LightHue = 0;
-		Skins[2] = Texture'RedLightTex';
-		class'EventManager'.static.AIStartEvent(self, 'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+    // now, the camera sounds its own alarm
+    if (bTrigger)
+    {
+        AmbientSound = Sound'Klaxon2';
+        SoundVolume = 128;
+        SoundRadius = 64;
+        LightHue = 0;
+        Skins[2] = Texture'RedLightTex';
+        class'EventManager'.static.AIStartEvent(self, 'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 
-		// make sure we can't go into stasis while we're alarming
-		bStasis = False;
-	}
-	else
-	{
-		AmbientSound = Sound'CameraHum';
-		SoundRadius = 48;
-		SoundVolume = 192;
-		LightHue = 80;
-		Skins[2] = Texture'GreenLightTex';
-		class'EventManager'.static.AIEndEvent(self, 'Alarm', EAITYPE_Audio);
+        // make sure we can't go into stasis while we're alarming
+        bStasis = False;
+    }
+    else
+    {
+        AmbientSound = Sound'CameraHum';
+        SoundRadius = 48;
+        SoundVolume = 192;
+        LightHue = 80;
+        Skins[2] = Texture'GreenLightTex';
+        class'EventManager'.static.AIEndEvent(self, 'Alarm', EAITYPE_Audio);
 
-		// reset our stasis info
-		bStasis = Default.bStasis;
-	}
+        // reset our stasis info
+        bStasis = Default.bStasis;
+    }
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	local float ang;
-	local Rotator rot;
+    local float ang;
+    local Rotator rot;
 
    Super.Tick(deltaTime);
 
    curTarget = None;
 
    // if this camera is not active, get out
-	if (!bActive)
-	{
-		Skins[2] = Texture'BlackMaskTex';
-		//Fuck you, light type -DDL
-		LightType = LT_None;
-		return;
-	}
+    if (!bActive)
+    {
+        Skins[2] = Texture'BlackMaskTex';
+        //Fuck you, light type -DDL
+        LightType = LT_None;
+        return;
+    }
 
-	// if we've been EMP'ed, act confused
-	if (bConfused)
-	{
-		confusionTimer += deltaTime;
+    // if we've been EMP'ed, act confused
+    if (bConfused)
+    {
+        confusionTimer += deltaTime;
 
-		// pick a random facing at random
-		if (confusionTimer % 0.25 > 0.2)
-		{
-			DesiredRotation.Pitch = origRot.Pitch + 0.5*swingAngle - Rand(swingAngle);
-			DesiredRotation.Yaw = origRot.Yaw + 0.5*swingAngle - Rand(swingAngle);
-		}
+        // pick a random facing at random
+        if (confusionTimer % 0.25 > 0.2)
+        {
+            DesiredRotation.Pitch = origRot.Pitch + 0.5*swingAngle - Rand(swingAngle);
+            DesiredRotation.Yaw = origRot.Yaw + 0.5*swingAngle - Rand(swingAngle);
+        }
 
-		if (confusionTimer > confusionDuration)
-		{
-			bConfused = False;
-			confusionTimer = 0;
-			confusionDuration = Default.confusionDuration;
-			LightHue = 80;
-			Skins[2] = Texture'GreenLightTex';
-			SoundPitch = 64;
-			DesiredRotation = origRot;
-		}
+        if (confusionTimer > confusionDuration)
+        {
+            bConfused = False;
+            confusionTimer = 0;
+            confusionDuration = Default.confusionDuration;
+            LightHue = 80;
+            Skins[2] = Texture'GreenLightTex';
+            SoundPitch = 64;
+            DesiredRotation = origRot;
+        }
 
-		return;
-	}
+        return;
+    }
 
-	// check the player's visibility every 0.1 seconds
-	if (!bNoAlarm)
-	{
-		playerCheckTimer += deltaTime;
+    // check the player's visibility every 0.1 seconds
+    if (!bNoAlarm)
+    {
+        playerCheckTimer += deltaTime;
 
-		if (playerCheckTimer > 0.1)
-		{
-			playerCheckTimer = 0;
+        if (playerCheckTimer > 0.1)
+        {
+            playerCheckTimer = 0;
       CheckPlayerVisibility(DeusExPlayer(GetPlayerPawn()));
-		}
-	}
+        }
+    }
 
-	// forget about the player after a set amount of time
-	if (bPlayerSeen)
-	{
-		// if the player has been seen, but the camera hasn't triggered yet,
-		// provide some feedback to the player (light and sound)
-		if (!bEventTriggered)
-		{
-			triggerTimer += deltaTime;
+    // forget about the player after a set amount of time
+    if (bPlayerSeen)
+    {
+        // if the player has been seen, but the camera hasn't triggered yet,
+        // provide some feedback to the player (light and sound)
+        if (!bEventTriggered)
+        {
+            triggerTimer += deltaTime;
 
-			if (triggerTimer % 0.5 > 0.4)
-			{
-				LightHue = 0;
-				Skins[2] = Texture'RedLightTex';
-				PlaySound(Sound'Beep6',,,, 1280);
-			}
-			else
-			{
-				LightHue = 80;
-				Skins[2] = Texture'GreenLightTex';
-			}
-		}
+            if (triggerTimer % 0.5 > 0.4)
+            {
+                LightHue = 0;
+                Skins[2] = Texture'RedLightTex';
+                PlaySound(Sound'Beep6',,,, 1280);
+            }
+            else
+            {
+                LightHue = 80;
+                Skins[2] = Texture'GreenLightTex';
+            }
+        }
 
-		if (lastSeenTimer < memoryTime)
-			lastSeenTimer += deltaTime;
-		else
-		{
-			lastSeenTimer = 0;
-			bPlayerSeen = False;
+        if (lastSeenTimer < memoryTime)
+            lastSeenTimer += deltaTime;
+        else
+        {
+            lastSeenTimer = 0;
+            bPlayerSeen = False;
 
-			// untrigger the event
-			TriggerEventX(False);
-		}
+            // untrigger the event
+            TriggerEventX(False);
+        }
 
-		return;
-	}
+        return;
+    }
 
-	swingTimer += deltaTime;
-	Skins[2] = Texture'GreenLightTex';
+    swingTimer += deltaTime;
+    Skins[2] = Texture'GreenLightTex';
 
-	// swing back and forth if all is well
-	if (bSwing && !bTrackPlayer)
-	{
-		ang = 2 * Pi * swingTimer / swingPeriod;
-		rot = origRot;
-		rot.Yaw += Sin(ang) * swingAngle;
-		DesiredRotation = rot;
-	}
+    // swing back and forth if all is well
+    if (bSwing && !bTrackPlayer)
+    {
+        ang = 2 * Pi * swingTimer / swingPeriod;
+        rot = origRot;
+        rot.Yaw += Sin(ang) * swingAngle;
+        DesiredRotation = rot;
+    }
 
 }
 
 function BeginPlay()
 {
-	Super.BeginPlay();
+    Super.BeginPlay();
 
-	origRot = Rotation;
-	DesiredRotation = origRot;
+    origRot = Rotation;
+    DesiredRotation = origRot;
 
-	playerLocation = Location;
+    playerLocation = Location;
 
    if(!bActive) //some start off
-   	TurnOff();
+    TurnOff();
 }
 
 function CheckPlayerVisibility(DeusExPlayer player)
 {
-	local float yaw, pitch, dist;
-	local Actor hit;
-	local Vector HitLocation, HitNormal;
-	local Rotator rot;
+    local float yaw, pitch, dist;
+    local Actor hit;
+    local Vector HitLocation, HitNormal;
+    local Rotator rot;
 
    if (player == None)
       return;
-	dist = Abs(VSize(player.Location - Location));
+    dist = Abs(VSize(player.Location - Location));
 
-	// if the player is in range
-	if (player.bDetectable && !player.bIgnore && (dist <= cameraRange))
-	{
-		hit = Trace(HitLocation, HitNormal, player.Location, Location, True);
-		if (hit == player)
-		{
-			// If the player's RadarTrans aug is on, the camera can't see him
+    // if the player is in range
+    if (player.bDetectable && !player.bIgnore && (dist <= cameraRange))
+    {
+        hit = Trace(HitLocation, HitNormal, player.Location, Location, True);
+        if (hit == player)
+        {
+            // If the player's RadarTrans aug is on, the camera can't see him
          // DEUS_EX AMSD In multiplayer, we've already done this test with 
          // AcquireMultiplayerTarget
          if (Level.Netmode == NM_Standalone)
@@ -268,40 +268,40 @@ function CheckPlayerVisibility(DeusExPlayer player)
                return;
          }
 
-			// figure out if we can see the player
-			rot = Rotator(player.Location - Location);
-			rot.Roll = 0;
-			yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
-			pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;
+            // figure out if we can see the player
+            rot = Rotator(player.Location - Location);
+            rot.Roll = 0;
+            yaw = (Abs(Rotation.Yaw - rot.Yaw)) % 65536;
+            pitch = (Abs(Rotation.Pitch - rot.Pitch)) % 65536;
 
-			// center the angles around zero
-			if (yaw > 32767)
-				yaw -= 65536;
-			if (pitch > 32767)
-				pitch -= 65536;
+            // center the angles around zero
+            if (yaw > 32767)
+                yaw -= 65536;
+            if (pitch > 32767)
+                pitch -= 65536;
 
-			// if we are in the camera's FOV
-			if ((Abs(yaw) < cameraFOV) && (Abs(pitch) < cameraFOV))
-			{
-				// rotate to face the player
-				if (bTrackPlayer)
-					DesiredRotation = rot;
+            // if we are in the camera's FOV
+            if ((Abs(yaw) < cameraFOV) && (Abs(pitch) < cameraFOV))
+            {
+                // rotate to face the player
+                if (bTrackPlayer)
+                    DesiredRotation = rot;
 
-				lastSeenTimer = 0;
-				bPlayerSeen = True;
-				bTrackPlayer = True;
+                lastSeenTimer = 0;
+                bPlayerSeen = True;
+                bTrackPlayer = True;
         bFoundCurPlayer = True;
 
-				playerLocation = player.Location - vect(0,0,1)*(player.CollisionHeight-5);
+                playerLocation = player.Location - vect(0,0,1)*(player.CollisionHeight-5);
 
-				// trigger the event if we haven't yet for this sighting
-				if (!bEventTriggered && (triggerTimer >= triggerDelay) && (Level.Netmode == NM_Standalone))
-					TriggerEventX(True);
+                // trigger the event if we haven't yet for this sighting
+                if (!bEventTriggered && (triggerTimer >= triggerDelay) && (Level.Netmode == NM_Standalone))
+                    TriggerEventX(True);
 
-				return;
-			}
-		}
-	}
+                return;
+            }
+        }
+    }
 }
 
 

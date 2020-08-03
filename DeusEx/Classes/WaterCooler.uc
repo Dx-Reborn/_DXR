@@ -7,7 +7,7 @@ var bool bUsing;
 var int numUses;
 var localized String msgEmpty;
 
-function Timer()
+event Timer()
 {
     bUsing = False;
     AmbientSound = None;
@@ -34,12 +34,14 @@ function Frob(Actor Frobber, Inventory frobWith)
     if (DeusExPlayer(Frobber) != None)
         DeusExPlayer(Frobber).HealPlayer(1);
 
-    PlayAnim('Bubble');
+    // DXR: Для случая когда используется новая модель.
+    if (DrawType != DT_StaticMesh)
+        PlayAnim('Bubble');
     AmbientSound = sound'WaterBubbling';
     numUses--;
 }
 
-function Destroyed()
+event Destroyed()
 {
     local Vector HitLocation, HitNormal, EndTrace;
     local Actor hit;
@@ -67,7 +69,10 @@ defaultproperties
      bCanBeBase=True
      ItemName="Water Cooler"
      bPushable=False
-     mesh=mesh'DeusExDeco.WaterCooler'
+//     mesh=mesh'DeusExDeco.WaterCooler'
+
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_WaterCoolers.WaterCooler_b'
      CollisionRadius=14.070000
      CollisionHeight=41.570000
      Mass=70.000000

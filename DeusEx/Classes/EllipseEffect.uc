@@ -3,9 +3,9 @@
 //=============================================================================
 class EllipseEffect extends Effects;
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	ScaleGlow = 2.0 * (LifeSpan / Default.LifeSpan);
+    ScaleGlow = 2.0 * (LifeSpan / Default.LifeSpan);
 }
 
 defaultproperties

@@ -11,7 +11,7 @@ var() bool              bOpen;
 var EM_showerwater      waterGen[4];
 var Vector              sprayOffsets[4];
 
-function Destroyed()
+event Destroyed()
 {
     local int i;
 

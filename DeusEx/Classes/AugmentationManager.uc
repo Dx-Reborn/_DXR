@@ -5,14 +5,14 @@ class AugmentationManager extends Actor;
 
 struct S_AugInfo
 {
-	var() int NumSlots;
-	var() int AugCount;
-	var() int KeyBase;
+    var() int NumSlots;
+    var() int AugCount;
+    var() int KeyBase;
 };
 
 var() travel S_AugInfo AugLocs[7];
-var() DeusExPlayer Player;				// which player am I attached to?
-var() travel Augmentation FirstAug;		// Pointer to first Augmentation
+var() DeusExPlayer Player;              // which player am I attached to?
+var() travel Augmentation FirstAug;     // Pointer to first Augmentation
 
 // All the available augmentations 
 var() Class<Augmentation> augClasses[25];
@@ -27,38 +27,38 @@ var localized String NoAugInSlot;
 
 function CreateAugmentations(DeusExPlayer newPlayer)
 {
-	local int augIndex;
-	local Augmentation anAug;
-	local Augmentation lastAug;
+    local int augIndex;
+    local Augmentation anAug;
+    local Augmentation lastAug;
 
-	FirstAug = None;
-	LastAug  = None;
+    FirstAug = None;
+    LastAug  = None;
 
-	player = newPlayer;
+    player = newPlayer;
 
-	for(augIndex=0; augIndex<arrayCount(augClasses); augIndex++)
-	{
-		if (augClasses[augIndex] != None)
-		{
-			anAug = Spawn(augClasses[augIndex], Self);
-			anAug.Player = player;
+    for(augIndex=0; augIndex<arrayCount(augClasses); augIndex++)
+    {
+        if (augClasses[augIndex] != None)
+        {
+            anAug = Spawn(augClasses[augIndex], Self);
+            anAug.Player = player;
 
-			// Manage our linked list
-			if (anAug != None)
-			{
-				if (FirstAug == None)
-				{
-					FirstAug = anAug;
-				}
-				else
-				{
-					LastAug.next = anAug;
-				}
+            // Manage our linked list
+            if (anAug != None)
+            {
+                if (FirstAug == None)
+                {
+                    FirstAug = anAug;
+                }
+                else
+                {
+                    LastAug.next = anAug;
+                }
 
-				LastAug  = anAug;
-			}
-		}
-	}
+                LastAug  = anAug;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -67,13 +67,13 @@ function CreateAugmentations(DeusExPlayer newPlayer)
 
 function AddDefaultAugmentations()
 {
-	local int augIndex;
+    local int augIndex;
 
-	for(augIndex=0; augIndex<arrayCount(defaultAugs); augIndex++)
-	{
-		if (defaultAugs[augIndex] != None)
-			GivePlayerAugmentation(defaultAugs[augIndex]);
-	}
+    for(augIndex=0; augIndex<arrayCount(defaultAugs); augIndex++)
+    {
+        if (defaultAugs[augIndex] != None)
+            GivePlayerAugmentation(defaultAugs[augIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -83,40 +83,40 @@ function AddDefaultAugmentations()
 // currently active.
 // ----------------------------------------------------------------------
 
-simulated function RefreshAugDisplay()
+function RefreshAugDisplay()
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	if (player == None)
-		return;
+    if (player == None)
+        return;
 
-	// First make sure there are no augs visible in the display
-	player.ClearAugmentationDisplay();
+    // First make sure there are no augs visible in the display
+    player.ClearAugmentationDisplay();
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		// First make sure the aug is active if need be
-		if (anAug.bHasIt)
-		{
-			if (anAug.bIsActive)
-			{
-				anAug.GotoState('Active');
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        // First make sure the aug is active if need be
+        if (anAug.bHasIt)
+        {
+            if (anAug.bIsActive)
+            {
+                anAug.GotoState('Active');
 
-				// Now, if this is an aug that isn't *always* active, then 
-				// make sure it's in the augmentation display
+                // Now, if this is an aug that isn't *always* active, then 
+                // make sure it's in the augmentation display
 
-				if (!anAug.bAlwaysActive)
-					player.AddAugmentationDisplay(anAug);
-			}
-			else if ((player.bHUDShowAllAugs) && (!anAug.bAlwaysActive))
-			{
-				player.AddAugmentationDisplay(anAug);		
-			}
-		}
+                if (!anAug.bAlwaysActive)
+                    player.AddAugmentationDisplay(anAug);
+            }
+            else if ((player.bHUDShowAllAugs) && (!anAug.bAlwaysActive))
+            {
+                player.AddAugmentationDisplay(anAug);       
+            }
+        }
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -125,25 +125,25 @@ simulated function RefreshAugDisplay()
 // How many augs are currently active?
 // ----------------------------------------------------------------------
 
-simulated function int NumAugsActive()
+function int NumAugsActive()
 {
-	local Augmentation anAug;
-	local int count;
+    local Augmentation anAug;
+    local int count;
 
-	if (player == None)
-		return 0;
+    if (player == None)
+        return 0;
 
-	count = 0;
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive)
-			count++;
+    count = 0;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bHasIt && anAug.bIsActive && !anAug.bAlwaysActive)
+            count++;
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 
-	return count;
+    return count;
 }
 
 // ----------------------------------------------------------------------
@@ -152,16 +152,16 @@ simulated function int NumAugsActive()
 
 function SetPlayer(DeusExPlayer newPlayer)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	player = newPlayer;
+    player = newPlayer;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		anAug.player = player;
-		anAug = anAug.next;
-	}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        anAug.player = player;
+        anAug = anAug.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -170,32 +170,32 @@ function SetPlayer(DeusExPlayer newPlayer)
 
 function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		// Don't boost the augmentation causing the boosting!
-		if (anAug != augBoosting)
-		{
-			if (bBoostEnabled)
-			{
-				if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
-				{
-					anAug.Deactivate();
-					anAug.CurrentLevel++;
-					anAug.bBoosted = True;
-					anAug.Activate();
-				}
-			}
-			else if (anAug.bBoosted)
-			{
-				anAug.CurrentLevel--;
-				anAug.bBoosted = False;
-			}
-		}
-		anAug = anAug.next;
-	}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        // Don't boost the augmentation causing the boosting!
+        if (anAug != augBoosting)
+        {
+            if (bBoostEnabled)
+            {
+                if (anAug.bIsActive && !anAug.bBoosted && (anAug.CurrentLevel < anAug.MaxLevel))
+                {
+                    anAug.Deactivate();
+                    anAug.CurrentLevel++;
+                    anAug.bBoosted = True;
+                    anAug.Activate();
+                }
+            }
+            else if (anAug.bBoosted)
+            {
+                anAug.CurrentLevel--;
+                anAug.bBoosted = False;
+            }
+        }
+        anAug = anAug.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -204,25 +204,25 @@ function BoostAugs(bool bBoostEnabled, Augmentation augBoosting)
 // currently turned on
 // ----------------------------------------------------------------------
 
-simulated function int GetClassLevel(class<Augmentation> augClass)
+function int GetClassLevel(class<Augmentation> augClass)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.Class == augClass)
-		{
-			if (anAug.bHasIt && anAug.bIsActive)
-				return anAug.CurrentLevel;
-			else
-				return -1;
-		}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.Class == augClass)
+        {
+            if (anAug.bHasIt && anAug.bIsActive)
+                return anAug.CurrentLevel;
+            else
+                return -1;
+        }
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 
-	return -1;
+    return -1;
 }
 
 // ----------------------------------------------------------------------
@@ -231,28 +231,28 @@ simulated function int GetClassLevel(class<Augmentation> augClass)
 // takes a class instead of being called by actual augmentation
 // ----------------------------------------------------------------------
 
-simulated function float GetAugLevelValue(class<Augmentation> AugClass)
+function float GetAugLevelValue(class<Augmentation> AugClass)
 {
-	local Augmentation anAug;
-	local float retval;
+    local Augmentation anAug;
+    local float retval;
 
-	retval = 0;
+    retval = 0;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.Class == augClass)
-		{
-			if (anAug.bHasIt && anAug.bIsActive)
-				return anAug.LevelValues[anAug.CurrentLevel];
-			else
-				return -1.0;
-		}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.Class == augClass)
+        {
+            if (anAug.bHasIt && anAug.bIsActive)
+                return anAug.LevelValues[anAug.CurrentLevel];
+            else
+                return -1.0;
+        }
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 
-	return -1.0;
+    return -1.0;
 }
 
 // ----------------------------------------------------------------------
@@ -263,21 +263,21 @@ simulated function float GetAugLevelValue(class<Augmentation> AugClass)
 
 function ActivateAll()
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	// Only allow this if the player still has 
-	// Bioleectric Energy(tm)
+    // Only allow this if the player still has 
+    // Bioleectric Energy(tm)
 
-	if ((player != None) && (player.Energy > 0))
-	{
-		anAug = FirstAug;
-		while(anAug != None)
-		{
-         if ( (Level.NetMode == NM_Standalone) || (!anAug.IsA('AugLight')) )			
+    if ((player != None) && (player.Energy > 0))
+    {
+        anAug = FirstAug;
+        while(anAug != None)
+        {
+         if ( (Level.NetMode == NM_Standalone) || (!anAug.IsA('AugLight')) )            
             anAug.Activate();
-			anAug = anAug.next;
-		}
-	}
+            anAug = anAug.next;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -288,15 +288,15 @@ function ActivateAll()
 
 function DeactivateAll()
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.bIsActive)
-			anAug.Deactivate();
-		anAug = anAug.next;
-	}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bIsActive)
+            anAug.Deactivate();
+        anAug = anAug.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -305,20 +305,20 @@ function DeactivateAll()
 // Returns the augmentation based on the class name
 // ----------------------------------------------------------------------
 
-simulated function Augmentation FindAugmentation(Class<Augmentation> findClass)
+function Augmentation FindAugmentation(Class<Augmentation> findClass)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.Class == findClass)
-			break;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.Class == findClass)
+            break;
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 
-	return anAug;
+    return anAug;
 }
 
 // ----------------------------------------------------------------------
@@ -327,52 +327,52 @@ simulated function Augmentation FindAugmentation(Class<Augmentation> findClass)
 
 function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	// Checks to see if the player already has it.  If so, we want to 
-	// increase the level
-	anAug = FindAugmentation(giveClass);
+    // Checks to see if the player already has it.  If so, we want to 
+    // increase the level
+    anAug = FindAugmentation(giveClass);
 
-	if (anAug == None)
-		return None;		// shouldn't happen, but you never know!
+    if (anAug == None)
+        return None;        // shouldn't happen, but you never know!
 
-	if (anAug.bHasIt)
-	{
-		anAug.IncLevel();
-		return anAug;
-	}
+    if (anAug.bHasIt)
+    {
+        anAug.IncLevel();
+        return anAug;
+    }
 
-	if (AreSlotsFull(anAug))
-	{
-		Player.ClientMessage(AugLocationFull);
-		return anAug;
-	}
+    if (AreSlotsFull(anAug))
+    {
+        Player.ClientMessage(AugLocationFull);
+        return anAug;
+    }
 
-	anAug.bHasIt = True;
+    anAug.bHasIt = True;
 
-	if (anAug.bAlwaysActive)
-	{
-		anAug.bIsActive = True;
-		anAug.GotoState('Active');
-	}
-	else
-	{
-		anAug.bIsActive = False;
-	}
+    if (anAug.bAlwaysActive)
+    {
+        anAug.bIsActive = True;
+        anAug.GotoState('Active');
+    }
+    else
+    {
+        anAug.bIsActive = False;
+    }
 
-	Player.ClientMessage(Sprintf(anAug.AugNowHaveAtLevel, anAug.AugmentationName, anAug.CurrentLevel + 1));
+    Player.ClientMessage(Sprintf(anAug.AugNowHaveAtLevel, anAug.AugmentationName, anAug.CurrentLevel + 1));
 
-	// Manage our AugLocs[] array
-	AugLocs[anAug.AugmentationLocation].augCount++;
-	
+    // Manage our AugLocs[] array
+    AugLocs[anAug.AugmentationLocation].augCount++;
+    
       anAug.HotKeyNum = AugLocs[anAug.AugmentationLocation].augCount + AugLocs[anAug.AugmentationLocation].KeyBase;
 
-	if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
-	    Player.AddAugmentationDisplay(anAug);
+    if ((!anAug.bAlwaysActive) && (Player.bHUDShowAllAugs))
+        Player.AddAugmentationDisplay(anAug);
 
   anAug.SaveAugLevel();
 
-	return anAug;
+    return anAug;
 }
 
 // ----------------------------------------------------------------------
@@ -384,29 +384,29 @@ function Augmentation GivePlayerAugmentation(Class<Augmentation> giveClass)
 // can accomodate.
 // ----------------------------------------------------------------------
 
-simulated function Bool AreSlotsFull(Augmentation augToCheck)
+function Bool AreSlotsFull(Augmentation augToCheck)
 {
-	local int num;
-	local Augmentation anAug;
+    local int num;
+    local Augmentation anAug;
 
-	// You can only have a limited number augmentations in each location, 
-	// so here we check to see if you already have the maximum allowed.
+    // You can only have a limited number augmentations in each location, 
+    // so here we check to see if you already have the maximum allowed.
 
-	num = 0;
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.AugmentationName != "")
-			if (augToCheck != anAug)
+    num = 0;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.AugmentationName != "")
+            if (augToCheck != anAug)
             if (Level.Netmode == NM_Standalone)
             {
                if (augToCheck.AugmentationLocation == anAug.AugmentationLocation)
                   if (anAug.bHasIt)
                      num++;
             }
-		anAug = anAug.next;
-	}
-	if (Level.NetMode == NM_Standalone)
+        anAug = anAug.next;
+    }
+    if (Level.NetMode == NM_Standalone)
       return (num >= AugLocs[augToCheck.AugmentationLocation].NumSlots);
 
 }
@@ -417,34 +417,34 @@ simulated function Bool AreSlotsFull(Augmentation augToCheck)
 // Calculates energy use for all active augmentations
 // ----------------------------------------------------------------------
 
-simulated function Float CalcEnergyUse(float deltaTime)
+function Float CalcEnergyUse(float deltaTime)
 {
-	local float energyUse, energyMult;
-	local Augmentation anAug;
+    local float energyUse, energyMult;
+    local Augmentation anAug;
    local Augmentation PowerAug;
 
-	energyUse = 0;
-	energyMult = 1.0;
+    energyUse = 0;
+    energyMult = 1.0;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
+    anAug = FirstAug;
+    while(anAug != None)
+    {
       if (anAug.IsA('AugPower'))
          PowerAug = anAug;
-		if (anAug.bHasIt && anAug.bIsActive)
-		{
-			energyUse += ((anAug.GetEnergyRate()/60) * deltaTime);
-			if (anAug.IsA('AugPower'))
+        if (anAug.bHasIt && anAug.bIsActive)
+        {
+            energyUse += ((anAug.GetEnergyRate()/60) * deltaTime);
+            if (anAug.IsA('AugPower'))
          {
-				energyMult = anAug.LevelValues[anAug.CurrentLevel];
+                energyMult = anAug.LevelValues[anAug.CurrentLevel];
          }
-		}
-		anAug = anAug.next;
-	}
-	// check for the power augmentation
-	energyUse *= energyMult;
+        }
+        anAug = anAug.next;
+    }
+    // check for the power augmentation
+    energyUse *= energyMult;
 
-	return energyUse;
+    return energyUse;
 }
 
 // ----------------------------------------------------------------------
@@ -453,17 +453,17 @@ simulated function Float CalcEnergyUse(float deltaTime)
 
 function AddAllAugs()
 {
-	local int augIndex;
+    local int augIndex;
 
-	// Loop through all the augmentation classes and create
-	// any augs that don't exist.  Then set them all to the 
-	// maximum level.
+    // Loop through all the augmentation classes and create
+    // any augs that don't exist.  Then set them all to the 
+    // maximum level.
 
-	for(augIndex=0; augIndex<arrayCount(augClasses); augIndex++)
-	{
-		if (augClasses[augIndex] != None)
-			GivePlayerAugmentation(augClasses[augIndex]);
-	}
+    for(augIndex=0; augIndex<arrayCount(augClasses); augIndex++)
+    {
+        if (augClasses[augIndex] != None)
+            GivePlayerAugmentation(augClasses[augIndex]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -472,16 +472,16 @@ function AddAllAugs()
 
 function SetAllAugsToMaxLevel()
 {
-	local Augmentation anAug;
+    local Augmentation anAug;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if (anAug.bHasIt)
-			anAug.CurrentLevel = anAug.MaxLevel;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.bHasIt)
+            anAug.CurrentLevel = anAug.MaxLevel;
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -507,39 +507,39 @@ function IncreaseAllAugs(int Amount)
 // ----------------------------------------------------------------------
 
 function bool ActivateAugByKey(int keyNum)
-{	
-	local Augmentation anAug;
-	local bool bActivated;
+{   
+    local Augmentation anAug;
+    local bool bActivated;
 
-	bActivated = False;
+    bActivated = False;
 
-	if ((keyNum < 0) || (keyNum > 9))
-		return False;
+    if ((keyNum < 0) || (keyNum > 9))
+        return False;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
-			break;
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
+            break;
 
-		anAug = anAug.next;
-	}
+        anAug = anAug.next;
+    }
 
-	if (anAug == None)
-	{
-		player.ClientMessage(NoAugInSlot);
-	}
-	else
-	{
-		// Toggle
-		if (anAug.bIsActive)
-			anAug.Deactivate();
-		else
-			anAug.Activate();
+    if (anAug == None)
+    {
+        player.ClientMessage(NoAugInSlot);
+    }
+    else
+    {
+        // Toggle
+        if (anAug.bIsActive)
+            anAug.Deactivate();
+        else
+            anAug.Activate();
 
-		bActivated = True;
-	}
-	return bActivated;
+        bActivated = True;
+    }
+    return bActivated;
 }
 
 // ----------------------------------------------------------------------
@@ -548,19 +548,19 @@ function bool ActivateAugByKey(int keyNum)
 
 function ResetAugmentations()
 {
-	local Augmentation anAug;
-	local Augmentation nextAug;
+    local Augmentation anAug;
+    local Augmentation nextAug;
     local int LocIndex;
 
-	anAug = FirstAug;
-	while(anAug != None)
-	{
-		nextAug = anAug.next;
-		anAug.Destroy();
-		anAug = nextAug;
-	}
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        nextAug = anAug.next;
+        anAug.Destroy();
+        anAug = nextAug;
+    }
 
-	FirstAug = None;
+    FirstAug = None;
 
     //Must also clear auglocs.
     for (LocIndex = 0; LocIndex < 7; LocIndex++)

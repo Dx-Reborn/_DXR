@@ -1333,7 +1333,7 @@ function UpdateHud()
  }
 }
 
-function SetInitialState()
+event SetInitialState()
 {
     local int i; // Перенесено из ActorDisplayWindow > InitWindow()<<
 
@@ -1353,7 +1353,7 @@ function SetInitialState()
 
 // TODO: Добавить условия для включения и отключение ГДИ или его частей
 // Стоит использовать переменные из оригинала.
-simulated event PostRender(canvas C)
+event PostRender(canvas C)
 {
     super.postrender(C);
     if ((cubemapmode) || (playerOwner.pawn == none))

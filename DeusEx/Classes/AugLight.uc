@@ -76,7 +76,7 @@ function SetGlowLocation()
 
 state Active
 {
-    function Tick (float deltaTime)
+    event Tick(float deltaTime)
     {
         SetBeamLocation();
         SetGlowLocation();

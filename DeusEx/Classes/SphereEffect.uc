@@ -5,10 +5,10 @@ class SphereEffect extends Effects;
 
 var float size;
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
-	SetDrawScale(3.0 * size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan);
-	ScaleGlow = 2.0 * (LifeSpan / Default.LifeSpan);
+    SetDrawScale(3.0 * size * (Default.LifeSpan - LifeSpan) / Default.LifeSpan);
+    ScaleGlow = 2.0 * (LifeSpan / Default.LifeSpan);
 }
 
 

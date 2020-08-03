@@ -260,7 +260,7 @@ c.SetClip(c.sizeX, c.sizeY);
 c.Reset();
 }
 
-simulated function DrawMouseCursor(Canvas u)
+function DrawMouseCursor(Canvas u)
 {
   local float XPos, YPos;
 
@@ -304,7 +304,7 @@ simulated function DrawMouseCursor(Canvas u)
   return;
 }
 
-simulated event PostRender(Canvas u)
+event PostRender(Canvas u)
 {
    Super.PostRender(u);
 

@@ -19,7 +19,7 @@ var localized string ErrorMessages[5];
 var transient bool bIsQuickLoading; // transient для того чтобы значение переменной никогда не сохранялось.
 
 /*--- Создать каталог Save\Current\ ---*/
-function SetInitialState()
+event SetInitialState()
 {
   local string dir;
 

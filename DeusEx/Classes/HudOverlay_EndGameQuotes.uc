@@ -69,7 +69,7 @@ function StartMessage()
     bSpewingText = true;
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
  if (bTickEnabled)
  {
@@ -96,8 +96,8 @@ function PrintNextCharacter()
 {
     if (charIndex < len(message))
     {
-            AppendText(mid(message, charIndex, 1));
-            charIndex++;
+        AppendText(mid(message, charIndex, 1));
+        charIndex++;
     }
     else
     {

@@ -99,7 +99,7 @@ function TurnOff()
     }
 }
 
-function SetInitialState()
+event SetInitialState()
 {
     Super.SetInitialState();
 
@@ -122,7 +122,7 @@ function SetInitialState()
     bAlreadyInitialized = True;
 }
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 

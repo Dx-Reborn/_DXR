@@ -34,7 +34,7 @@ function bool ShouldBeStartled(Pawn startler)
 }
 
 
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 

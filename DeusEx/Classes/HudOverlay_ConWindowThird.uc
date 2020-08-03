@@ -10,7 +10,7 @@ var string speech, speakerName;
 var transient DeusExGlobals gl;
 var transient object UserObjects[10];
 
-var int numChoices;										// Number of choice items
+var int numChoices;                                     // Number of choice items
 
 var DeusExPlayer player;
 var DeusExPlayerController dxpc;
@@ -22,7 +22,7 @@ var Interactions.EInputKey CurrentKey;
 var Interactions.EInputAction InputAction;
 
 
-function SetInitialState()
+event SetInitialState()
 {
   dxpc = DeusExPlayerController(level.GetLocalPlayerController());
   player = DeusExPlayer(dxpc.pawn);
@@ -30,50 +30,50 @@ function SetInitialState()
   gl = class'DeusExGlobals'.static.GetGlobals();
   gl.conWindow = self;
 
-	conStartTime = player.level.TimeSeconds;
+    conStartTime = player.level.TimeSeconds;
 }
 
 function AbortCinematicConvo()
 {
-	local MissionEndgame script;
+    local MissionEndgame script;
 
-	conPlay.TerminateConversation();
+    conPlay.TerminateConversation();
 
-	foreach AllActors(class'MissionEndgame', script)
-		break;
+    foreach AllActors(class'MissionEndgame', script)
+        break;
 
-	if (script != None)
-		script.FinishCinematic();
+    if (script != None)
+        script.FinishCinematic();
 }
 
 
 function DisplayName(string text)
 {
-	// Don't do this if bForcePlay == True
-	if (!bForcePlay)
-	{
-		SpeakerName = text;
-	}
+    // Don't do this if bForcePlay == True
+    if (!bForcePlay)
+    {
+        SpeakerName = text;
+    }
 }
 
 function SetForcePlay(bool bNewForcePlay)
 {
-	bForcePlay = bNewForcePlay;
+    bForcePlay = bNewForcePlay;
 }
 
 function RestrictInput(bool bNewRestrictInput)
 {
-	bRestrictInput = bNewRestrictInput;
+    bRestrictInput = bNewRestrictInput;
 }
 
 function DisplayText(string text, Actor speakingActor)
 {
-	Speech = text;
+    Speech = text;
 }
 
 function AppendText(string text)
 {
-	Speech $= text;
+    Speech $= text;
 }
 
 function ShowChoiceAsSpeech(string Text)

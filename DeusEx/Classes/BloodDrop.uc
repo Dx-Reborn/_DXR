@@ -11,7 +11,7 @@ auto state Flying
         Destroy();
     }
 
-    simulated function BeginState()
+    function BeginState()
     {
         Velocity = VRand() * 100;
         //SetDrawScale(1.0 + FRand());
@@ -27,7 +27,7 @@ auto state Flying
     }
 }
 
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     if (Velocity == vect(0,0,0))
     {

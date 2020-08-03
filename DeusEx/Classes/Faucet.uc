@@ -10,7 +10,7 @@ class Faucet extends DeusExDecoration;
 var() bool              bOpen;
 var EM_WaterFaucet waterGen;
 
-function Destroyed()
+event Destroyed()
 {
     if (waterGen != None)
         waterGen.Kill();

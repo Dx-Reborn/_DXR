@@ -372,7 +372,7 @@ function PhysicsVolumeChange(PhysicsVolume NewVolume)
     underwater = NewVolume.bWaterVolume; //Lork: keep track of whether you're underwater or not
 }
 
-function Destroyed()
+event Destroyed()
 {
     if (flyGen != None)
     {
@@ -382,7 +382,7 @@ function Destroyed()
     Super.Destroyed();
 }
 
-function Tick(float deltaSeconds)
+event Tick(float deltaSeconds)
 {
     if (!bInit)
     {

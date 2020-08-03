@@ -220,7 +220,7 @@ function DestroyGenerator()
 //
 // Special tick for robots to show effects of EMP damage
 //
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float pct, mod;
 

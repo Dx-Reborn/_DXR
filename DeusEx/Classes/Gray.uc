@@ -11,7 +11,7 @@ var float damageAmount;
 var float damageTime;
 
 // check every damageInterval seconds and damage any player near the gray
-function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local DeusExPlayer player;
 

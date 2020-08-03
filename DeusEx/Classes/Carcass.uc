@@ -27,7 +27,7 @@ function ChunkUp(int Damage)
         destroy();
 }
     
-static simulated function bool AllowChunk(int N, name A)
+static function bool AllowChunk(int N, name A)
 {
     return true;
 }

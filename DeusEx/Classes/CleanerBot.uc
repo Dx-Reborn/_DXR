@@ -9,122 +9,122 @@ var float blotchTimer;
 var float fleePawnTimer;
 
 enum ECleanDirection  {
-	CLEANDIR_North,
-	CLEANDIR_South,
-	CLEANDIR_East,
-	CLEANDIR_West
+    CLEANDIR_North,
+    CLEANDIR_South,
+    CLEANDIR_East,
+    CLEANDIR_West
 };
 
 var ECleanDirection minorDir;
 var ECleanDirection majorDir;
 
-function Tick(float deltaSeconds)
+event Tick(float deltaSeconds)
 {
-	local DeusExPawn  fearPawn;
-	local DeusExDecal blotch;
-	local float       deltaXY, deltaZ;
+    local DeusExPawn  fearPawn;
+    local DeusExDecal blotch;
+    local float       deltaXY, deltaZ;
 
-	Super.Tick(deltaSeconds);
+    Super.Tick(deltaSeconds);
 
-	fleePawnTimer += deltaSeconds;
-	if (fleePawnTimer > 0.5)
-	{
-		fleePawnTimer = 0;
-		fearPawn = FrightenedByPawn();
-		if (fearPawn != None)
-			FleeFromPawn(fearPawn);
-	}
+    fleePawnTimer += deltaSeconds;
+    if (fleePawnTimer > 0.5)
+    {
+        fleePawnTimer = 0;
+        fearPawn = FrightenedByPawn();
+        if (fearPawn != None)
+            FleeFromPawn(fearPawn);
+    }
 
-	blotchTimer += deltaSeconds;
-	if (blotchTimer > 0.3)
-	{
-		blotchTimer = 0;
-		foreach RadiusActors(Class'DeusExDecal', blotch, CollisionRadius*2)
-		{
-			deltaXY = VSize((blotch.Location-Location)*vect(1,1,0));
-			deltaZ  = blotch.Location.Z - Location.Z;
-			if ((deltaXY <= CollisionRadius*1.2) && (deltaZ < 0) && (deltaZ > -(CollisionHeight+10)))
-				blotch.Destroy();
-		}
-	}
+    blotchTimer += deltaSeconds;
+    if (blotchTimer > 0.3)
+    {
+        blotchTimer = 0;
+        foreach RadiusActors(Class'DeusExDecal', blotch, CollisionRadius*2)
+        {
+            deltaXY = VSize((blotch.Location-Location)*vect(1,1,0));
+            deltaZ  = blotch.Location.Z - Location.Z;
+            if ((deltaXY <= CollisionRadius*1.2) && (deltaZ < 0) && (deltaZ > -(CollisionHeight+10)))
+                blotch.Destroy();
+        }
+    }
 }
 
 
 // hack -- copied from Animal.uc
 function DeusExPawn FrightenedByPawn()
 {
-	local DeusExPawn  candidate;
-	local bool        bCheck;
-	local DeusExPawn  fearPawn;
+    local DeusExPawn  candidate;
+    local bool        bCheck;
+    local DeusExPawn  fearPawn;
 
-	fearPawn = None;
-	if (!bBlockActors && !bBlockPlayers)
-		return fearPawn;
+    fearPawn = None;
+    if (!bBlockActors && !bBlockPlayers)
+        return fearPawn;
 
-	foreach RadiusActors(Class'DeusExPawn', candidate, CLEANUP_DECALS_RADIUS)
-	{
-		bCheck = false;
-		if (!ClassIsChildOf(candidate.Class, Class))
-		{
-			if (candidate.bBlockActors)
-			{
-				if (bBlockActors && !candidate.Controller.bIsPlayer)
-					bCheck = true;
-				else if (bBlockPlayers && candidate.Controller.bIsPlayer)
-					bCheck = true;
-			}
-		}
+    foreach RadiusActors(Class'DeusExPawn', candidate, CLEANUP_DECALS_RADIUS)
+    {
+        bCheck = false;
+        if (!ClassIsChildOf(candidate.Class, Class))
+        {
+            if (candidate.bBlockActors)
+            {
+                if (bBlockActors && !candidate.Controller.bIsPlayer)
+                    bCheck = true;
+                else if (bBlockPlayers && candidate.Controller.bIsPlayer)
+                    bCheck = true;
+            }
+        }
 
-		if (bCheck)
-		{
-			if ((candidate.MaxiStepHeight < CollisionHeight*1.5) && (candidate.CollisionHeight*0.5 <= CollisionHeight))
-				bCheck = false;
-		}
+        if (bCheck)
+        {
+            if ((candidate.MaxiStepHeight < CollisionHeight*1.5) && (candidate.CollisionHeight*0.5 <= CollisionHeight))
+                bCheck = false;
+        }
 
-		if (bCheck)
-		{
-			if (ShouldBeStartled(candidate))
-			{
-				fearPawn = candidate;
-				break;
-			}
-		}
-	}
-	return fearPawn;
+        if (bCheck)
+        {
+            if (ShouldBeStartled(candidate))
+            {
+                fearPawn = candidate;
+                break;
+            }
+        }
+    }
+    return fearPawn;
 }
 
 function bool ShouldBeStartled(Pawn startler)
 {
-	local float speed;
-	local float time;
-	local float dist;
-	local float dist2;
-	local bool  bPh33r;
+    local float speed;
+    local float time;
+    local float dist;
+    local float dist2;
+    local bool  bPh33r;
 
-	bPh33r = false;
-	if (IsValidEnemy(DeusExPawn(startler), false))
-	{
-		speed = VSize(startler.Velocity);
-		if (speed >= 20)
-		{
-			dist = VSize(Location - startler.Location);
-			time = dist/speed;
-			if (time <= 2.0)
-			{
-				dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
-				if (dist2 < speed*0.8)
-					bPh33r = true;
-			}
-		}
-	}
+    bPh33r = false;
+    if (IsValidEnemy(DeusExPawn(startler), false))
+    {
+        speed = VSize(startler.Velocity);
+        if (speed >= 20)
+        {
+            dist = VSize(Location - startler.Location);
+            time = dist/speed;
+            if (time <= 2.0)
+            {
+                dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
+                if (dist2 < speed*0.8)
+                    bPh33r = true;
+            }
+        }
+    }
 
-	return bPh33r;
+    return bPh33r;
 }
 
 function FleeFromPawn(Pawn fleePawn)
 {
-	SetEnemy(fleePawn, , true);
-	Controller.GotoState('AvoidingPawn');
+    SetEnemy(fleePawn, , true);
+    Controller.GotoState('AvoidingPawn');
 }
 
 

@@ -114,7 +114,7 @@ function GrabProjectile(DeusExPlayer player)
 //
 // update our flight path based on our ranges and tracking info
 //
-simulated function Tick(float deltaTime)
+event Tick(float deltaTime)
 {
     local float dist, size;
     local Rotator dir;

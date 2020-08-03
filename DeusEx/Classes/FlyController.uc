@@ -13,7 +13,7 @@ state Wandering
         return true;
     }
 
-    function Tick(float deltaTime)
+    event Tick(float deltaTime)
     {
         Super.Tick(deltatime);
     }
