@@ -1,11 +1,24 @@
-//=============================================================================
-// Cloud.
-//=============================================================================
+/*
+   Cloud
+
+   ToDo: подключить к этим projectiles генераторы частиц.
+*/
+
 class Cloud extends DeusExProjectile;
 
 var bool bFloating;
 var float cloudRadius;
 var float damageInterval;
+var class <DeusExEmitter> CloudEffectClass;
+var DeusExEmitter CloudEffect; // Pointer to particle generator
+
+function SpawnCloudEmitter()
+{
+    if (CloudEffect == None)
+    {
+       CloudEffect = Spawn(CloudEffectClass, self, '', Location, Rotation);
+    }
+}
 
 auto state Flying
 {
@@ -15,7 +28,7 @@ auto state Flying
         Velocity = vect(0,0,0);
     }
 
-    function ProcessTouch (Actor Other, Vector HitLocation)
+    function ProcessTouch(Actor Other, Vector HitLocation)
     {
         // do nothing
     }
@@ -38,12 +51,12 @@ event Timer()
     // check to see if anything has entered our effect radius
     // don't damage our owner
     foreach VisibleActors(class'Actor', A, cloudRadius)
-        if (A != Owner)
-        {
-            // be sure to damage the torso
-            offset = A.Location;
-            A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
-        }
+    if (A != Owner)
+    {
+        // be sure to damage the torso
+        offset = A.Location;
+        A.TakeDamage(Damage, Instigator, offset, vect(0,0,0), damageType);
+    }
 }
 
 event Tick(float deltaTime)
@@ -77,6 +90,8 @@ event BeginPlay()
 
     // set the cloud damage timer
     SetTimer(damageInterval, True);
+    // DXR: Spawn particle generator
+    SpawnCloudEmitter();
 }
 
 defaultproperties
@@ -90,7 +105,6 @@ defaultproperties
      maxDrawScale=5.000000
      bIgnoresNanoDefense=True
      ItemName="Gas Cloud"
-     //  ItemArticle="a"
      speed=300.000000
      MaxSpeed=300.000000
      Damage=1.000000
