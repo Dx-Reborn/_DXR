@@ -222,7 +222,7 @@ function DisplaySkillChoice(ConChoice choice);
 function DisplayChoice(ConChoice choice);
 
 
-defaultProperties
+defaultproperties
 {
     TitleFont=Font'DxFonts.ZR_14'
     SpeechFont=font'DxFonts.fontConversation'

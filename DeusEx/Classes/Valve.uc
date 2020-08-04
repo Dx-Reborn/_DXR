@@ -29,6 +29,18 @@ event PostBeginPlay()
 {
     Super.PostBeginPlay();
 
+    PlayAnimations();
+}
+
+event PostLoadSavedGame()
+{
+    Super.PostLoadSavedGame();
+
+    PlayAnimations();
+}
+
+function PlayAnimations()
+{
     if (bOpen)
         PlayAnim('Open', 10.0, 0.001);
     else
