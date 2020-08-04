@@ -25,26 +25,21 @@ var float time;                 // misc. timer
 var float MinDrawScale;
 var float MaxDrawScale;
 
-var vector LastSeenLoc;    // Last known location of target
-var vector NetworkTargetLoc; // For network propagation (non relevant targets)
-var bool bHasNetworkTarget;
-var bool bHadLocalTarget;
-
 var int gradualHurtSteps;       // how many separate explosions for the staggered HurtRadius
 var int gradualHurtCounter;     // which one are we currently doing
 
+var class<DeusExWeapon>  spawnWeaponClass;  // weapon to give the player if this projectile is disarmed and frobbed
+var class<Ammunition>    spawnAmmoClass;  // ammo to give the player if this projectile is disarmed and frobbed
+
 var bool bEmitDanger;
-var class<DeusExWeapon>  spawnWeaponClass;   // weapon to give the player if this projectile is disarmed and frobbed
-var class<Ammunition>       spawnAmmoClass;     // weapon to give the player if this projectile is disarmed and frobbed
-
 var bool bIgnoresNanoDefense; //True if the aggressive defense aug does not blow this up.
-
 var bool bAggressiveExploded; //True if exploded by Aggressive Defense 
+var bool bUseExplosionEffects; // Добавлять эффекты взрыва или нет?
+var bool bAddRings;
 
 var localized string itemName;      // human readable name
 var localized string itemArticle;    // article much like those for weapons
-var bool bUseExplosionEffects; // Добавлять эффекты взрыва или нет?
-var bool bAddRings;
+
 var sound MiscSound;
 
 function sound GetExplosionSound()
