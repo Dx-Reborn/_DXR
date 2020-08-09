@@ -34,11 +34,11 @@ function ShowPanel(bool bShow)
 {
   super.ShowPanel(bShow);
   if (bShow) 
-    {
+  {
      PlayerOwner().pawn.PlaySound(Sound'Menu_OK',SLOT_Interface,0.25);
      EnableButtons();
      fillvalues();
-    }
+  }
 }
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
@@ -524,27 +524,22 @@ function InternalOnRendered(canvas C)
    c.SetPos(prLeftLeg.ActualLeft() - 3,prLeftLeg.ActualTop() - Voffset);
    c.DrawColor =  class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
    c.font = font'MSS_8';//font'FontMenuSmall_DS';//font'microTech_7';//font'eur_8';//font'EU_8';//font'Inf_8';
-   c.DrawText("Left Leg");
+   c.DrawText(HealthLocationLeftLeg);
 
    c.SetPos(prRightLeg.ActualLeft() - 3,prRightLeg.ActualTop() - Voffset);
-//   c.SetDrawColor(255,255,255,255);
-   c.DrawText("Right Leg");
+   c.DrawText(HealthLocationRightLeg);
 //-----------------
    c.SetPos(prRightArm.ActualLeft() - 3,prRightArm.ActualTop() - Voffset);
-//   c.SetDrawColor(255,255,255,255);
-   c.DrawText("Right Arm");
+   c.DrawText(HealthLocationRightArm);
 
    c.SetPos(prLeftArm.ActualLeft() - 3,prLeftArm.ActualTop() - Voffset);
-//   c.SetDrawColor(255,255,255,255);
-   c.DrawText("Left Arm");
+   c.DrawText(HealthLocationLeftArm);
 //-----------------
    c.SetPos(prHead.ActualLeft() - 3,prHead.ActualTop() - Voffset);
-//   c.SetDrawColor(255,255,255,255);
-   c.DrawText("Head");
+   c.DrawText(HealthLocationHead);
 
    c.SetPos(prBody.ActualLeft() - 3,prBody.ActualTop() - Voffset);
-//   c.SetDrawColor(255,255,255,255);
-   c.DrawText("Body");
+   c.DrawText(HealthLocationTorso);
 
    PaintFrames(c);
 }
@@ -580,16 +575,16 @@ function EnableButtons()
      {
        if (controls[i].tag==123)
          GUIButton(controls[i]).DisableMe();
-   }
+     }
     }
     else if (mk != none)
     {
      lMedKitsCount.Caption = "x "$mk.NumCopies;
-   for (i=0; i<controls.length; i++)
+     for (i=0; i<controls.length; i++)
      {
        if (controls[i].tag==123)
        {
-        GUIButton(controls[i]).EnableMe();
+           GUIButton(controls[i]).EnableMe();
        }
      }
     }
@@ -621,7 +616,7 @@ function bool InternalOnClick(GUIComponent Sender)
         PushHealth();
         pointsHealed = HealPart(0);
         PopHealth();
-    lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
+        lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
         EnableButtons();
   }
   //
@@ -638,7 +633,7 @@ function bool InternalOnClick(GUIComponent Sender)
         PushHealth();
         pointsHealed = HealPart(2);
         PopHealth();
-    lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
+        lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
         EnableButtons();
   }
   //
@@ -647,7 +642,7 @@ function bool InternalOnClick(GUIComponent Sender)
         PushHealth();
         pointsHealed = HealPart(1);
         PopHealth();
-    lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
+        lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
         EnableButtons();
   }
   //
@@ -656,7 +651,7 @@ function bool InternalOnClick(GUIComponent Sender)
         PushHealth();
         pointsHealed = HealPart(5);
         PopHealth();
-    lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
+        lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
         EnableButtons();
   }
   if (Sender==bRightLeg)
@@ -664,7 +659,7 @@ function bool InternalOnClick(GUIComponent Sender)
         PushHealth();
         pointsHealed = HealPart(4);
         PopHealth();
-    lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
+        lMessage.Caption=class'Actor'.static.Sprintf(PointsHealedLabel, pointsHealed);
         EnableButtons();
   }
 

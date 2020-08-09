@@ -4,7 +4,7 @@
 class DXRGameOptions extends DxWindowTemplate;
 
 var localized string strOk, strDefault, strCancel, strExtraOptions;
-var GUIButton btnOk, btnCancel, btnDefault, btnExtra;
+var GUIButton btnOk, btnCancel, btnDefault, btnExtra, btnExtra2;
 
 var DXRChoiceInfo iObjectNames, iWeaponAutoReload, iGoreLevel, iSubtitles, iCrosshairs;
 var DXRChoiceInfo iHUDAugDisplay, iUIBackground, iHeadBob, iLogTimeoutValue;
@@ -184,7 +184,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
   btnDefault.WinTop = 428;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -195,7 +195,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 446;
   btnOK.WinTop = 428;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -206,7 +206,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 345;
   btnCancel.WinTop = 428;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 
 
   btnExtra = new class'GUIButton';
@@ -218,7 +218,21 @@ function CreateMyControls()
   btnExtra.WinWidth = 180;
   btnExtra.WinLeft = 15;
   btnExtra.WinTop = 378;
-	AppendComponent(btnExtra, true);
+    AppendComponent(btnExtra, true);
+
+
+  btnExtra2 = new class'GUIButton';
+  btnExtra2.OnClick=InternalOnClick;
+  btnExtra2.fontScale = FNS_Small;
+  btnExtra2.StyleName="STY_DXR_MediumButton";
+  btnExtra2.Caption = strExtraOptions @ "(2)";
+  btnExtra2.WinHeight = 21;
+  btnExtra2.WinWidth = 180;
+  btnExtra2.WinLeft = 200;
+  btnExtra2.WinTop = 378;
+    AppendComponent(btnExtra2, true);
+
+
 }
 
 function resetToDefaults()
@@ -233,7 +247,7 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function SaveSettings()
@@ -245,7 +259,7 @@ function SaveSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).SaveSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function CancelSettings()
@@ -257,7 +271,7 @@ function CancelSettings()
      if (controls[i].IsA('DXREnumButton'))
         DXREnumButton(controls[i]).CancelSetting();
   }
- 	DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -280,6 +294,10 @@ function bool InternalOnClick(GUIComponent Sender)
    {
      Controller.OpenMenu("DXRMenu.DXRGameOptionsA");
    }
+   else if (Sender==btnExtra2)
+   {
+     Controller.OpenMenu("DXRMenu.DXRGameOptionsB");
+   }
   return true;
 }
 
@@ -293,36 +311,36 @@ defaultproperties
     strExtraOptions="More options..."
     WinTitle="Game Options"
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=447
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=447
 
-		RightEdgeCorrectorX=545
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=420
+        RightEdgeCorrectorX=545
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=420
 
-		TopEdgeCorrectorX=456
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=456
+        TopEdgeCorrectorY=16
     TopEdgeLength=86
 
     TopRightCornerX=542
     TopRightCornerY=16
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MenuGameOptionsBackground'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=540
-		WinHeight=410
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_MenuGameOptionsBackground'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=540
+        WinHeight=410
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

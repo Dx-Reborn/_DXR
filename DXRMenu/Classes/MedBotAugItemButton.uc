@@ -100,20 +100,6 @@ function String GetAugDesc()
         return "";
 }
 
-// ----------------------------------------------------------------------
-// StyleChanged()
-// ----------------------------------------------------------------------
-
-/*event StyleChanged()
-{
-    local ColorTheme theme;
-
-    Super.StyleChanged();
-
-    colBorder.r = Int(Float(colBackground.r) * 0.75);
-    colBorder.g = Int(Float(colBackground.g) * 0.75);
-    colBorder.b = Int(Float(colBackground.b) * 0.75);
-}*/
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -127,5 +113,5 @@ defaultproperties
     buttonHeight=34
     borderWidth=34
     borderHeight=34
-   bNeverScale=true
+    bNeverScale=true
 }

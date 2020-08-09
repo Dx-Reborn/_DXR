@@ -744,7 +744,7 @@ function EnableButtons()
             }
             // Augmentation Upgrade Cannisters cannot be used
             // on this screen
-            else if ( inv.IsA('AugmentationUpgradeCannisterInv') )
+            else if ( inv.IsA('AugmentationUpgradeCannister') )
             {
                 btnUse.DisableMe();
                 btnChangeAmmo.DisableMe();

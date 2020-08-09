@@ -164,33 +164,33 @@ function funcA()
 
 function bool myOnKeyEvent(out byte Key, out byte State, float delta)
 {
-	local Interactions.EInputKey iKey;
+    local Interactions.EInputKey iKey;
 
-	iKey = EInputKey(Key);
+    iKey = EInputKey(Key);
 
   //колесико мыши
-	if (ikey == IK_MouseWheelUp) 
-	{
-    myScrollBar.DecreaseClick(none);
-		return true;
-	}
-	if (ikey == IK_MouseWheelDown)
-	{
-    myScrollBar.IncreaseClick(none);
-		return true;
-	}
+    if (ikey == IK_MouseWheelUp) 
+    {
+        myScrollBar.DecreaseClick(none);
+        return true;
+    }
+    if (ikey == IK_MouseWheelDown)
+    {
+        myScrollBar.IncreaseClick(none);
+        return true;
+    }
 }
 
 
 defaultproperties
 {
     Begin Object Class=GUIVertScrollBar Name=cOne
-          bBoundToParent=true
-          bScaleToParent=true
-          WinHeight=1.0
-          WinWidth=16
-          WinTop=0.0
-          WinLeft=1.0
+        bBoundToParent=true
+        bScaleToParent=true
+        WinHeight=1.0
+        WinWidth=16
+        WinTop=0.0
+        WinLeft=1.0
     End Object
 
     myScrollBar=cOne

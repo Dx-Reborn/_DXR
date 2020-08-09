@@ -1,8 +1,8 @@
 //=============================================================================
-// MenuChoice_UseStencil
+// MenuChoice_Hitmarker
 //=============================================================================
 
-class MenuChoice_UseStencil extends MenuChoice_OnOff;
+class MenuChoice_Hitmarker extends MenuChoice_EnabledDisabled;
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -10,7 +10,7 @@ class MenuChoice_UseStencil extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-    LoadSettingBool();
+    SetValue(int(!gl.bHitMarkerOn));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,15 @@ function LoadSetting()
 
 function SaveSetting()
 {
-    SaveSettingBool();
+    gl.bHitMarkerOn = !bool(GetValue());
+}
+
+// ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+
+function ResetToDefault()
+{
+    SetValue(int(!gl.bHitMarkerOn));
 }
 
 // ----------------------------------------------------------------------
@@ -27,7 +35,6 @@ function SaveSetting()
 defaultproperties
 {
     defaultValue=1
-    Hint="Keep it turned On, so reflective surfaces (mirrors) will work correctly."
-    actionText="UseStencil"
-    configSetting="ini:Engine.Engine.RenderDevice UseStencil"
+    Hint="Render an additional rotating indicator if enemy got some damage from PlayerPawn."
+    actionText="HitMarker"
 }

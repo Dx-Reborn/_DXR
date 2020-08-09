@@ -60,10 +60,10 @@ defaultproperties
     EditSound           =none //sound'DeusExSounds.UserInterface.Menu_Slider'
     UpSound=none        //      =sound'DeusExSounds.UserInterface.'
     DownSound=none //           =sound'DeusExSounds.UserInterface.Menu_Activate'
-        DragSound           =sound'DeusExSounds.UserInterface.Menu_Slider'
+    DragSound           =sound'DeusExSounds.UserInterface.Menu_Slider'
     FadeSound           =sound'DeusExSounds.UserInterface.Menu_OK'
 
-    /* ‚бҐ Єгаб®ал г¬Ґ­миҐ­л ЇаЁ¬Ґа­® ў ваЁ а §  */
+    /* Все курсоры уменьшены примерно в три раза */
 //  MouseCursors(0)=material'DeusExCursor.DeusExCursor_Main'          // Arrow
     MouseCursors(0)=TexScaler'DeusExCursor.DeusExCursor_main_0_5'          // Arrow
     MouseCursors(1)=TexScaler'DeusExCursor.ResizeAll_SC'       // SizeAll
@@ -73,11 +73,11 @@ defaultproperties
     MouseCursors(5)=TexScaler'DeusExCursor.ResizeHorz_SC'       // Size WE
 //  MouseCursors(6)=TexScaler'DeusExCursor.Cursors.Pointer'          // Wait
     
-//    MouseCursorOffset(0)=(X=0.5,Y=0.5,Z=0) // ‘¬ҐйҐ­ЁҐ Єгаб®а 
+//    MouseCursorOffset(0)=(X=0.5,Y=0.5,Z=0) // Смещение курсора
 
         DblClickWindow=0.5 // How long do you have for a double click//0.05
-                            // Ўл«® 0.5. ЏаЁи«®бм г¬Ґ­миЁвм, Ё­ зҐ ¤Ё «®ЈЁ Їа®¬ влў «Ёбм б«ЁиЄ®¬ Ўлбва®.
-    bFixedMouseSize=true // €§Ў ў«пҐв ®в Їа®Ў«Ґ¬л б Ё§¬Ґ­пойЁ¬ а §¬Ґал Єгаб®а®¬ :)
+                            // было 0.5. Пришлось уменьшить, иначе диалоги проматывались слишком быстро.
+    bFixedMouseSize=true // Избавляет от проблемы с изменяющим размеры курсором :)
 
     ImageList(0)=Material'2K4Menus.Controls.checkboxball_b'
     ImageList(1)=Material'2K4Menus.NewControls.ComboListDropDown'

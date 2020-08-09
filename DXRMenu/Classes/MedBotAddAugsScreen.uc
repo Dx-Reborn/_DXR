@@ -79,15 +79,15 @@ function PaintFrames(canvas u)
 
 function CreateControls()
 {
-  btnInstall = new class'GUIButton';
-  btnInstall.FontScale = FNS_Small;
-  btnInstall.Hint = "";
-  btnInstall.StyleName="STY_DXR_ButtonNavbar";
-  btnInstall.bBoundToParent = true;
-  btnInstall.WinHeight = 22;
-  btnInstall.WinWidth = 99;
-  btnInstall.WinLeft = 421;
-  btnInstall.WinTop = 397;
+    btnInstall = new class'GUIButton';
+    btnInstall.FontScale = FNS_Small;
+    btnInstall.Hint = "";
+    btnInstall.StyleName="STY_DXR_ButtonNavbar";
+    btnInstall.bBoundToParent = true;
+    btnInstall.WinHeight = 22;
+    btnInstall.WinWidth = 99;
+    btnInstall.WinLeft = 421;
+    btnInstall.WinTop = 397;
     btnInstall.Caption = InstallButtonLabel;
     btnInstall.OnClick = InternalOnClick;
     AppendComponent(btnInstall, true);
@@ -112,34 +112,34 @@ function CreateControls()
     AppendComponent(DescHeader, true);
 
     if (iAugsBG != none)
-  iAugsBG.image = texture'DXR_MedbotAugsBackground';
+        iAugsBG.image = texture'DXR_MedbotAugsBackground';
 
   if (augDescArea != none)
   {
-  augDescArea.winHeight = 182;
-  augDescArea.winWidth = 266;
-  augDescArea.WinLeft = 423;
-  augDescArea.WinTop = 211;
+     augDescArea.winHeight = 182;
+     augDescArea.winWidth = 266;
+     augDescArea.WinLeft = 423;
+     augDescArea.WinTop = 211;
   }
 
   if (lTitle2 != none)
   {
-    lTitle2.WinLeft = 422;
-    lTitle2.WinTop = 190;
-    lTitle2.WinHeight = 20;
-    lTitle2.WinWidth = 252;
+     lTitle2.WinLeft = 422;
+     lTitle2.WinTop = 190;
+     lTitle2.WinHeight = 20;
+     lTitle2.WinWidth = 252;
   }
 }
 
 function WhyContainIt()
 {
-  winAugsTile = new class'AugButtonsContainer';
-  winAugsTile.winHeight = 116;
-  winAugsTile.WinWidth = 268;
-  winAugsTile.WinLeft = 422;
-  winAugsTile.WinTop = 66;
-  winAugsTile.bBoundToParent = true;
-  AppendComponent(winAugsTile, true);
+    winAugsTile = new class'AugButtonsContainer';
+    winAugsTile.winHeight = 116;
+    winAugsTile.WinWidth = 268;
+    winAugsTile.WinLeft = 422;
+    winAugsTile.WinTop = 66;
+    winAugsTile.bBoundToParent = true;
+    AppendComponent(winAugsTile, true);
 }
 
 // ----------------------------------------------------------------------
@@ -156,7 +156,7 @@ function PopulateAugCanList()
     // Loop through all the Augmentation Cannisters in the player's 
     // inventory, adding one row for each can.
     item = player.Inventory;
-  WhyContainIt();
+    WhyContainIt();
 
     while(item != None)
     {
@@ -164,12 +164,12 @@ function PopulateAugCanList()
         {
             augCanWindow = new class'MedBotAugCanWindow';
 //      augCanWindow.bBoundToParent = true;
-            winAugsTile.AppendComponent(augCanWindow, true);//
+            winAugsTile.AppendComponent(augCanWindow, true);
             winAugsTile.funcA();
             augCanWindow.SetCannister(AugmentationCannister(item));
             augCanWindow.btnAug[0].OnClick=InternalOnClick;
             augCanWindow.btnAug[1].OnClick=InternalOnClick;
-      alignButtons();
+            alignButtons();
             canCount++;
         }
         item = item.Inventory;
@@ -184,13 +184,13 @@ function PopulateAugCanList()
         txtNoCans.WinTop = 66;
         txtNoCans.WinHeight = 42;
         txtNoCans.WinWidth = 268;
-      txtNoCans.bBoundToParent = true;
-      txtNoCans.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-      txtNoCans.TextFont="UT2SmallFont";
-      txtNoCans.bMultiLine = true;
-      txtNoCans.TextAlign = TXTA_Center;
-      txtNoCans.VertAlign = TXTA_Center;
-      txtNoCans.FontScale = FNS_Small;
+        txtNoCans.bBoundToParent = true;
+        txtNoCans.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+        txtNoCans.TextFont="UT2SmallFont";
+        txtNoCans.bMultiLine = true;
+        txtNoCans.TextAlign = TXTA_Center;
+        txtNoCans.VertAlign = TXTA_Center;
+        txtNoCans.FontScale = FNS_Small;
         AppendComponent(txtNoCans, true);
     }
 }
@@ -198,15 +198,16 @@ function PopulateAugCanList()
 // ----------------------------------------------------------------------
 // ButtonActivated()
 // ----------------------------------------------------------------------
-
 function bool InternalOnClick(GUIComponent Sender)
 {
     if (Sender==btnInstall)
-            InstallAugmentation();
-    else if (Sender.IsA('MedBotAugItemButton'))
-      SelectAugmentation(MedBotAugItemButton(Sender));
-    else if (Sender.IsA('PersonaAugmentationItemButton'))
-      Super.SelectAugmentation(PersonaAugmentationItemButton(Sender));
+        InstallAugmentation();
+    else                                         // Не выбирать пустые ячейки
+        if (Sender.IsA('MedBotAugItemButton') && MedBotAugItemButton(Sender).GetClientObject() != None)
+            SelectAugmentation(MedBotAugItemButton(Sender));
+    else 
+        if (Sender.IsA('PersonaAugmentationItemButton'))
+            Super.SelectAugmentation(PersonaAugmentationItemButton(Sender));
 
     return true;
 }
@@ -214,7 +215,6 @@ function bool InternalOnClick(GUIComponent Sender)
 // ----------------------------------------------------------------------
 // SelectAugmentation()
 // ----------------------------------------------------------------------
-
 function SelectAugmentation(PersonaItemButton buttonPressed)
 {
 //  log("buttonPressed="$buttonPressed);
@@ -272,7 +272,6 @@ function InstallAugmentation()
         
     // Get pointers to the AugmentationCannister and the 
     // Augmentation Class
-
     augCan = MedBotAugItemButton(selectedAugButton).GetAugCan();
     aug    = MedBotAugItemButton(selectedAugButton).GetAugmentation();
 
@@ -280,7 +279,6 @@ function InstallAugmentation()
     // to be added is a valid one, as the checks to see if we already have
     // the augmentation and that there's enough space were done when the 
     // AugmentationAddButtons were created)
-
     player.AugmentationSystem.GivePlayerAugmentation(aug.class);
 
     // play a cool animation
@@ -352,7 +350,7 @@ function alignButtons()
     {
       if (winAugsTile.controls[i].IsA('MedBotAugCanWindow'))
       {
-      MedBotAugCanWindow(winAugsTile.controls[i]).winTop = 0;
+        MedBotAugCanWindow(winAugsTile.controls[i]).winTop = 0;
         MedBotAugCanWindow(winAugsTile.controls[i]).winTop = aY += 40;
       }
     }

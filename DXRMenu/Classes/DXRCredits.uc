@@ -106,13 +106,22 @@ defaultproperties
     Credits[23]="    RoSoDude"
     Credits[24]="    Totalitarian"
     Credits[25]="    Markie"
-    Credits[26]="  "
+    Credits[26]="    Gugernot"
     Credits[27]="    "
     Credits[28]="    "
-    Credits[29]="  "
-    Credits[30]=""
-    Credits[31]=""
-    Credits[32]=""
+    Credits[29]="    "
+    Credits[30]="    "
+    Credits[31]="    "
+    Credits[32]="    "
+    Credits[33]="    "
+    Credits[34]="    "
+    Credits[35]="    "
+    Credits[36]="    "
+    Credits[37]="    "
+    Credits[38]="    "
+    Credits[39]="   Project leader: DeusExPlayerController"
+    Credits[40]=""
+
 
     DefaultHeight=256
     DefaultWidth=418

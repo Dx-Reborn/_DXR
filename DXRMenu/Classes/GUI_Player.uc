@@ -35,13 +35,13 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     pmTabs = new(none) class'DXRTabControl';
     pmTabs.WinWidth = 800;
-		pmTabs.WinLeft = controller.ResX/2 - 400;
-		pmTabs.WinTop = controller.ResY/2 - 320;
-		pmTabs.WinHeight=2.1;//48;
-//		pmTabs.TabHeight=32;//0.04;
-		pmTabs.bAcceptsInput=true;
-		pmTabs.bDockPanels=true;
-	
+        pmTabs.WinLeft = controller.ResX/2 - 400;
+        pmTabs.WinTop = controller.ResY/2 - 320;
+        pmTabs.WinHeight=2.1;//48;
+//      pmTabs.TabHeight=32;//0.04;
+        pmTabs.bAcceptsInput=true;
+        pmTabs.bDockPanels=true;
+    
     AppendComponent(pmTabs, true);
 
 
@@ -66,10 +66,10 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 /*    NavBar = new(none) class'GUIImage';
     NavBar.bBoundToParent = true;
     NavBar.WinWidth=800;
-		NavBar.WinHeight=64;
-		NavBar.WinLeft=0;
-		NavBar.WinTop=0;
-		NavBar.Image = texture'DXR_NavBar';
+        NavBar.WinHeight=64;
+        NavBar.WinLeft=0;
+        NavBar.WinTop=0;
+        NavBar.Image = texture'DXR_NavBar';
     AppendComponent(NavBar, true);
   */
 
@@ -85,7 +85,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
   bExit.WinWidth = 66;
   bExit.WinLeft = 728;
   bExit.WinTop = 0;//-11;
-	AppendComponent(bExit, true);
+    AppendComponent(bExit, true);
 }
 
 function IWantToDrawSomething(canvas u)
@@ -196,7 +196,7 @@ function RestoreGameMode()
 
 //var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
 
-//var globalconfig int  UIBackground;					// 0 = Render 3D, 1 = Snapshot, 2 = Black
+//var globalconfig int  UIBackground;                   // 0 = Render 3D, 1 = Snapshot, 2 = Black
 //cubemapmode // Render 3D
 //menuMode // Черный
 //midMenuMode // Растянутый фон
@@ -240,27 +240,27 @@ defaultproperties
 
 
   Begin Object class=GUIHeader name=dxHeader
-		Caption=""
-//		StyleName="STY_DXR_Navbar"
-		StyleName=""
-		WinWidth=810
-		WinHeight=32.0
-		WinLeft=-6.00
-		WinTop=-5.00
-		bBoundToParent=true
-		DockAlign=PGA_None
-	End Object
-	Controls(0)=dxHeader
+        Caption=""
+//      StyleName="STY_DXR_Navbar"
+        StyleName=""
+        WinWidth=810
+        WinHeight=32.0
+        WinLeft=-6.00
+        WinTop=-5.00
+        bBoundToParent=true
+        DockAlign=PGA_None
+    End Object
+    Controls(0)=dxHeader
 
 /*  Begin Object Class=GUITabControl Name=dxtab
-		WinWidth=800
-		WinLeft=0
-		WinTop=0.0
-		WinHeight=48
-		TabHeight=0.04
-		bAcceptsInput=true
-		bDockPanels=true
-	End Object
+        WinWidth=800
+        WinLeft=0
+        WinTop=0.0
+        WinHeight=48
+        TabHeight=0.04
+        bAcceptsInput=true
+        bDockPanels=true
+    End Object
   Controls(1)=dxtab*/
 
     OnOpen=GUI_Player.InternalOnOpen
@@ -269,8 +269,8 @@ defaultproperties
     //OnRendered=IWantToDrawSomething
 
   Background=none
-	WinWidth=800
-	WinHeight=600
-	WinTop=0.0
-	WinLeft=0.0
+    WinWidth=800
+    WinHeight=600
+    WinTop=0.0
+    WinLeft=0.0
 }
