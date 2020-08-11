@@ -36,23 +36,29 @@ state DeActivated
 
 function ToggleBinocularsView(bool bDoIt)
 {
-  local DeusExHUD dh;
-  local DeusExPlayerController dc;
+   local DeusExHUD dh;
+   local DeusExPlayerController dc;
 
-  dh = DeusExHUD(level.getLocalPlayerController().myHUD);
-  dc = DeusExPlayerController(level.GetLocalPlayerController());
-  dh.bUseBinocularView = bDoIt;
+   dh = DeusExHUD(level.getLocalPlayerController().myHUD);
+   dc = DeusExPlayerController(level.GetLocalPlayerController());
+   dh.bUseBinocularView = bDoIt;
 
-  if (bDoIt)
-      dc.DesiredFOV=20;
-  else
-      dc.ResetFOV();
+   if (bDoIt)
+   {
+       bIsActive = true;
+       dc.DesiredFOV=20;
+   }
+   else
+   {
+       bIsActive = false;
+       dc.ResetFOV();
+   }
 }
 
 
 function string GetDescription()
 {
-  return description;
+   return description;
 }
 
 
