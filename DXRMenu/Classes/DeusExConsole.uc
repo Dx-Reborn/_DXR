@@ -61,7 +61,8 @@ defaultproperties
     SMDenySound=sound'DeusExSounds.UserInterface.Menu_Cancel'
     ConsoleSoundVol=0.2
     ConsoleBackground=texture'DeusExUI.UserInterface.MenuAugsBackground_5'
-    ConsoleLowerLine=texture'DXRMenuImg.Dithered'
+    ConsoleLowerLine=FadeColor'GUIContent.Back.AUGVis_Fade'
+//    ConsoleLowerLine=texture'DXRMenuImg.Dithered'
 //    ConsoleLowerLine=texture'InterfaceContent.Menu.BorderBoxA2'
 }
 
