@@ -2603,13 +2603,12 @@ function RemoveAugmentationDisplay(Augmentation aug)
     ClientMessage(aug);
 }
 
-// ----------------------------------------------------------------------
-// ClearAugmentationDisplay()
-// ----------------------------------------------------------------------
-
+/*
+   DXR: Remove this?
+*/
 function ClearAugmentationDisplay()
 {
-    ClientMessage("ClearAugmentationDisplay()");
+//    ClientMessage("ClearAugmentationDisplay()");
 }
 
 // ----------------------------------------------------------------------
@@ -2618,7 +2617,7 @@ function ClearAugmentationDisplay()
 
 function UpdateAugmentationDisplayStatus(Augmentation aug)
 {
-    ClientMessage(aug);
+//    ClientMessage(aug);
 }
 
 // ----------------------------------------------------------------------
@@ -3115,8 +3114,8 @@ function UpdateInHand()
         bSwitch = False;
         if (inHand != None)
         {
-            if (inHand.IsA('Binoculars')) 
-                Binoculars(inHand).Activate();
+//            if (inHand.IsA('Binoculars')) 
+//                Binoculars(inHand).Activate();
 
             // turn it off if it is on
             if (inHand.IsActive())

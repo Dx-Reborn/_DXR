@@ -16,7 +16,7 @@
   все ауги, измен€ющие цвет и т.д., и только потом собственно HUD.
   21/06/2018:  ак мне реализовать цветовые темы ? :))) 
   11/07/2018: »справлено раст€гивание перекрести€ с оружием в руке.
-  18/06/2020: –еавлизован индикатор повреждени€ (за основу вз€т код из GMDX)
+  18/06/2020: –еализован индикатор повреждени€ (за основу вз€т код из GMDX)
 -------------------------------------------------------------------------------------------------------*/
 
 
@@ -2642,8 +2642,21 @@ defaultproperties
     msgDisabled="Disabled"
 
 //----------------------------------------------------------------------------------------------------------------------
+    OverrideConsoleFontName="DXFonts.MSS_9"
+
     ProgressFontName="DXFonts.MSS_8"
-    FontArrayNames(0)="DXFonts.EUX_9"
+    FontArrayNames(0)="DXFonts.MSS_9"
+    FontArrayNames(1)="DXFonts.MSS_9"
+    FontArrayNames(2)="DXFonts.MSS_9"
+    FontArrayNames(3)="DXFonts.MSS_9"
+    FontArrayNames(4)="DXFonts.MSS_9"
+    FontArrayNames(5)="DXFonts.MSS_9"
+    FontArrayNames(6)="DXFonts.MSS_9"
+    FontArrayNames(7)="DXFonts.MSS_9"
+    FontArrayNames(8)="DXFonts.MSS_9"
+
+//    ProgressFontName="DXFonts.EUR_12"
+/*    FontArrayNames(0)="DXFonts.EUX_9"
     FontArrayNames(1)="DXFonts.EUX_9"
     FontArrayNames(2)="DXFonts.EUX_9"
     FontArrayNames(3)="DXFonts.EUX_9"
@@ -2652,7 +2665,7 @@ defaultproperties
     FontArrayNames(6)="DXFonts.EUX_9"
     FontArrayNames(7)="DXFonts.EUX_9"
     FontArrayNames(8)="DXFonts.EUX_9"
-
+*/
     FontScreenWidthMedium(0)=2048
     FontScreenWidthMedium(1)=1600
     FontScreenWidthMedium(2)=1280
