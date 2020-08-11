@@ -16,8 +16,8 @@ static function array<string> GetAllHUDThemes()
   local array<string> Themes;
   local int x;
 
-	for (x = 0; x < default.HUDColors.Length; x++ )
-		Themes[Themes.Length] = default.HUDColors[x].HUDName;
+    for (x = 0; x < default.HUDColors.Length; x++ )
+        Themes[Themes.Length] = default.HUDColors[x].HUDName;
 
   return Themes;
 }
@@ -126,7 +126,7 @@ static function color GetFrobBoxText(int ThemeIndex)
 
 defaultproperties
 {
-	Begin Object Class=DXRColors.DXR_HUDColor Name=col00
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col00
      MessageBG=(R=139,G=105,B=35,A=255)   // ClientMessage Background
      MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
      MessageFrame=(R=185,G=177,B=140,A=255) // ClientMessage frame
@@ -170,10 +170,10 @@ defaultproperties
      FrobBoxText=(R=255,G=255,B=255,A=255)
 
      HUDName="Amber"
-	End Object
-	HUDColors(0)=col00
+    End Object
+    HUDColors(0)=col00
 
-	Begin Object Class=DXRColors.DXR_HUDColor Name=col01
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col01
      MessageBG=(R=128,G=0,B=0,A=255)   // ClientMessage Background
      MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
      MessageFrame=(R=255,G=25,B=25,A=255) // ClientMessage frame
@@ -217,11 +217,11 @@ defaultproperties
      FrobBoxText=(R=200,G=0,B=0,A=255)
 
      HUDName="Terminator"
-	End Object
-	HUDColors(1)=col01
+    End Object
+    HUDColors(1)=col01
 
-	// Darkest Time
-	Begin Object Class=DXRColors.DXR_HUDColor Name=col02
+    // Darkest Time
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col02
      MessageBG=(R=82,G=82,B=80,A=255)   // ClientMessage Background
      MessageText=(R=130,G=139,B=138,A=255) // ClientMessage Text
      MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
@@ -265,7 +265,152 @@ defaultproperties
      FrobBoxText=(R=130,G=139,B=138,A=255)
 
      HUDName="Darkest Time"
-	End Object
-	HUDColors(2)=col02
+    End Object
+    HUDColors(2)=col02
+//----------------------------
+    // Default
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col03
+     MessageBG=(R=255,G=255,B=255,A=255)   // ClientMessage Background
+     MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
+     MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
 
+     ToolBeltBG=(R=255,G=255,B=255,A=255) // ToolBelt Background
+     ToolBeltText=(R=255,G=255,B=255,A=255) // ToolBelt items text
+     ToolBeltFrame=(R=255,G=255,B=255,A=255) // Frame
+     ToolBeltHighlight=(R=255,G=255,B=255,A=255) // Selected item
+
+     AugsBeltBG=(R=255,G=255,B=255,A=255)
+     AugsBeltText=(R=255,G=255,B=255,A=255)
+     AugsBeltFrame=(R=255,G=255,B=255,A=255)
+     AugsBeltActive=(R=0,G=233,B=177,A=255) // Active aug color
+     AugsBeltInActive=(R=100,G=100,B=100,A=255)
+
+     AmmoDisplayBG=(R=255,G=255,B=255,A=255)
+     AmmoDisplayFrame=(R=255,G=255,B=255,A=255)
+
+     compassBG=(R=255,G=255,B=255,A=255)
+     compassFrame=(R=255,G=255,B=255,A=255)
+
+     HealthBG=(R=255,G=255,B=255,A=255)
+     HealthFrame=(R=255,G=255,B=255,A=255)
+
+     BooksBG=(R=255,G=255,B=255,A=255) // Text background for contents of datacubes, newspapers, etc.
+     BooksText=(R=255,G=255,B=255,A=255) // Color of text contents
+     BooksFrame=(R=255,G=255,B=255,A=255) // Frame around background
+
+     InfoLinkBG=(R=255,G=255,B=255,A=255) // Self explaining?
+     InfoLinkText=(R=255,G=255,B=255,A=255)
+     InfoLinkTitles=(R=255,G=255,B=255,A=255)
+     InfoLinkFrame=(R=255,G=255,B=255,A=255)
+
+     AIBarksBG=(R=255,G=255,B=255,A=255)
+     AIBarksText=(R=255,G=255,B=255,A=255)
+     AIBarksHeader=(R=255,G=255,B=255,A=255)
+     AIBarksFrame=(R=82,G=82,B=80,A=255)
+
+     FrobBoxColor=(R=255,G=255,B=255,A=255)
+     FrobBoxShadow=(R=82,G=82,B=80,A=255)
+     FrobBoxText=(R=255,G=255,B=255,A=255)
+
+     HUDName="Default"
+    End Object
+    HUDColors(3)=col03
+
+//----------------------------
+    // Blue
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col04
+     MessageBG=(R=255,G=255,B=255,A=255)   // ClientMessage Background
+     MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
+     MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
+
+     ToolBeltBG=(R=255,G=255,B=255,A=255) // ToolBelt Background
+     ToolBeltText=(R=255,G=255,B=255,A=255) // ToolBelt items text
+     ToolBeltFrame=(R=255,G=255,B=255,A=255) // Frame
+     ToolBeltHighlight=(R=255,G=255,B=255,A=255) // Selected item
+
+     AugsBeltBG=(R=255,G=255,B=255,A=255)
+     AugsBeltText=(R=255,G=255,B=255,A=255)
+     AugsBeltFrame=(R=255,G=255,B=255,A=255)
+     AugsBeltActive=(R=0,G=233,B=177,A=255) // Active aug color
+     AugsBeltInactive=(R=100,G=100,B=100,A=255)
+
+     AmmoDisplayBG=(R=255,G=255,B=255,A=255)
+     AmmoDisplayFrame=(R=255,G=255,B=255,A=255)
+
+     compassBG=(R=255,G=255,B=255,A=255)
+     compassFrame=(R=255,G=255,B=255,A=255)
+
+     HealthBG=(R=255,G=255,B=255,A=255)
+     HealthFrame=(R=255,G=255,B=255,A=255)
+
+     BooksBG=(R=255,G=255,B=255,A=255) // Text background for contents of datacubes, newspapers, etc.
+     BooksText=(R=255,G=255,B=255,A=255) // Color of text contents
+     BooksFrame=(R=255,G=255,B=255,A=255) // Frame around background
+
+     InfoLinkBG=(R=255,G=255,B=255,A=255) // Self explaining?
+     InfoLinkText=(R=255,G=255,B=255,A=255)
+     InfoLinkTitles=(R=255,G=255,B=255,A=255)
+     InfoLinkFrame=(R=255,G=255,B=255,A=255)
+
+     AIBarksBG=(R=255,G=255,B=255,A=255)
+     AIBarksText=(R=255,G=255,B=255,A=255)
+     AIBarksHeader=(R=255,G=255,B=255,A=255)
+     AIBarksFrame=(R=82,G=82,B=80,A=255)
+
+     FrobBoxColor=(R=255,G=255,B=255,A=255)
+     FrobBoxShadow=(R=82,G=82,B=80,A=255)
+     FrobBoxText=(R=255,G=255,B=255,A=255)
+
+     HUDName="Blue"
+    End Object
+    HUDColors(4)=col04
+
+    // Green
+    Begin Object Class=DXRColors.DXR_HUDColor Name=col05
+     MessageBG=(R=128,G=255,B=128,A=255)   // ClientMessage Background
+     MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
+     MessageFrame=(R=0,G=255,B=128,A=255) // ClientMessage frame
+
+     ToolBeltBG=(R=0,G=128,B=0,A=255) // ToolBelt Background
+     ToolBeltText=(R=0,G=255,B=128,A=255) // ToolBelt items text
+     ToolBeltFrame=(R=128,G=255,B=255,A=255) // Frame
+     ToolBeltHighlight=(R=128,G=255,B=128,A=255) // Selected item
+
+     AugsBeltBG=(R=255,G=255,B=255,A=255)
+     AugsBeltText=(R=255,G=255,B=255,A=255)
+     AugsBeltFrame=(R=255,G=255,B=255,A=255)
+     AugsBeltActive=(R=0,G=233,B=177,A=255) // Active aug color
+     AugsBeltInactive=(R=100,G=100,B=100,A=255)
+
+     AmmoDisplayBG=(R=255,G=255,B=255,A=255)
+     AmmoDisplayFrame=(R=255,G=255,B=255,A=255)
+
+     compassBG=(R=255,G=255,B=255,A=255)
+     compassFrame=(R=255,G=255,B=255,A=255)
+
+     HealthBG=(R=255,G=255,B=255,A=255)
+     HealthFrame=(R=255,G=255,B=255,A=255)
+
+     BooksBG=(R=255,G=255,B=255,A=255) // Text background for contents of datacubes, newspapers, etc.
+     BooksText=(R=255,G=255,B=255,A=255) // Color of text contents
+     BooksFrame=(R=255,G=255,B=255,A=255) // Frame around background
+
+     InfoLinkBG=(R=255,G=255,B=255,A=255) // Self explaining?
+     InfoLinkText=(R=255,G=255,B=255,A=255)
+     InfoLinkTitles=(R=255,G=255,B=255,A=255)
+     InfoLinkFrame=(R=255,G=255,B=255,A=255)
+
+     AIBarksBG=(R=255,G=255,B=255,A=255)
+     AIBarksText=(R=255,G=255,B=255,A=255)
+     AIBarksHeader=(R=255,G=255,B=255,A=255)
+     AIBarksFrame=(R=82,G=82,B=80,A=255)
+
+     FrobBoxColor=(R=255,G=255,B=255,A=255)
+     FrobBoxShadow=(R=82,G=82,B=80,A=255)
+     FrobBoxText=(R=255,G=255,B=255,A=255)
+
+     HUDName="Green"
+    End Object
+    HUDColors(5)=col05
 }
+
