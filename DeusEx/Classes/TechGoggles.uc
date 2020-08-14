@@ -8,9 +8,9 @@ class TechGoggles extends ChargedPickup;
 // ----------------------------------------------------------------------
 function ChargedPickupBegin(DeusExPlayer Player)
 {
-  local DeusExHUD dxh;
+    local DeusExHUD dxh;
 
-  dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
+    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
     Super.ChargedPickupBegin(Player);
 
     dxh.activeCount++;
@@ -24,18 +24,18 @@ function ChargedPickupBegin(DeusExPlayer Player)
 
 function UpdateHUDDisplay(DeusExPlayer Player)
 {
-  local DeusExHUD dxh;
+    local DeusExHUD dxh;
 
-  dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
+    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
 
-  if ((dxh.activeCount == 0) && (IsActive()))
-      dxh.ActiveCount++;
+    if ((dxh.activeCount == 0) && (IsActive()))
+        dxh.ActiveCount++;
 //  if ((DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0) && (IsActive()))
 //      DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
 
-  dxh.bVisionActive = true;
-  dxh.visionLevel = 0;
-  dxh.visionLevelValue = 0;
+    dxh.bVisionActive = true;
+    dxh.visionLevel = 0;
+    dxh.visionLevelValue = 0;
     
 //  DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = True;
 //  DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 0;
@@ -48,9 +48,9 @@ function UpdateHUDDisplay(DeusExPlayer Player)
 
 function ChargedPickupEnd(DeusExPlayer Player)
 {
-  local DeusExHUD dxh;
+    local DeusExHUD dxh;
 
-  dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
+    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
     Super.ChargedPickupEnd(Player);
 
     if (--dxh.activeCount == 0)

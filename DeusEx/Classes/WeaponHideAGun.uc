@@ -94,7 +94,7 @@ defaultproperties
      bUseAsDrawnWeapon=False
      AmmoName=Class'DeusEx.AmmoNone'
      ReloadCount=0
-     FireOffset=(X=-20.000000,Y=10.000000,Z=16.000000)
+     projSpawnOffset=(X=0.000000,Y=0.000000,Z=0.000000)
      ProjectileClass=Class'DeusEx.PlasmaBolt'
      FireSound=Sound'DeusExSounds.Weapons.PlasmaRifleFire'
      SelectSound=Sound'DeusExSounds.Weapons.HideAGunSelect'

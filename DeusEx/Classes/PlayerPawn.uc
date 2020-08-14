@@ -8,7 +8,7 @@ class PlayerPawn extends DeusExPlayerPawn
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
 
-var travel inventory objects[10]; // DXR: for toolbelt
+var() travel inventory objects[10]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 
@@ -41,7 +41,6 @@ var config bool bSubtitles;                   // True if Conversation Subtitles 
 var config float logTimeout;                  // Log Timeout Value
 var config byte  maxLogLines;                 // Maximum number of log lines visible
 var config bool bHUDShowAllAugs;              // TRUE = Always show Augs on HUD
-var config byte translucencyLevel;            // 0 - 10? // DXR: Remove?
 
 var config bool bObjectBeltVisible;           // ToDo: Implement this.
 var config bool bHitDisplayVisible;           // ToDo: Implement this.
@@ -151,9 +150,9 @@ function ConBindEvents()
     }
     if (dxInfo != none)
     {
-       RegisterConFiles(dxinfo.ConversationsPath);
-     LoadConsForMission(dxinfo.missionNumber);
-     AddRefCount();
+        RegisterConFiles(dxinfo.ConversationsPath);
+        LoadConsForMission(dxinfo.missionNumber);
+        AddRefCount();
     }
     else
         log("DeusExLevelInfo not found! Failed to register conversations.");

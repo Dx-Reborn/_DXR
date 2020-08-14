@@ -1,29 +1,30 @@
-//=============================================================================
-// Некоторые функции  взяты из BallisticWeapons
-// -Static function, ScaleEmitter() scales an entire emitter (very handy!)
-//
-// by Nolan "Dark Carnivour" Richert.
-// Copyright(c) 2006 RuneStorm. All Rights Reserved.
-//=============================================================================
+/*
+   Base class for emitters, from BallisticWeapons mod.
+
+   -Static function, ScaleEmitter() scales an entire emitter (very handy!)
+ 
+   by Nolan "Dark Carnivour" Richert.
+   Copyright(c) 2006 RuneStorm. All Rights Reserved.
+*/
 
 class DeusExEmitter extends Emitter abstract;
 
 // Returns a nice neat RangeVector made of two input vectors, Min and Max.
-static function RangeVector VtoRV (Vector Max, Vector Min)
+static function RangeVector VtoRV(Vector Max, Vector Min)
 {
     local RangeVector RV;
     RV.X.Max = Max.X; RV.X.Min = Min.X; RV.Y.Max = Max.Y; RV.Y.Min = Min.Y; RV.Z.Max = Max.Z; RV.Z.Min = Min.Z;
     return RV;
 }
 // Scales a RangeVector
-static function ScaleRV (out RangeVector RV, float Scale)
+static function ScaleRV(out RangeVector RV, float Scale)
 {
     RV.X.Max*=Scale;    RV.Y.Max*=Scale;    RV.Z.Max*=Scale;
     RV.X.Min*=Scale;    RV.Y.Min*=Scale;    RV.Z.Min*=Scale;
 }
 
 // Scales the parameters of an emitter to resize it
-static function ScaleEmitter (Emitter TheOne, float Scale)
+static function ScaleEmitter(Emitter TheOne, float Scale)
 {
     local int i, j;
 
@@ -54,7 +55,7 @@ static function ScaleEmitter (Emitter TheOne, float Scale)
 
 
 // Make the emitter stop producing particles
-static function Pause (Emitter TheOne)
+static function Pause(Emitter TheOne)
 {
     local int i;
 
@@ -71,7 +72,7 @@ static function Pause (Emitter TheOne)
 }
 
 // Make the emitter start producing particles again
-static function Resume (Emitter TheOne)
+static function Resume(Emitter TheOne)
 {
     local int i;
 

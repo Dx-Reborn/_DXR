@@ -4,6 +4,14 @@
 
 class DeusExPickup extends RuntimePickup abstract;
 
+function ActivateHUD();
+
+event PostLoadSavedGame()
+{
+   if (bActive)
+       ActivateHUD();
+}
+
 event TravelPostAccept()
 {
    Super.TravelPostAccept();
