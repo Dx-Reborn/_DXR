@@ -140,7 +140,8 @@ defaultproperties
 
      InventoryGroup=8
      ItemName="Plasma Rifle"
-     PlayerViewOffset=(X=17.000000,Y=12.000000,Z=-10.000000)
+     PlayerViewOffset=(X=17.000000,Y=0.000000,Z=-10.000000)
+//     PlayerViewOffset=(X=17.000000,Y=12.000000,Z=-10.000000)
 
      Icon=Texture'DeusExUI.Icons.BeltIconPlasmaRifle'
      CollisionRadius=15.600000
