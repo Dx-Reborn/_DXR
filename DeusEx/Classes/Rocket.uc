@@ -3,28 +3,38 @@
 //=============================================================================
 class Rocket extends DeusExProjectile;
 
-var EM_ThinTrail fsGen;
-
-event PostBeginPlay()
-{
-    Super.PostBeginPlay();
-    SpawnRocketEffects();
-}
+var EM_RocketTrail fsGen;
 
 function SpawnRocketEffects()
 {
-  fsGen = Spawn(class'EM_ThinTrail', Self);
+    fsGen = Spawn(class'EM_RocketTrail', Self);
     if (fsGen != None)
-        fsGen.SetBase(Self);
+        fsGen.SetPhysics(PHYS_Trailer);
 }
 
 event Destroyed()
 {
-  if (fsGen != None)
+    if (fsGen != None)
         fsGen.Kill();
 
     Super.Destroyed();
 }
+
+auto state Flying
+{
+    event BeginState()
+    {
+        Super.BeginState();
+        SetTimer(0.2, false); // Delay effects spawning a little bit.
+    }
+
+    event Timer()
+    {
+        if (fsGen == None)
+            SpawnRocketEffects();
+    }
+}
+
 
 defaultproperties
 {

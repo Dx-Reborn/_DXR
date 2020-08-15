@@ -159,8 +159,6 @@ defaultproperties
      ReloadCount=1
      PickupAmmoCount=4
 
-//     projSpawnOffset=(X=-46.000000,Y=22.000000,Z=10.000000)
-//     projSpawnOffset=(X=-46.000000,Y=30.000000,Z=-10.000000)
      projSpawnOffset=(X=0.000000,Y=0.000000,Z=0.000000)
      ProjectileClass=Class'DeusEx.Rocket'
 
