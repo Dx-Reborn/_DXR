@@ -695,6 +695,19 @@ static final function float ByteToFloat(byte inputByte, optional bool bSigned)
     }
 }
 
+/*-------------------------------------------------------------
+  Thanks to Markie for pointing me to this.
+  Example: pulse(myDeltaTime, 0.5, 1.0)
+     aTime can bew used from any event Tick(float dt).
+     valid range is 0.5 ~ 0.1
+     Frequency in Hz
+  range = 0.1 will give you values from 0.2 to 0.0
+  range = 0.5 will give ypu values from 1.0 to 0.0
+-------------------------------------------------------------*/
+static function float pulse(float aTime, float range, float frequency)
+{
+    return range * (1+sin(2 * pi * frequency * aTime));
+}
 
 /*-------------------------------------------------------------
   Return file as array of bytes.
