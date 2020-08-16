@@ -97,13 +97,14 @@ function AddShadow()
         Shadow.bLevelStatic = true;
         Shadow.ShadowActor = self;
         Shadow.LightDirection = Normal(ShadowDirection);
-        Shadow.LightDistance = ShadowLightDistance; //1200;
-        Shadow.MaxTraceDistance = ShadowMaxTraceDistance; //1050;
+        Shadow.LightDistance = ShadowLightDistance;
+        Shadow.MaxTraceDistance = ShadowMaxTraceDistance;
         Shadow.CullDistance = 1200;
         Shadow.InitShadow();
     }
 }
 
+// Создать прозрачный материал из нулевого (обычно skins[0]).
 function FinalBlend CreateHoldMaterial()
 {
    HoldTexture = FinalBlend(Level.ObjectPool.AllocateObject(class'FinalBlend'));
@@ -175,10 +176,10 @@ function PreBeginPlay()
 
     Super.PreBeginPlay();
 
-/*    if (bGenerateFlies && (FRand() < 0.1))
+    if (bGenerateFlies && (FRand() < 0.1))
         flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
     else
-        flyGen = None;*/
+        flyGen = None;
 }
 
 
@@ -444,7 +445,6 @@ event Tick(float deltaTime)
     // If we have any conversations, check to see if we're close enough
     // to the player to start one (and all the other checks that take place
     // when a valid conversation can be started);
-
     if ((conList.Length > 0) && (bindName != ""))// != None)
     {
         player = DeusExPlayer(GetPlayerPawn());
@@ -458,7 +458,7 @@ event Tick(float deltaTime)
 // ----------------------------------------------------------------------
 // this decoration will now float with cool bobbing if it is
 // buoyant enough
-// Note: PhysicsVolumeChange replaces old ZoneChange().
+// DXR: PhysicsVolumeChange replaces old ZoneChange().
 // ----------------------------------------------------------------------
 event PhysicsVolumeChange(PhysicsVolume Volume)
 {
@@ -606,11 +606,9 @@ event Timer()
 }
 
 
-// ----------------------------------------------------------------------
-// DropThings()
-// 
-// drops everything that is based on this decoration
-// ----------------------------------------------------------------------
+/*
+   drops everything that is based on this decoration
+*/
 function DropThings()
 {
     local actor A;
@@ -620,11 +618,6 @@ function DropThings()
         if (!A.IsA('DeusExEmitter'))
             A.SetPhysics(PHYS_Falling);
 }
-
-
-// ----------------------------------------------------------------------
-// EnterConversationState()
-// ----------------------------------------------------------------------
 
 function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
@@ -648,10 +641,6 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
     }
 }
 
-// ----------------------------------------------------------------------
-// EndConversation()
-// ----------------------------------------------------------------------
-
 function EndConversation()
 {
     LastConEndTime = Level.TimeSeconds;
@@ -659,12 +648,9 @@ function EndConversation()
     GotoState(NextState);
 }
 
-// ----------------------------------------------------------------------
-// state Conversation 
-//
-// Just sit here until the conversation is over
-// ----------------------------------------------------------------------
-
+/*
+   Just sit here until the conversation is over
+*/
 state Conversation
 {
     ignores bump, frob;
@@ -682,12 +668,9 @@ Begin:
 }
 
 
-// ----------------------------------------------------------------------
-// state FirstPersonConversation 
-//
-// Just sit here until the conversation is over
-// ----------------------------------------------------------------------
-
+/*
+   Just sit here until the conversation is over
+*/
 state FirstPersonConversation
 {
     ignores bump, frob;
@@ -712,8 +695,6 @@ function Explode(vector HitLocation)
     local ExplosionLight light;
     local ScorchMark s;
     local int i;
-
-//    log("__________ Exploded by "$Instigator);
 
     // make sure we wake up when taking damage
     bStasis = False;
@@ -982,6 +963,7 @@ state Burning
         {
             class'DxUtil'.static.StopSound(self, PushSoundId);
             class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
+            AmbientSound = None; // DXR: Теперь это тоже нужно
             bPushSoundPlaying = False;
         }
         TakeDamage(2, None, Location, vect(0,0,0), class'DM_Burned');
@@ -1038,16 +1020,19 @@ function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFra
     local actor A, Toucher;
     local DeusExFragment s;
 
-    if ( bOnlyTriggerable )
-        return; 
+    if (bOnlyTriggerable)
+        return;
+
     if (Event!='')
         foreach AllActors( class 'Actor', A, Event )
             A.Trigger( Toucher, pawn(Toucher) );
+
     if (PhysicsVolume.bDestructive)
     {
         Destroy();
         return;
     }
+
     for (i=0 ; i<NumFrags + 5; i++) 
     {
         s = DeusExFragment(Spawn(FragType, Owner));
@@ -1082,28 +1067,28 @@ event Destroyed()
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
     }
-// from GMDX mod
+    // DXR: from GMDX mod
     if (fragType == class'GlassFragment')
     PlaySound(sound'GlassBreakSmall',SLOT_Interact,1.0,,1024);
 
 
-  if (flyGen != None)
-  {
-      flyGen.Burst();
-      flyGen.StopGenerator();
-      flyGen = None;
-  }
+    if (flyGen != None)
+    {
+        flyGen.Burst();
+        flyGen.StopGenerator();
+        flyGen = None;
+    }
 
     // Pass a message to conPlay, if it exists in the player, that 
     // this object has been destroyed.  This is used to prevent 
     // bad things from happening in converseations.
-
     player = DeusExPlayer(GetPlayerPawn());
 
     if ((player != None) && (player.conPlay != None))
     {
         player.conPlay.ActorDestroyed(Self);
     }
+
     DropThings();
 
     if (!IsA('Containers'))
@@ -1158,35 +1143,34 @@ function ConBindEvents()
 // Регистрация *.con файлов
 function RegisterConFiles(string Path)
 {
-  local array<byte> bt;
-  local array<string> conFiles;
-  local int f, res;
+   local array<byte> bt;
+   local array<string> conFiles;
+   local int f, res;
 
-  conFiles = class'FileManager'.static.FindFiles(Path$"*.con", true, false);
+   conFiles = class'FileManager'.static.FindFiles(Path$"*.con", true, false);
 
-  if (conFiles.length == 0)
-     {
+   if (conFiles.length == 0)
+   {
        log("ERROR -- No *.con files found !");
        return;
-     }
+   }
 
   for (f=0; f<conFiles.length; f++)
   {
-    bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
-    res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
+      bt = class'DXUtil'.static.GetFileAsArray(Path$conFiles[f]);
+      res = class'ConversationManager'.static.RegisterConFile(Path$conFiles[f],bt);
   }
 }
 
 function LoadConsForMission(int mission)
 {
- if (bindName != "")
-  class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
-//  class'ConversationManager'.static.LoadConversations(mission, conList);
+   if (bindName != "")
+       class'ConversationManager'.static.GetConversations(conList, mission, bindName, "");
 }
 
 function DeusExGameInfo getFlagBase()
 {
-  return DeusExGameInfo(Level.Game);
+    return DeusExGameInfo(Level.Game);
 }
 
 event PostLoadSavedGame()
@@ -1257,15 +1241,15 @@ defaultproperties
      bBlockPlayers=True
      physics=PHYS_Falling
 
-     AmountOfFire=2 // Количество источников огня. 
-     bUseDynamicLights=true // Чтобы более-менее освещались от AugLight
+     AmountOfFire=1 // DXR: Количество источников огня. 
+     bUseDynamicLights=true // DXR: Чтобы более-менее освещались от AugLight
      bFullVolume=false
      bHardAttach=false
      bIgnoreOutOfWorld=true
      bLightingVisibility=false
      bActorShadows=false
      bCanBePushedByDamage=false
-     bUseCylinderCollision=true // Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
+     bUseCylinderCollision=true // DXR: Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
 
      ShadowLightDistance=1200
      ShadowMaxTraceDistance=1050

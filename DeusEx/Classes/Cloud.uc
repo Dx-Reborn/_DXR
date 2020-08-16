@@ -14,10 +14,22 @@ var DeusExEmitter CloudEffect; // Pointer to particle generator
 
 function SpawnCloudEmitter()
 {
+    if (CloudEffectClass == None) // DXR: ≈сли класс не указан, то и делать нечего )
+        return;
+
     if (CloudEffect == None)
     {
-       CloudEffect = Spawn(CloudEffectClass, self, '', Location, Rotation);
+        CloudEffect = Spawn(CloudEffectClass, self, '', Location, Rotation);
+        CloudEffect.SetPhysics(PHYS_Trailer); // DXR: attach emitter to this cloud
     }
+}
+
+event Destroyed()
+{
+    Super.Destroyed();
+
+    if (CloudEffect != None)
+        CloudEffect.Kill();
 }
 
 auto state Flying
@@ -92,6 +104,10 @@ event BeginPlay()
     SetTimer(damageInterval, True);
     // DXR: Spawn particle generator
     SpawnCloudEmitter();
+
+    // DXR: If there is an emitter, hide the sprite of this cloud.
+    if (CloudEffect != None)
+        SetDrawType(DT_None);
 }
 
 defaultproperties
