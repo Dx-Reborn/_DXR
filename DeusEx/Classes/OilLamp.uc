@@ -1,10 +1,12 @@
 class OilLamp extends DeusExDecoration;
 
 #exec OBJ LOAD FILE=DXR_Lanterns.usx
+#exec OBJ LOAD FILE=DXR_FX.utx
 
 var() bool bOn;
 var EM_OilLampFlame flame;
 var DynamicCoronaLight DLight;
+var DynamicCoronaLight DistantCorona;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
@@ -27,16 +29,18 @@ function Frob(Actor Frobber, Inventory frobWith)
 function SpawnStuff()
 {
    if (flame == none)
+   {
        flame = Spawn(class'EM_OilLampFlame', self,'', Location + vect(0,0,2), Rotation + rot(0,0,16384));
-
+   }
    if (flame != None)
    {
        flame.SetBase(self);
    }
 
    if (DLight == None)
+   {
        Dlight = Spawn(class'DynamicCoronaLight', self,'', Location + vect(0,0,4), Rotation);
-
+   }
    if (DLight != None)
    {
        Dlight.bDynamicLight = true;
@@ -47,6 +51,21 @@ function SpawnStuff()
        DLight.LightBrightness = 155.00;
        DLight.LightRadius = 5.000000;
        DLight.LightPeriod = 50;
+       Dlight.SetDrawScale(0.3);
+   }
+
+   if (DistantCorona == None)
+   {
+       DistantCorona = Spawn(class'DynamicCoronaLight', self,'', Location + vect(0,0,4), Rotation);
+   }
+   if (DistantCorona != None)
+   {
+       DistantCorona.SetBase(Self);
+       DistantCorona.MinCoronaSize = 0.00;
+       DistantCorona.MaxCoronaSize = 10.00;
+       DistantCorona.SetDrawScale(0.20);
+       DistantCorona.LightRadius = 50;
+       DistantCorona.Skins[0] = Texture'DXR_FX.Effects.impflash';
    }
 
 }
@@ -65,6 +84,15 @@ function TurnOff()
 
     if (Dlight != None)
         Dlight.Destroy();
+
+    if (DistantCorona != None)
+        DistantCorona.Destroy();
+}
+
+event Destroyed()
+{
+     TurnOff();
+     Super.Destroyed();
 }
 
 
@@ -77,8 +105,4 @@ defaultproperties
     bPushable=false
     ItemName="Oil Lamp"
 }
-
-
-
-
 
