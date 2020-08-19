@@ -1,4 +1,4 @@
-class OldWheelA extends DeusExDecoration;
+class OldWheelA extends TrashObjects;
 
 defaultproperties
 {

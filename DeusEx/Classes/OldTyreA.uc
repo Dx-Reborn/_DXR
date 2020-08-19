@@ -1,4 +1,4 @@
-class OldTyreA extends DeusExDecoration;
+class OldTyreA extends TrashObjects;
 
 
 defaultproperties

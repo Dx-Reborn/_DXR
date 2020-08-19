@@ -2,7 +2,7 @@
 
 */
 
-class DynamicCoronaLight extends Light;
+class DynamicCoronaLight extends DXRLight;
 
 var() bool bPulse;
 var() float PulseRange; // 0.1 ~ 0.5 // 0.1 will produce values from 0.00 to 0.20 and so on.

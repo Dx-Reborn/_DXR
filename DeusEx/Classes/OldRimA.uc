@@ -1,4 +1,4 @@
-class OldRimA extends DeusExDecoration;
+class OldRimA extends TrashObjects;
 
 defaultproperties
 {

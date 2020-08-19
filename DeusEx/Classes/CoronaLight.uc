@@ -4,7 +4,7 @@
    Open a Group Browser, and unhide "CoronaLight" group.
 */
 
-class CoronaLight extends light;
+class CoronaLight extends DXRlight;
 
 defaultproperties
 {
