@@ -50,7 +50,7 @@ defaultproperties
     bNoDelete=false
     bStatic=false
     bDetailAttachment=true
-    Skins[0]=Texture'Effects.Corona.Corona_E'
+    Skins[0]=Texture'Effects.Corona.Corona_A'
 
     MinCoronaSize=10
     MaxCoronaSize=100
