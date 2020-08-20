@@ -155,9 +155,7 @@ var texture HudHitBase, HudHitFrame, HudHitBody,HudHitArmL,  HudHitArmR,HudHitLe
 var material HitMarkerMat;
 var material INBox;
 
-
 var PlayerController Player;
-
 
 var float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
 var int ItemNameOffsetV, ItemNameOffSetH;
@@ -224,6 +222,26 @@ var ConPlay ConPlay;
 
 var float sinTable[16];
 var int   maxPoints;
+
+
+/* returns true if target is projected on visible canvas area */
+static function bool IsTargetInFrontOfPlayer(Canvas C, Actor Target, out Vector ScreenPos, Vector CamLoc, Rotator CamRot)
+{
+    // Is Target located behind camera ?
+    if ((Target.Location - CamLoc) Dot vector(CamRot) < 0)
+        return false;
+
+    // Is Target on visible canvas area ?
+    ScreenPos = C.WorldToScreen(Target.Location);
+    if (ScreenPos.X <= 0 || ScreenPos.X >= C.ClipX)
+        return false;
+
+    if (ScreenPos.Y <= 0 || ScreenPos.Y >= C.ClipY)
+        return false;
+
+    return true;
+}
+
 
 
 

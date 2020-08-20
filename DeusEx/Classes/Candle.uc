@@ -1,0 +1,1 @@
+class Candle extends FuelLamps;

@@ -1,8 +1,4 @@
-/*
-   Oil Lamp
-*/
-
-class OilLamp extends FuelLamps;
+class KeroseneLamp extends FuelLamps;
 
 var EM_OilLampFlame flame;
 var DynamicCoronaLight DLight;
@@ -30,7 +26,7 @@ function SpawnStuff()
 {
    if (flame == none)
    {
-       flame = Spawn(class'EM_OilLampFlame', self,'', Location + vect(0,0,2), Rotation + rot(0,0,16384));
+       flame = Spawn(class'EM_OilLampFlame', self,'', Location + vect(0,0,-8), Rotation + rot(0,0,16384));
    }
    if (flame != None)
    {
@@ -51,19 +47,19 @@ function SpawnStuff()
        DLight.LightBrightness = 155.00;
        DLight.LightRadius = 5.000000;
        DLight.LightPeriod = 50;
-       Dlight.SetDrawScale(0.3);
+       Dlight.SetDrawScale(0.4);
    }
 
    if (DistantCorona == None)
    {
-       DistantCorona = Spawn(class'DynamicCoronaLight', self,'', Location + vect(0,0,4), Rotation);
+       DistantCorona = Spawn(class'DynamicCoronaLight', self,'', Location + vect(0,0,-4), Rotation);
    }
    if (DistantCorona != None)
    {
        DistantCorona.SetBase(Self);
        DistantCorona.MinCoronaSize = 0.00;
        DistantCorona.MaxCoronaSize = 10.00;
-       DistantCorona.SetDrawScale(0.20);
+       DistantCorona.SetDrawScale(0.40);
        DistantCorona.CullDistance = 1500; //LightRadius = 50;
        DistantCorona.Skins[0] = Texture'DXR_FX.Effects.impflash';
    }
@@ -87,9 +83,9 @@ function TurnOff()
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DXR_Lanterns.Scripted.OilLamp_a'
-    CollisionRadius=8.000000
-    CollisionHeight=15.500000
-    ItemName="Oil Lamp"
+    StaticMesh=StaticMesh'DXR_Lanterns.Scripted.KeroseneLantern'
+    CollisionRadius=8.00
+    CollisionHeight=17.00
+    ItemName="Kerosene lantern"
 }
 
