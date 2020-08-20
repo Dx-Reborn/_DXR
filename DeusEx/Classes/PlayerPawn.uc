@@ -100,6 +100,9 @@ var DeusExLevelInfo dxLevel;
 
 var travel float MyAutoAim;
 var float hitmarkerTime; // Для индикатора попадания
+var float vsTime1;
+var bool bVsEnabled;
+var float vScale;
 
 var ConHistory conHistory;           // Conversation History
 
@@ -475,6 +478,7 @@ function HitMarkerTick(float deltaTime)
     local DeusExHUD hd;
 
     hd = DeusExHud(DeusExPlayerController(Controller).myHUD);
+    vsTime1 += deltaTime;
 
     if (hitmarkerTime > 0)
     {
@@ -488,8 +492,25 @@ function HitMarkerTick(float deltaTime)
             }
         }
     }
+    vSpringTick(deltaTime);
 }
 
+function vSpringTick(float deltaTime)
+{
+   if (!bVsEnabled)
+       return;
+
+   vsTime1 += deltaTime;
+   vScale = 0.8 + class'DxUtil'.static.pulse(vsTime1, 0.1, 1.0); //(0.1 * (1+sin(2 * pi * 1.0 * vsTime1))); // DXR: Пульсация в диапазоне от 0.2 до 0.0
+   DeusExPlayerController(Controller).Player.Console.DelayedConsoleCommand("CINEMATICSRATIO "$ vScale);
+}
+
+exec function VSpring()
+{
+   vsTime1 = 0;
+   bVsEnabled = !bVsEnabled;
+   class'DeusExGameEngine'.static.GetEngine().SetCinematicsBlackBars(bVsEnabled);
+}
 
 defaultproperties
 {
@@ -497,3 +518,25 @@ defaultproperties
    bCanFly=true
    MyAutoAim=1.00
 }
+
+/*
+
+
+// A trace that has the hitlocation set to the end if it hits nothing, the normal fixed if it hits the back of a face and
+// the hitlocation moved 3 units towards the surface if it hits a static mesh...
+static function Actor CleanTrace (Actor TraceOwner, Vector End, Vector Start, out Vector HitLocation, out Vector HitNormal, optional bool bTraceActors, optional vector Extent, optional out Material HitMaterial)
+{
+    local Actor T;
+    T = TraceOwner.Trace(HitLocation, HitNormal, End, Start, bTraceActors, Extent, HitMaterial);
+    if (T == None)
+    {
+        HitLocation = End;
+        return None;
+    }
+    if (T.DrawType == DT_StaticMesh)
+        HitLocation -= HitNormal*3;
+    if (HitNormal Dot Normal(End - Start) > 0.0)
+        HitNormal *= -1;
+    return T;
+}
+*/

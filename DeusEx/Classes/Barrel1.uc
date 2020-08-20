@@ -200,21 +200,21 @@ auto state Active
         {
             if (skincolor != sc_wood)
             {
-             if (FRand() > 0.5)
-             PlaySound(sound'barrel_2', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
-                else
-             PlaySound(sound'barrel_1', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                if (FRand() > 0.5)
+                    PlaySound(sound'barrel_2', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                    else
+                    PlaySound(sound'barrel_1', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
             }
             if (skincolor == sc_wood)
             {
-             if (FRand() > 0.75)
-             PlaySound(sound'wood01gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
-                else if (FRand() > 0.5)
-             PlaySound(sound'wood02gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
-                else if (FRand() > 0.25)
-             PlaySound(sound'wood03gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                 if (FRand() > 0.75)
+                     PlaySound(sound'wood01gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                 else if (FRand() > 0.5)
+                     PlaySound(sound'wood02gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                 else if (FRand() > 0.25)
+                     PlaySound(sound'wood03gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
                 else
-             PlaySound(sound'wood04gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
+                     PlaySound(sound'wood04gr', SLOT_None,,, 1024, 1.1 - 0.2*FRand());
             }
 
             if (HitPoints - Damage <= 0)
@@ -247,7 +247,6 @@ auto state Active
         
                     if ((SkinColor == SC_Explosive) || (SkinColor == SC_FlammableLiquid) || (SkinColor == SC_FlammableSolid))
                     {
-                        //puff = spawn(class'SmokeTrail',,, loc);
                         puff = Spawn(class'EM_SteamRegular', Self,, loc, rot(16384,0,0));
                         if (puff != None)
                         {
@@ -325,8 +324,8 @@ auto state Active
 
                     if (!bGenCreated)
                     {
-                    gen = Spawn(class'EM_BarrelSpray', Self,, loc, rot(16384,0,0));
-                    if (gen != None)
+                        gen = Spawn(class'EM_BarrelSpray', Self,, loc, rot(16384,0,0));
+                        if (gen != None)
                         {
                             gen.Emitters[0].ColorScale[0].Color.R = 120 + rand(40);
                             gen.Emitters[0].ColorScale[0].Color.G = 128 + rand(40);
@@ -340,7 +339,6 @@ auto state Active
                             gen.Emitters[0].GetVelocityDirectionFrom = PTVD_None;
                             bGenCreated=true;
                             gen.SetBase(self);
-                
                         }
                     }
 
@@ -354,7 +352,6 @@ auto state Active
                 }
             }
         }
-
         Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
     }
 }
