@@ -70,7 +70,6 @@ var config bool bExtraDebugInfo;
 var config bool bHUDBordersVisible;
 var config bool bHUDBordersTranslucent;
 var config bool bHUDBackgroundTranslucent;
-var config bool bMenusTranslucent; // Note: PlayerInterface translucency depends on color theme.
 
 
 // used while crouching

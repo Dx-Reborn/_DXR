@@ -1622,15 +1622,11 @@ State Dying
     {
         local int i;
 
-        log(self$" dying");
         SetPhysics(PHYS_Falling);
-        bInvulnerableBody = true;
-        if ( Controller != None )
+        if (Controller != None)
         {
-            if ( Controller.bIsPlayer )
+            if (Controller.bIsPlayer)
                 Controller.PawnDied(self);
-        //  else
-            //  Controller.Destroy();
         }
 
         for (i = 0; i < Attached.length; i++)
@@ -1641,10 +1637,11 @@ State Dying
 
 Begin:
     FrobTime = Level.TimeSeconds;
-    DeusExPlayerController(Controller).bBehindView = false;//True;
+//    DeusExPlayerController(Controller).bBehindView = false;//True;
+//    DeusExPlayerController(Controller).bBehindView = true;
     Velocity = vect(0,0,0);
     Acceleration = vect(0,0,0);
-    DeusExPlayerController(Controller).DesiredFOV = DeusExPlayerController(Controller).Default.DesiredFOV;
+//    DeusExPlayerController(Controller).DesiredFOV = DeusExPlayerController(Controller).default.DesiredFOV;
     FinishAnim();
     KillShadow();
 

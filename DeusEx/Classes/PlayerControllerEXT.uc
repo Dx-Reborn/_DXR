@@ -7,6 +7,8 @@ class PlayerControllerEXT extends DeusExPlayerControllerBase;
 
 #exec OBJ LOAD FILE=DeusExSounds
 
+var config bool bMenusTranslucent; // Note: PlayerInterface translucency depends on color theme. //Moved from PlayerPawn
+
 enum EMusicMode 
 {
     MUS_Ambient,
@@ -377,25 +379,25 @@ function HighlightCenterObject()
     {
       //log(self@"mytarget = "$mytarget);
       if (mytarget.bWorldGeometry)
-      break;
+          break;
 
       if (IsFrobbable(mytarget) && (mytarget != Human(pawn).CarriedDecoration))
       {
-        if (mytarget.IsA('ScriptedPawn'))
-        {
-          smallestTarget = mytarget;
-          break;
+         if (mytarget.IsA('ScriptedPawn'))
+         {
+            smallestTarget = mytarget;
+            break;
         }
         else if (mytarget.IsA('Mover') && bFirstTarget)
         {
-          smallestTarget = mytarget;
-          break;
+            smallestTarget = mytarget;
+            break;
         }
         else if (mytarget.CollisionRadius < minSize)
         {
-          minSize = mytarget.CollisionRadius;
-          smallestTarget = mytarget;
-          bFirstTarget = False;
+            minSize = mytarget.CollisionRadius;
+            smallestTarget = mytarget;
+            bFirstTarget = False;
         }
       }
     }
@@ -645,14 +647,6 @@ function LookAtVector(vector lookTo, bool bRotate,
 // STATES
 //
 
-state Dead
-{
-   event PlayerTick(float DeltaTime)
-   {
-       Super.PlayerTick(DeltaTime);
-       UpdateDynamicMusic(deltaTime);
-   }
-}
 
 
 // Player movement.
@@ -1522,6 +1516,98 @@ begin:
 
       // Back to walking state
       GoToState('PlayerWalking');
+}
+
+state Dead
+{
+    ignores all;
+
+/*    event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
+    {
+        local vector ViewVect, HitLocation, HitNormal, whiteVec;
+        local float ViewDist;
+        local actor HitActor;
+        local float time;
+
+        ViewActor = Self;
+        ShowHud(False);
+        if (bHidden)
+        {
+            // spiral up and around carcass and fade to white in five seconds
+            time = Level.TimeSeconds - FrobTime;
+
+            if (time < 8.0)
+            {
+                whiteVec.X = time / 16.0;
+                whiteVec.Y = time / 16.0;
+                whiteVec.Z = time / 16.0;
+                CameraRotation.Pitch = -16384;
+                CameraRotation.Yaw = (time * 8192.0) % 65536;
+                ViewDist = 32 + time * 32;
+                InstantFog = whiteVec;
+                InstantFlash = 0.5;
+                ViewFlash(1.0);
+            }
+            else
+            {
+                // then, fade out to black in four seconds and bring up
+                // the main menu automatically
+                whiteVec.X = FMax(0.5 - (time-8.0) / 8.0, -1.0);
+                whiteVec.Y = FMax(0.5 - (time-8.0) / 8.0, -1.0);
+                whiteVec.Z = FMax(0.5 - (time-8.0) / 8.0, -1.0);
+                CameraRotation.Pitch = -16384;
+                CameraRotation.Yaw = (time * 8192.0) % 65536;
+                ViewDist = 32 + 8.0 * 32;
+                InstantFog = whiteVec;
+                InstantFlash = whiteVec.X;
+                ViewFlash(1.0);
+
+                // start the splash screen after a bit
+                // only if we don't have a menu open
+                if (whiteVec == vect(-1.0,-1.0,-1.0))
+                    if ((MenuUIWindow(DeusExRootWindow(rootWindow).GetTopWindow()) == None) &&
+                        (ToolWindow(DeusExRootWindow(rootWindow).GetTopWindow()) == None))
+                        ConsoleCommand("OPEN DXONLY");
+            }
+
+            // make sure we don't go through the ceiling
+            ViewVect = vect(0,0,1);
+            HitActor = Trace(HitLocation, HitNormal, Location + ViewDist * ViewVect, Location);
+            if ( HitActor != None )
+                CameraLocation = HitLocation;
+            else
+                CameraLocation = Location + ViewDist * ViewVect;
+        }
+        else
+        {
+            // use FrobTime as the cool DeathCam timer
+            FrobTime = Level.TimeSeconds;
+
+            // make sure we don't go through the wall
+            ViewDist = 190;
+            ViewVect = vect(1,0,0) >> Rotation;
+            HitActor = Trace( HitLocation, HitNormal, 
+                    Location - ViewDist * vector(CameraRotation), Location, false, vect(12,12,2));
+            if ( HitActor != None )
+                CameraLocation = HitLocation;
+            else
+                CameraLocation = Location - ViewDist * ViewVect;
+        }
+
+        // don't fog view if we are "paused"
+        if (DeusExRootWindow(rootWindow).bUIPaused)
+        {
+            InstantFog   = vect(0,0,0);
+            InstantFlash = 0;
+            ViewFlash(1.0);
+        }
+    }
+          */
+   event PlayerTick(float DeltaTime)
+   {
+       Super.PlayerTick(DeltaTime);
+       UpdateDynamicMusic(deltaTime);
+   }
 }
 
 exec function QuickSave();

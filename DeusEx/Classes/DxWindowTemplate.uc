@@ -34,8 +34,8 @@ function SetSize(float Height, float width)
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.InitComponent(MyController, MyOwner);
-	gl = class'DeusExGlobals'.static.GetGlobals();
+    Super.InitComponent(MyController, MyOwner);
+    gl = class'DeusExGlobals'.static.GetGlobals();
 
   CreateMyControls();
   ApplyTheme();
@@ -47,13 +47,13 @@ function ApplyTheme()
 
   foreach AllObjects(class'GUIStyles', wtf) // it works! :D
   {
-   if (wtf != none)
-    wtf.initialize();
+     if (wtf != none)
+         wtf.initialize();
   }
   if (i_FrameBG != none)
       i_FrameBG.ImageColor = class'DXR_Menu'.static.GetMenuBackground(gl.MenuThemeIndex);
 
-  if (DeusExPlayer(PlayerOwner().pawn).bMenusTranslucent)
+  if (DeusExPlayerController(PlayerOwner()).bMenusTranslucent)
   {
      if (i_FrameBG != none)
          i_FrameBG.ImageRenderStyle = MSTY_Translucent;
@@ -69,7 +69,7 @@ function CancelSettings();
 
 function bool InternalOnClick(GUIComponent Sender)
 {  
-	return false;
+    return false;
 }
 
 function AddSystemMenu();
@@ -81,7 +81,7 @@ function bool AlignFrame(Canvas C)
   else
   winleft = -2000;
 
-	return bInit;
+    return bInit;
 }
 
 function PaintOnHeader(Canvas C)
@@ -182,56 +182,56 @@ defaultproperties
 
       bRequire640x480=false//true
 
-     	HeaderMouseCursorIndex=0
+        HeaderMouseCursorIndex=0
 
     bPersistent=false
     bAllowedAsLast=true
 
-		DefaultHeight=354
-		DefaultWidth=264
+        DefaultHeight=354
+        DefaultWidth=264
 
-		MaxPageHeight=354
-		MaxPageWidth=264
-		MinPageHeight=354
-		MinPageWidth=264
+        MaxPageHeight=354
+        MaxPageWidth=264
+        MinPageHeight=354
+        MinPageWidth=264
     bResizeWidthAllowed=false
     bResizeHeightAllowed=false
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'menumainbackground_dxr'//Material'DeusExControls.Background.DX_WinBack_BW'
-		ImageRenderStyle=MSTY_Translucent //Normal
-		ImageStyle=ISTY_Tiled //PartialScaled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=256
-		WinHeight=333 //229
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'menumainbackground_dxr'//Material'DeusExControls.Background.DX_WinBack_BW'
+        ImageRenderStyle=MSTY_Translucent //Normal
+        ImageStyle=ISTY_Tiled //PartialScaled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=256
+        WinHeight=333 //229
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
   /* Заголовок */
-	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.98
-		WinHeight=128
-		WinLeft=-2
-		WinTop=-3
-		RenderWeight=0.1
-		FontScale=FNS_Small
-		bUseTextHeight=false
-		bAcceptsInput=True
-		bNeverFocus=true //False
-		bBoundToParent=true
-		bScaleToParent=true
-		OnMousePressed=FloatingMousePressed
-		OnMouseRelease=FloatingMouseRelease
+    Begin Object Class=GUIHeader Name=TitleBar
+        WinWidth=0.98
+        WinHeight=128
+        WinLeft=-2
+        WinTop=-3
+        RenderWeight=0.1
+        FontScale=FNS_Small
+        bUseTextHeight=false
+        bAcceptsInput=True
+        bNeverFocus=true //False
+        bBoundToParent=true
+        bScaleToParent=true
+        OnMousePressed=FloatingMousePressed
+        OnMouseRelease=FloatingMouseRelease
     OnRendered=PaintOnHeader
-		ScalingType=SCALE_ALL
+        ScalingType=SCALE_ALL
     StyleName="STY_DXR_DXWinHeader";
     Justification=TXTA_Left
-	End Object
-	t_WindowTitle=TitleBar
+    End Object
+    t_WindowTitle=TitleBar
 }
