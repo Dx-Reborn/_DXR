@@ -3,6 +3,17 @@
 //=============================================================================
 class DeusExMover extends Mover;
 
+
+struct sDestroyedStuff
+{
+    var() vector aLocation;
+    var() StaticMesh aStaticMesh;
+    var() vector InitialVelocity;
+};
+var() array<sDestroyedStuff> PostDestroyedStuff;
+
+
+
 // DEUS_EX AMSD Added to make vision aug run faster.  If true, the vision aug needs to check this object more closely.
 // Used for heat sources as well as things that blind.
 var bool bVisionImportant;
@@ -21,12 +32,12 @@ var bool                bPicking;               // a lockpick is currently being
 var float               pickValue;              // how much this lockpick is currently picking
 var float               pickTime;               // how much time it takes to use a single lockpick
 var int                 numPicks;               // how many times to reduce hack strength
-var float            TicksSinceLastPick; //num ticks done since last pickstrength update(includes partials)
-var float            TicksPerPick;       // num ticks needed for a hackstrength update (includes partials)
-var float            LastTickTime;       // Time at which last tick occurred.
+var float               TicksSinceLastPick; //num ticks done since last pickstrength update(includes partials)
+var float               TicksPerPick;       // num ticks needed for a hackstrength update (includes partials)
+var float               LastTickTime;       // Time at which last tick occurred.
 
 var DeusExPlayer        pickPlayer;             // the player that is picking
-var LockPick         curPick;                // the lockpick that is being used // Вариант для инвентаря!
+var LockPick            curPick;                // the lockpick that is being used // Вариант для инвентаря!
 
 var() int               minDamageThreshold;     // damage below this amount doesn't count
 var bool                bDestroyed;             // has this mover already been destroyed?
@@ -44,7 +55,7 @@ var() bool              bDrawExplosion;         // should we draw an explosion?
 var() bool              bIsDoor;                // is this mover an actual door?
 
 var() bool              bUseDXCollision; // Использовать отключение коллизии пока Mover движется?
-var       Pawn          WaitingPawn;
+var   Pawn              WaitingPawn;
 
 
 var localized string    msgKeyLocked;           // message when key locked door
@@ -328,11 +339,37 @@ function BlowItUp(Pawn instigatedBy)
             frag.PlaySound(ExplodeSound2, SLOT_None, 2.0,, FragmentSpread*256);
     }
 
-   //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
+    SpawnDestroyedStuff();
+
+    //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
     RemoteRole = ROLE_DumbProxy;
     SetLocation(Location+vect(0,0,20000));      // move it out of the way
     SetCollision(False, False, False);          // and make it non-colliding
     bDestroyed = True;
+}
+
+function SpawnDestroyedStuff()
+{
+    local int i;
+    local DeusExFragment frag;
+
+    for(i=0; i<PostDestroyedStuff.Length; i++)
+    {
+        if (PostDestroyedStuff[i].aLocation == vect(0,0,0)) // На случай если значение не было указано
+            PostDestroyedStuff[i].aLocation = Location;
+
+        frag = Spawn(class'DeusExFragment', , '', PostDestroyedStuff[i].aLocation,);
+        log(frag);
+        if (frag != None)
+        {
+            if (PostDestroyedStuff[i].aStaticMesh != None)
+            {
+                frag.SetStaticMesh(PostDestroyedStuff[i].aStaticMesh);
+                frag.SetDrawType(DT_StaticMesh);
+                //frag.Velocity = PostDestroyedStuff[i].InitialVelocity;
+            }
+        }
+    }
 }
 
 //

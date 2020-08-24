@@ -501,7 +501,8 @@ function vSpringTick(float deltaTime)
 
    vsTime1 += deltaTime;
    vScale = 0.8 + class'DxUtil'.static.pulse(vsTime1, 0.1, 1.0); //(0.1 * (1+sin(2 * pi * 1.0 * vsTime1))); // DXR: Пульсация в диапазоне от 0.2 до 0.0
-   DeusExPlayerController(Controller).Player.Console.DelayedConsoleCommand("CINEMATICSRATIO "$ vScale);
+   class'DeusExGameEngine'.static.GetEngine().SetCinematicsRatio(vScale);
+//   DeusExPlayerController(Controller).Player.Console.DelayedConsoleCommand("CINEMATICSRATIO "$ vScale);
 }
 
 exec function VSpring()
