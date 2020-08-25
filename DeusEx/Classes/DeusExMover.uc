@@ -339,12 +339,13 @@ function BlowItUp(Pawn instigatedBy)
             frag.PlaySound(ExplodeSound2, SLOT_None, 2.0,, FragmentSpread*256);
     }
 
+    SetCollision(False, False, False);          // make it non-colliding
     SpawnDestroyedStuff();
 
     //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
     RemoteRole = ROLE_DumbProxy;
     SetLocation(Location+vect(0,0,20000));      // move it out of the way
-    SetCollision(False, False, False);          // and make it non-colliding
+//    SetCollision(False, False, False);          // and make it non-colliding
     bDestroyed = True;
 }
 
@@ -359,14 +360,14 @@ function SpawnDestroyedStuff()
             PostDestroyedStuff[i].aLocation = Location;
 
         frag = Spawn(class'DeusExFragment', , '', PostDestroyedStuff[i].aLocation,);
-        log(frag);
+//        log("spawned PostDestroyedStuff?"@frag);
         if (frag != None)
         {
             if (PostDestroyedStuff[i].aStaticMesh != None)
             {
                 frag.SetStaticMesh(PostDestroyedStuff[i].aStaticMesh);
                 frag.SetDrawType(DT_StaticMesh);
-                //frag.Velocity = PostDestroyedStuff[i].InitialVelocity;
+                frag.Velocity = PostDestroyedStuff[i].InitialVelocity;
             }
         }
     }
