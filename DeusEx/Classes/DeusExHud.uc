@@ -876,21 +876,25 @@ function Inventory GetObjectFromBelt(int pos)
 
 function RenderToolBelt(Canvas C)
 {
-  local float holdX, holdY, w, h;
-  local int beltIt;
-  local SkilledTool sitem;
+   local float holdX, holdY, w, h;
+   local int beltIt;
+   local SkilledTool sitem;
 
-  if (dxc != none)
-      dxc.SetCanvas(C);
+   if ((playerowner.Pawn == None) || (DeusExPlayer(playerowner.Pawn).bObjectBeltVisible == false))
+       return;
+
+   if (dxc != none)
+       dxc.SetCanvas(C);
 
     c.Font=Font'DXFonts.DPix_6';
 
     c.DrawColor = ToolBeltBG;//(127,127,127);
-    C.SetPos(C.SizeX-544,C.SizeY-62);
+    c.SetPos(C.SizeX-544,C.SizeY-62);
+
     if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
             else
-               c.Style = ERenderStyle.STY_Normal;
+        c.Style = ERenderStyle.STY_Normal;
     C.DrawIcon(Texture'HUDObjectBeltBackground_Left',1.0);
 
     C.SetPos(C.CurX-7,C.CurY);
@@ -913,59 +917,57 @@ function RenderToolBelt(Canvas C)
         {
             if (GetPlayer().Objects[beltIt].IsA('DeusExWeapon'))
             {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
-            C.DrawIcon(DeusExWeapon(GetPlayer().Objects[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText;
+               c.SetDrawColor(255,255,255);
+               C.Style = ERenderStyle.STY_Masked;
+               C.SetPos(holdX,holdY+3);
+               C.DrawIcon(DeusExWeapon(GetPlayer().Objects[beltIt]).Icon,1.0);
+               c.DrawColor = ToolBeltText;
 
-            w = C.CurX;
-            h = C.CurY-3;
+               w = C.CurX;
+               h = C.CurY-3;
 
 //                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(DeusExWeapon(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+               c.DrawTextJustified(DeusExWeapon(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
-            C.SetPos(w-13,h);
+               C.SetPos(w-13,h);
  //                 c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
             if (GetPlayer().Objects[beltIt].IsA('SkilledTool'))
             {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
+                c.SetDrawColor(255,255,255);
+                C.Style = ERenderStyle.STY_Masked;
+                C.SetPos(holdX,holdY+3);
                         //SkilledTool(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(SkilledTool(GetPlayer().Objects[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText; //
+                C.DrawIconEx(SkilledTool(GetPlayer().Objects[beltIt]).Icon,1.0);
+                c.DrawColor = ToolBeltText; //
 
-            w = C.CurX;
-            h = C.CurY-3;
-
+                w = C.CurX;
+                h = C.CurY-3;
 //                  c.Font=Font'DXFonts.FontTiny';
-            c.DrawTextJustified(SkilledTool(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
-
-            C.SetPos(w-13,h);
+                c.DrawTextJustified(SkilledTool(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+                C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
             if (GetPlayer().Objects[beltIt].IsA('DeusExPickup'))
             {
-            c.SetDrawColor(255,255,255);
-            C.Style = ERenderStyle.STY_Masked;
-            C.SetPos(holdX,holdY+3);
+                c.SetDrawColor(255,255,255);
+                C.Style = ERenderStyle.STY_Masked;
+                C.SetPos(holdX,holdY+3);
                         //DeusExPickup(p.belt[beltIt]).Icon.bMasked=true;
-            C.DrawIconEx(DeusExPickup(GetPlayer().Objects[beltIt]).Icon,1.0);
-            c.DrawColor = ToolBeltText; //
+                C.DrawIconEx(DeusExPickup(GetPlayer().Objects[beltIt]).Icon,1.0);
+                c.DrawColor = ToolBeltText; //
 
-            w = C.CurX;
-            h = C.CurY-3;
+                w = C.CurX;
+                h = C.CurY-3;
 
                     //c.Font=Font'DXFonts.FontTiny';
 //                  c.Font=Font'DXFonts.EUX_7';
-            c.DrawTextJustified(DeusExPickup(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+                c.DrawTextJustified(DeusExPickup(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
-            if (DeusExPickup(GetPlayer().Objects[beltIt]).CanHaveMultipleCopies())
-                dxc.DrawTextJustified(strUses $ DeusExPickup(GetPlayer().Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
+                if (DeusExPickup(GetPlayer().Objects[beltIt]).CanHaveMultipleCopies())
+                    dxc.DrawTextJustified(strUses $ DeusExPickup(GetPlayer().Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
 
-            C.SetPos(w-13,h);
+                C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
         }
@@ -1014,9 +1016,9 @@ function RenderToolBelt(Canvas C)
     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
     {
       if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-         c.Style = ERenderStyle.STY_Translucent;
-          else
-           c.Style = ERenderStyle.STY_Alpha;
+          c.Style = ERenderStyle.STY_Translucent;
+            else
+          c.Style = ERenderStyle.STY_Alpha;
 
           C.SetPos(C.SizeX-544,C.SizeY-68);
           c.DrawColor = ToolBeltFrame;

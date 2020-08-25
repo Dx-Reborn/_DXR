@@ -1510,95 +1510,96 @@ function RenderHitMarker(canvas c)
 
 function RenderSmallHUDHitDisplay(Canvas C)
 {
+   if ((playerowner.pawn == None) || (PlayerPawn(playerowner.pawn).bHitDisplayVisible == false))
+       return;
+
    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
        c.Style = ERenderStyle.STY_Translucent;
           else
-             c.Style = ERenderStyle.STY_Normal;
-   C.DrawColor = HealthBG;
-   C.SetPos(11,11);
-     C.DrawIcon(HudHitBase,1);
+       c.Style = ERenderStyle.STY_Normal;
 
-   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
-   {
-     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-         c.Style = ERenderStyle.STY_Translucent;
+       C.DrawColor = HealthBG;
+       C.SetPos(11,11);
+       C.DrawIcon(HudHitBase,1);
+
+     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+     {
+         if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+             c.Style = ERenderStyle.STY_Translucent;
          else
-         c.Style = ERenderStyle.STY_Alpha;
+             c.Style = ERenderStyle.STY_Alpha;
 
-     C.SetPos(0,0);
-     C.DrawColor = HealthFrame;
-     C.DrawIcon(HudHitFrame,1);
-   }
-   C.Style = ERenderStyle.STY_Translucent;
-   C.SetPos(24,16);
+        C.SetPos(0,0);
+        C.DrawColor = HealthFrame;
+        C.DrawIcon(HudHitFrame,1);
+     }
+     C.Style = ERenderStyle.STY_Translucent;
+     C.SetPos(24,16);
      C.DrawIcon(HudHitBody,1);
 
-   C.SetPos(39,18);
-   C.DrawColor = GetColorScaled(HealthHead / 100);
+     C.SetPos(39,18);
+     C.DrawColor = GetColorScaled(HealthHead / 100);
      C.DrawIcon(HudHitHead,1);
 
-   C.SetPos(26,28);
-   C.DrawColor = GetColorScaled(HealthArmRight / 100);
+     C.SetPos(26,28);
+     C.DrawColor = GetColorScaled(HealthArmRight / 100);
      C.DrawIcon(HudHitArmR,1);
 
-   C.SetPos(C.CurX-6,C.CurY-2);
-   C.DrawColor = GetColorScaled(HealthTorso / 100);
+     C.SetPos(C.CurX-6,C.CurY-2);
+     C.DrawColor = GetColorScaled(HealthTorso / 100);
      C.DrawIcon(HudHitTorso,1);
 
-   C.SetPos(C.CurX-6,C.CurY+2);
-   C.DrawColor = GetColorScaled(HealthArmLeft / 100);
+     C.SetPos(C.CurX-6,C.CurY+2);
+     C.DrawColor = GetColorScaled(HealthArmLeft / 100);
      C.DrawIcon(HudHitArmL,1);
 
-   C.SetPos(33,45);
-   C.DrawColor = GetColorScaled(HealthLegRight / 100);
+     C.SetPos(33,45);
+     C.DrawColor = GetColorScaled(HealthLegRight / 100);
      C.DrawIcon(HudHitLegR,1);
 
-   C.SetPos(C.CurX,C.CurY);
-   C.DrawColor = GetColorScaled(HealthLegLeft / 100);
+     C.SetPos(C.CurX,C.CurY);
+     C.DrawColor = GetColorScaled(HealthLegLeft / 100);
      C.DrawIcon(HudHitLegL,1);
 
 
      // From Reborn
-   C.SetPos(14,77);
-   C.SetDrawColor(0,255,0);
-   C.Font = Font'DXFonts.FontMenuSmall_DS';
-   C.DrawText("BE");
+     C.SetPos(14,77);
+     C.SetDrawColor(0,255,0);
+     C.Font = Font'DXFonts.FontMenuSmall_DS';
+     C.DrawText("BE");
 
-   C.SetPos(15,20 + 55*(1.0 - (BioEnergy / BioEnergyMax))); // Позиция для индикатора
-     C.DrawColor=GetColorScaled(BioEnergy / BioEnergyMax); // Градация от зеленого к красному...
-     C.DrawColor.A=255;
+     C.SetPos(15,20 + 55*(1.0 - (BioEnergy / BioEnergyMax))); // Позиция для индикатора
+     C.DrawColor = GetColorScaled(BioEnergy / BioEnergyMax); // Градация от зеленого к красному...
+     C.DrawColor.A = 255;
 
      C.Style = ERenderStyle.STY_Normal;
 
-// Рисуем индикатор энергии...
-//   if (bUseAltVBarTexture) // из материала...
-//    C.DrawTilePartialStretched(TexScaler'EpicParticles.Shaders.TexScaler2', 5, Abs(BioEnergy / BioEnergyMax)*55);
-//    else  // ...или на основе обычного белого квадратика.
-        C.DrawTileStretched(texture'Solid', 5, Abs(BioEnergy / BioEnergyMax)*55);
+     // Рисуем индикатор энергии...
+     C.DrawTileStretched(texture'Solid', 5, Abs(BioEnergy / BioEnergyMax)*55);
 // ------------------------------------------------
-// Рисуем индикатор кислорода...
-
+    // Рисуем индикатор кислорода...
     if (bUnderwater)
     {
         breathPercent = 100.0 * Human(Playerowner.pawn).swimTimer / Human(Playerowner.pawn).swimDuration;
         breathPercent = FClamp(breathPercent, 0.0, 100.0);
 
-   C.SetPos(o2PosX,o2PosY);
-   C.SetDrawColor(0,255,0);
-   C.Font = Font'DXFonts.FontMenuSmall_DS';
+        C.SetPos(o2PosX,o2PosY);
+        C.SetDrawColor(0,255,0);
+        C.Font = Font'DXFonts.FontMenuSmall_DS';
+
         if (breathPercent < 10)
         {
-            if ((Human(Playerowner.pawn).swimTimer % 0.5) > 0.25)
-           C.SetDrawColor(255,0,0);
+           if ((Human(Playerowner.pawn).swimTimer % 0.5) > 0.25)
+               C.SetDrawColor(255,0,0);
             else
-           C.SetDrawColor(0,0,0);
+               C.SetDrawColor(0,0,0);
         }
-     C.DrawText("o2");
+        C.DrawText("o2");
 
-     C.SetPos(o2BarPosX,o2BarPosY * o2cr - (0.55 * breathPercent)); // Позиция для индикатора
-     C.DrawColor=GetColorScaled(0.01 * breathPercent); // Градация от зеленого к красному...
-     C.DrawColor.A=255;
-     C.DrawTileStretched(texture'Solid', 5, breathPercent * 0.55);
+        C.SetPos(o2BarPosX,o2BarPosY * o2cr - (0.55 * breathPercent)); // Позиция для индикатора
+        C.DrawColor=GetColorScaled(0.01 * breathPercent); // Градация от зеленого к красному...
+        C.DrawColor.A=255;
+        C.DrawTileStretched(texture'Solid', 5, breathPercent * 0.55);
      }
 }
 
@@ -1615,7 +1616,7 @@ function RenderFrobTarget(Canvas C)
    local vector sp1, sp2;
    local Vector            centerLoc, v1, v2, v3;
    local float             boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-   local float             fcorner;//, xF, yF;
+   local float             fcorner;
    local int               i, j, k, offset;
    local DeusExMover fMover;
 
@@ -1632,8 +1633,8 @@ function RenderFrobTarget(Canvas C)
    if ((FrobName != None) && (DeusExPlayerController(Player).IsHighlighted(frobName)) && (!bDrawInfo))
    {
         // пульсация рамки
-//          offset = (24.0 * (frobname.Level.TimeSeconds % 0.3)); // Original
-            offset = (14.0 * (frobname.Level.TimeSeconds % 0.6)); // Reborn
+          offset = (24.0 * (frobname.Level.TimeSeconds % 0.3)); // Original
+//            offset = (14.0 * (frobname.Level.TimeSeconds % 0.6)); // Reborn
 
             fMover = DeusExMover(FrobName);
 

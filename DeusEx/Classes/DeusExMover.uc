@@ -6,9 +6,11 @@ class DeusExMover extends Mover;
 
 struct sDestroyedStuff
 {
-    var() vector aLocation;
-    var() StaticMesh aStaticMesh;
-    var() vector InitialVelocity;
+    var() vector aLocation; // Начальное расположение фрагмента (абсолютное)
+    var() StaticMesh aStaticMesh; // Статик для фрагмента
+    var() vector InitialVelocity; // Начальная Velocity
+    var() float aScale; // DrawScale фрагмента. Если не указано (0.0), то 1.0
+    var() class<DeusExEmitter> aFragmentSpawnEffect; // Эффект при создании фрагмента
 };
 var() array<sDestroyedStuff> PostDestroyedStuff;
 
@@ -349,10 +351,12 @@ function BlowItUp(Pawn instigatedBy)
     bDestroyed = True;
 }
 
+
 function SpawnDestroyedStuff()
 {
     local int i;
     local DeusExFragment frag;
+    local DeusExEmitter effect;
 
     for(i=0; i<PostDestroyedStuff.Length; i++)
     {
@@ -360,7 +364,7 @@ function SpawnDestroyedStuff()
             PostDestroyedStuff[i].aLocation = Location;
 
         frag = Spawn(class'DeusExFragment', , '', PostDestroyedStuff[i].aLocation,);
-//        log("spawned PostDestroyedStuff?"@frag);
+
         if (frag != None)
         {
             if (PostDestroyedStuff[i].aStaticMesh != None)
@@ -368,6 +372,14 @@ function SpawnDestroyedStuff()
                 frag.SetStaticMesh(PostDestroyedStuff[i].aStaticMesh);
                 frag.SetDrawType(DT_StaticMesh);
                 frag.Velocity = PostDestroyedStuff[i].InitialVelocity;
+
+                if (PostDestroyedStuff[i].aScale == 0.0) 
+                    PostDestroyedStuff[i].aScale = 1.0;
+
+                frag.SetDrawScale(PostDestroyedStuff[i].aScale);
+
+                if (PostDestroyedStuff[i].aFragmentSpawnEffect != None)
+                    effect = Spawn(PostDestroyedStuff[i].aFragmentSpawnEffect,frag,'',PostDestroyedStuff[i].aLocation,);
             }
         }
     }

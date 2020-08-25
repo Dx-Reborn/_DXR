@@ -33,8 +33,8 @@ var localized String HealedPointLabel;
 var localized String SkillPointsAward;
 var localized String QuickSaveGameTitle;
 
-                              // When player management menu (Inventory or Augmentations for example) is opened...
-var config int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
+                                              // When player management menu (Inventory or Augmentations for example) is opened...
+var config int InterfaceMode;                 // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
 var config bool bObjectNames;                 // Object names on/off
 var config bool bNPCHighlighting;             // NPC highlighting when new convos
 var config bool bSubtitles;                   // True if Conversation Subtitles are on
@@ -42,11 +42,10 @@ var config float logTimeout;                  // Log Timeout Value
 var config byte  maxLogLines;                 // Maximum number of log lines visible
 var config bool bHUDShowAllAugs;              // TRUE = Always show Augs on HUD
 
-var config bool bObjectBeltVisible;           // ToDo: Implement this.
-var config bool bHitDisplayVisible;           // ToDo: Implement this.
+var config bool bObjectBeltVisible;           // Toolbelt
+var config bool bHitDisplayVisible;           // Индикатор здоровья
 var config bool bAmmoDisplayVisible;          // ToDo: Implement this.
 var config bool bAugDisplayVisible;           // ToDo: Implement this.
-var config bool bDisplayAmmoByClip;           // ToDo: Implement this.
 var config bool bCompassVisible;              // ToDo: Implement this.
 var config bool bCrosshairVisible;            // ToDo: Implement this.
 
