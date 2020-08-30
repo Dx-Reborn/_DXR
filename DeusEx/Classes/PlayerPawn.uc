@@ -12,7 +12,7 @@ var() travel inventory objects[10]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 
-var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
+//var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
 
 var localized String InventoryFull;
 var localized String TooMuchAmmo;
@@ -102,6 +102,8 @@ var float vsTime1;
 var bool bVsEnabled;
 var float vScale;
 
+var float HeadWoundTimer;
+
 var ConHistory conHistory;           // Conversation History
 
 final function ConHistory CreateHistoryObject()
@@ -122,6 +124,7 @@ final function ConHistoryEvent CreateHistoryEvent()
 
 
 function PlayInAir();
+function HeadHealthChanged(float fValue);
 
 function int StandingCount()
 {
@@ -198,7 +201,7 @@ event PostLoadSavedGame()
 function ShowCredits(optional bool bLoadIntro)
 {
    if (bLoadIntro)
-   ConsoleCommand("open DxOnly");
+       ConsoleCommand("open DxOnly");
 
    log("ShowCredits(bLoadIntro?) "$bLoadIntro);
 }
@@ -245,23 +248,24 @@ function CameraEffect FindCameraEffect(class<CameraEffect> CameraEffectClass, op
   PC = Level.GetLocalPlayerController();
   if (PC != None)
   {
-    for (i = 0; i <PC.CameraEffects.Length; i++)
-      if ( PC.CameraEffects[i].Class == CameraEffectClass)
-      {
-        CameraEffectFound = PC.CameraEffects[i];
-        break;
-      }
-    if (CameraEffectFound == None)
-    {
-      CameraEffectFound = CameraEffect(Level.ObjectPool.AllocateObject(CameraEffectClass));
-    }
-    if (CameraEffectFound != None)
-    {
-      PC.AddCameraEffect(CameraEffectFound);
+    for (i=0; i<PC.CameraEffects.Length; i++)
+         if ( PC.CameraEffects[i].Class == CameraEffectClass)
+         {
+            CameraEffectFound = PC.CameraEffects[i];
+            break;
+         }
 
-        if (CameraEffectFound.IsA('MotionBlur'))
-            motionBlur(CameraEffectFound).BlurAlpha = mBlurStrength;
-    }
+         if (CameraEffectFound == None)
+         {
+             CameraEffectFound = CameraEffect(Level.ObjectPool.AllocateObject(CameraEffectClass));
+         }
+         if (CameraEffectFound != None)
+         {
+              PC.AddCameraEffect(CameraEffectFound);
+
+              if (CameraEffectFound.IsA('MotionBlur'))
+                  motionBlur(CameraEffectFound).BlurAlpha = mBlurStrength;
+         }
   }
   return CameraEffectFound;
 }
@@ -302,15 +306,17 @@ function RemoveCameraEffect(CameraEffect CameraEffect)
 exec function blur(byte howMuch)
 {
   ce = FindCameraEffect(class'motionblur', howMuch);
+
   if (ce != none)
-  bMblurActive = true;
+      bMblurActive = true;
 }
 
 exec function unblur()
 {
-  if (ce != none)
-  RemoveCameraEffect(ce);
-  bMblurActive = false;
+   if (ce != none)
+       RemoveCameraEffect(ce);
+
+       bMblurActive = false;
 }
 
 
@@ -491,6 +497,7 @@ function HitMarkerTick(float deltaTime)
         }
     }
     vSpringTick(deltaTime);
+    HeadWoundEffects(deltaTime);
 }
 
 function vSpringTick(float deltaTime)
@@ -510,6 +517,54 @@ exec function VSpring()
    bVsEnabled = !bVsEnabled;
    class'DeusExGameEngine'.static.GetEngine().SetCinematicsBlackBars(bVsEnabled);
 }
+
+exec function addHWE(float fValue)
+{
+   Blur(1);
+   HeadWoundTimer += fValue;
+}
+
+function HeadWoundEffects(float deltaTime)
+{
+    local float mult;
+    local Rotator rot;
+    local HUD hud;
+
+    hud = DeusExPlayerController(Controller).myHUD;
+
+    // Имитация головокружения
+    if (HeadWoundTimer > 0)
+    {
+        if (hud != none)
+        {
+//            DeusExHud(hud).bGrayPoison = true;
+  //          DeusExHud(hud).bDoubledPoisonEffect = false;
+        }
+
+        mult = FClamp(HeadWoundTimer / 10.0, 0.0, 3.0);
+        rot.Pitch = 1024.0 * Cos(Level.TimeSeconds * mult) * deltaTime * mult;
+        rot.Yaw = 1024.0 * Sin(Level.TimeSeconds * mult) * deltaTime * mult;
+        rot.Roll = 0;
+
+        rot.Pitch = FClamp(rot.Pitch, -4096, 4096);
+        rot.Yaw = FClamp(rot.Yaw, -4096, 4096);
+
+        SetViewRotation(rot += GetViewRotation());
+
+        HeadWoundTimer -= deltaTime;
+
+        if (HeadWoundTimer < 0)
+            HeadWoundTimer = 0;
+    }
+    else
+    {
+        if (hud != None)
+        {
+//             DeusExHud(hud).bGrayPoison = false;
+        }
+    }
+}
+
 
 defaultproperties
 {

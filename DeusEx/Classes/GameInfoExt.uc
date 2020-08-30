@@ -91,9 +91,11 @@ final function bool SetBool(coerce String flagName, bool newValue, optional bool
   local GameFlags.Flag Flag;
 
   Flag.Id = flagname;
-   if (newValue)
+
+   if (newValue == true)
        Flag.Value = 1;
-   else if (!newValue)
+   else 
+       if (newValue == false)
     Flag.Value = 0;
 
     Flag.ExpireLevel = expiration;
@@ -180,7 +182,7 @@ final function int GetExpiration(coerce String flagName, EFlagType flagType)
   return 0;
 }
 
-/* Теперь обрабатывается в C++ */
+// Moved to C++
 final function DeleteExpiredFlags(int criteria)
 {
 /*  local array<string> myFlags;

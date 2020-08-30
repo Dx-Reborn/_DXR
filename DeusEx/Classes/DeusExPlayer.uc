@@ -1978,8 +1978,8 @@ function DrugEffects(float deltaTime)
     {
         if (hud != none)
         {
-        DeusExHud(hud).bGrayPoison=true;
-        DeusExHud(hud).bDoubledPoisonEffect=false;
+            DeusExHud(hud).bGrayPoison=true;
+            DeusExHud(hud).bDoubledPoisonEffect=false;
 /*                  if (drugEffectTimer > 10)
                         {
                             DeusExHud(hud).bDoubledPoisonEffect=true;
@@ -2106,6 +2106,8 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
         if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
         {
             HealthHead -= actualDamage * 2;
+            HeadHealthChanged(HealthHead); // DXR: Для эффектов
+
             if (bPlayAnim)
                 PlayAnim('HitHead', , 0.1);
         }
@@ -2804,6 +2806,8 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
             PlaySound(sound'MedicalHiss', SLOT_None,,, 256);
 
         HealPart(HealthHead, adjustedHealAmount);
+        HeadHealthChanged(HealthHead); // DXR: Для эффектов
+
         HealPart(HealthTorso, adjustedHealAmount);
         HealPart(HealthLegRight, adjustedHealAmount);
         HealPart(HealthLegLeft, adjustedHealAmount);
