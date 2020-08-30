@@ -3241,8 +3241,6 @@ function UpdateInHand()
 function MakePlayerIgnored(bool bNewIgnore)
 {
     bIgnore = bNewIgnore;
-    // to restore original behavior, uncomment the next line
-    //bDetectable = !bNewIgnore;
 }
 
 

@@ -165,7 +165,7 @@ event Tick(float deltaTime)
         if (playerCheckTimer > 0.1)
         {
             playerCheckTimer = 0;
-      CheckPlayerVisibility(DeusExPlayer(GetPlayerPawn()));
+            CheckPlayerVisibility(GetPlayerPawn2());
         }
     }
 
@@ -228,8 +228,8 @@ event BeginPlay()
 
     playerLocation = Location;
 
-   if(!bActive) //some start off
-    TurnOff();
+    if (!bActive) //some start off
+        TurnOff();
 }
 
 function CheckPlayerVisibility(DeusExPlayer player)
@@ -249,14 +249,9 @@ function CheckPlayerVisibility(DeusExPlayer player)
         hit = Trace(HitLocation, HitNormal, player.Location, Location, True);
         if (hit == player)
         {
-         // If the player's RadarTrans aug is on, the camera can't see him
-         // DEUS_EX AMSD In multiplayer, we've already done this test with 
-         // AcquireMultiplayerTarget
-         if (Level.Netmode == NM_Standalone)
-         {
+            // If the player's RadarTrans aug is on, the camera can't see him
             if (player.AugmentationSystem.GetAugLevelValue(class'AugRadarTrans') != -1.0)
-               return;
-         }
+                return;
 
             // figure out if we can see the player
             rot = Rotator(player.Location - Location);
@@ -295,9 +290,9 @@ function CheckPlayerVisibility(DeusExPlayer player)
 }
 
 
-function Pawn GetPlayerPawn()
+function DeusExPlayer GetPlayerPawn2()
 {
-    return Level.GetLocalPlayerController().Pawn;
+    return DeusExPlayer(Level.GetLocalPlayerController().Pawn);
 }
 
 
