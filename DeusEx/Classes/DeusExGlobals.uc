@@ -193,37 +193,35 @@ function resetAll()
 
 function SaveAug(augmentation aug)
 {
-  local int x, a;
+   local int x, a;
 
-/* “акой Aug еще не сохранен, тогда добавить массив */
-  if (GetSavedAug(aug.InternalAugmentationName) == "none")
-  {
-    x = mySavedAugs.Length;
-    mySavedAugs.Length = x + 1; // добавить 1 к длине массива
-    mySavedAugs[x].bHasIt = aug.bHasIt; // присвоить данные к элементу массива
-    mySavedAugs[x].currentLevel = aug.currentLevel;
-    mySavedAugs[x].InternalAugmentationName = aug.InternalAugmentationName;
-    mySavedAugs[x].HotKeyNum = aug.HotKeyNum;
-    mySavedAugs[x].bIsActive = aug.bIsActive;
-  }
-  else
-  { /* ”же есть, тогда обновить данные */
-    for(a=0; a<mySavedAugs.Length; a++)
-    {
-      if (mySavedAugs[a].InternalAugmentationName ==  aug.InternalAugmentationName)
-      {
-        mySavedAugs[a].bHasIt = aug.bHasIt; // присвоить данные к элементу массива
-        mySavedAugs[a].currentLevel = aug.currentLevel;
-        mySavedAugs[a].InternalAugmentationName = aug.InternalAugmentationName;
-        mySavedAugs[a].HotKeyNum = aug.HotKeyNum;
-        mySavedAugs[a].bIsActive = aug.bIsActive;
-      }
-    }
-  }
+   // “акой Aug еще не сохранен, тогда добавить массив
+   if (GetSavedAug(aug.InternalAugmentationName) == "none")
+   {
+      x = mySavedAugs.Length;
+      mySavedAugs.Length = x + 1; // добавить 1 к длине массива
+      mySavedAugs[x].bHasIt = aug.bHasIt; // присвоить данные к элементу массива
+      mySavedAugs[x].currentLevel = aug.currentLevel;
+      mySavedAugs[x].InternalAugmentationName = aug.InternalAugmentationName;
+      mySavedAugs[x].HotKeyNum = aug.HotKeyNum;
+      mySavedAugs[x].bIsActive = aug.bIsActive;
+   }
+   else
+   {  // ”же есть, тогда обновить данные
+     for(a=0; a<mySavedAugs.Length; a++)
+     {
+       if (mySavedAugs[a].InternalAugmentationName ==  aug.InternalAugmentationName)
+       {
+          mySavedAugs[a].bHasIt = aug.bHasIt; // присвоить данные к элементу массива
+          mySavedAugs[a].currentLevel = aug.currentLevel;
+          mySavedAugs[a].InternalAugmentationName = aug.InternalAugmentationName;
+          mySavedAugs[a].HotKeyNum = aug.HotKeyNum;
+          mySavedAugs[a].bIsActive = aug.bIsActive;
+       }
+     }
+   }
 }
 
-//InternalAugmentationName
-/* */
 function string GetSavedAug(string intAugName)
 {
   local int x;
@@ -444,141 +442,7 @@ function ResetGoals()
          goals.remove(z, 1);
    }
 }
-// --== !”правление задачами ==--
 
-/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-//var array LinkConActorsBound[10];
-
-function AssignEvents(Actor LinkedActors[10], Actor invokeActor, levelInfo level, conDialogue con)
-{
-    local DeusExPawn pawn;
-    local PlayerPawn pl;
-    local DeusExDecoration deco;
-
-    foreach level.AllActors(class'DeusExPawn',pawn)
-          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, pawn, con);
-
-    foreach level.AllActors(class'PlayerPawn',pl)
-          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, pl, con);
-
-    foreach level.AllActors(class'DeusExDecoration',deco)
-          AssignEventsToActor(/*LinkedActors*/ConPlayBase.ConActorsBound, invokeActor, deco, con);
-
-
-}
-
-
-function AssignEventsToActor(Actor LinkedActors[10], Actor invokeActor, Actor LinkActor, conDialogue con)
-{
-  local int i;
-
-    if (LinkActor.GetBindName() == "" || (invokeActor != LinkActor && invokeActor != none && invokeActor.GetBindName() /*==*/ ~= LinkActor.GetBindName()))
-        return;
-
-  for (i=0; i<con.EventList.length; i++)
-  {
-        if (AssignConEvent(invokeActor,LinkActor,con, con.eventList[i]))
-        {
-        AddAssignedActor(/*LinkedActors*/ConPlayBase.ConActorsBound, LinkActor);
-        }
-  }
-//  log("BindEventsToActor = "$LinkActor);
-}
-
-function AddAssignedActor(Actor LinkedActors[10], Actor LinkActor)
-{
-    local int i;
-
-    for (i=0; i<10; i++)
-    {
-        if (/*LinkedActors[i]*/ConPlayBase.ConActorsBound[i] == LinkActor)
-        {
-            return;
-        }
-        if (/*LinkedActors[i]*/ConPlayBase.ConActorsBound[i] != none)
-        {
-            continue;
-        }
-        //LinkedActors[i] = LinkActor;
-        ConPlayBase.ConActorsBound[i] = LinkActor;
-        log("AddBoundActor = "$LinkActor);
-//      LinkConActorsBound[i] = LinkActor;
-    return;
-    }
-}
-/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-function AssignActorEvents(Actor LinkActor, ConDialogue con)
-{
-  local int i;
-
-  for (i=0; i<con.EventList.length; i++)
-  {
-    AssignConEvent(LinkActor, LinkActor, con, con.EventList[i]);
-  }
-}
-/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-function bool AssignConEvent(Actor invokeActor, Actor LinkActor, ConDialogue con, ConEvent event)
-{
-  local bool bResult;
-
-  if (ConEventTransferObject(event) != none) // Transfer Item
-  {
-    bResult = false;
-
-    if ((LinkActor.GetBarkBindName() == ConEventTransferObject(event).fromName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTransferObject(event).fromName)
-      {
-          ConEventTransferObject(event).fromActor = LinkActor;
-          bResult = true;
-      }
-      if ((LinkActor.GetBarkBindName() == ConEventTransferObject(event).toName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTransferObject(event).toName)
-      {
-          ConEventTransferObject(event).toActor = LinkActor;
-          bResult = true;
-    }
-     ConEventTransferObject(event).giveObject = class<inventory>(DynamicLoadObject(ConEventTransferObject(event).CheckTransferObjectPackage $ ConEventTransferObject(event).objectName$"Inv", class'Class', true));
-       return bResult;
-  }
-  else if (ConEventCheckObject(event) != none) // Check item
-  {
-     if (Left(ConEventCheckObject(event).objectName, 3) == "NK_")
-         ConEventCheckObject(event).checkObject = none;
-     else
-         ConEventCheckObject(event).checkObject = class<inventory>(DynamicLoadObject(ConEventCheckObject(event).CheckTransferObjectPackage $ ConEventCheckObject(event).objectName$"Inv", class'Class', true));
-     return false;
-  }
-  else if (ConEventSpeech(event) != none)  // Speech
-  {
-     if (LinkActor.GetBindName() == ConEventSpeech(event).speakerName || (invokeActor == LinkActor && LinkActor.GetBarkBindName() == ConEventSpeech(event).speakerName))
-     {
-             ConEventSpeech(event).speaker = LinkActor;
-             return true;
-       }
-       if (LinkActor.GetBindName() == ConEventSpeech(event).speakingToName || (invokeActor == LinkActor && LinkActor.GetBarkBindName() == ConEventSpeech(event).speakingToName))
-       {
-             ConEventSpeech(event).speakingTo = LinkActor;
-             return true;
-       }
-       return false;
-  }
-  else if (ConEventAnimation(event) != none) // Play Animation (Not implemented for now)
-  {
-     if ((LinkActor.GetBarkBindName() == ConEventAnimation(event).eventOwnerName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventAnimation(event).eventOwnerName)
-     {
-         ConEventAnimation(event).eventOwner = LinkActor;
-         return true;
-     }
-     return false;
-  }
-  else if (ConEventTrade(event) != none) // Start trade (Not implemented for now)
-  {
-     if ((LinkActor.GetBarkBindName() == ConEventTrade(event).eventOwnerName && con.bFirstPerson) || LinkActor.GetBindName() == ConEventTrade(event).eventOwnerName)
-     {
-         ConEventTrade(event).eventOwner = LinkActor;
-         return true;
-       }
-       return false;
-  }
-}
 
 function string GetRandomLabel(ConEventRandom ev)
 {
@@ -612,7 +476,6 @@ function String GetLabel(int labelIndex, ConEventRandom event)
     else
         return "";
 }
-
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
