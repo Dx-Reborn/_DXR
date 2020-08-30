@@ -13,7 +13,6 @@
 #exec obj load file=STALKER_Sounds
 
 class DeusExPlayer extends PlayerPawn;
-//                           config;
 
 
 const maxAmountOfFire = 1;
@@ -1251,6 +1250,13 @@ function bool CanBeLifted(DeusExDecoration deco)
     }
 
     return True;
+}
+
+event PreBeginPlay()
+{
+    class'DeusExGlobals'.static.GetGlobals().Player = Self;
+
+    Super.PreBeginPlay();
 }
 
 
