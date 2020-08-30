@@ -1252,6 +1252,7 @@ function bool CanBeLifted(DeusExDecoration deco)
     return True;
 }
 
+// Set pointer to player in DeusExGlobals class.
 event PreBeginPlay()
 {
     class'DeusExGlobals'.static.GetGlobals().Player = Self;

@@ -27,16 +27,8 @@ var float triggerDelay;         // how long after seeing the player does it trig
 var float triggerTimer;         // timer used for above
 var vector playerLocation;      // last seen position of player
 
-// DEUS_EX AMSD Used for multiplayer target acquisition.
-var Actor curTarget;          // current view target
-var Actor prevTarget;         // target we had last tick.
-var Pawn safeTarget;          // in multiplayer, this actor is strictly off-limits
-                               // Usually for the player who activated the turret.
-
 var localized string msgActivated;
 var localized string msgDeactivated;
-
-var int team;                       // Keep track of team the camera is  on
 
 // ------------------------------------------------------------------------------------
 // Network replication
@@ -128,11 +120,9 @@ event Tick(float deltaTime)
     local float ang;
     local Rotator rot;
 
-   Super.Tick(deltaTime);
+    Super.Tick(deltaTime);
 
-   curTarget = None;
-
-   // if this camera is not active, get out
+    // if this camera is not active, get out
     if (!bActive)
     {
         Skins[2] = Texture'BlackMaskTex';
@@ -259,7 +249,7 @@ function CheckPlayerVisibility(DeusExPlayer player)
         hit = Trace(HitLocation, HitNormal, player.Location, Location, True);
         if (hit == player)
         {
-            // If the player's RadarTrans aug is on, the camera can't see him
+         // If the player's RadarTrans aug is on, the camera can't see him
          // DEUS_EX AMSD In multiplayer, we've already done this test with 
          // AcquireMultiplayerTarget
          if (Level.Netmode == NM_Standalone)
@@ -290,7 +280,7 @@ function CheckPlayerVisibility(DeusExPlayer player)
                 lastSeenTimer = 0;
                 bPlayerSeen = True;
                 bTrackPlayer = True;
-        bFoundCurPlayer = True;
+                bFoundCurPlayer = True;
 
                 playerLocation = player.Location - vect(0,0,1)*(player.CollisionHeight-5);
 
@@ -324,7 +314,6 @@ defaultproperties
      triggerDelay=4.000000
      msgActivated="Camera activated"
      msgDeactivated="Camera deactivated"
-     Team=-1
      bVisionImportant=True
      HitPoints=50
      minDamageThreshold=50
