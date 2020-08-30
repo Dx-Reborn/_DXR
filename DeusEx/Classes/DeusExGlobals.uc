@@ -107,39 +107,8 @@ var() array<sSavedAugs> mySavedAugs;
 var ConPlayBase ConPlayBase;
 var ConHistory conHistory;           // Conversation History linked list
 
-// Содержит массив диалогов
-//var(Conversation) transient array<ConDialogue> ArrayOfCons;
-
-
 // Флаги теперь здесь, поскольку в TravelInfo они уже умещаются.
 var() array<byte> RawByteFlags;
-/*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
-var() int Ammo10mmInv;
-var() int Ammo20mmInv;
-var() int Ammo3006Inv;
-var() int Ammo762mmInv;
-var() int AmmoBatteryInv;
-var() int AmmoDartFlareInv;
-var() int AmmoDartInv;
-var() int AmmoDartPoisonInv;
-var() int AmmoEMPGrenadeInv;
-var() int AmmoGasGrenadeInv;
-var() int AmmoGraySpitInv;
-var() int AmmoGreaselSpitInv;
-var() int AmmoLAMInv;
-var() int AmmoNanoVirusGrenadeInv;
-var() int AmmoNapalmInv;
-var() int AmmoPepperInv;
-var() int AmmoPlasmaInv;
-var() int AmmoRocketInv;
-var() int AmmoRocketMiniInv;
-var() int AmmoRocketRobotInv;
-var() int AmmoRocketWPInv;
-var() int AmmoSabotInv;
-var() int AmmoShellInv;
-var() int AmmoShurikenInv;
-var() int AmmoNoneInv;
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 final function ConHistory CreateHistoryObject()
@@ -220,32 +189,6 @@ function resetAll()
 
  TravelDeco = "";
  lastMedBot = none;
-
- Ammo10mmInv = 0;
- Ammo20mmInv = 0;
- Ammo3006Inv = 0;
- Ammo762mmInv = 0;
- AmmoBatteryInv = 0;
- AmmoDartFlareInv = 0;
- AmmoDartInv = 0;
- AmmoDartPoisonInv = 0;
- AmmoEMPGrenadeInv = 0;
- AmmoGasGrenadeInv = 0;
- AmmoGraySpitInv = 0;
- AmmoGreaselSpitInv = 0;
- AmmoLAMInv = 0;
- AmmoNanoVirusGrenadeInv = 0;
- AmmoNapalmInv = 0;
- AmmoPepperInv = 0;
- AmmoPlasmaInv = 0;
- AmmoRocketInv = 0;
- AmmoRocketMiniInv = 0;
- AmmoRocketRobotInv = 0;
- AmmoRocketWPInv = 0;
- AmmoSabotInv = 0;
- AmmoShellInv = 0;
- AmmoShurikenInv = 0;
- AmmoNoneInv = 0;
 }
 
 function SaveAug(augmentation aug)
@@ -380,19 +323,19 @@ exec function GoalAdd(Name goalName, String goalText, optional bool bPrimaryGoal
   local name newGoal;
 
   if (!player.dxpc.bCheatsEnabled)
-        return;
+       return;
 
   newGoal = FindGoal(goalName);
   if (newGoal == 'none')
   {
-   x = Goals.Length;
-   Goals.Length = x + 1; // добавить 1 к длине массива
-   Goals[x].text = goalText;
-   Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
-   Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
+     x = Goals.Length;
+     Goals.Length = x + 1; // добавить 1 к длине массива
+     Goals[x].text = goalText;
+     Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
+     Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
 
-   player.ClientMessage(player.GoalAdded);
-   player.PlaySound(Sound'LogGoalAdded');
+     player.ClientMessage(player.GoalAdded);
+     player.PlaySound(Sound'LogGoalAdded');
   }
 }
 
@@ -410,14 +353,11 @@ exec function GoalSetPrimary(Name goalName, bool bPrimaryGoal)
     goal = FindGoal(goalName);
 
     if (goal != 'none')
-
-  for(x=0; x<Goals.Length; x++)
-  {
-    if (Goals[x].goalName == goalName)
+    for(x=0; x<Goals.Length; x++)
     {
-      Goals[x].bPrimaryGoal = bPrimaryGoal;
+      if (Goals[x].goalName == goalName)
+          Goals[x].bPrimaryGoal = bPrimaryGoal;
     }
-  }
 }
 
 // ----------------------------------------------------------------------

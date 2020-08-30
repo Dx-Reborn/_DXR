@@ -12,8 +12,6 @@ var() travel inventory objects[10]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 
-//var(Flags) editconst array<byte> RawByteFlags; // Безлоговый вылет если Tavel??
-
 var localized String InventoryFull;
 var localized String TooMuchAmmo;
 var localized String TooHeavyToLift;
