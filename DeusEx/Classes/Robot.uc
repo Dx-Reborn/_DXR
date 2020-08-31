@@ -104,20 +104,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         else if (sparkGen == None)
         {
             InitGenerator();
-            if (sparkGen != None)
-            {
-                /*sparkGen.particleTexture = Texture'Effects.Fire.SparkFX1';
-                sparkGen.particleDrawScale = 0.2;
-                sparkGen.bRandomEject = True;
-                sparkGen.ejectSpeed = 100.0;
-                sparkGen.bGravity = True;
-                sparkGen.bParticlesUnlit = True;
-                sparkGen.frequency = 0.2;
-                sparkGen.riseRate = 10;
-                sparkGen.spawnSound = Sound'Spark2';*/
-            }
         }
-
         return;
     }
     else if (damageType == class'DM_NanoVirus')
@@ -187,8 +174,8 @@ function InitGenerator()
         loc = Location;
         loc.z += CollisionHeight/2;
         SmokeGen = Spawn(class'EM_BlackSmoke', Self,, loc, rot(16384,0,0));
-        SmokeGen.SetPhysics(PHYS_Trailer);
-//        if (SmokeGen != None)
+        if (SmokeGen != None)
+            SmokeGen.SetPhysics(PHYS_Trailer);
 //            SmokeGen.SetBase(Self); // Ёто не работает?
     }
 
@@ -197,9 +184,8 @@ function InitGenerator()
         loc = Location;
         loc.z += CollisionHeight/2;
         sparkGen = Spawn(class'EM_Sparks', Self,, loc, rot(16384,0,0));
-        sparkGen.SetPhysics(PHYS_Trailer);
-//        if (sparkGen != None)
-//            sparkGen.SetBase(Self);
+        if (sparkGen != None)
+            sparkGen.SetPhysics(PHYS_Trailer);
     }
 }
 
@@ -342,9 +328,7 @@ function material GetMeshTexture(optional int texnum)
     if (Skins.length > texnum)
     {
         for (texnum=0; texnum<Skins.length; texnum++)
-        {
-                return Skins[texnum];
-        }
+             return Skins[texnum];
     }
     else // ≈сли нет, то прогнать по списку...
     if (self.isA('SpiderBot'))      return texture'SpiderBotTex1'; else
@@ -356,9 +340,9 @@ function material GetMeshTexture(optional int texnum)
     if (self.isA('RepairBot'))
     {
         if (FRand() < 0.75)
-      return texture'RepairBotTex1';
-    else
-        return texture'RepairBotTex2';
+            return texture'RepairBotTex1';
+        else
+            return texture'RepairBotTex2';
     }
 }
 
