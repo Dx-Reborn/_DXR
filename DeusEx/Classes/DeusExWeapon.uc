@@ -942,8 +942,8 @@ function bool NearWallCheck()
     EndTrace.Z += Pawn(Owner).BaseEyeHeight;
 
     HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
-    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
-    {
+    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')) || ((HitActor != None) && (HitActor.bWorldGeometry)))
+    {                                                                            // DXR: Added check for StaticMeshes
         placeLocation = HitLocation;
         placeNormal = HitNormal;
         placeMover = Mover(HitActor);

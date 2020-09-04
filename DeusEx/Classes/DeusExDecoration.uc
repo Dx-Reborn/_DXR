@@ -141,7 +141,6 @@ function Frob(Actor Frobber, Inventory frobWith)
     // First check to see if there's a conversation associated with this 
     // decoration.  If so, trigger the conversation instead of triggering
     // the event for this decoration
-
     if (Player != None)
     {
         if (player.StartConversation(Self, IM_Frob))
@@ -233,7 +232,7 @@ event BeginPlay()
 
     if (stub==none)
     {
-        Stub=Spawn(class'EmptyClass', Self,, Location, rot(16384,0,0));
+        Stub = Spawn(class'EmptyClass', Self,, Location,);
         Stub.SetBase(self);
     }
 }
@@ -243,7 +242,7 @@ event BeginPlay()
 // 
 // Called when we hit the ground
 // ----------------------------------------------------------------------
-function Landed(vector HitNormal)
+event Landed(vector HitNormal)
 {
     local Rotator rot;
     local sound hitSound;
@@ -1066,10 +1065,11 @@ event Destroyed()
         class'DxUtil'.static.StopSound(self, PushSoundId);
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
+        AmbientSound = None; // DXR: Just in case
     }
     // DXR: from GMDX mod
     if (fragType == class'GlassFragment')
-    PlaySound(sound'GlassBreakSmall',SLOT_Interact,1.0,,1024);
+        PlaySound(sound'GlassBreakSmall',SLOT_Interact,1.0,,1024);
 
 
     if (flyGen != None)

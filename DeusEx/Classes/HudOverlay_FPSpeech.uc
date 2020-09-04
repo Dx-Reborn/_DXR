@@ -7,17 +7,19 @@ class HudOverlay_FPSpeech extends HUDOverlay;
 var() string Speaker;
 var() string fpsSpeech;
 
-var ConPlay conPlay;    // Pointer into current conPlay object
+var ConPlay conPlay;    // Pointer to current conPlay object
 var transient DxCanvas dxc;
 var() font TitleFont, SpeechFont, SpeechFontRus;
 
 var bool bIsVisible, bRestrictInput;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
+var DeusExPlayer player;
 
 event SetInitialState()
 {
    local DeusExHUD h;
 
+   player = DeusExPlayer(Level.GetLocalPlayerController().pawn);
    dxc = new(Outer) class'DxCanvas';
    Super.SetInitialState();
 
@@ -39,8 +41,11 @@ function Render(Canvas C)
     local float w,h,holdX,holdY;
     local texture border;
 
+    if (Player == None)
+        return;
+
     if (bIsVisible)
-    {
+    {                   // DXR: Added if != none check
       dxc.SetCanvas(C);
       c.DrawColor = InfoLinkBG;
       c.Font = TitleFont; // DXR: Now using Unicode font.
@@ -57,7 +62,7 @@ function Render(Canvas C)
       c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
       c.SetClip(w, h);
 
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+        if (Player.bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
               else
             c.Style = ERenderStyle.STY_Normal;
@@ -99,9 +104,9 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-          if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+          if (Player.bHUDBordersVisible)
           {
-             if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+             if (Player.bHUDBordersTranslucent)
                  c.Style = ERenderStyle.STY_Translucent;
                    else
                  c.Style = ERenderStyle.STY_Alpha;

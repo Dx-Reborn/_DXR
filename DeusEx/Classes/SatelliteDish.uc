@@ -9,7 +9,6 @@ class SatelliteDish extends OutdoorThings;
 
 var() bool bRandomRotation;
 var float time;
-//var Rotator origRot;
 
 event Tick(float deltaTime)
 {

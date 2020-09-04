@@ -172,11 +172,11 @@ exec function Summon(string ClassName)
     NewClass = class<actor>( DynamicLoadObject(ClassName, class'Class'));
     if( NewClass!=None )
     {
-        if ( Pawn != None )
+        if (Pawn != None)
             SpawnLoc = Pawn.Location;
         else
             SpawnLoc = Location;
-        Spawn( NewClass,,,SpawnLoc + 72 * Vector(Rotation) + vect(0,0,1) * 15 );
+        Spawn(NewClass,,,SpawnLoc + 72 * Vector(Rotation) + vect(0,0,1) * 15);
     }
 }
 
@@ -278,155 +278,6 @@ exec function ViewSPawn()
 
   consoleCommand("ViewClass Pawn");
 }
-
-state Dead
-{
-ignores SeePlayer, HearNoise, KilledBy, SwitchWeapon, NextWeapon, PrevWeapon;
-
-    exec function ThrowWeapon()
-    {
-        //clientmessage("Throwweapon while dead, pawn "$Pawn$" health "$Pawn.health);
-    }
-
-    function bool IsDead()
-    {
-        return true;
-    }
-
-    exec function Fire(optional float F)
-    {
-       ConsoleCommand("OPEN DxOnly");
-    }
-
-    exec function AltFire(optional float F)
-    {
-        Fire(F);
-    }
-
-    function PlayerMove(float DeltaTime)
-    {
-        local vector X,Y,Z;
-        local rotator ViewRotation;
-
-        if ( !bFrozen )
-        {
-            if ( bPressedJump )
-            {
-                Fire(0);
-                bPressedJump = false;
-            }
-            GetAxes(Rotation,X,Y,Z);
-            // Update view rotation.
-            ViewRotation = Rotation;
-            ViewRotation.Yaw += 32.0 * DeltaTime * aTurn;
-            ViewRotation.Pitch += 32.0 * DeltaTime * aLookUp;
-            if (Pawn != None)
-                ViewRotation.Pitch = Pawn.LimitPitch(ViewRotation.Pitch);
-            SetRotation(ViewRotation);
-            if ( Role < ROLE_Authority ) // then save this move and replicate it
-                ReplicateMove(DeltaTime, vect(0,0,0), DCLICK_None, rot(0,0,0));
-        }
-        else if ( (TimerRate <= 0.0) || (TimerRate > 1.0) )
-            bFrozen = false;
-
-        ViewShake(DeltaTime);
-        ViewFlash(DeltaTime);
-    }
-
-    function FindGoodView()
-    {
-        local vector cameraLoc;
-        local rotator cameraRot, ViewRotation;
-        local int tries, besttry;
-        local float bestdist, newdist;
-        local int startYaw;
-        local actor ViewActor;
-
-        ////log("Find good death scene view");
-        ViewRotation = Rotation;
-        ViewRotation.Pitch = 56000;
-        tries = 0;
-        besttry = 0;
-        bestdist = 0.0;
-        startYaw = ViewRotation.Yaw;
-
-        for (tries=0; tries<16; tries++)
-        {
-            cameraLoc = ViewTarget.Location;
-            SetRotation(ViewRotation);
-            PlayerCalcView(ViewActor, cameraLoc, cameraRot);
-            newdist = VSize(cameraLoc - ViewTarget.Location);
-            if (newdist > bestdist)
-            {
-                bestdist = newdist;
-                besttry = tries;
-            }
-            ViewRotation.Yaw += 4096;
-        }
-
-        ViewRotation.Yaw = startYaw + besttry * 4096;
-        SetRotation(ViewRotation);
-    }
-
-    event Timer()
-    {
-        if (!bFrozen)
-            return;
-
-        bFrozen = false;
-        bPressedJump = false;
-    }
-
-    function BeginState()
-    {
-      local Actor A;
-
-      if ( (Pawn != None) && ((Pawn.Controller == self) || (Pawn.Controller == None)) )
-            Pawn.Controller = None;
-      EndZoom();
-      CameraDist = Default.CameraDist;
-      FOVAngle = DesiredFOV;
-      Pawn = None;
-      Enemy = None;
-//      bBehindView = true;
-      bFrozen = true;
-        bJumpStatus = false;
-      bPressedJump = false;
-      bBlockCloseCamera = true;
-        bValidBehindCamera = false;
-      bFreeCamera = False;
-       if ( Viewport(Player) != None )
-        ForEach DynamicActors(class'Actor',A)
-
-        A.NotifyLocalPlayerDead(self);
-
-        FindGoodView();
-        SetTimer(1.0, false);
-        StopForceFeedback();
-        ClientPlayForceFeedback("Damage");  // jdf
-        CleanOutSavedMoves();
-    }
-
-    function EndState()
-    {
-      StopForceFeedback();
-      bBlockCloseCamera = false;
-      CleanOutSavedMoves();
-      Velocity = vect(0,0,0);
-      Acceleration = vect(0,0,0);
-
-        if (!PlayerReplicationInfo.bOutOfLives)
-          bBehindView = false;
-
-        bPressedJump = false;
-
-       StopViewShaking();
-    }
-
-Begin:
-    Sleep(3.0);
-}
-
 
 // -== Для использования в CameraPoint ==-
 state Paralyzed

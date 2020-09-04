@@ -2,8 +2,8 @@
 
 */
 
-class PlayerPawn extends DeusExPlayerPawn
-                         config (DXRConfig);
+class PlayerPawn extends DeusExPlayerPawn;
+//                         config (DXRConfig);
 
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
@@ -77,8 +77,8 @@ var config bool bAlwaysRun;             // True to default to running
 
 var travel int LighterUseCount; // Lighter use counter
 
-var bool bToggleWalk;
-var bool bToggleCrouch;             // True to let key toggle crouch
+var config bool bToggleWalk;
+var config bool bToggleCrouch;             // True to let key toggle crouch
 var bool bIsCrouching;
 var travel byte lastbDuck;          // used by toggle crouch
 

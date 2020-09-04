@@ -3,7 +3,7 @@
 // Коррекция для UE2.5
 //=============================================================================
 class HangingDecoration extends DeusExDecoration
-    abstract;
+                                        abstract;
 
 var() bool bFixedSwaying;
 var() Rotator FixedSwayDirection;
@@ -21,7 +21,7 @@ var Rotator wind;
 var Rotator originalWind;
 var float windPeriod;
 var float windTimer;
-//var Rotator origRot;
+
 
 event BeginPlay()
 {
@@ -150,7 +150,7 @@ function Bump(actor Other)
 
 auto state Active
 {
-function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation,Vector momentum, class<DamageType> damageType)
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation,Vector momentum, class<DamageType> damageType)
     {
         Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, DamageType);
         if ((DamageType == class'DM_Shot') || (DamageType == class'DM_Exploded'))

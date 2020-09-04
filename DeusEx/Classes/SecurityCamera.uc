@@ -11,12 +11,10 @@ var() int cameraRange;
 var float memoryTime;
 var() bool bActive;
 var() bool bNoAlarm;            // if True, does NOT sound alarm
-//var Rotator origRot;
 var Rotator ReplicatedRotation; // for net propagation
 var bool bTrackPlayer;
 var bool bPlayerSeen;
 var bool bEventTriggered;
-var bool bFoundCurPlayer;  // in multiplayer, if we found a player this tick.
 var float lastSeenTimer;
 var float playerCheckTimer;
 var float swingTimer;
@@ -275,7 +273,7 @@ function CheckPlayerVisibility(DeusExPlayer player)
                 lastSeenTimer = 0;
                 bPlayerSeen = True;
                 bTrackPlayer = True;
-                bFoundCurPlayer = True;
+                //bFoundCurPlayer = True;
 
                 playerLocation = player.Location - vect(0,0,1)*(player.CollisionHeight-5);
 

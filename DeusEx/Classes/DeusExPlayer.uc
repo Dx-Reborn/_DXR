@@ -21,7 +21,7 @@ var const string DefaultStartMap;
 var() travel int itemFovCorrection;
 
 var() editconst Actor FrobTarget;
-var float FrobTime;
+//var float FrobTime;
 
 var class<carcass> CarcassType;
 var transient bool bJustPickupCorpse;
@@ -1643,7 +1643,7 @@ State Dying
 
 
 Begin:
-    FrobTime = Level.TimeSeconds;
+//    FrobTime = Level.TimeSeconds;
 //    DeusExPlayerController(Controller).bBehindView = false;//True;
 //    DeusExPlayerController(Controller).bBehindView = true;
     Velocity = vect(0,0,0);

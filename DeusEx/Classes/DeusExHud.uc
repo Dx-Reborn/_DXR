@@ -1189,6 +1189,11 @@ function DrawRadar(canvas u)
         }
 }
 
+event Destroyed()
+{
+    log(self@"has been destroyed()");
+}
+
 
 
 

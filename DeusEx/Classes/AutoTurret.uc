@@ -24,7 +24,6 @@ var float confusionTimer;       // how long until turret resumes normal operatio
 var float confusionDuration;    // how long does an EMP hit last?
 var Actor LastTarget;           // what was our last target?
 var float pitchLimit;           // what's the maximum pitch?
-//var Rotator origRot;          // original rotation
 var bool bPreAlarmActiveState;  // was I previously awake or not?
 var bool bDisabled;             // have I been hacked or shut down by computers?
 var float TargetRefreshTime;      // used for multiplayer to reduce rate of checking for targets.
