@@ -3,8 +3,8 @@
 */
 class DXRGameOptions extends DxWindowTemplate;
 
-var localized string strOk, strDefault, strCancel, strExtraOptions;
-var GUIButton btnOk, btnCancel, btnDefault, btnExtra, btnExtra2;
+var localized string strOk, strDefault, strCancel, strExtraOptions, strGameLanguage;
+var GUIButton btnOk, btnCancel, btnDefault, btnExtra, btnExtra2, btnGameLanguage;
 
 var DXRChoiceInfo iObjectNames, iWeaponAutoReload, iGoreLevel, iSubtitles, iCrosshairs;
 var DXRChoiceInfo iHUDAugDisplay, iUIBackground, iHeadBob, iLogTimeoutValue;
@@ -208,31 +208,41 @@ function CreateMyControls()
   btnCancel.WinTop = 428;
     AppendComponent(btnCancel, true);
 
-
-  btnExtra = new class'GUIButton';
-  btnExtra.OnClick=InternalOnClick;
-  btnExtra.fontScale = FNS_Small;
-  btnExtra.StyleName="STY_DXR_MediumButton";
-  btnExtra.Caption = strExtraOptions;
-  btnExtra.WinHeight = 21;
-  btnExtra.WinWidth = 180;
-  btnExtra.WinLeft = 15;
-  btnExtra.WinTop = 378;
+// Дополнительные
+   btnExtra = new class'GUIButton';
+   btnExtra.OnClick=InternalOnClick;
+   btnExtra.fontScale = FNS_Small;
+   btnExtra.StyleName="STY_DXR_MediumButton";
+   btnExtra.Caption = strExtraOptions;
+   btnExtra.WinHeight = 21;
+   btnExtra.WinWidth = 160;
+   btnExtra.WinLeft = 15;
+   btnExtra.WinTop = 378;
     AppendComponent(btnExtra, true);
 
 
-  btnExtra2 = new class'GUIButton';
-  btnExtra2.OnClick=InternalOnClick;
-  btnExtra2.fontScale = FNS_Small;
-  btnExtra2.StyleName="STY_DXR_MediumButton";
-  btnExtra2.Caption = strExtraOptions @ "(2)";
-  btnExtra2.WinHeight = 21;
-  btnExtra2.WinWidth = 180;
-  btnExtra2.WinLeft = 200;
-  btnExtra2.WinTop = 378;
+   btnExtra2 = new class'GUIButton';
+   btnExtra2.OnClick=InternalOnClick;
+   btnExtra2.fontScale = FNS_Small;
+   btnExtra2.StyleName="STY_DXR_MediumButton";
+   btnExtra2.Caption = strExtraOptions @ "(2)";
+   btnExtra2.WinHeight = 21;
+   btnExtra2.WinWidth = 160;
+   btnExtra2.WinLeft = 195;
+   btnExtra2.WinTop = 378;
     AppendComponent(btnExtra2, true);
 
 
+   btnGameLanguage = new class'GUIButton';
+   btnGameLanguage.OnClick=InternalOnClick;
+   btnGameLanguage.fontScale = FNS_Small;
+   btnGameLanguage.StyleName="STY_DXR_MediumButton";
+   btnGameLanguage.Caption = strGameLanguage;
+   btnGameLanguage.WinHeight = 21;
+   btnGameLanguage.WinWidth = 160;
+   btnGameLanguage.WinLeft = 374;
+   btnGameLanguage.WinTop = 378;
+    AppendComponent(btnGameLanguage, true);
 }
 
 function resetToDefaults()
@@ -276,29 +286,33 @@ function CancelSettings()
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-   if (Sender==btnOK)
+   if (Sender == btnOK)
    {
-     SaveSettings();
-     Controller.CloseMenu(false);
+      SaveSettings();
+      Controller.CloseMenu(false);
    }
-   else if (Sender==btnCancel)
+   else if (Sender == btnCancel)
    {
-     CancelSettings();
-     Controller.CloseMenu(true);
+      CancelSettings();
+      Controller.CloseMenu(true);
    }
-   else if (Sender==btnDefault)
+   else if (Sender == btnDefault)
    {
-     resetToDefaults();
+      resetToDefaults();
    }
-   else if (Sender==btnExtra)
+   else if (Sender == btnExtra)
    {
-     Controller.OpenMenu("DXRMenu.DXRGameOptionsA");
+      Controller.OpenMenu("DXRMenu.DXRGameOptionsA");
    }
-   else if (Sender==btnExtra2)
+   else if (Sender == btnExtra2)
    {
-     Controller.OpenMenu("DXRMenu.DXRGameOptionsB");
+      Controller.OpenMenu("DXRMenu.DXRGameOptionsB");
    }
-  return true;
+   else if (Sender == btnGameLanguage)
+   {
+      Controller.OpenMenu("DXRMenu.DXRGameLanguage");
+   }
+   return true;
 }
 
 
@@ -309,18 +323,19 @@ defaultproperties
     strDefault="Reset to Defaults"
     strCancel="Cancel"
     strExtraOptions="More options..."
+    strGameLanguage="Game Language"
     WinTitle="Game Options"
 
-        leftEdgeCorrectorX=4
-        leftEdgeCorrectorY=0
-        leftEdgeHeight=447
+    leftEdgeCorrectorX=4
+    leftEdgeCorrectorY=0
+    leftEdgeHeight=447
 
-        RightEdgeCorrectorX=545
-        RightEdgeCorrectorY=20
-        RightEdgeHeight=420
+    RightEdgeCorrectorX=545
+    RightEdgeCorrectorY=20
+    RightEdgeHeight=420
 
-        TopEdgeCorrectorX=456
-        TopEdgeCorrectorY=16
+    TopEdgeCorrectorX=456
+    TopEdgeCorrectorY=16
     TopEdgeLength=86
 
     TopRightCornerX=542

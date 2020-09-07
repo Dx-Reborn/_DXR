@@ -26,7 +26,7 @@ event Message(coerce string Msg, float MsgLife)
 
   p = DeusExPlayer(Viewportowner.Actor.pawn);
 
-    if (p.logMessages.Length==MAX_Messages) // if full, Remove Entry 0
+    if (p.logMessages.Length == MAX_Messages) // if full, Remove Entry 0
     {
         p.logMessages.Remove(0,1);
         LogHead = MAX_Messages - 1;
@@ -62,7 +62,5 @@ defaultproperties
     ConsoleSoundVol=0.2
     ConsoleBackground=texture'DeusExUI.UserInterface.MenuAugsBackground_5'
     ConsoleLowerLine=FadeColor'GUIContent.Back.AUGVis_Fade'
-//    ConsoleLowerLine=texture'DXRMenuImg.Dithered'
-//    ConsoleLowerLine=texture'InterfaceContent.Menu.BorderBoxA2'
 }
 
