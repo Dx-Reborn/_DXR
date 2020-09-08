@@ -451,6 +451,190 @@ defaultproperties
    End Object
    Collection(2)=col02
 /*---------------------------------------------------------------*/
+
+   Begin Object class=DXRSounds.FootSteppingSoundSet Name=col03
+     StepWater[0]="DESO_Flam.FootStepping.WaterStep1"
+     StepWater[1]="DESO_Flam.FootStepping.WaterStep2"
+     StepWater[2]="DESO_Flam.FootStepping.WaterStep3"
+/*--------------------------------------------------------*/
+     StepTextile[0]="DESO_Flam.FootStepping.CarpetStep1"
+     StepTextile[1]="DESO_Flam.FootStepping.CarpetStep2"
+     StepTextile[2]="DESO_Flam.FootStepping.CarpetStep3"
+     StepTextile[3]="DESO_Flam.FootStepping.CarpetStep4"
+
+     StepPaper[0]="DESO_Flam.FootStepping.CarpetStep1"
+     StepPaper[1]="DESO_Flam.FootStepping.CarpetStep2"
+     StepPaper[2]="DESO_Flam.FootStepping.CarpetStep3"
+     StepPaper[3]="DESO_Flam.FootStepping.CarpetStep4"
+/*--------------------------------------------------------*/
+     FoliageStep[0]="DESO_Flam.FootStepping.GrassStep1"
+     FoliageStep[1]="DESO_Flam.FootStepping.GrassStep2"
+     FoliageStep[2]="DESO_Flam.FootStepping.GrassStep3"
+     FoliageStep[3]="DESO_Flam.FootStepping.GrassStep4"
+
+     EarthStep[0]="DESO_Flam.FootStepping.GrassStep1"
+     EarthStep[1]="DESO_Flam.FootStepping.GrassStep2"
+     EarthStep[2]="DESO_Flam.FootStepping.GrassStep3"
+     EarthStep[3]="DESO_Flam.FootStepping.GrassStep4"
+/*--------------------------------------------------------*/
+     MetalStep[0]="DESO_Flam.FootStepping.MetalStep1"
+     MetalStep[1]="DESO_Flam.FootStepping.MetalStep2"
+     MetalStep[2]="DESO_Flam.FootStepping.MetalStep3"
+     MetalStep[3]="DESO_Flam.FootStepping.MetalStep4"
+/*--------------------------------------------------------*/
+     LadderStep[0]="STALKER_Sounds.Player.pl_Ladder1"
+     LadderStep[1]="STALKER_Sounds.Player.pl_Ladder2"
+     LadderStep[2]="STALKER_Sounds.Player.pl_Ladder3"
+     LadderStep[3]="STALKER_Sounds.Player.pl_Ladder4"
+
+     WoodLadderStep[0]="STALKER_Sounds.Player.pl_Ladder1"
+     WoodLadderStep[1]="STALKER_Sounds.Player.pl_Ladder2"
+     WoodLadderStep[2]="STALKER_Sounds.Player.pl_Ladder3"
+     WoodLadderStep[3]="STALKER_Sounds.Player.pl_Ladder4"
+/*--------------------------------------------------------*/
+     CeramicStep[0]="DESO_Flam.FootStepping.TileStep1"
+     CeramicStep[1]="DESO_Flam.FootStepping.TileStep2"
+     CeramicStep[2]="DESO_Flam.FootStepping.TileStep3"
+     CeramicStep[3]="DESO_Flam.FootStepping.TileStep4"
+
+     GlassStep[0]="DESO_Flam.FootStepping.TileStep1"
+     GlassStep[1]="DESO_Flam.FootStepping.TileStep2"
+     GlassStep[2]="DESO_Flam.FootStepping.TileStep3"
+     GlassStep[3]="DESO_Flam.FootStepping.TileStep4"
+
+     TilesStep[0]="DESO_Flam.FootStepping.TileStep1"
+     TilesStep[1]="DESO_Flam.FootStepping.TileStep2"
+     TilesStep[2]="DESO_Flam.FootStepping.TileStep3"
+     TilesStep[3]="DESO_Flam.FootStepping.TileStep4"
+/*--------------------------------------------------------*/
+     WoodStep[0]="DESO_Flam.FootStepping.WoodStep1"
+     WoodStep[1]="DESO_Flam.FootStepping.WoodStep2"
+     WoodStep[2]="DESO_Flam.FootStepping.WoodStep3"
+     WoodStep[3]="DESO_Flam.FootStepping.WoodStep4"
+/*--------------------------------------------------------*/
+     BrickStep[0]="DESO_Flam.FootStepping.StoneStep1"
+     BrickStep[1]="DESO_Flam.FootStepping.StoneStep2"
+     BrickStep[2]="DESO_Flam.FootStepping.StoneStep3"
+     BrickStep[3]="DESO_Flam.FootStepping.StoneStep4"
+
+     ConcreteStep[0]="DESO_Flam.FootStepping.StoneStep1"
+     ConcreteStep[1]="DESO_Flam.FootStepping.StoneStep2"
+     ConcreteStep[2]="DESO_Flam.FootStepping.StoneStep3"
+     ConcreteStep[3]="DESO_Flam.FootStepping.StoneStep4"
+
+     StoneStep[0]="DESO_Flam.FootStepping.StoneStep1"
+     StoneStep[1]="DESO_Flam.FootStepping.StoneStep2"
+     StoneStep[2]="DESO_Flam.FootStepping.StoneStep3"
+     StoneStep[3]="DESO_Flam.FootStepping.StoneStep4"
+
+     StuccoStep[0]="DESO_Flam.FootStepping.StoneStep1"
+     StuccoStep[1]="DESO_Flam.FootStepping.StoneStep2"
+     StuccoStep[2]="DESO_Flam.FootStepping.StoneStep3"
+     StuccoStep[3]="DESO_Flam.FootStepping.StoneStep4"
+
+     DefaultStep[0]="DESO_Flam.FootStepping.StoneStep1"
+     DefaultStep[1]="DESO_Flam.FootStepping.StoneStep2"
+     DefaultStep[2]="DESO_Flam.FootStepping.StoneStep3"
+     DefaultStep[3]="DESO_Flam.FootStepping.StoneStep4"
+/*--------------------------------------------------------*/
+     CollectionName="DESO by Flam (footstepping)"
+   End Object
+   Collection(3)=col03
+
+
+// New preset
+   Begin Object class=DXRSounds.FootSteppingSoundSet Name=col04
+
+     StepWater[0]="DXR_Physics.Footsteps.wade1"
+     StepWater[1]="DXR_Physics.Footsteps.wade2"
+     StepWater[2]="DXR_Physics.Footsteps.wade3"
+     StepWater[3]="DXR_Physics.Footsteps.wade4"
+/*--------------------------------------------------------*/
+     StepTextile[0]="DXR_Physics.Footsteps.carpet1"
+     StepTextile[1]="DXR_Physics.Footsteps.carpet2"
+     StepTextile[2]="DXR_Physics.Footsteps.carpet3"
+     StepTextile[3]="DXR_Physics.Footsteps.carpet4"
+
+     StepPaper[0]="DXR_Physics.Footsteps.carpet1"
+     StepPaper[1]="DXR_Physics.Footsteps.carpet2"
+     StepPaper[2]="DXR_Physics.Footsteps.carpet3"
+     StepPaper[3]="DXR_Physics.Footsteps.carpet4"
+/*--------------------------------------------------------*/
+     FoliageStep[0]="DXR_Physics.Footsteps.grass1"
+     FoliageStep[1]="DXR_Physics.Footsteps.grass2"
+     FoliageStep[2]="DXR_Physics.Footsteps.grass3"
+     FoliageStep[3]="DXR_Physics.Footsteps.grass4"
+
+     EarthStep[0]="DXR_Physics.Footsteps.dirt1"
+     EarthStep[1]="DXR_Physics.Footsteps.dirt2"
+     EarthStep[2]="DXR_Physics.Footsteps.dirt3"
+     EarthStep[3]="DXR_Physics.Footsteps.dirt4"
+
+/*--------------------------------------------------------*/
+     MetalStep[0]="DXR_Physics.Footsteps.metal1"
+     MetalStep[1]="DXR_Physics.Footsteps.metal2"
+     MetalStep[2]="DXR_Physics.Footsteps.metal3"
+     MetalStep[3]="DXR_Physics.Footsteps.metal4"
+/*--------------------------------------------------------*/
+     LadderStep[0]="DXR_Physics.Footsteps.ladder1"
+     LadderStep[1]="DXR_Physics.Footsteps.ladder2"
+     LadderStep[2]="DXR_Physics.Footsteps.ladder3"
+     LadderStep[3]="DXR_Physics.Footsteps.ladder4"
+
+     WoodLadderStep[0]="DXR_Physics.Footsteps.woodpanel1"
+     WoodLadderStep[1]="DXR_Physics.Footsteps.woodpanel2"
+     WoodLadderStep[2]="DXR_Physics.Footsteps.woodpanel3"
+     WoodLadderStep[3]="DXR_Physics.Footsteps.woodpanel4"
+/*--------------------------------------------------------*/
+     CeramicStep[0]="DXR_Physics.Footsteps.tile1"
+     CeramicStep[1]="DXR_Physics.Footsteps.tile2"
+     CeramicStep[2]="DXR_Physics.Footsteps.tile3"
+     CeramicStep[3]="DXR_Physics.Footsteps.tile4"
+
+     GlassStep[0]="DXR_Physics.Footsteps.tile1"
+     GlassStep[1]="DXR_Physics.Footsteps.tile2"
+     GlassStep[2]="DXR_Physics.Footsteps.tile3"
+     GlassStep[3]="DXR_Physics.Footsteps.tile4"
+
+     TilesStep[0]="DXR_Physics.Footsteps.tile1"
+     TilesStep[1]="DXR_Physics.Footsteps.tile2"
+     TilesStep[2]="DXR_Physics.Footsteps.tile3"
+     TilesStep[3]="DXR_Physics.Footsteps.tile4"
+/*--------------------------------------------------------*/
+     WoodStep[0]="DXR_Physics.Footsteps.wood1"
+     WoodStep[1]="DXR_Physics.Footsteps.wood2"
+     WoodStep[2]="DXR_Physics.Footsteps.wood3"
+     WoodStep[3]="DXR_Physics.Footsteps.wood4"
+/*--------------------------------------------------------*/
+     BrickStep[0]="DXR_Physics.Footsteps.concrete1"
+     BrickStep[1]="DXR_Physics.Footsteps.concrete2"
+     BrickStep[2]="DXR_Physics.Footsteps.concrete3"
+     BrickStep[3]="DXR_Physics.Footsteps.concrete4"
+
+     ConcreteStep[0]="DXR_Physics.Footsteps.concrete1"
+     ConcreteStep[1]="DXR_Physics.Footsteps.concrete2"
+     ConcreteStep[2]="DXR_Physics.Footsteps.concrete3"
+     ConcreteStep[3]="DXR_Physics.Footsteps.concrete4"
+
+     StoneStep[0]="DXR_Physics.Footsteps.concrete1"
+     StoneStep[1]="DXR_Physics.Footsteps.concrete2"
+     StoneStep[2]="DXR_Physics.Footsteps.concrete3"
+     StoneStep[3]="DXR_Physics.Footsteps.concrete4"
+
+     StuccoStep[0]="DXR_Physics.Footsteps.concrete1"
+     StuccoStep[1]="DXR_Physics.Footsteps.concrete2"
+     StuccoStep[2]="DXR_Physics.Footsteps.concrete3"
+     StuccoStep[3]="DXR_Physics.Footsteps.concrete4"
+
+     DefaultStep[0]="DXR_Physics.Footsteps.concrete1"
+     DefaultStep[1]="DXR_Physics.Footsteps.concrete2"
+     DefaultStep[2]="DXR_Physics.Footsteps.concrete3"
+     DefaultStep[3]="DXR_Physics.Footsteps.concrete4"
+/*--------------------------------------------------------*/
+     CollectionName="CSO2"
+   End Object
+   Collection(4)=col04
+
 }
 
 
