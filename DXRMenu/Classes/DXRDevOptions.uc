@@ -8,9 +8,8 @@ ColorInterfaceTextures=False
 bSlowRefChecking=False
 */
 
-class DXRDevOptions extends DxWindowTemplate;
+class DXRDevOptions extends DXRConfigurationDialog;
 
-var localized string strOk, strDefault, strCancel;
 var GUIButton btnOk, btnCancel, btnDefault;
 
 var DXRChoiceInfo iExtraDebugInfo;
@@ -136,9 +135,6 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
     WinTitle="Developer options"
 
         leftEdgeCorrectorX=4

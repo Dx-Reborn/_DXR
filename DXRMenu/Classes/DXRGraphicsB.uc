@@ -1,9 +1,9 @@
 /*
     step=36
 */
-class DXRGraphicsB extends DxWindowTemplate;
 
-var localized string strOk, strDefault, strCancel;
+class DXRGraphicsB extends DXRConfigurationDialog;
+
 var GUIButton btnOk, btnCancel, btnDefault;
 
 var DXRChoiceInfo iCoronas, iUseTrilinear, iUseVSync, iUseTripleBuffering, iLowQualityTerrain;
@@ -18,7 +18,6 @@ var MenuChoice_LevelOfAnisotropy   mLevelOfAnisotropy;
 var MenuChoice_UseStencil          mUseStencil;
 var MenuChoice_DefaultTexMipBias   mDefaultTexMipBias;
 var MenuChoice_DetailTexMipBias    mDetailTexMipBias;
-// var MenuChoice_Use16bitTextures    mUse16bitTextures; // useless
 
 
 function CreateMyControls()
@@ -175,7 +174,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
   btnDefault.WinTop = 428;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -186,7 +185,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 300;
   btnOK.WinTop = 428;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -197,7 +196,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 199;
   btnCancel.WinTop = 428;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 }
 
 function resetToDefaults()
@@ -265,41 +264,38 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
     WinTitle="Performance/Graphics settings [page 3]"
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=447
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=447
 
-		RightEdgeCorrectorX=399
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=420
+        RightEdgeCorrectorX=399
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=420
 
-		TopEdgeCorrectorX=310
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=310
+        TopEdgeCorrectorY=16
     TopEdgeLength=86
 
     TopRightCornerX=396
     TopRightCornerY=16
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_DisplayBackground'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=393
-		WinHeight=410
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_DisplayBackground'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=393
+        WinHeight=410
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

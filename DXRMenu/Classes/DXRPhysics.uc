@@ -1,13 +1,12 @@
 /*
   Пока здесь будет только одна опция )) Возможно будет что-то еще связанное с KARMA, не знаю...
 */
-class DXRPhysics extends DxWindowTemplate;
+
+class DXRPhysics extends DXRConfigurationDialog;
 
 var GUIButton btnDefault, btnOK, btnCancel;
 var DXRChoiceInfo pdInfo;
 var MenuChoice_PhysicsDetail mPhysicsDetail;
-
-var localized string strOk, strDefault, strCancel;
 
 function CreateMyControls()
 {
@@ -38,7 +37,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
   btnDefault.WinTop = 149;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -49,7 +48,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 445;
   btnOK.WinTop = 149;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -60,7 +59,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 344;
   btnCancel.WinTop = 149;//232; 83
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 }
 
 
@@ -124,41 +123,38 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
-    WinTitle="Physics "
+    WinTitle="Physics"
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=168
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=168
 
-		RightEdgeCorrectorX=545
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=141
+        RightEdgeCorrectorX=545
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=141
 
-		TopEdgeCorrectorX=462
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=462
+        TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=542
     TopRightCornerY=16
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_Physics'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=538
-		WinHeight=128
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_Physics'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=538
+        WinHeight=128
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

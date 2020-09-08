@@ -2,13 +2,13 @@
   Game language
 */
 
-class DXRGameLanguage extends DxWindowTemplate;
+class DXRGameLanguage extends DXRConfigurationDialog;
 
 var GUIButton btnDefault, btnOK, btnCancel;
 var DXRChoiceInfo iLangInfo;
 var MenuChoice_GameLanguage mGameLang;
 
-var localized string strOk, strDefault, strCancel, strAdditionalText;
+var localized string strAdditionalText;
 
 function CreateMyControls()
 {
@@ -125,9 +125,6 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
     strAdditionalText="blah blah"
     WinTitle="Game language"
 

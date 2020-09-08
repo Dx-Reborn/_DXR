@@ -1,8 +1,11 @@
-/**/
+/*
 
-class DXRMenuSound extends DxWindowTemplate;
+*/
 
-/* Вероятные настройки (отфильтрованные 12, остальные вероятно нам не нужны)
+class DXRMenuSound extends DXRConfigurationDialog;
+
+/* 
+Вероятные настройки (отфильтрованные 12, остальные вероятно нам не нужны)
 UseEAX=False            1
 Use3DSound=False        2
 CompatibilityMode=False 3
@@ -26,7 +29,6 @@ var DXRChoiceInfo cNumChannels, cMusicVolume, cAmbientSoundVolume, cVoiceVolume,
 var DXRChoiceInfo cCompatMode, cUse3DSound, cUseEAX, cReverseStereo, cDefaultDriver, cLowSoundQ, cUsePreCache;
 
 var GUIButton btnOK, btnDefault, btnCancel;
-var localized string strOK, strCancel, strDefault;
 
 var MenuChoice_EffectsChannels mEffectsChannels;
 var MenuChoice_SoundVolume mSoundVolume;
@@ -287,7 +289,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 9;
   btnDefault.WinTop = 530;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -298,7 +300,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 443;
   btnOK.WinTop = 530;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -309,7 +311,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 341;
   btnCancel.WinTop = 530;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 }
 
 function resetToDefaults()
@@ -382,47 +384,44 @@ function bool InternalOnClick(GUIComponent Sender)
 defaultproperties
 {
   WinTitle="Sound settings"
-  strOK="OK"
-  strCancel="Cancel"
-  strDefault="Reset to defaults"
 
-		DefaultHeight=412
-		DefaultWidth=548
+        DefaultHeight=412
+        DefaultWidth=548
 
-		MaxPageHeight=412
-		MaxPageWidth=548
-		MinPageHeight=412
-		MinPageWidth=548
+        MaxPageHeight=412
+        MaxPageWidth=548
+        MinPageHeight=412
+        MinPageWidth=548
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=551
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=551
 
-		RightEdgeCorrectorX=545
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=524
+        RightEdgeCorrectorX=545
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=524
 
-		TopEdgeCorrectorX=442
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=442
+        TopEdgeCorrectorY=16
     TopEdgeLength=100
 
     TopRightCornerX=542
     TopRightCornerY=16
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MenuSoundBackground'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=540
-		WinHeight=512
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-						OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_MenuSoundBackground'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=540
+        WinHeight=512
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+                        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

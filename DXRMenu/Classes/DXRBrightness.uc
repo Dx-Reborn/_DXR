@@ -1,6 +1,6 @@
 /* Gamma, Brightness, Contrast */
 
-class DXRBrightness extends DxWindowTemplate;
+class DXRBrightness extends DXRConfigurationDialog;
 
 var() int exampleTop;
 
@@ -15,7 +15,7 @@ var GUIButton btnOK, btnCancel, btnDefault;
 
 var GUILabel helpText;
 
-var localized string strHelpText, strOK, strCancel, strDefault;
+var localized string strHelpText;
 
 function CreateMyControls()
 {
@@ -30,7 +30,7 @@ function CreateMyControls()
   helpText.WinWidth = 536;
   helpText.WinLeft = 14;
   helpText.WinTop = 307;
-	AppendComponent(helpText, true);
+    AppendComponent(helpText, true);
 
   cGamma = new class'DXRChoiceInfo';
   cGamma.WinLeft = 488;
@@ -108,7 +108,7 @@ function CreateMyControls()
   btnDefault.WinWidth = 180;
   btnDefault.WinLeft = 7;
   btnDefault.WinTop = 363;
-	AppendComponent(btnDefault, true);
+    AppendComponent(btnDefault, true);
 
   btnOK = new class'GUIButton';
   btnOK.OnClick=InternalOnClick;
@@ -119,7 +119,7 @@ function CreateMyControls()
   btnOK.WinWidth = 100;
   btnOK.WinLeft = 465;
   btnOK.WinTop = 363;
-	AppendComponent(btnOK, true);
+    AppendComponent(btnOK, true);
 
   btnCancel = new class'GUIButton';
   btnCancel.OnClick=InternalOnClick;
@@ -130,7 +130,7 @@ function CreateMyControls()
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 365;
   btnCancel.WinTop = 363;
-	AppendComponent(btnCancel, true);
+    AppendComponent(btnCancel, true);
 }
 
 function resetToDefaults()
@@ -216,52 +216,48 @@ defaultproperties
 {
   exampleTop=146
 
-	DefaultHeight=348
-	DefaultWidth=568
+    DefaultHeight=348
+    DefaultWidth=568
 
-	MaxPageHeight=348
-	MaxPageWidth=568
-	MinPageHeight=348
-	MinPageWidth=568
+    MaxPageHeight=348
+    MaxPageWidth=568
+    MinPageHeight=348
+    MinPageWidth=568
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=382
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=382
 
-		RightEdgeCorrectorX=565
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=356
+        RightEdgeCorrectorX=565
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=356
 
-		TopEdgeCorrectorX=482
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=482
+        TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=562
     TopRightCornerY=16
 
 
-	WinTitle="Adjust Gamma, Brightness and Contrast"
-	strHelpText="Adjust the sliders so the color bars fade smoothly to pure black at the bottom of the bars.|ÿ Will work only in full-screen mode."
-
-  strOK="OK"
-  strCancel="Cancel"
-  strDefault="Reset to defaults"
+    WinTitle="Adjust Gamma, Brightness and Contrast"
+    strHelpText="Adjust the sliders so the color bars fade smoothly to pure black at the bottom of the bars.|ÿ Will work only in full-screen mode."
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXR_MenuBrightnessGammaContrast'
-		ImageRenderStyle=MSTY_Translucent
-		ImageStyle=ISTY_Tiled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=560
-		WinHeight=348
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXR_MenuBrightnessGammaContrast'
+        ImageRenderStyle=MSTY_Translucent
+        ImageStyle=ISTY_Tiled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=560
+        WinHeight=348
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

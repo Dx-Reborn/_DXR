@@ -1,6 +1,8 @@
-class DXRColors extends DxWindowTemplate;
+/*
 
-var localized string strOK, strCancel, strDefault;
+*/
+
+class DXRColors extends DXRConfigurationDialog;
 
 var GUIButton btnOK, btnCancel, btnDefault;
 
@@ -264,10 +266,6 @@ function PaintOnBG(Canvas u)
 defaultproperties
 {
   WinTitle="Colors"
-
-  strOK="OK"
-  strCancel="Cancel"
-  strDefault="Reset to defaults"
 
         leftEdgeCorrectorX=4
         leftEdgeCorrectorY=0

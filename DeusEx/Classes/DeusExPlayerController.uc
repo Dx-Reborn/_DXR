@@ -169,7 +169,7 @@ exec function Summon(string ClassName)
   return;
 
     log("Fabricate " $ ClassName);
-    NewClass = class<actor>( DynamicLoadObject(ClassName, class'Class'));
+    NewClass = class<actor>(DynamicLoadObject(ClassName, class'Class'));
     if( NewClass!=None )
     {
         if (Pawn != None)

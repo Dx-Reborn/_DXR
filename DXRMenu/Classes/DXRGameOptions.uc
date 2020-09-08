@@ -1,9 +1,10 @@
 /*
 
 */
-class DXRGameOptions extends DxWindowTemplate;
 
-var localized string strOk, strDefault, strCancel, strExtraOptions, strGameLanguage;
+class DXRGameOptions extends DXRConfigurationDialog;
+
+var localized string strExtraOptions, strGameLanguage;
 var GUIButton btnOk, btnCancel, btnDefault, btnExtra, btnExtra2, btnGameLanguage;
 
 var DXRChoiceInfo iObjectNames, iWeaponAutoReload, iGoreLevel, iSubtitles, iCrosshairs;
@@ -319,9 +320,6 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
     strExtraOptions="More options..."
     strGameLanguage="Game Language"
     WinTitle="Game Options"

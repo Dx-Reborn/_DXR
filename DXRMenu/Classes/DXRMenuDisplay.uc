@@ -1,3 +1,6 @@
-/* Display settings */
-class DXRMenuDisplay extends DxWindowTemplate;
+/*
+   Display settings 
+*/
+
+class DXRMenuDisplay extends DXRConfigurationDialog;
 

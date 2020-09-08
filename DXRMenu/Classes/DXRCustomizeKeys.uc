@@ -2,7 +2,7 @@
 
 */
 
-class DXRCustomizeKeys extends DxWindowTemplate;
+class DXRCustomizeKeys extends DXRConfigurationDialog;
 
 struct S_KeyDisplayItem
 {
@@ -31,7 +31,6 @@ var localized string WaitingHelpText;
 var localized string InputHelpText;
 var localized string ReassignedFromLabel;
 
-var localized string strOK, strCancel, strDefault;
 var GUIButton btnDefault, btnOK, btnCancel, btnSpecial;
 var GUIButton hdrKey, hdrAction;
 var GUILabel winHelp;
@@ -749,9 +748,6 @@ defaultproperties
     InputHelpText="Please press the key or button you wish to assign to this function.  Press [ESC] to cancel."
     ReassignedFromLabel="'%s' reassigned from '%s'"
 
-    strOK="OK"
-    strCancel="Cancel"
-    strDefault="Reset to defaults"
     strSpecial="Special Button"
 
     WinTitle="Keyboard/Mouse Settings"

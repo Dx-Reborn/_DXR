@@ -12,13 +12,13 @@
   ToDo: delete "no dynamic lights" option, since it useless anyway and replace it with sth else.
 */
 
-class DXRScreenResolution extends DxWindowTemplate;
+class DXRScreenResolution extends DXRConfigurationDialog;
 
 var MenuChoice_Resolution mMenuChoice_Resolution;
 var MenuChoice_ResolutionW mMenuChoice_ResolutionW;
 var MenuChoice_StartupFullScreen mMenuChoice_StartupFullScreen;
 var DXRChoiceInfo cResolution, cResolutionW, cFullScreen;
-var localized string strOK, strCancel, strDefault, strGraphicsA, strGraphicsB;//, strGraphicsE;
+var localized string strGraphicsA, strGraphicsB;//, strGraphicsE;
 var localized string strGamma, strGraphics, strPhysics;
 var localized string hGamma, hGraphics, hPhysics, hGraphicsA, hGraphicsB;//, hGraphicsE;
 var GUIButton btnDefault, btnOK, btnCancel;
@@ -270,10 +270,6 @@ function bool InternalOnClick(GUIComponent Sender)
 defaultproperties
 {
   WinTitle="Screen Resolution, Graphics, Physics..."
-
-  strOK="OK"
-  strCancel="Cancel"
-  strDefault="Reset to defaults"
 
   strGamma="Gamma, Brightness..."
   strGraphics="Performance [page 1]"

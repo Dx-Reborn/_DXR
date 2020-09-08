@@ -2,7 +2,7 @@
    Дополнительные игровые настройки.
 */
 
-class DXRGameOptionsA extends DxWindowTemplate;
+class DXRGameOptionsA extends DXRConfigurationDialog;
 
 var MenuChoice_LeftClickForLastItem mLeftClickForLastItem;
 var MenuChoice_RemainingAmmo mRemainingAmmo;
@@ -16,8 +16,6 @@ var MenuChoice_InfiniteTurretsAmmo mMenuChoice_InfiniteTurretsAmmo;
 var DXRChoiceInfo iLeftClickForLastItem, iRemainingAmmo, iExtraDebugInfo, iPlayerInterfaceMode, iUseCursorEffects;
 var DXRChoiceInfo iMenuChoice_DelayedExplosions, iMenuChoice_BurnStaticObjects, iMenuChoice_InfiniteTurretsAmmo;
 
-
-var localized string strOK, strCancel, strDefault;
 var localized string strGamma, strGraphics, strPhysics;
 var GUIButton btnDefault, btnOK, btnCancel;
 
@@ -239,11 +237,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-   WinTitle="Additional game options"
-
-   strOK="OK"
-   strCancel="Cancel"
-   strDefault="Reset to defaults"
+    WinTitle="Additional game options"
 
     leftEdgeCorrectorX=4
     leftEdgeCorrectorY=0

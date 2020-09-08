@@ -5,7 +5,7 @@
    Presets for weapons (and other items?)
 */
 
-class DXR_FS_Options extends DxWindowTemplate;
+class DXR_FS_Options extends DXRConfigurationDialog;
 
 var GUIButton btnDefault, btnOK, btnCancel;
 var DXRChoiceInfo iFS_Info, iLS_Toggle, iWS_Info, iWS_Toggle;
@@ -13,8 +13,6 @@ var MenuChoice_FS_Preset mMenuChoice_FS_Preset;
 var MenuChoice_WS_Preset mMenuChoice_WS_Preset;
 var MenuChoice_SoundForLadders mMenuChoice_SoundForLadders;
 var MenuChoice_WeaponSounds mMenuChoice_WeaponSounds;
-
-var localized string strOk, strDefault, strCancel;
 
 function CreateMyControls()
 {
@@ -180,9 +178,6 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-    strOk="OK"
-    strDefault="Reset to Defaults"
-    strCancel="Cancel"
     WinTitle="Setup custom sounds presets"
 
     leftEdgeCorrectorX=4

@@ -1,4 +1,7 @@
-/* Выбор сложности игры */
+/*
+   Выбор сложности игры 
+*/
+
 class DXRCombatDifficultyChoice extends DxWindowTemplate;
 
 var editconst float selectedDifficulty;

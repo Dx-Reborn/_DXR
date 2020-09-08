@@ -2,9 +2,8 @@
    Ещё немного дополнительных игровых настроек.
 */
 
-class DXRGameOptionsB extends DxWindowTemplate;
+class DXRGameOptionsB extends DXRConfigurationDialog;
 
-var localized string strOK, strCancel, strDefault;
 var localized string strGamma, strGraphics, strPhysics;
 var GUIButton btnDefault, btnOK, btnCancel;
 
@@ -137,11 +136,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
 defaultproperties
 {
-   WinTitle="Additional game options (2)"
-
-   strOK="OK"
-   strCancel="Cancel"
-   strDefault="Reset to defaults"
+    WinTitle="Additional game options (2)"
 
     leftEdgeCorrectorX=4
     leftEdgeCorrectorY=0

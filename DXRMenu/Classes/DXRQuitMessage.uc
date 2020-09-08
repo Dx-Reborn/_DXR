@@ -1,6 +1,6 @@
 /* Запрос выхода */
 
-class DXRQuitMessage extends DxWindowTemplate;//floatingwindow;
+class DXRQuitMessage extends DXRConfigurationDialog;
 
 var() localized string stOk;
 var() localized string stCancel;
@@ -20,8 +20,8 @@ function CreateMyControls()
   bOk.WinWidth = 100;
   bOk.WinLeft = 203;
   bOk.WinTop = 148;
-	AppendComponent(bOk, true);
-	// Cancel
+    AppendComponent(bOk, true);
+    // Cancel
   bCancel = new(none) class'GUIButton';
   bCancel.OnClick=InternalOnClick;
   bCancel.RenderWeight = 1.0;
@@ -32,8 +32,8 @@ function CreateMyControls()
   bCancel.WinWidth = 100;
   bCancel.WinLeft = 305;
   bCancel.WinTop = 148;
-	AppendComponent(bCancel, true);
-	// Message
+    AppendComponent(bCancel, true);
+    // Message
   lMessage = new(none) class'GUILabel';
   lMessage.RenderWeight = 1.0;
 //  lMessage.StyleName="STY_DXR_MediumButton";
@@ -46,21 +46,21 @@ function CreateMyControls()
   lMessage.WinWidth = 355;
   lMessage.WinLeft = 28;
   lMessage.WinTop = 32;
-	AppendComponent(lMessage, true);
+    AppendComponent(lMessage, true);
 }
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-	if(Sender==bOk) // выход
-	{
-		PlayerOwner().ConsoleCommand("Exit");
-	}
+    if(Sender==bOk) // выход
+    {
+        PlayerOwner().ConsoleCommand("Exit");
+    }
 
   if(Sender==bCancel)
-	{
-		Controller.CloseMenu(true);
-	}
-	return false;
+    {
+        Controller.CloseMenu(true);
+    }
+    return false;
 }
 
 defaultproperties
@@ -70,44 +70,44 @@ defaultproperties
     stOk="Ok"
     stCancel="Cancel"
 
-		DefaultHeight=200
-		DefaultWidth=405
+        DefaultHeight=200
+        DefaultWidth=405
 
-		MaxPageHeight=200
-		MaxPageWidth=405
-		MinPageHeight=200
-		MinPageWidth=405
+        MaxPageHeight=200
+        MaxPageWidth=405
+        MinPageHeight=200
+        MinPageWidth=405
 
-		leftEdgeCorrectorX=4
-		leftEdgeCorrectorY=0
-		leftEdgeHeight=168
+        leftEdgeCorrectorX=4
+        leftEdgeCorrectorY=0
+        leftEdgeHeight=168
 
-		RightEdgeCorrectorX=405
-		RightEdgeCorrectorY=20
-		RightEdgeHeight=140
+        RightEdgeCorrectorX=405
+        RightEdgeCorrectorY=20
+        RightEdgeHeight=140
 
-		TopEdgeCorrectorX=304
-		TopEdgeCorrectorY=16
+        TopEdgeCorrectorX=304
+        TopEdgeCorrectorY=16
     TopEdgeLength=100
 
     TopRightCornerX=402
     TopRightCornerY=16
 
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'DXRMenuImg.DXR_MessageBox'
-		ImageRenderStyle=MSTY_Translucent //Normal
-		ImageStyle=ISTY_Tiled //PartialScaled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=400
-		WinHeight=128 //229
-		WinLeft=8
-		WinTop=20
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintOnBG
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'DXRMenuImg.DXR_MessageBox'
+        ImageRenderStyle=MSTY_Translucent //Normal
+        ImageStyle=ISTY_Tiled //PartialScaled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=400
+        WinHeight=128 //229
+        WinLeft=8
+        WinTop=20
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintOnBG
+    End Object
+    i_FrameBG=FloatingFrameBackground
 }

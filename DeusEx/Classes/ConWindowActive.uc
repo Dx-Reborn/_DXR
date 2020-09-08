@@ -18,15 +18,19 @@ enum EMoveModes
 };
 var EMoveModes moveMode;
 
-var array<Inventory> ReceivedItems;
+struct sReceivedItems
+{
+   var() Inventory anItem;
+   var() int anItemCount;
+};
 
-
+var array<sReceivedItems> ReceivedItems;
 
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;                     // Number of choice buttons
-var() transient ConChoiceWindow conChoices[AMOUNT_OF_CHOICES];   // Maximum of ten buttons
-var transient ConPlay conplay;
+var() transient ConChoiceWindow conChoices[AMOUNT_OF_CHOICES];   // Maximum of ten buttons // DXR: Transient for safety
+var transient ConPlay conplay; // DXR: Same 
 var DeusExPlayer player;
 var bool bRestrictInput;
 var bool bTickEnabled;
@@ -100,18 +104,18 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     i_FrameBG.ImageColor.A=255;
 
     if (i_FrameBG2 == none)
-    i_FrameBG2 = new(none) class'floatingimage';
-    i_FrameBG2.Image = texture'Engine.BlackTexture';
-    i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
-    i_FrameBG2.WinTop = 0.0;
-    i_FrameBG2.WinLeft = 0.0;
-    i_FrameBG2.WinWidth = 1.0;
-    i_FrameBG2.bStandardized=true;
-    i_FrameBG2.StandardHeight = 0.2;
-    i_FrameBG2.bBoundToParent = true;
-    i_FrameBG2.DropShadow = none;
-    i_FrameBG2.ImageColor.A=255;
-    AppendComponent(i_FrameBG2, true);
+        i_FrameBG2 = new(none) class'floatingimage';
+        i_FrameBG2.Image = texture'Engine.BlackTexture';
+        i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
+        i_FrameBG2.WinTop = 0.0;
+        i_FrameBG2.WinLeft = 0.0;
+        i_FrameBG2.WinWidth = 1.0;
+        i_FrameBG2.bStandardized=true;
+        i_FrameBG2.StandardHeight = 0.2;
+        i_FrameBG2.bBoundToParent = true;
+        i_FrameBG2.DropShadow = none;
+        i_FrameBG2.ImageColor.A=255;
+        AppendComponent(i_FrameBG2, true);
 }
 
 function AbortCinematicConvo()
@@ -121,7 +125,7 @@ function AbortCinematicConvo()
     conPlay.TerminateConversation();
 
     foreach PlayerOwner().AllActors(class'MissionEndgame', script)
-        break;
+            break;
 
     if (script != None)
         script.FinishCinematic();
@@ -161,7 +165,7 @@ function DisplayChoice(ConChoice choice)
 {
     local ConChoiceWindow newButton;
 
-    newButton = CreateConButton(colConTextChoice, colConTextFocus );
+    newButton = CreateConButton(colConTextChoice, colConTextFocus);
     newButton.SetText(ChoiceBeginningChar $ choice.choiceText);
     newButton.SetUserObject(choice);
 
@@ -253,7 +257,7 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     newButton.RenderWeight = 0.4;
     newButton.TabOrder = Controls.length + 1;
     newButton.bBoundToParent = true;
-    newButton.OnClick=InternalOnClick;
+    newButton.OnClick = InternalOnClick;
     AppendComponent(newButton, true);
 
     return newButton;
@@ -428,7 +432,12 @@ function RenderExtraStuff(canvas u)
 
 function ShowReceivedItem(Inventory invItem, int count)
 {
-    // ToDo: Ќарисовать окошки
+    local int x;
+
+    x = ReceivedItems.length;
+    ReceivedItems.length = x + 1; // добавить 1 к длине массива
+    ReceivedItems[x].anItem = invItem; // присвоить данные к элементу массива
+    ReceivedItems[x].anItemCount = count;
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -443,7 +452,7 @@ function bool InternalOnClick(GUIComponent Sender)
     bRestrictInput = True;
 
     // Take a look to make sure it's one of our buttons before continuing.
-    for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++ )
+    for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++)
     {
         if (sender == conChoices[buttonIndex])
         {

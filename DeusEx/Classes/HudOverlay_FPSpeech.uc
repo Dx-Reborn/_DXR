@@ -45,7 +45,7 @@ function Render(Canvas C)
         return;
 
     if (bIsVisible)
-    {                   // DXR: Added if != none check
+    {
       dxc.SetCanvas(C);
       c.DrawColor = InfoLinkBG;
       c.Font = TitleFont; // DXR: Now using Unicode font.
