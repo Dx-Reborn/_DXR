@@ -1368,24 +1368,42 @@ event SetInitialState()
     Super.SetInitialState();
 }
 
+function DeusExPlayer findPlayer()
+{
+    local DeusExPlayer pl;
+
+    foreach DynamicActors(class'DeusExPlayer', pl)
+            break;
+
+    if (pl != None)
+        return pl;
+}
+
 
 // TODO: Добавить условия для включения и отключение ГДИ или его частей
 // Стоит использовать переменные из оригинала.
-event PostRender(canvas C)
+event PostRender(canvas u)
 {
-    super.postrender(C);
+    u.font = font'dxFonts.MSS_10';
+    u.SetDrawColor(128,255,128,255); // RGB Alpha
+    u.SetPos(20,200);
+
+    if (PawnOwner == None)
+        u.DrawText("I'm here");
+
+    super.postrender(u);
     if ((cubemapmode) || (playerOwner.pawn == none))
-    return;
+        return;
 
     if (menuMode)
     {
-      c.setPos(0,0);
-      c.style = ERenderStyle.STY_Normal;
-      c.SetDrawColor(1,1,1,255);
-      c.DrawTileStretched(texture'solid', c.SizeX, c.SizeY);
-/*    c.setPos(0,0);
-    c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
-    c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);*/
+       u.setPos(0,0);
+       u.style = ERenderStyle.STY_Normal;
+       u.SetDrawColor(1,1,1,255);
+       u.DrawTileStretched(texture'solid', u.SizeX, u.SizeY);
+/*     c.setPos(0,0);
+       c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+       c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);*/
 
       return;
     }
@@ -1395,9 +1413,9 @@ event PostRender(canvas C)
 //    s = class'DeusExGlobals'.default.lastScreenShot;
     //  if (s != none)
 //    {
-        c.setPos(0,0);
-      c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
-      c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);
+        u.setPos(0,0);
+        u.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+        u.DrawTileStretched(texture'ConWindowBackground', u.SizeX, u.SizeY);
 //      c.SetDrawColor(64,64,64,255);
 //      c.DrawTile(s, c.SizeX, c.SizeY, 0, 256, 512, 256);
 //      c.DrawTile(texture'ConWindowBackground', c.SizeX, c.SizeY, 0, 256, 512, 256);
@@ -1409,30 +1427,30 @@ event PostRender(canvas C)
 
         if (bVisionActive)
         {
-            DrawVisionAugmentation(C);
+            DrawVisionAugmentation(u);
         }
         if (bDefenseActive)
         {
-            DrawDefenseAugmentation(C);
+            DrawDefenseAugmentation(u);
         }
         if (bSpyDroneActive)
         {
-            DrawSpyDroneAugmentation(C);
+            DrawSpyDroneAugmentation(u);
         }
 
-      RenderPoisonEffectGray(C);
-      RenderPoisonEffectGreen(C);
-      RenderFrobTarget(C);
-      RenderSmallHUDHitDisplay(C);
-      RenderCrosshair(C);
-      RenderHitMarker(c);
-      DisplayMessages(C);
-      RenderCompass(C); // Компас
-      RenderToolBelt(C); // Быстрый доступ
-      RenderAugsBelt(C); // Задействованные аугментации
-      RenderAmmoDisplay(C);
-      DrawTargetAugmentation(C);
-      RenderChargedPickups(C);
+      RenderPoisonEffectGray(u);
+      RenderPoisonEffectGreen(u);
+      RenderFrobTarget(u);
+      RenderSmallHUDHitDisplay(u);
+      RenderCrosshair(u);
+      RenderHitMarker(u);
+      DisplayMessages(u);
+      RenderCompass(u); // Компас
+      RenderToolBelt(u); // Быстрый доступ
+      RenderAugsBelt(u); // Задействованные аугментации
+      RenderAmmoDisplay(u);
+      DrawTargetAugmentation(u);
+      RenderChargedPickups(u);
 
 // DrawActor( Actor A, bool WireFrame, optional bool ClearZ, optional float DisplayFOV ) 
 //    c.DrawActor(None, false, true); // Clear the z-buffer here

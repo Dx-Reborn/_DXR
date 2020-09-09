@@ -78,17 +78,18 @@ state Active
 {
     event Tick(float deltaTime)
     {
+
         SetBeamLocation();
         SetGlowLocation();
-       If (AL != none)
-        UpdateProjector(); //
+        If (AL != none)
+            UpdateProjector(); //
     }
     
     function BeginState()
     {
         Super.BeginState();
 
-    AL = Spawn(class'LightProjector',Player,,Player.Location,Player.GetViewRotation());
+        AL = Spawn(class'LightProjector',Player,,Player.Location,Player.GetViewRotation());
 
         b1 = Spawn(class'Beam', Player, '', Player.Location);
         if (b1 != None)

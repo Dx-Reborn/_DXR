@@ -5198,7 +5198,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
 
     // Used to determine whether NPCs should sprint/avoid aim
     moveMult = 1.0;
-    if ((dist <= 180) && controller.enemy.controller.bIsPlayer && (controller.enemy.Weapon != None) && (enemyMaxRange < 180))
+    if ((dist <= 180) && controller.enemy.IsA('PlayerPawn') /*controller.bIsPlayer*/ && (controller.enemy.Weapon != None) && (enemyMaxRange < 180))
         moveMult = CloseCombatMult;
 
     if (bAvoidAim && !controller.enemy.bIgnore && (FRand() <= AvoidAccuracy * moveMult))
@@ -5238,7 +5238,7 @@ function EDestinationType ComputeBestFiringPosition(out vector newPosition)
     }
 
     reloadMult = 1.0;
-    if (IsWeaponReloading() && controller.Enemy.controller.bIsPlayer)
+    if (IsWeaponReloading() && controller.Enemy.IsA('PlayerPawn') /*controller.bIsPlayer*/)
         reloadMult = 0.5;
 
     bUseSprint = false;
@@ -6518,7 +6518,7 @@ state idle
 // ----------------------------------------------------------------------
 state Dying
 {
-    ignores SeePlayer, /*EnemyNotVisible,*/ HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, /*Died,*/ Timer, TakeDamage;
+    ignores SeePlayer, /*EnemyNotVisible,*/ HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, Died, Timer, TakeDamage;
 
     event Landed(vector HitNormal)
     {
@@ -6577,22 +6577,32 @@ state Dying
         EnableCheckDestLoc(false);
         StandUp();
 
+        // don't do that stupid timer thing in Pawn.uc
+/*        AIClearEventCallback('Futz');
+        AIClearEventCallback('MegaFutz');
+        AIClearEventCallback('Player');
+        AIClearEventCallback('WeaponDrawn');
+        AIClearEventCallback('LoudNoise');
+        AIClearEventCallback('WeaponFire');
+        AIClearEventCallback('Carcass');
+        AIClearEventCallback('Distress');*/
+
         bInterruptState = false;
         BlockReactions(true);
         bCanConverse = False;
-        bStasis = False;
+        bStasis = false;
         SetDistress(true);
         DeathTimer = 0;
     }
 
-    function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
+/*    function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
     {
        Global.Died(Killer, damageType, HitLocation);
-    }
+    }*/
 
 
 Begin:
-//  Sleep(0.1);
+//    Controller.WaitForLanding();
     MoveFallingBody();
 
     DesiredRotation.Pitch = 0;
@@ -6607,7 +6617,6 @@ Begin:
     bHidden = true;
 
     Acceleration = vect(0,0,0);
-//  Controller.Destroy();
     SpawnCarcass();
     Destroy();
 }

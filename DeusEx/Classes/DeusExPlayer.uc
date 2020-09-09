@@ -21,7 +21,6 @@ var const string DefaultStartMap;
 var() travel int itemFovCorrection;
 
 var() editconst Actor FrobTarget;
-//var float FrobTime;
 
 var class<carcass> CarcassType;
 var transient bool bJustPickupCorpse;
@@ -1564,21 +1563,38 @@ function Landed(vector HitNormal)
 }
 
 
-// ----------------------------------------------------------------------
-// SpawnCarcass()
-//
-// copied from Engine.PlayerPawn
-// modified to let carcasses have inventories
-// ----------------------------------------------------------------------
 function Carcass SpawnCarcass()
 {
     local DeusExCarcass carc;
-//  local Inventory item;
-    local Vector loc;
+    local vector loc;
+    local FleshFragment chunk;
+    local int i;
+    local float size;
 
     // don't spawn a carcass if we've been gibbed
     if (Health < -80)
+    {   // DXR: Copied from ScriptedPawn
+        size = (CollisionRadius + CollisionHeight) / 2;
+        if (size > 10.0)
+        {
+            for (i=0; i<size/4.0; i++)
+            {
+                loc.X = (1-2*FRand()) * CollisionRadius;
+                loc.Y = (1-2*FRand()) * CollisionRadius;
+                loc.Z = (1-2*FRand()) * CollisionHeight;
+                loc += Location;
+                chunk = spawn(class'FleshFragment', None,, loc);
+                if (chunk != None)
+                {
+                    chunk.SetDrawScale(size / 25);
+                    chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
+                    chunk.bFixedRotationDir = True;
+                    chunk.RotationRate = RotRand(false);
+                }
+            }
+        }
         return None;
+    }
 
     carc = DeusExCarcass(Spawn(CarcassType));
     if (carc != None)
@@ -1593,14 +1609,8 @@ function Carcass SpawnCarcass()
 
         if (Controller != None)
             carc.bPlayerCarcass = true;
-        SetMoveTarget(carc); //for Player 3rd person views
 
-        // give the carcass the player's inventory
-//      for (item=Inventory; item!=None; item=item.Inventory)
-//      {
-//          DeleteInventory(item);
-//          carc.AddInventory(item);
-//      }
+        SetMoveTarget(carc); //for Player 3rd person views
     }
 
     return carc;
@@ -1643,12 +1653,8 @@ State Dying
 
 
 Begin:
-//    FrobTime = Level.TimeSeconds;
-//    DeusExPlayerController(Controller).bBehindView = false;//True;
-//    DeusExPlayerController(Controller).bBehindView = true;
     Velocity = vect(0,0,0);
     Acceleration = vect(0,0,0);
-//    DeusExPlayerController(Controller).DesiredFOV = DeusExPlayerController(Controller).default.DesiredFOV;
     FinishAnim();
     KillShadow();
 
@@ -2246,21 +2252,46 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
     {
         NextState = '';
         PlayDeathHit(actualDamage, hitLocation, damageType, momentum);
-        if ( actualDamage > mass )
+        if (actualDamage > mass)
             Health = -1 * actualDamage;
-        DeusExPlayerController(controller).Enemy = EventInstigator;
-//function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
-// Какой контроллер вызвал смерть, это должен быть контроллер ИИ, но можно указать None
-        Died(None, damageType, HitLocation);
-        bHidden=true;
-        GoToState('Dying');
-//      Died( None, class'DamTypeMutant', Location);
+
+        controller.Enemy = EventInstigator;
+        // Какой контроллер вызвал смерть, это должен быть контроллер ИИ, но можно указать None
+        Died(EventInstigator.Controller, damageType, HitLocation);
+//        bHidden = true;
+//??        GoToState('Dying');
+//      Died(None, class'DamTypeMutant', Location);
         return;
     }
     MakeNoise(1.0); 
 
     if ((DamageType == class'DM_Flamed') && !bOnFire)
         CatchFire();
+}
+
+/*
+  Checks to see if a conversation is playing when the PC dies.
+  If so, nukes it.
+*/
+
+function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
+{
+    if (bDeleteMe || Level.bLevelChange || Level.Game == None)
+        return; // already destroyed, or level is being cleaned up
+
+
+    if (conPlay != None)
+        conPlay.TerminateConversation();
+
+    if (bOnFire)
+        ExtinguishFire();
+
+    if (AugmentationSystem != None)
+        AugmentationSystem.DeactivateAll();
+
+    GoToState('Dying');
+
+//    Super.Died(Killer, damageType, HitLocation);
 }
 
 function SetMovementPhysics()
