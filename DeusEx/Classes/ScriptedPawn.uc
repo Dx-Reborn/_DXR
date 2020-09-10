@@ -7,11 +7,11 @@ class ScriptedPawn extends DeusExNPCPawn
 
 #exec obj load file=DeusExCharacters.ukx
 
-const SEEK_RADIUS = 1000; // ToDo: Расстояние для замены ReachablePathnodes
 const BEAM_CHECK_RADIUS = 1200;
 const BEST_ENEMY_CHECK_RADIUS = 2000;
 const SKIP_ENEMY_DISTANCE = 2500;
 const MAX_CARCASS_DIST = 1200;
+const GIB_HEALTH = -100;
 
 var name AlarmTag;
 
@@ -247,27 +247,24 @@ function RegisterConFiles(string Path)
   }
 }
 
-/*function float LastRendered()
-{
-   return LastRenderTime; //Level.TimeSeconds;
-}*/
+/* 
+   AI controlled creatures may duck
+   if not falling, and projectile time is long enough
+   often pick opposite to current direction (relative to shooter axis)
 
-
-function WarnTarget(Pawn shooter, float projSpeed, vector FireDir)
-{
-    // AI controlled creatures may duck
-    // if not falling, and projectile time is long enough
-    // often pick opposite to current direction (relative to shooter axis)
-}
+   DXR: Maybe send this to controller?
+*/
+function WarnTarget(Pawn shooter, float projSpeed, vector FireDir);
 
 function Touch(actor toucher)
 {
    super.Touch(toucher);
 
    if (DXRAIController(controller) != none)
-      DXRAIController(controller).NotifyTouch(toucher);
+       DXRAIController(controller).NotifyTouch(toucher);
 }
 
+// ToDo: Add support for changeable presets?
 function sound GetBulletHitSound()
 {
     local DeusExGlobals gl;
@@ -349,27 +346,20 @@ event PostBeginPlay()
     CreateShadow();
 }
 
-
-
-
 event Destroyed()
 {
     local DeusExPlayer player;
+
     // Pass a message to conPlay, if it exists in the player, that 
     // this pawn has been destroyed.  This is used to prevent 
-    // bad things from happening in converseations.
-
-    ClearStayingDebugLines(); //
-
+    // bad things from happening in conversations.
     player = DeusExPlayer(GetPlayerPawn());
 
     if ((player != None) && (player.conPlay != None))
          player.conPlay.ActorDestroyed(Self);
 
-//    if (PawnShadow != none)
-//        PawnShadow.Destroy();
-
-        Super.Destroyed();
+    ClearStayingDebugLines();
+    Super.Destroyed();
 }
 
 function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool bForce)
@@ -380,8 +370,6 @@ function bool SetEnemy(Pawn newEnemy, optional float newSeenTime, optional bool 
             EnemyTimer = 0;
         Controller.Enemy = newEnemy;
         EnemyLastSeen    = newSeenTime;
-
-//        log(self@".SetEnemy = "@newEnemy);
 
         return True;
     }
@@ -1967,7 +1955,7 @@ function Carcass SpawnCarcass()
     local float size;
 
     // if we really got blown up good, gib us and don't display a carcass
-    if ((Health < -100) && !IsA('Robot'))
+    if ((Health < GIB_HEALTH) && !IsA('Robot'))
     {
         size = (CollisionRadius + CollisionHeight) / 2;
         if (size > 10.0)
@@ -6467,16 +6455,6 @@ function bool ReadyForNewEnemy()
         return False;
 }
 
-
-
-
-// ----------------------------------------------------------------------
-
-
-
-// ----------------------------------------------------------------------
-// EnterConversationState()
-// ----------------------------------------------------------------------
 function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 {
     // First check to see if we're already in a conversation state, 
@@ -6505,8 +6483,6 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
 // ----------------------------------------------------------------------
 // STATES
 // ----------------------------------------------------------------------
-
-
 state idle
 {
 }
@@ -6518,7 +6494,7 @@ state idle
 // ----------------------------------------------------------------------
 state Dying
 {
-    ignores SeePlayer, /*EnemyNotVisible,*/ HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, Died, Timer, TakeDamage;
+    ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadVolumeChange, PhysicsVolumeChange, Falling, WarnTarget, Died, Timer, TakeDamage;
 
     event Landed(vector HitNormal)
     {
@@ -6574,6 +6550,9 @@ state Dying
 
     function BeginState()
     {
+        Controller.GoToState('');
+        Controller.Destroy();
+
         EnableCheckDestLoc(false);
         StandUp();
 
@@ -6595,38 +6574,21 @@ state Dying
         DeathTimer = 0;
     }
 
-/*    function Died(Controller Killer, class<DamageType> damageType, vector HitLocation)
-    {
-       Global.Died(Killer, damageType, HitLocation);
-    }*/
-
-
 Begin:
-//    Controller.WaitForLanding();
     MoveFallingBody();
-
     DesiredRotation.Pitch = 0;
     DesiredRotation.Roll  = 0;
 
     // if we don't gib, then wait for the animation to finish
-    if ((Health > -100) && !IsA('Robot'))
+    if ((Health > GIB_HEALTH) && !IsA('Robot'))
         FinishAnim();
 
     SetWeapon(None);
-
     bHidden = true;
-
     Acceleration = vect(0,0,0);
     SpawnCarcass();
     Destroy();
 }
-
-
-/*event Landed(vector HitNormal)
-{
-    super.Landed(HitNormal);
-} */
-
 
 function JumpOffPawn()
 {
