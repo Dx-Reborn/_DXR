@@ -3,10 +3,13 @@
 */
 
 class PlayerPawn extends DeusExPlayerPawn;
-//                         config (DXRConfig);
 
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
+const RADAR_DIST = 3000;
+const TRACE_LOS_DIST = 8000;
+const MAX_FIRE_ACTORS = 1; // Максимальная дистанция для работы аугментаций. CullDistance для ScriptedPawn также 8000.
+const MAX_INVENTORY_CELLS = 30;
 
 var() travel inventory objects[10]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
@@ -101,6 +104,12 @@ var bool bVsEnabled;
 var float vScale;
 
 var float HeadWoundTimer;
+
+// Radar
+var float RadarPosX, RadarPosY, RadarScale, MinEnemyDist;
+var material RadarBackground;
+
+
 
 var ConHistory conHistory;           // Conversation History
 
