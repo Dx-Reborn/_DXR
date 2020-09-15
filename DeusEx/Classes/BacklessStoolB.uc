@@ -2,14 +2,15 @@
   Чтобы достать что-нибудь сверху :D
 */
 
-class BacklessStoolA extends DecoStools;
+class BacklessStoolB extends DecoStools;
 
 defaultproperties
 {
      ItemName="Backless stool"
-     StaticMesh=Staticmesh'DXR_Chairs.BacklessStool'
+     StaticMesh=StaticMesh'DXR_Chairs.Backless_Stool_Antique'
      CollisionRadius=20.0
      CollisionHeight=15.7
+     DrawScale=1.04
      DrawType=DT_StaticMesh
      Mass=30.000000
      Buoyancy=5.000000
