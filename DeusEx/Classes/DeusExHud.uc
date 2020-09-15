@@ -9,20 +9,12 @@ const DebugTraceDist = 512;
 var localized string TestUkr_String; // Для проверки Украинского языка
 
 var localized string strMeters;
-var int BinocularsMaxRange;
-var() bool bUseBinocularView;
 
 var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
 
 var bool bRenderMover;
 var float vis;
-
-// Radar
-var float RadarPulse,RadarScale;
-var float RadarPosX, RadarPosY;
-var float MinEnemyDist;
-var material RadarBackground;
 
 exec function ShowDebug()
 {
@@ -107,6 +99,7 @@ function LoadColorTheme()
    FrobBoxText = class'DXR_HUD'.static.GetFrobBoxText(index);
 }
 
+// Useless?
 event PostLoadSavedGame()
 {
   if (dxc == none)
@@ -115,108 +108,25 @@ event PostLoadSavedGame()
 
 exec function ExtraHUDDebugInfo()
 {
-  if (DeusExPlayer(PlayerOwner.Pawn) != none)
-  {
-    DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo = !DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo;
-  }
+   if (DeusExPlayer(PawnOwner) != none)
+       DeusExPlayer(PawnOwner).bExtraDebugInfo = !DeusExPlayer(PawnOwner).bExtraDebugInfo;
+
 }
 
 event PostRender(canvas C)
 {
     super.postrender(C);
 
-    if (PlayerOwner.pawn == none)
+    if (PawnOwner == none)
         return;
 
-//  TrackActors(C);
+    if (DeusExPlayer(PawnOwner).bExtraDebugInfo)
+        RenderDebugInfo(C);
 
-    if (DeusExPlayer(PlayerOwner.Pawn).bExtraDebugInfo)
-    RenderDebugInfo(C);
-
-    if (bUseBinocularView)
-    {
-      RenderBinoculars(C);
-    }
-    if ((DeusExWeapon(PlayerOwner.pawn.Weapon) != none) && (DeusExWeapon(PlayerOwner.pawn.Weapon).bZoomed))
+/*    if ((DeusExWeapon(PlayerOwner.pawn.Weapon) != none) && (DeusExWeapon(PlayerOwner.pawn.Weapon).bZoomed))
         renderScopeView(C);
-
-    if (DeusExPlayer(PlayerOwner.Pawn) != None && DeusExPlayer(PlayerOwner.Pawn).bRadarActive)
-    {
-        DrawRadarCircle(c); // Фон радара
-        DrawRadar(c);
-    }
-
-//  if (bRenderMover)
-//     RenderMover(C);
+  */
 }
-
-/*- Converted from ActorDisplayWindow. Used to check mover bounds. ----------------------*/
-/*final function RenderMover(Canvas C)
-{
-    local int         i;
-    local vector      topCircle[8];
-    local vector      bottomCircle[8];
-    local int         numPoints;
-    local vector      center, area;
-    local vector pp;
-
-  if (DxMover == none)
-  return;
-
-  pp = C.WorldToScreen(dxMover.Location - dxMover.PrePivot);
-  C.SetPos(pp.x, pp.y);
-  c.SetDrawColor(255,0,0);
-  C.DrawText("+");
-
-        dxMover.ComputeMovementArea(center, area);
-
-        topCircle[0] = center+area*vect(1,1,1);
-        topCircle[1] = center+area*vect(1,-1,1);
-        topCircle[2] = center+area*vect(-1,-1,1);
-        topCircle[3] = center+area*vect(-1,1,1);
-        bottomCircle[0] = center+area*vect(1,1,-1);
-        bottomCircle[1] = center+area*vect(1,-1,-1);
-        bottomCircle[2] = center+area*vect(-1,-1,-1);
-        bottomCircle[3] = center+area*vect(-1,1,-1);
-        numPoints = 4;
-
-    for (i=0; i<numPoints; i++)
-        DrawLineA(c, topCircle[i], bottomCircle[i]);
-    for (i=0; i<numPoints-1; i++)
-    {
-        DrawLineA(c, topCircle[i], topCircle[i+1]);
-        DrawLineA(c, bottomCircle[i], bottomCircle[i+1]);
-    }
-    DrawLineA(c, topCircle[i], topCircle[0]);
-    DrawLineA(c, bottomCircle[i], bottomCircle[0]);
-}*/
-
-/*function DrawLineA(Canvas c, vector point1, vector point2)
-{
-    local float toX, toY;
-    local float fromX, fromY;
-    local vector tVect1, tVect2;
-
-  tVect1 = c.WorldToScreen(point1);
-  tVect2 = c.WorldToScreen(point2);
-
-  fromX = tVect1.X;
-  fromY = tVect1.Y;
-  toX = tVect2.X;
-  toY = tVect2.Y;
-
-    c.Style=ERenderStyle.STY_Normal;
-
-        c.SetDrawColor(120, 250,150);
-        DrawPoint(c, fromX, fromY);
-        DrawPoint(c, toX, toY);
-
-        c.SetDrawColor(0, 250, 250);
-        Interpolate(c, fromX, fromY, toX, toY, 8);
-}*/
-
-
-
 
 simulated function DisplayMessages(Canvas C)
 {
@@ -224,8 +134,8 @@ simulated function DisplayMessages(Canvas C)
     local float w,h;
     local texture border;
 
-  if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
-  return;
+    if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
+    return;
 
         for(i = 0; i<ConsoleMessageCount; i++)
       {
@@ -248,7 +158,7 @@ simulated function DisplayMessages(Canvas C)
       }
 
 
-    if ((messageCount > 0) && (DeusExPlayer(playerowner.pawn).DataLinkPlay == none))
+    if ((messageCount > 0) && (DeusExPlayer(PawnOwner).DataLinkPlay == none))
     {
         if (dxc != none)
          dxc.SetCanvas(C);
@@ -272,13 +182,12 @@ simulated function DisplayMessages(Canvas C)
                     c.SetClip(w, (14 * messagecount));
                 }
        // Фон
-//        c.Style=ERenderStyle.STY_Translucent;
-        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+        if (DeusExPlayer(PawnOwner).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
-              else
-                c.Style = ERenderStyle.STY_Normal;
+               else
+            c.Style = ERenderStyle.STY_Normal;
 
-        c./*Set*/DrawColor = MessageBG;//(64,64,64); // Что за--?
+        c.DrawColor = MessageBG;
 
 
         //TL
@@ -329,19 +238,18 @@ simulated function DisplayMessages(Canvas C)
 
         // Рамки
 
-   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   if (DeusExPlayer(PawnOwner).bHUDBordersVisible)
    {
-     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-        c.Style = ERenderStyle.STY_Translucent;
-        else
-        c.Style = ERenderStyle.STY_Alpha;
+        if (DeusExPlayer(PawnOwner).bHUDBordersTranslucent)
+            c.Style = ERenderStyle.STY_Translucent;
+              else
+            c.Style = ERenderStyle.STY_Alpha;
 
         if (messageCount > 3)
-        c.SetClip(w, (14 * messagecount));
+            c.SetClip(w, (14 * messagecount));
         if (messageCount <= 3)
-        c.SetClip(w, h);
+            c.SetClip(w, h);
 
-        //c.Style=ERenderStyle.STY_Translucent;
         // Рамка
         c.DrawColor = MessageFrame;
 
@@ -352,9 +260,9 @@ simulated function DisplayMessages(Canvas C)
         c.SetPos(-14,0);
         border = texture'DeusExUI.HUDWindowBorder_Left';
         if (messageCount > 3)
-        c.DrawTile(border,64,(14 * messagecount), 0,0,64,8);
-                if (messageCount <= 3)
-        c.DrawTile(border,64,h, 0,0,64,8);
+            c.DrawTile(border,64,(14 * messagecount), 0,0,64,8);
+        if (messageCount <= 3)
+            c.DrawTile(border,64,h, 0,0,64,8);
 
 
         c.SetPos(-14, c.ClipY);
@@ -376,9 +284,9 @@ simulated function DisplayMessages(Canvas C)
         c.SetPos(C.OrgX+c.ClipX-3,C.OrgY);
         border = texture'DeusExUI.HUDWindowBorder_Right';
         if (messageCount <= 3)
-        c.DrawTileStretched(border,32,h);
+            c.DrawTileStretched(border,32,h);
         if (messageCount > 3)
-        c.DrawTileStretched(border,32,(14 * messagecount));
+            c.DrawTileStretched(border,32,(14 * messagecount));
 
         c.SetPos(c.ClipX-3, c.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
@@ -402,13 +310,13 @@ simulated function DisplayMessages(Canvas C)
             for(i=0; i<MessageCount; i++)
             {
                 if (TextMessages[i].Text == "")
-            break;
-                //c.SetDrawColor(255,255,255);
+                    break;
+
                 // Текст
                 c.DrawColor = MessageText;
                 dxc.DrawText(TextMessages[i].Text); // текст
                 c.SetPos(c.CurX, c.CurY);
-            c.SetClip(w, h+=22);
+                c.SetClip(w, h+=22);
             }
 
   c.reset();
@@ -518,11 +426,6 @@ function RenderDebugInfo(Canvas c)
       }
 }
 
-function DrawDamagedIndicator(canvas u)
-{
-
-}
-
 event Timer()
 {
    cubeMapMode = false;
@@ -532,139 +435,6 @@ function SafeRestore()
 {
     SetTimer(0.5,false);
 }
-
-
-// convert to meters (by Kaiser)
-//dist = int(vsize(TCP.Location-wpTarget.Location)/52);
-// Вид из бинокля: расстояние до цели.
-function DrawBinocularsView(Pawn Target, Canvas C)
-{
-    local String str;
-    local float boxCX, boxCY;
-    local float x, y, w, h, mult;
-    local vector sp1, EyePos;
-
-    if (Target != None)
-    {
-    c.Font = font'DXFonts.EU_9';
-        mult = VSize(Target.Location - Playerowner.pawn.Location);
-        str = msgRange @ (mult/52) @ strMeters;
-
-        EyePos = Human(Playerowner.pawn).Location;
-    EyePos.Z += Human(Playerowner.pawn).EyeHeight;
-
-    // Расстояние до Pawn
-        sp1 = C.WorldToScreen(Target.Location);
-        boxCX = sp1.X;
-        boxCY = sp1.Y;
-
-        c.TextSize(str, w, h);
-        x = boxCX - w/2;
-        y = boxCY - h;
-        c.DrawColor = RedColor;
-
-        c.SetPos(x,y);
-    c.Style=ERenderStyle.STY_Normal;
-        c.DrawText(str);
-
-        c.SetPos(x-4,y-4);
-    c.Style=ERenderStyle.STY_Translucent;
-        c.drawTileStretched(texture'ItemNameBox', w+4,h+4);
-    }
-    c.reset();
-}
-
-function RenderBinoculars(Canvas C)
-{
-  local ScriptedPawn target;
-  local texture bg, cr;
-
-  bg = texture'HUDBinocularView';
-  cr = texture'HUDBinocularCrossHair';
-
-  if (playerOwner.pawn != none)
-  {
-
-    C.ColorModulate.X = 2;
-    C.ColorModulate.Y = 2;
-    C.ColorModulate.Z = 2;
-      C.ColorModulate.W = 2;
-
-    // Вид из бинокля...
-    c.setPos(c.sizeX / 2 - 512,c.sizeY / 2 - 256);
-    c.Style=ERenderStyle.STY_Modulated;
-    c.DrawTileJustified(bg, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
-    c.Style=ERenderStyle.STY_Normal;
-
-    c.SetDrawColor(0,255,25,255);// Green crosshair
-    c.DrawTileJustified(cr, 1, 1024, 512); 
-
-    // Заполнители
-    c.Style=ERenderStyle.STY_Normal;
-    c.DrawColor=blackColor;
-
-    c.SetPos(0,0); // верхний
-    c.DrawTileStretched(texture'solid', c.sizeX, (c.sizeY / 2) - 256);
-
-    c.SetPos(0,(c.sizeY / 2) + 256); // Нижний заполнитель...
-    c.DrawTileStretched(texture'solid', c.sizeX, c.sizeY );
-
-    c.SetPos(0,(c.sizeY /2) - 256); // Левый заполнитель...
-    c.DrawTileStretched(texture'solid', (c.sizeX / 2) - 512, (c.sizeY / 2) + 152);
-
-    c.SetPos((c.SizeX / 2) + 512,(c.sizeY /2) - 256); // Правый заполнитель...
-    c.DrawTileStretched(texture'solid', (c.sizeX / 2) - 512, (c.sizeY / 2) + 152);
-
-                                  
-   foreach playerOwner.pawn.VisibleCollidingActors(class'ScriptedPawn', target, BinocularsMaxRange, playerOwner.pawn.Location + vector(PlayerOwner.pawn.GetViewRotation()))
-   {
-     DrawBinocularsView(target,C);
-   }
-  }
-}
-
-function renderScopeView(canvas u)
-{
-  local texture bg, cr;
-
-  bg = texture'HUDScopeView';
-  cr = texture'HUDScopeCrosshair';
-
-  if (playerOwner.pawn != none)
-  {
-    u.ColorModulate.X = 4;
-    u.ColorModulate.Y = 4;
-    u.ColorModulate.Z = 4;
-      u.ColorModulate.W = 4;
-
-    // Вид из прицела...
-    u.SetDrawColor(255,255,255,255);
-    u.setPos(u.sizeX / 2 - 256,u.sizeY / 2 - 256);
-    u.Style = ERenderStyle.STY_Modulated;
-    u.DrawTileJustified(bg, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
-    u.Style = ERenderStyle.STY_Normal;
-    u.SetDrawColor(255,255,255,255);
-    u.DrawTileJustified(cr, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
-
-    // Заполнители
-    u.Style=ERenderStyle.STY_Normal;
-    u.DrawColor=blackColor;
-
-    u.SetPos(0,0); // верхний
-    u.DrawTileStretched(texture'solid', u.sizeX, (u.sizeY / 2) - 256);
-
-    u.SetPos(0,(u.sizeY / 2) + 256); // Нижний заполнитель...
-    u.DrawTileStretched(texture'solid', u.sizeX, u.sizeY );
-
-    u.SetPos(0,(u.sizeY /2) - 256); // Левый заполнитель...
-    u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 256, (u.sizeY / 2) + 152);
-
-    u.SetPos((u.SizeX / 2) + 256,(u.sizeY /2) - 256); // Правый заполнитель...
-    u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 256, (u.sizeY / 2) + 152);
-  }
-}
-
-/*---------------------------------------------------------------------------*/
 
 function PlayerPawn GetPlayer()
 {
@@ -1095,119 +865,11 @@ function renderToolBeltSelection(canvas u)
   }
 }
 
-/* Radar (перемещено из оверлея) -----------------------------------------------------------------*/
-function DrawRadarCircle(canvas u)
-{
-    local float RadarWidth;
-
-    RadarScale = default.RadarScale * HUDScale;
-    RadarWidth = 0.5 * RadarScale * u.ClipX;
-
-    u.Style = ERenderStyle.STY_Alpha;
-    u.DrawColor = class'HUD'.default.GrayColor;
-
-    u.SetPos(RadarPosX * u.ClipX - RadarWidth, RadarPosY * u.ClipY + RadarWidth);
-    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 512, 512, -512);
-
-    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY + RadarWidth);
-    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 512, -512, -512);
-
-    u.SetPos(RadarPosX * u.ClipX - RadarWidth,RadarPosY * u.ClipY);
-    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 0, 512, 512);
-
-    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY);
-    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 0, -512, 512);
-}
-
-function DrawRadar(canvas u)
-{
-    local ScriptedPawn P;
-    local float Dist, MaxDist, RadarWidth,Angle,DotSize,OffsetY,OffsetScale;
-    local rotator Dir;
-    local vector Start;
-    local int DistB;
-    local float AIvis;
-    
-    RadarWidth = 0.5 * RadarScale * u.ClipX;
-    DotSize = 8 * u.ClipX * HUDScale/1600;
-    if (PawnOwner == None)
-        Start = PlayerOwner.Location;
-    else
-        Start = PawnOwner.Location;
-    
-    MaxDist = 3000;
-    u.Style = ERenderStyle.STY_Masked;
-    OffsetY = RadarPosY + RadarWidth/u.ClipY;
-    MinEnemyDist = 3000;
-    foreach DynamicActors(class'ScriptedPawn',P)
-        if ((P.Health > 0) && (P.bInWorld == true) && (P.bAmbientCreature == false))
-        {
-            Dist = VSize(Start - P.Location);
-
-            AIvis = class'DeusExPawn'.static.AiVisibility(P, false);
-            if (Dist < 3000)
-            {
-                if (P != None)
-                {
-                  if (P.GetAllianceType((DeusExPawn(pawnOwner).Alliance)) == ALLIANCE_Hostile)
-                  {
-                    u.DrawColor.R = 200;
-                    u.DrawColor.G = 0;
-                    u.DrawColor.B = 0;
-                  }
-                  else
-                  {
-                    u.DrawColor.R = 0;
-                    u.DrawColor.G = 200;
-                    u.DrawColor.B = 0;
-                  }
-                }
-                else
-                {
-                    u.DrawColor.R = 0;
-                    u.DrawColor.G = 0;
-                    u.DrawColor.B = 0;
-                }
-                Dir = rotator(P.Location - Start);
-                OffsetScale = RadarScale * Dist * 0.000167;
-
-                if (PawnOwner == None)
-                    Angle = ((Dir.Yaw - PlayerOwner.Rotation.Yaw) & 65535) * 6.2832/65536;
-                else
-                    Angle = ((Dir.Yaw - PawnOwner.Rotation.Yaw) & 65535) * 6.2832/65536;
-
-                u.SetPos(RadarPosX * u.ClipX + OffsetScale * u.ClipX * sin(Angle) - 0.5 * DotSize, 
-                         OffsetY * u.ClipY - OffsetScale * u.ClipX * cos(Angle) - 0.5 * DotSize);
-
-                DistB = abs(PawnOwner.Location.Z - P.Location.Z) - abs(PawnOwner.default.CollisionHeight - PawnOwner.CollisionHeight);
-                if (abs(DistB) >= 0 && abs(DistB) < 60) // Same
-                    u.DrawTile(Material'CheckboxOff',DotSize,DotSize,0,0,8,8);
-                else 
-                    if (DistB > 61) // Below or above
-                        u.DrawTile(Material'RadarSquare',DotSize,DotSize,0,0,8,8);
-            }
-        }
-}
-
-event Destroyed()
-{
-    log(self@"has been destroyed()");
-}
-
-
-
 
 
 
 defaultproperties
 {
-    RadarScale=0.20
-    RadarPosX=0.840
-    RadarPosY=0.540
-
-    RadarBackground=Texture'UT2k4Extra.RadarQ'
-
-    BinocularsMaxRange=2000
     strMeters="meters"
 
     MessageBG=(R=139,G=105,B=35,A=255)   // ClientMessage Background

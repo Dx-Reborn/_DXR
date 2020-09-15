@@ -5,15 +5,12 @@
   Выделение объекта
   Аугментации с интерфейсом
 
-  Примечание: настройки HUD в UT2004 на этот HUD не действуют!
-  15/06/2017: функция GetColorScaled(float percent) добавлена в Core.u
-  30/12/2017: Удалены ненужные функции и переменные.
-
-  чтобы получить указатель на игрока (pawn) через контроллер:
-  ... DeusExPlayer(Playerowner.pawn)
-
   Прорисовка через DrawHUD не используется, сначала нужно прорисовать
   все ауги, изменяющие цвет и т.д., и только потом собственно HUD.
+
+  Примечание: настройки HUD в UT2004.ini на этот HUD не действуют!
+  15/06/2017: функция GetColorScaled(float percent) добавлена в Core.u
+  30/12/2017: Удалены ненужные функции и переменные.
   21/06/2018: Как мне реализовать цветовые темы ? :))) 
   11/07/2018: Исправлено растягивание перекрестия с оружием в руке.
   18/06/2020: Реализован индикатор повреждения (за основу взят код из GMDX)
@@ -27,9 +24,7 @@
 
 class DeusExBasicHUD extends HUD;
 
-// Максимальная дистанция для работы аугментаций
-// CullDistance для ScriptedPawn также 8000.
-const TRACE_LOS_DIST = 8000;
+//const TRACE_LOS_DIST = 8000;
 
 struct sToolBeltSelectedItem
 {
@@ -173,7 +168,6 @@ var float   BioEnergy;
 var float   BioEnergyMax;
 
 var bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
-var bool bUseAltVBarTexture;
 
 var bool bUnderwater;
 var float   breathPercent;
@@ -202,19 +196,13 @@ var int visionLevel;
 var float visionLevelValue;
 var int activeCount;
 
-// Можно удалить, поскольку теперь это выводится через оверлей.
-//var array<Inventory> recentItems;
 
-var bool bTalking;
-var bool bIncoming;
 var bool bDrawCrossHair, bDrawHealth, bDrawFrobBox;
 var float textYStep, textYStart, ttySize, ttyCounter, ttyRate, ttyCRate, resistance;
 
 var float recentItemTime, recentPainTime;
-// <<
 
-// Указатель на Север
-// Задается в DeusExLevelInfo (TrueNorth)
+// Указатель на Север (Задается в DeusExLevelInfo (TrueNorth))
 var Int mapNorth;
 
 // Для диалоговой системы.
@@ -252,7 +240,7 @@ static function bool IsTargetInFrontOfPlayer(Canvas C, Actor Target, out Vector 
 
 // SpyDrone: ошибок не замечено, работает точно как в оригинале.
 // Перемещение дрона работает из DeusExPlayerController.
-function DrawSpyDroneAugmentation(Canvas c)
+/*function DrawSpyDroneAugmentation(Canvas c)
 {
     local String str;
     local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
@@ -312,14 +300,14 @@ function DrawSpyDroneAugmentation(Canvas c)
         }
         else
             Playerowner.ClientMessage(msgCantLaunch);
-}
+} */
 
 
 // ----------------------------------------------------------------------
 // DrawTargetAugmentation()
 // ----------------------------------------------------------------------
 // Есть проблемы с изображением объекта, как обойти пока не знаю.
-function DrawTargetAugmentation(Canvas C)
+/*function DrawTargetAugmentation(Canvas C)
 {
     local String str, strG;
     local Actor target;
@@ -570,7 +558,8 @@ function DrawTargetAugmentation(Canvas C)
 
                 // print the range to target
                 mult = VSize(target.Location - Playerowner.pawn.Location);
-                /*str = str $ CR() $*/ strG = msgRange @ Int(mult/16) @ msgRangeUnits;
+                //str = str $ CR() $ 
+                strG = msgRange @ Int(mult/16) @ msgRangeUnits;
 
                 c.textsize(str, w,h);
                 x = boxTLX + marginX;
@@ -707,12 +696,12 @@ function DrawTargetAugmentation(Canvas C)
     // set the crosshair colors
 //  DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshairColor(crossColor);
 }
-
+*/
 //
 // AugDefense. Обожаю этот ауг! Особенно веселит когда на максимальном уровне
 // NPC пытается бросить гранату :D
 // Работает как в оригинале, проблем не замечено.
-function DrawDefenseAugmentation(Canvas C)
+/*function DrawDefenseAugmentation(Canvas C)
 {
     local String str, strA;
     local float boxCX, boxCY;
@@ -772,7 +761,7 @@ function DrawDefenseAugmentation(Canvas C)
             c.DrawColor = colHeaderText;
         }
     }
-}
+} */
 
 //
 // AugVision
@@ -787,7 +776,7 @@ native(1285) final function DrawPattern(float destX, float destY,
                                         float orgX, float orgY,
                                         texture tx);*/
 // Требуется коррекция...
-function DrawVisionAugmentation(Canvas C)
+/*function DrawVisionAugmentation(Canvas C)
 {
     local Vector loc;
     local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
@@ -897,7 +886,7 @@ function DrawVisionAugmentation(Canvas C)
     C.SetDrawColor(255,255,255);
     c.SetPos(x,y);
     C.DrawText(msgLightAmpActive);
-}
+}*/
 
 
 
@@ -1384,12 +1373,12 @@ function DeusExPlayer findPlayer()
 // Стоит использовать переменные из оригинала.
 event PostRender(canvas u)
 {
-    u.font = font'dxFonts.MSS_10';
+/*    u.font = font'dxFonts.MSS_10';
     u.SetDrawColor(128,255,128,255); // RGB Alpha
     u.SetPos(20,200);
 
     if (PawnOwner == None)
-        u.DrawText("I'm here");
+        u.DrawText("I'm here");*/
 
     super.postrender(u);
     if ((cubemapmode) || (playerOwner.pawn == none))
@@ -1423,33 +1412,18 @@ event PostRender(canvas u)
       return;
     }
 
-// Улучшает видимость с AugVision.
-
-        if (bVisionActive)
-        {
-            DrawVisionAugmentation(u);
-        }
-        if (bDefenseActive)
-        {
-            DrawDefenseAugmentation(u);
-        }
-        if (bSpyDroneActive)
-        {
-            DrawSpyDroneAugmentation(u);
-        }
-
       RenderPoisonEffectGray(u);
       RenderPoisonEffectGreen(u);
       RenderFrobTarget(u);
       RenderSmallHUDHitDisplay(u);
-      RenderCrosshair(u);
+//      RenderCrosshair(u);
       RenderHitMarker(u);
       DisplayMessages(u);
       RenderCompass(u); // Компас
       RenderToolBelt(u); // Быстрый доступ
       RenderAugsBelt(u); // Задействованные аугментации
       RenderAmmoDisplay(u);
-      DrawTargetAugmentation(u);
+//      DrawTargetAugmentation(u);
       RenderChargedPickups(u);
 
 // DrawActor( Actor A, bool WireFrame, optional bool ClearZ, optional float DisplayFOV ) 
@@ -1458,52 +1432,11 @@ event PostRender(canvas u)
 
 function DrawHud(Canvas C)
 {
-    if (playerowner.pawn != none)
+    if (PawnOwner != none)
     {
         UpdateHud();
     }
     super.drawhud(C);
-}
-
-//
-// Сообщение о захвате цели просто не умещается в
-// отведенную рамку. Поэтому я нарисую его здесь.
-//
-function RenderCrosshair(Canvas C)
-{
-   local float X,Y;
-   local string MSTarget;
-
-   if (bDrawInfo)
-   return;
-
-   X = C.ClipX * 0.5 + CrosshairCorrectionX;
-   Y = C.ClipY * 0.5 + CrosshairCorrectionY;
-
-    if (DeusExPlayer(PlayerOwner.pawn).bCrosshairVisible)
-    {
-      C.SetPos(X,Y);
-      c.DrawColor = crossColor;
-      C.DrawIcon(CrosshairTex, 1);
-    }
-
-    if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon) != none)
-    {
-      if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).bCanTrack == true)
-      {
-         MStarget = DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).TargetMessage;
-         c.SetPos(X + 35,Y + 35); // Чтобы не перекрывало прицел
-         c.font=font'DxFonts.EUX_8'; //font'DxFonts.TB_9';
-
-            if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).LockMode == LOCK_Locked)
-                c.SetDrawColor(255,0,0); // красный
-            else if (DeusExWeapon(DeusExPlayer(playerowner.pawn).weapon).LockMode == LOCK_Acquire)
-                c.SetDrawColor(255,255,0); // желтый
-            else
-                c.SetDrawColor(0,255,0); // зеленый
-         c.DrawText(MStarget);
-      }
-  }
 }
 
 function RenderHitMarker(canvas c)
@@ -1806,11 +1739,11 @@ function RenderFrobTarget(Canvas C)
                 C.DrawRect(texture'Solid', fcorner,1);
                 C.setpos(boxBRX+i-offset, boxBRY+i-fcorner-offset);
                 C.DrawRect(texture'Solid', 1, fcorner);
-              C.DrawColor = FrobBoxColor;//SetDrawColor(255,255,255,255);
+                C.DrawColor = FrobBoxColor;//SetDrawColor(255,255,255,255);
 
             }
-     FrobStr=string(FrobName);
-         C.TextSize(FrobStr, tH,tW);
+       FrobStr = string(FrobName);
+       C.TextSize(FrobStr, tH,tW);
 
        C.SetDrawColor(250,250,250,200);// выставляем цвет фона для названия
        C.SetPos(X + ItemNameFrameOffsetH,Y + ItemNameFrameOffsetV); // Коррекция смещения фона
@@ -1826,10 +1759,10 @@ function RenderFrobTarget(Canvas C)
                             {       // Можно взломать, отобразить сколько мультиинструментов нужно
                                  Frobstr=Hackabledevices(frobName).itemName; // присвоить строку
                                  C.TextSize(msgHackStr $ msgInf $ msgHacked, tH,tW);    // Соединяем строки, полученный размер строки передан в tH, tW
-                               C.SetDrawColor(250,250,250,200);
+                                 C.SetDrawColor(250,250,250,200);
                                  C.setpos(boxTLX+ItemNameFrameOffsetH, boxTLY+ItemNameFrameOffsetV);    // Верхний левый угол
                           //C.Style = ERenderStyle.STY_Additive; // STY_Modulated;  // C.Style = ERenderStyle.STY_Normal;
-                               C.DrawTileStretched(INBox, tH, tW + 22);
+                                 C.DrawTileStretched(INBox, tH, tW + 22);
                                  C.Style = ERenderStyle.STY_Normal;
                                  C.SetDrawColor(255,255,255,255);   // подготовка к рисованию текста
                                  C.setpos(boxTLX+ItemNameOffsetH, boxTLY+ItemNameOffsetV);  // Верхний левый угол
@@ -1940,31 +1873,31 @@ function RenderFrobTarget(Canvas C)
              C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
            C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
          C.DrawText(DeusExCarcass(frobName).itemName);
-                }
+         }
             else
          If (FrobName.IsA('DeusExWeapon')) // Версия предметов инвентаря на карте.
-          {
+         {
              Frobstr=DeusExWeapon(frobName).itemName;
              C.TextSize(FrobStr, tH,tW);
-           C.SetDrawColor(250,250,250,200);
+             C.SetDrawColor(250,250,250,200);
              C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
-           C.DrawTileStretched(INBox, tH + 24, tW+ 2);
+             C.DrawTileStretched(INBox, tH + 24, tW+ 2);
              C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
              C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
-         C.DrawText(DeusExWeapon(frobName).itemName);
-                }
+             C.DrawText(DeusExWeapon(frobName).itemName);
+         }
             else
-            If (FrobName.IsA('DeusExProjectile')) // TODO: сбегать наверх и проверить
+        If (FrobName.IsA('DeusExProjectile')) // TODO: сбегать наверх и проверить
         {
              Frobstr=DeusExProjectile(frobName).itemName;
              C.TextSize(FrobStr, tH,tW);
-           C.SetDrawColor(250,250,250,200);
+             C.SetDrawColor(250,250,250,200);
              C.SetPos(boxTLX + ItemNameFrameOffsetH,boxTLY + ItemNameFrameOffsetV);
-           C.DrawTileStretched(INBox, tH + 24, tW+ 2);
+             C.DrawTileStretched(INBox, tH + 24, tW+ 2);
              C.DrawColor = FrobBoxText;//C.SetDrawColor(255,255,255,255);
-           C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
-         C.DrawText(DeusExProjectile(frobName).itemName);
-            }
+             C.SetPos(boxTLX + ItemNameOffsetH,boxTLY + ItemNameOffsetV);
+             C.DrawText(DeusExProjectile(frobName).itemName);
+        }
             else
         If (FrobName.IsA('DeusExMover'))
         {
@@ -2088,20 +2021,20 @@ function RenderPoisonEffectGray(Canvas C)
 function RenderPoisonEffectGreen(Canvas C)
 {
     local texture Green;
-  local float X,Y;
+    local float X,Y;
 
-   X=C.ClipX * 0.0;
-   Y=C.ClipY * 0.0;
+     X = C.ClipX * 0.0;
+     Y = C.ClipY * 0.0;
 
     if (bGreenPoison)
     {
         C.SetPos(X,Y);
         C.SetDrawColor(255,255,255,255);
-        Green=wetTexture'Effects.UserInterface.DrunkBoy';
-    C.Style = ERenderStyle.STY_Modulated;
+        Green = wetTexture'Effects.UserInterface.DrunkBoy';
+        C.Style = ERenderStyle.STY_Modulated;
         C.DrawTileScaled(Green, C.ClipX, C.ClipY);
-            if (bDoubledPoisonEffect)
-        C.DrawTileScaled(Green, C.ClipX, C.ClipY);
+        if (bDoubledPoisonEffect)
+            C.DrawTileScaled(Green, C.ClipX, C.ClipY);
     }
 }
 
@@ -2572,8 +2505,6 @@ defaultproperties
     toolbeltSelPos(8)=(positionX=180,positionY=62)
     toolbeltSelPos(9)=(positionX=129,positionY=62)
     toolbeltSelPos(0)=(positionX=78,positionY=62) // KeyRing
-
-    bUseAltVBarTexture=false
 
     o2barPosX=62
     o2BarPosY=11
