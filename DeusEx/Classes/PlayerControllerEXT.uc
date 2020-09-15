@@ -731,27 +731,27 @@ ignores SeePlayer, HearNoise, Bump;
                   Human(pawn).SetWalking(true);
                 }*/
 
-                // if the spy drone augmentation is active
-                    if (DeusExHud(myHUD).bSpyDroneActive)
+                    // if the spy drone augmentation is active
+                    if (Human(pawn).bSpyDroneActive)
                     {
-                        aDrone = DeusExHud(myHUD).aDrone;
+                        aDrone = Human(pawn).aDrone;
                             if (aDrone != None)
                             {
                                 // put away whatever is in our hand
-                            if (Human(pawn).inHand != None)
-                                Human(pawn).PutInHand(None);
+                                if (Human(pawn).inHand != None)
+                                    Human(pawn).PutInHand(None);
 
                                 // make the drone's rotation match the player's view
-                                aDrone.SetRotation(pawn.GetViewRotation());
+                                aDrone.SetRotation(GetViewRotation());
 
                                 // move the drone
-                                loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> pawn.GetViewRotation());
+                                loc = Normal((aUp * vect(0,0,1) + aForward * vect(1,0,0) + aStrafe * vect(0,1,0)) >> GetViewRotation());
 
                                 // if the wanted velocity is zero, apply drag so we slow down gradually
                                 if (VSize(loc) == 0)
                                     aDrone.Velocity *= 0.9;
                                 else
-                                aDrone.Velocity += DeltaTime * aDrone.MaxSpeed * loc;
+                                    aDrone.Velocity += DeltaTime * aDrone.MaxSpeed * loc;
 
                                 // add slight bobbing
                                 aDrone.Velocity += DeltaTime * Sin(Level.TimeSeconds * 2.0) * vect(0,0,1);

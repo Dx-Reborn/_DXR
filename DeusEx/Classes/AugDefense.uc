@@ -38,9 +38,9 @@ state Active
         // if we have a valid projectile, send it to the aug display window
         if (minproj != None)
         {
-            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = True;
-            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseLevel = CurrentLevel;
-            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = minproj;
+            Player.bDefenseActive = True;
+            Player.defenseLevel = CurrentLevel;
+            Player.defenseTarget = minproj;
 
             // play a warning sound
             Player.PlaySound(sound'GEPGunLock', SLOT_None,,,, 2.0);
@@ -53,8 +53,8 @@ state Active
         }
         else
         {
-            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
-            DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
+            Player.bDefenseActive = False;
+            Player.defenseTarget = None;
         }
     }
 
@@ -67,8 +67,8 @@ function Deactivate()
     Super.Deactivate();
 
     SetTimer(0.1, False);
-    DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bDefenseActive = False;
-    DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).defenseTarget = None;
+    Player.bDefenseActive = False;
+    Player.defenseTarget = None;
 }
 
 

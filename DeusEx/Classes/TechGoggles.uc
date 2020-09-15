@@ -3,61 +3,31 @@
 //=============================================================================
 class TechGoggles extends ChargedPickup;
 
-// ----------------------------------------------------------------------
-// ChargedPickupBegin()
-// ----------------------------------------------------------------------
+
 function ChargedPickupBegin(DeusExPlayer Player)
 {
-    local DeusExHUD dxh;
-
-    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
     Super.ChargedPickupBegin(Player);
 
-    dxh.activeCount++;
-//  DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
+    Player.activeCount++;
     UpdateHUDDisplay(Player);
 }
 
-// ----------------------------------------------------------------------
-// UpdateHUDDisplay()
-// ----------------------------------------------------------------------
-
 function UpdateHUDDisplay(DeusExPlayer Player)
 {
-    local DeusExHUD dxh;
+   if ((Player.activeCount == 0) && (IsActive()))
+        Player.ActiveCount++;
 
-    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
-
-    if ((dxh.activeCount == 0) && (IsActive()))
-        dxh.ActiveCount++;
-//  if ((DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0) && (IsActive()))
-//      DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount++;
-
-    dxh.bVisionActive = true;
-    dxh.visionLevel = 0;
-    dxh.visionLevelValue = 0;
-    
-//  DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = True;
-//  DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 0;
-//  DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = 0;
+    Player.bVisionActive = true;
+    Player.visionLevel = 0;
+    Player.visionLevelValue = 0;
 }
-
-// ----------------------------------------------------------------------
-// ChargedPickupEnd()
-// ----------------------------------------------------------------------
 
 function ChargedPickupEnd(DeusExPlayer Player)
 {
-    local DeusExHUD dxh;
-
-    dxh = DeusExHUD(DeusExPlayerController(Player.Controller).myHUD);
     Super.ChargedPickupEnd(Player);
 
-    if (--dxh.activeCount == 0)
-        dxh.bVisionActive = false;
-
-//  if (--DeusExRootWindow(Player.rootWindow).hud.augDisplay.activeCount == 0)
-//      DeusExRootWindow(Player.rootWindow).hud.augDisplay.bVisionActive = False;
+    if (--Player.activeCount == 0)
+        Player.bVisionActive = false;
 }
 
 // ----------------------------------------------------------------------

@@ -9,19 +9,19 @@ state Active
 {
 Begin:
 
-	if (++DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).activeCount == 1)
-				DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bVisionActive = True;
-	
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).visionLevel = CurrentLevel;
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).visionLevelValue = LevelValues[CurrentLevel];
+    if (++Player.activeCount == 1)
+        Player.bVisionActive = True;
+    
+    Player.visionLevel = CurrentLevel;
+    Player.visionLevelValue = LevelValues[CurrentLevel];
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
-	if (--DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).activeCount == 0)
-				DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bVisionActive = False;
+    if (--Player.activeCount == 0)
+        Player.bVisionActive = False;
 }
 
 

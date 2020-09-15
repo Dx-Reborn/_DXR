@@ -26,6 +26,7 @@ event Tick(float deltaTime)
 
 defaultproperties
 {
+     Skins[0]=Shader'DeusExItemsEx.ExSkins.FleshFragment_SH' // DXR: Darker and has some shininess
      elasticity=0.400000
      bVisionImportant=True
      Fragments(0)=Mesh'DeusExItems.FleshFragment1'

@@ -64,15 +64,6 @@ var() sound ActivateSound;
 var() sound DeactivateSound;
 var() sound LoopSound;
 
-//
-event PostLoadSavedGame()
-{
-    if (bIsActive)
-    {
-        Deactivate();
-        Activate();
-    }
-}
 
 function RestoreAugLevel()
 {

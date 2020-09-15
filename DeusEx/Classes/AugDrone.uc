@@ -10,28 +10,28 @@ var localized string ReconstructA, ReconstructB;
 state Active
 {
 Begin:
-	if (Level.TimeSeconds - lastDroneTime < reconstructTime)
-	{
-		Player.ClientMessage(ReconstructA @ Int(reconstructTime - (Level.TimeSeconds - lastDroneTime)) @ ReconstructB);
-		Deactivate();
-	}
-	else
-	{
-		DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bSpyDroneActive = True;
-		DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).spyDroneLevel = CurrentLevel;
-		DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).spyDroneLevelValue = LevelValues[CurrentLevel];
-	}
+    if (Level.TimeSeconds - lastDroneTime < reconstructTime)
+    {
+        Player.ClientMessage(ReconstructA @ Int(reconstructTime - (Level.TimeSeconds - lastDroneTime)) @ ReconstructB);
+        Deactivate();
+    }
+    else
+    {
+        Player.bSpyDroneActive = True;
+        Player.spyDroneLevel = CurrentLevel;
+        Player.spyDroneLevelValue = LevelValues[CurrentLevel];
+    }
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 
-	// record the time if we were just active
-	if (DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bSpyDroneActive)
-		lastDroneTime = Level.TimeSeconds;
+    // record the time if we were just active
+    if (Player.bSpyDroneActive)
+        lastDroneTime = Level.TimeSeconds;
 
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bSpyDroneActive = False;
+    Player.bSpyDroneActive = False;
 }
 
 defaultproperties

@@ -1,10 +1,11 @@
 /*-----------------------------------------------------------------------------
   DeusExPlayer: a Pawn, controlled by DeusExPlayerController.
 
-  Uses code from the following mods:
+  Uses code from the following Deus Ex mods:
   GMDX
   Deus Ex V2
   Vanilla Matters
+  Revision
 -----------------------------------------------------------------------------*/
 
 #exec obj load file=DeusExStaticMeshes
@@ -14,8 +15,6 @@
 
 class DeusExPlayer extends PlayerPawn;
 
-
-const maxAmountOfFire = 1;
 var const string DefaultStartMap;
 
 var() travel int itemFovCorrection;
@@ -99,7 +98,7 @@ var() array<string> logMessages; // Сообщения (ClientMessage)
 var int fireDamage;
 
 // Inventory System Vars
-var() travel byte               invSlots[30];       // 5x6 grid of inventory slots
+var() travel byte               invSlots[MAX_INVENTORY_CELLS];       // 5x6 grid of inventory slots
 var editconst int   maxInvRows;         // Maximum number of inventory rows
 var editconst int   maxInvCols;         // Maximum number of inventory columns
 
@@ -150,12 +149,6 @@ var transient ShadowProjector PlayerShadow;
 
 var travel bool bStartNewGameAfterIntro;
 
-// Put spy drone here instead of HUD
-var bool bSpyDroneActive;
-var int spyDroneLevel;
-var float spyDroneLevelValue;
-var SpyDrone aDrone;
-
 // Conversation Invocation Methods
 enum EInvokeMethod
 {
@@ -189,6 +182,33 @@ var transient PlayerInterfacePanel winInv;
 
 var DeusExPlayerController dxpc;
 
+// Для аугментаций (переместить из DeusExBasicHUD)
+var bool bDefenseActive;
+var int defenseLevel;
+var DeusExProjectile defenseTarget;
+
+var bool bSpyDroneActive;
+var int spyDroneLevel;
+var float spyDroneLevelValue;
+var SpyDrone aDrone;
+
+var bool bTargetActive;
+var int targetLevel;
+var Actor lastTarget;
+var float lastTargetTime;
+
+var bool bVisionActive;
+var int visionLevel;
+var float visionLevelValue;
+var int activeCount;
+
+var float marginX, margin;
+var float corner, barLength;
+
+var color colAmmoLowText, colAmmoText, colHeaderText;
+var Color crossColor; // цвет перекрестия
+/*-------------------------------------------------*/
+
 /* В оригинале используется при начале новой игры. Предполагаю
    что просто очищает каталог Current. Готовая функция уже есть,
    нужно просто выставить флаг, обозначающий что это еще не 
@@ -196,8 +216,8 @@ var DeusExPlayerController dxpc;
    выполнит все что нужно :) */
 final function DeleteSaveGameFiles(optional String saveDirectory)
 {
-  gl = class'DeusExGlobals'.static.GetGlobals();
-  gl.CurrentSaveDirectoryCleared = false;
+   gl = class'DeusExGlobals'.static.GetGlobals();
+   gl.CurrentSaveDirectoryCleared = false;
 }
 
 /* -------------------------------------------------------------------------------------------
@@ -205,7 +225,7 @@ final function DeleteSaveGameFiles(optional String saveDirectory)
  -------------------------------------------------------------------------------------------*/
 function SaveTravelData()
 {
-  class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
+   class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
 }
 /* -------------------------------------------------------------------------------------------
    Восстановить флаги из массива байт.
@@ -260,7 +280,6 @@ function bool AddInventory(inventory item)
     // unless it's ammo
     //
     // Don't add Ammo and don't add Images!
-
     if ((item != None) && !item.IsA('Ammunition') && (!item.IsA('DataVaultImage')) && (!item.IsA('Credits')))
     {
         root = DeusExHUD(Level.GetLocalPlayerController().myHUD);
@@ -279,10 +298,10 @@ function bool AddInventory(inventory item)
 
         if (retval)
         {
-            if (root != None)
-         {
-                root.AddInventory(item);
-         }
+           if (root != None)
+           {
+               root.AddInventory(item);
+           }
         }
     }
 
@@ -912,29 +931,25 @@ exec function ParseLeftClick()
 
     local SpyDrone myDrone;
     local AugDrone anAug;
-//  local bool bBinocsActive;
 
     if (DeusExPlayerController(controller).RestrictInput())
         return;
 
-//  if (frobTarget != none)
-//  {
-        if ((frobTarget != none) && (frobTarget.IsA('DeusExCarcass')) && (inHand == none))
-        {
-        bJustPickupCorpse = true;
-        DeusExCarcass(frobTarget).frob(self, none);
-      }
-//  }
+    if ((frobTarget != none) && (frobTarget.IsA('DeusExCarcass')) && (inHand == none))
+    {
+       bJustPickupCorpse = true;
+       DeusExCarcass(frobTarget).frob(self, none);
+    }
 
     // if the spy drone augmentation is active, blow it up
-    if (DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bSpyDroneActive)
+    if (bSpyDroneActive)
     {
-        myDrone = DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).aDrone;
+        myDrone = aDrone;
         if (myDrone != None)
         {
             myDrone.Explode(myDrone.Location, vect(0,0,1));
             foreach AllActors(class'AugDrone', anAug)
-                anAug.Deactivate();
+                    anAug.Deactivate();
 
             return;
         }
@@ -958,8 +973,8 @@ exec function ParseLeftClick()
                     DoFrob(Self, inHand);
         }
     }
- else if ((VM_lastInHand != None) && (bLeftClickForLastItem))
-          PutInHand(VM_lastInHand);
+    else if ((VM_lastInHand != None) && (bLeftClickForLastItem))
+             PutInHand(VM_lastInHand);
 }
 
 
@@ -969,6 +984,10 @@ exec function ParseLeftClick()
 
 exec function ParseRightClick()
 {
+    local Inventory oldInHand;
+    local Decoration oldCarriedDecoration;
+    local Vector loc;
+
     //
     // ParseRightClick deals with things in the WORLD
     //
@@ -978,11 +997,6 @@ exec function ParseRightClick()
     // - Grab highlighted Decoration
     // - Put away (or drop if it's a deco) inHand
     //
-
-    local Inventory oldInHand;
-//  local Inventory frobInv;
-    local Decoration oldCarriedDecoration;
-    local Vector loc;
 
     if (DeusExPlayerController(controller).RestrictInput())
         return;
@@ -1532,8 +1546,8 @@ function Landed(vector HitNormal)
     {
         MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
         if (Velocity.Z < -700) // && (ReducedDamageType != 'All'))
-            if ( Role == ROLE_Authority )
-      {
+            if (Role == ROLE_Authority)
+            {
                 // check our jump augmentation and reduce falling damage if we have it
                 // jump augmentation doesn't exist anymore - use Speed instaed
                 // reduce an absolute amount of damage instead of a relative amount
@@ -1555,7 +1569,7 @@ function Landed(vector HitNormal)
                 dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
                 legLocation = Location + vect(0,0,1);           // damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), class'fell');
-      }
+            }
     }
     else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
         MakeNoise(0.1 * Level.Game.GameDifficulty);
@@ -2320,7 +2334,7 @@ function CatchFire()
     bOnFire = True;
     burnTimer = 0;
 
-    for (i=0; i<maxAmountOfFire; i++)
+    for (i=0; i<MAX_FIRE_ACTORS; i++)
     {
         loc.X = 0.5*CollisionRadius * (1.0-2.0*FRand());
         loc.Y = 0.5*CollisionRadius * (1.0-2.0*FRand());
@@ -5448,11 +5462,947 @@ function RemoveItemDuringConversation(Inventory item)
             conPlay.SetInHand(None);
     }
 }
+
+function DrawHUD(Canvas u)
+{
+    if (bRadarActive)
+    {
+        DrawRadarCircle(u); // Фон радара
+        DrawRadar(u); // Радар
+    }
+    if (bVisionActive)
+    {
+        DrawVisionAugmentation(u);
+    }
+    if (bDefenseActive)
+    {
+        DrawDefenseAugmentation(u);
+    }
+    if (bSpyDroneActive)
+    {
+        DrawSpyDroneAugmentation(u);
+    }
+    DrawTargetAugmentation(u);
+
+
+    RenderCrosshair(u);
+}
+
+/*
+   Radar background
+*/
+function DrawRadarCircle(canvas u)
+{
+    local float RadarWidth;
+
+    RadarScale = default.RadarScale * class'DeusExHUD'.default.HUDScale;
+    RadarWidth = 0.5 * RadarScale * u.ClipX;
+
+    u.Style = ERenderStyle.STY_Alpha;
+    u.DrawColor = class'HUD'.default.GrayColor;
+
+    u.SetPos(RadarPosX * u.ClipX - RadarWidth, RadarPosY * u.ClipY + RadarWidth);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 512, 512, -512);
+
+    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY + RadarWidth);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 512, -512, -512);
+
+    u.SetPos(RadarPosX * u.ClipX - RadarWidth,RadarPosY * u.ClipY);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 0, 0, 512, 512);
+
+    u.SetPos(RadarPosX * u.ClipX,RadarPosY * u.ClipY);
+    u.DrawTile(RadarBackground, RadarWidth, RadarWidth, 512, 0, -512, 512);
+}
+
+/*
+   ToDo: If pawn(s) is in attacking or seeking state, make radar dot(s) pulsing.
+*/
+function DrawRadar(canvas u)
+{
+    local ScriptedPawn P;
+    local float Dist, MaxDist, RadarWidth,Angle,DotSize,OffsetY,OffsetScale;
+    local rotator Dir;
+    local vector Start;
+    local int DistB;
+    local float AIvis;
     
+    RadarWidth = 0.5 * RadarScale * u.ClipX;
+    DotSize = 8 * u.ClipX * class'DeusExHUD'.default.HUDScale/1600;
+    Start = Location;
+    MaxDist = RADAR_DIST;
+    u.Style = ERenderStyle.STY_Masked;
+    OffsetY = RadarPosY + RadarWidth/u.ClipY;
+    MinEnemyDist = RADAR_DIST;
+
+    foreach DynamicActors(class'ScriptedPawn',P)
+        if ((P.Health > 0) && (P.bInWorld == true) && (P.bAmbientCreature == false))
+        {
+            Dist = VSize(Start - P.Location);
+
+            AIvis = class'DeusExPawn'.static.AiVisibility(P, false);
+            if (Dist < RADAR_DIST)
+            {
+                if (P != None)
+                {
+                  if (P.GetAllianceType(Alliance) == ALLIANCE_Hostile)
+                  {
+                    u.DrawColor.R = 200;
+                    u.DrawColor.G = 0;
+                    u.DrawColor.B = 0;
+                  }
+                  else
+                  {
+                    u.DrawColor.R = 0;
+                    u.DrawColor.G = 200;
+                    u.DrawColor.B = 0;
+                  }
+                }
+                else
+                {
+                    u.DrawColor.R = 0;
+                    u.DrawColor.G = 0;
+                    u.DrawColor.B = 0;
+                }
+                Dir = rotator(P.Location - Start);
+                OffsetScale = RadarScale * Dist * 0.000167;
+
+                Angle = ((Dir.Yaw - Rotation.Yaw) & 65535) * 6.2832/65536;
+
+                u.SetPos(RadarPosX * u.ClipX + OffsetScale * u.ClipX * sin(Angle) - 0.5 * DotSize, 
+                           OffsetY * u.ClipY - OffsetScale * u.ClipX * cos(Angle) - 0.5 * DotSize);
+
+                DistB = abs(Location.Z - P.Location.Z) - abs(default.CollisionHeight - CollisionHeight);
+                if (abs(DistB) >= 0 && abs(DistB) < 60) // Same
+                    u.DrawTile(Material'CheckboxOff',DotSize,DotSize,0,0,8,8);
+                else 
+                    if (DistB > 61) // Below or above
+                        u.DrawTile(Material'RadarSquare',DotSize,DotSize,0,0,8,8);
+            }
+        }
+}
+
+function DrawVisionAugmentation(Canvas C)
+{
+    local Vector loc;
+    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float dist, x, y, w, h;
+    local Actor A;
+    local Material oldSkins[9];
+
+    // Улучшает видимость
+    C.ColorModulate.X = 8;
+    C.ColorModulate.Y = 8;
+    C.ColorModulate.Z = 8;
+    C.ColorModulate.W = 8;
+
+    boxW = C.SizeX / 2;
+    boxH = C.SizeY / 2;
+    boxCX = C.SizeX / 2;
+    boxCY = C.SizeY / 2;
+    boxTLX = boxCX - boxW/2;
+    boxTLY = boxCY - boxH/2;
+    boxBRX = boxCX + boxW/2;
+    boxBRY = boxCY + boxH/2;
+
+    // at level one and higher, enhance heat sources (FLIR)
+    // use DrawActor to enhance NPC visibility
+    if (visionLevel >= 1)
+    {
+        // shift the entire screen to dark red (except for the middle box)
+        C.Style = ERenderStyle.STY_Modulated;
+
+        c.SetPos(0,0);
+        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX,boxTLY);
+
+        c.SetPos(0,boxBRY);
+        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX,C.SizeY-boxBRY);
+
+        c.SetPos(0,boxTLY);
+        C.DrawTileStretched(Texture'ConWindowBackground',boxTLX,boxH);
+
+        c.SetPos(boxBRX,boxTLY);
+        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX-boxBRX,boxH);
+        //--//
+        c.SetPos(0,0);
+        C.DrawPattern(Texture'RedVisionVLined',C.SizeX,boxTLY,1);
+
+        c.SetPos(0,boxBRY);
+        C.DrawPattern(Texture'RedVisionVLined',C.SizeX,C.SizeY-boxBRY,1);
+
+        c.SetPos(0,boxTLY);
+        C.DrawPattern(Texture'RedVisionVLined',boxTLX,boxH,1);
+
+        c.SetPos(boxBRX,boxTLY);
+        C.DrawPattern(Texture'RedVisionVLined',C.SizeX-boxBRX,boxH,1); // SolidRed
+
+        // adjust for the player's eye height
+        loc = Location;
+        loc.Z += BaseEyeHeight;
+
+        // look for visible actors first
+        foreach VisibleActors(class'Actor', A,, loc)
+            if (IsHeatSource(A))
+            {
+                SetSkins(A, oldSkins);
+                A.bUnlit = true;
+                c.DrawActor(A, false, true);
+                ResetSkins(A, oldSkins);
+            }
+
+        // now look through walls
+        if (visionLevel >= 2)
+        {
+            dist = visionLevelValue;
+            foreach RadiusActors(class'Actor', A, dist, loc)
+                if (IsHeatSource(A))
+                {
+                    SetSkins(A, oldSkins);
+                    A.bUnlit = true;
+                    c.DrawActor(A, false, true);
+                    ResetSkins(A, oldSkins);
+                }
+        }
+
+            // draw text label
+            C.Style = ERenderStyle.STY_Normal;
+            C.TextSize(class'DeusExHUD'.default.msgIRAmpActive, w, h);
+            x = boxTLX + marginX;
+            y = boxTLY - marginX - h;
+            C.SetDrawColor(255,255,255);
+            c.SetPos(x,y);
+            C.DrawText(class'DeusExHUD'.default.msgIRAmpActive);
+    }
+
+    // shift the middle of the screen green (NV) and increase the contrast
+    C.Style = ERenderStyle.STY_Modulated;
+    c.SetPos(boxTLX, boxTLY);
+    C.SetDrawColor(32,255,16);
+    C.DrawPattern(Texture'GreenVisionLined',boxW,boxH,1); // Так от него куда больше пользы!
+    c.SetPos(boxTLX, boxTLY);
+    C.DrawPattern(Texture'GreenVisionLined',boxW,boxH,1);
+    C.Style = ERenderStyle.STY_Normal;
+
+    DrawDropShadowBox(c, boxTLX, boxTLY, boxW, boxH);
+
+    // draw text label
+    C.TextSize(class'DeusExHUD'.default.msgLightAmpActive, w, h);
+    x = boxTLX + marginX;
+    y = boxTLY + marginX;
+    C.SetDrawColor(255,255,255);
+    c.SetPos(x,y);
+    C.DrawText(class'DeusExHUD'.default.msgLightAmpActive);
+}
+
+function SetSkins(Actor actor, out Material oldSkins[9])
+{
+    actor.OverlayMaterial = material'GuiContent.back.AUGVIS_Shader';
+}
+
+function ResetSkins(Actor actor, Material oldSkins[9])
+{
+     actor.Overlaymaterial = none;
+}
+
+function DrawDropShadowBox(Canvas C, float x, float y, float w, float h)
+{
+    local Color oldColor;
+
+    oldColor = C.DrawColor; // Запомнить цвет
+    C.SetDrawColor(0,0,0);
+    C.Style = ERenderStyle.Sty_Normal; //STY_Modulated;
+
+    C.SetPos(x, y+h+1);
+    C.DrawTileStretched(texture'ShadowBox',w+2,1);
+
+    C.SetPos(x+w+1, y);
+    C.DrawTileStretched(texture'ShadowBox',1,h+2);
+
+    C.SetDrawColor(128,128,128);
+
+    C.SetPos(x-1,y-1);
+    C.DrawTileStretched(texture'ShadowBox', w+2, h+2);
+
+    C.SetDrawColor(oldColor.R,oldColor.G,oldColor.B, oldColor.A);
+}
+
+function Actor TraceLOS(float checkDist, out vector HitLocation)
+{
+    local Actor target;
+    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+
+    target = None;
+
+    // figure out how far ahead we should trace
+    StartTrace = Location;
+    EndTrace = Location + (Vector(GetViewRotation()) * checkDist);
+
+    // adjust for the eye height
+    StartTrace.Z += BaseEyeHeight;
+    EndTrace.Z += BaseEyeHeight;
+
+    // find the object that we are looking at
+    // make sure we don't select the object that we're carrying
+    foreach TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+    {
+       if (target.bWorldGeometry) //DXR: Not StaticMeshes.
+       {
+           target = none;
+           break;
+       }
+        //G-Flex: allow remote viewing of corpses too
+        //G-Flex: don't allow viewing of trash
+        //Bjorn: View pickups that are projectile targets.
+        if (target.IsA('Pawn') || target.IsA('DeusExCarcass') || (target.IsA('DeusExDecoration') && !target.IsA('Trash')) || 
+            target.IsA('ThrownProjectile') || (target.IsA('DeusExMover') || (target.IsA('Inventory') && Inventory(target).bProjTarget)))
+        {                                                              
+            //== Y|y: don't find hidden objects
+            if (target.bHidden)
+                target = None;
+            else if (target != CarriedDecoration)
+            {
+                //G-Flex: disallow viewing of invincible, no-highlight decorations like trees
+                if (target.IsA('DeusExDecoration'))
+                {
+                    if (!DeusExDecoration(target).bInvincible || DeusExDecoration(target).bHighlight)
+                        break;
+                }
+                else
+                    break;
+            }
+        }
+    }
+    HitLocation = HitLoc;
+    return target;
+}
+
+
+function Interpolate(Canvas C, float fromX, float fromY, float toX, float toY, int power)
+{
+    local float xPos, yPos;
+    local float deltaX, deltaY;
+    local float maxDist;
+    local int   points;
+    local int   i;
+
+    maxDist = 16;
+
+    points = 1;
+    deltaX = (toX-fromX);
+    deltaY = (toY-fromY);
+    while (power >= 0)
+    {
+        if ((deltaX >= maxDist) || (deltaX <= -maxDist) || (deltaY >= maxDist) || (deltaY <= -maxDist))
+        {
+            deltaX *= 0.5;
+            deltaY *= 0.5;
+            points *= 2;
+            power--;
+        }
+        else
+            break;
+    }
+
+    xPos = fromX + ((Level.TimeSeconds % 0.5) * deltaX * 2);
+    yPos = fromY + ((Level.TimeSeconds % 0.5) * deltaY * 2);
+
+    for (i=0; i<points-1; i++)
+    {
+        xPos += deltaX;
+        yPos += deltaY;
+        C.SetPos(xPos, yPos);
+        C.DrawTileStretched(Texture'Solid', 2, 2);
+    }
+}
+
+function bool IsHeatSource(Actor A)
+{
+    if (A.IsA('ScriptedPawn'))
+        return True;
+    else if (A.IsA('DeusExCarcass'))
+        return True;
+    else if (A.IsA('FleshFragment'))
+        return True;
+    else
+        return False;
+}
+
+function String CR() {return "|";}
+
+
+function DrawDefenseAugmentation(Canvas C)
+{
+    local String str, strA;
+    local float boxCX, boxCY;
+    local float x, y, w, h, mult;
+    local bool bDrawLine;
+    local vector sp1, EyePos, RelativeToPlayer;
+
+    C.Font = font'DXFonts.MSS_8';
+    // Данные приходят из AugDefense с интервалом 0.1 сек.
+    if (defenseTarget != None)
+    {
+        bDrawLine = False;
+
+        if (defenseTarget.IsInState('Exploding'))
+        {
+            str = class'DeusExHUD'.default.msgADSDetonating;
+            bDrawLine = True;
+        }
+        else
+            str = class'DeusExHUD'.default.msgADSTracking;
+
+        mult = VSize(defenseTarget.Location - Location);
+//      str = str $ Cr() $ msgRange @ Int(mult/16) @ msgRangeUnits;
+        strA = class'DeusExHUD'.default.msgRange @ Int(mult/16) @ class'DeusExHUD'.default.msgRangeUnits;
+
+        EyePos = Location;
+        EyePos.Z += EyeHeight;
+
+        RelativeToPlayer = (defenseTarget.Location - EyePos) << GetViewRotation();
+        if (RelativeToPlayer.X < 0.01)
+        {
+            str = str @ class'DeusExHUD'.default.msgBehind;
+        }
+//
+        sp1 = C.WorldToScreen(defenseTarget.Location);
+        boxCX = sp1.X;
+        boxCY = sp1.Y;
+
+        c.TextSize(str, w, h);
+        x = boxCX - w/2;
+        y = boxCY - h;
+        c.DrawColor = class'DeusExHUD'.default.RedColor;
+
+        c.SetPos(x,y);
+        c.DrawText(str);
+        
+        c.SetPos(x + 20,y + 20);
+        c.DrawText(strA);
+
+        c.DrawColor = colHeaderText;
+
+        if (bDrawLine)
+        {
+            c.DrawColor = class'DeusExHUD'.default.RedColor;
+            Interpolate(c, c.sizeX/2, c.sizeY/2, boxCX, boxCY, 64);
+            c.DrawColor = colHeaderText;
+        }
+    }
+}
+
+function DrawSpyDroneAugmentation(Canvas c)
+{
+    local String str;
+    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float x, y, w, h;//, mult;
+    local Vector loc;
+
+    // set the coords of the drone window
+    boxW = c.SizeX/4;
+    boxH = c.SizeY/4;
+    boxCX = c.SizeX/8 + marginX;
+    boxCY = c.SizeY/2;
+    boxTLX = boxCX - boxW/2;
+    boxTLY = boxCY - boxH/2;
+    boxBRX = boxCX + boxW/2;
+    boxBRY = boxCY + boxH/2;
+
+        str = class'DeusExHUD'.default.msgDroneActive;
+        c.textsize(str, w,h);
+        x = boxCX - w/2;
+        y = boxTLY - h - marginX;
+        c.SetPos(x,y);
+        c.DrawText(str);
+
+    if (aDrone == None)
+    {
+        loc = (2.0 + class'SpyDrone'.default.CollisionRadius + CollisionRadius) * Vector(GetViewRotation());
+        loc.Z = BaseEyeHeight;
+        loc += Location;
+        aDrone = Spawn(class'SpyDrone', self,, loc, Rotation);
+    }
+    if (aDrone != None)
+    {
+        aDrone.Speed = 3 * spyDroneLevelValue;
+        aDrone.MaxSpeed = 3 * spyDroneLevelValue;
+        aDrone.Damage = 5 * spyDroneLevelValue;
+        aDrone.blastRadius = 8 * spyDroneLevelValue;
+
+        c.reset();
+        C.Font = font'DXFonts.MSS_8';
+        C.DrawActor(None, false, true); // Clear the z-buffer here
+        c.DrawPortal(boxTLX, boxTLY, boxW,boxH, aDrone, aDrone.Location, aDrone.Rotation, 90);
+        DrawDropShadowBox(c, boxTLX, boxTLY, boxW, boxH);
+
+        // print a low energy warning message
+        if ((Energy / default.Energy) < 0.2)
+        {
+            str = class'DeusExHUD'.default.msgEnergyLow;
+            c.TextSize(str, w, h);
+            x = boxCX - w/2;
+            y = boxTLY + marginX;
+            c.SetDrawColor(255,0,0);
+            c.SetPos(x,y);
+            c.DrawText(str);
+            c.DrawColor = colHeaderText;
+        }
+
+    }
+        else
+            ClientMessage(class'DeusExHUD'.default.msgCantLaunch);
+}
+
+function DrawTargetAugmentation(Canvas C)
+{
+    local String str, strG;
+    local Actor target;
+    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float x, y, w, h, mult;
+    local Vector v1, v2, sp1, sp2;
+    local int i, j, k, r;
+    local DeusExWeapon dxWeapon;
+    local bool bUseOldTarget;
+    local vector AimLocation;
+    local array<string> Lines;
+
+    crossColor.R = 255;
+    crossColor.G = 255;
+    crossColor.B = 255;
+    crossColor.A = 255;
+
+    C.Font = font'DXFonts.MSS_8';
+
+    // check 500 feet in front of the player
+    target = TraceLOS(TRACE_LOS_DIST, AimLocation);
+
+    // draw targetting reticle information based on the weapon's accuracy
+    // reticle size is based on accuracy - larger box = higher (worse) accuracy value
+    // reticle shrinks as accuracy gets better (value decreases)
+//    if ((target != None) && (!target.IsA('StaticMeshActor'))) // Ах-ох
+    if (Target != None)
+    {
+        // get friend/foe color info
+        if (target.IsA('ScriptedPawn'))
+        {
+            if (ScriptedPawn(target).GetPawnAllianceType(self) == ALLIANCE_Hostile)
+            {
+                crossColor.R = 255;
+                crossColor.G = 0;
+                crossColor.B = 0;
+            }
+            else
+            {
+                crossColor.R = 0;
+                crossColor.G = 255;
+                crossColor.B = 0;
+            }
+        }
+
+        dxWeapon = DeusExWeapon(Weapon);
+        if ((dxweapon != None) && !dxweapon.bHandToHand && !bUseOldTarget)
+        {
+            // if the target is out of range, don't draw the reticle
+            if (dxweapon.MaxRange >= VSize(target.Location - Location))
+            {
+                w = c.sizeX;
+                h = c.sizeY;
+                x = int(w * 0.5)-1;
+                y = int(h * 0.5)-1;
+
+                // scale based on screen resolution - default is 640x480
+                mult = FClamp(dxweapon.currentAccuracy * 80.0 * (c.sizeX/640.0), corner, 80.0);
+
+                // make sure it's not too close to the center unless you have a perfect accuracy
+                mult = FMax(mult, corner+4.0);
+                if (dxweapon.currentAccuracy == 0.0)
+                    mult = corner;
+
+                // draw the drop shadowed reticle
+                c.SetDrawColor(0,0,0);
+                for (i=1; i>=0; i--)
+                {
+                    c.setpos(x+i, y-mult+i);
+                    c.DrawTileStretched(texture'Solid', 1, corner);
+
+                    c.setpos(x+i, y+mult-corner+i);
+                    c.DrawTileStretched(texture'Solid', 1, corner);
+
+                    c.setpos(x-(corner-1)/2+i, y-mult+i);
+                    c.DrawTileStretched(texture'Solid', corner, 1);
+
+                    c.setpos(x-(corner-1)/2+i, y+mult+i);
+                    c.DrawTileStretched(texture'Solid', corner, 1);
+
+
+                    c.setpos(x-mult+i, y+i);
+                    c.DrawTileStretched(texture'Solid', corner, 1);
+
+                    c.setpos(x+mult-corner+i, y+i);
+                    c.DrawTileStretched(texture'Solid', corner, 1);
+
+                    c.setpos(x-mult+i, y-(corner-1)/2+i);
+                    c.DrawTileStretched(texture'Solid', 1, corner);
+
+                    c.setpos(x+mult+i, y-(corner-1)/2+i);
+                    c.DrawTileStretched(texture'Solid', 1, corner);
+
+                    c.DrawColor = crossColor;
+                }
+            }
+        }
+
+        // movers are invalid targets for the aug
+        if (target.IsA('DeusExMover'))
+            target = None;
+    }
+
+    // let there be a 0.5 second delay before losing a target
+    if (target == None)
+    {
+        if ((Level.TimeSeconds - lastTargetTime < 0.5)  && (lastTarget != none))
+        {
+            target = lastTarget;
+            bUseOldTarget = True;
+
+            if (target.IsA('ScriptedPawn')) // DXR: Set back to default if pawn is not our target.
+               ScriptedPawn(Target).bOwnerNoSee = ScriptedPawn(Target).default.bOwnerNoSee;
+        }
+        else
+        {
+            lastTarget = None;
+        }
+    }
+    else
+    {
+        lastTargetTime = Level.TimeSeconds;
+        bUseOldTarget = False;
+        if (lastTarget != target)
+        {
+            lastTarget = target;
+        }
+    }
+
+    if (target != None)
+    {
+        // draw a cornered targetting box
+        v1.X = target.CollisionRadius;
+        v1.Y = target.CollisionRadius;
+        v1.Z = target.CollisionHeight;
+            
+            sp1 = C.WorldToScreen(target.Location);
+
+            boxCX = sp1.X;
+            boxCY = sp1.Y;
+
+            boxTLX = boxCX;
+            boxTLY = boxCY;
+            boxBRX = boxCX;
+            boxBRY = boxCY;
+
+            // get the smallest box to enclose actor
+            // modified from Scott's ActorDisplayWindow
+            for (i=-1; i<=1; i+=2)
+            {
+                for (j=-1; j<=1; j+=2)
+                {
+                    for (k=-1; k<=1; k+=2)
+                    {
+                        v2 = v1;
+                        v2.X *= i;
+                        v2.Y *= j;
+                        v2.Z *= k;
+                        v2.X += target.Location.X;
+                        v2.Y += target.Location.Y;
+                        v2.Z += target.Location.Z;
+
+                            sp2 = C.WorldToScreen(v2);
+                            x = sp2.X;
+                            x = sp2.Y;
+
+                            boxTLX = FMin(boxTLX, x);
+                            boxTLY = FMin(boxTLY, y);
+                            boxBRX = FMax(boxBRX, x);
+                            boxBRY = FMax(boxBRY, y);
+                    }
+                }
+            }
+
+            boxTLX = FClamp(boxTLX, marginX, c.SizeX-marginX);
+            boxTLY = FClamp(boxTLY, marginX, c.SizeY-marginX);
+            boxBRX = FClamp(boxBRX, marginX, c.SizeX-marginX);
+            boxBRY = FClamp(boxBRY, marginX, c.SizeY-marginX);
+
+            boxW = boxBRX - boxTLX;
+            boxH = boxBRY - boxTLY;
+
+            if (bTargetActive)
+            {
+                // set the coords of the zoom window, and draw the box
+                // even if we don't have a zoom window
+                x = c.sizeX/8 + marginX;
+                y = c.sizeY/2;
+                w = c.sizeX/4;
+                h = c.sizeY/4;
+
+                boxCX = c.SizeX/8 + marginX;
+                boxCY = c.SizeY/2;
+                boxTLX = boxCX - c.SizeX/8;
+                boxTLY = boxCY - c.SizeY/8;
+                boxBRX = boxCX + c.SizeX/8;
+                boxBRY = boxCY + c.SizeY/8;
+
+                if (targetLevel > 2)
+                {
+                        mult = (target.CollisionRadius + target.CollisionHeight);
+                        v1 = Location;
+                        v1.Z += BaseEyeHeight;
+                        v2 = 1.5 * Normal(target.Location - v1);
+
+                        C.DrawActor(None, false, true); // Clear the z-buffer here
+
+                        if (target.IsA('ScriptedPawn'))
+                            ScriptedPawn(Target).bOwnerNoSee = false; // DXR: So pawns will be displayed in the window
+
+                        c.DrawPortal(boxTLX, boxTLY, w,h, target, target.Location - mult * v2, GetViewRotation(), 75);
+                        DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
+                }
+                else
+                {
+                    DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
+                    // black out the zoom window and draw a "no image" message
+                    c.Style = ERenderStyle.STY_Normal;
+                    c.SetDrawColor(0,0,0);
+                    c.setpos(boxTLX, boxTLY);
+                    c.DrawPattern(texture'solid', w,h, 1); 
+
+                    c.SetDrawColor(255,255,255);
+                    c.drawcolor.a=255;
+                    c.TextSize(class'DeusExHUD'.default.msgNoImage, w, h);
+                    x = boxCX - w/2;
+                    y = boxCY - h/2;
+                    c.SetPos(x,y);
+                    c.DrawText(class'DeusExHUD'.default.msgNoImage);
+                }
+
+                // print the name of the target above the box
+                if (target.IsA('ScriptedPawn'))
+                    str = ScriptedPawn(target).BindName;
+                else if (target.IsA('DeusExDecoration'))
+                    str = DeusExDecoration(target).itemName;
+                else if (target.IsA('DeusExProjectile'))
+                    str = DeusExProjectile(target).itemName;
+                else
+                    str = target.GetItemName(String(target.Class));
+
+                // print disabled robot info
+                if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
+                    str = str $ " (" $ class'DeusExHUD'.default.msgDisabled $ ")";
+
+                c.SetDrawColor(crossColor.r, crossColor.g, crossColor.b);
+
+                // print the range to target
+                mult = VSize(target.Location - Location);
+                strG = class'DeusExHUD'.default.msgRange @ Int(mult/16) @ class'DeusExHUD'.default.msgRangeUnits;
+
+                c.textsize(str, w,h);
+                x = boxTLX + marginX;
+                y = boxTLY - h - marginX;
+                c.SetPos(x,y);
+                c.DrawText(str);
+                c.SetPos(x,y+20);
+                c.DrawText(strG);
+
+                // level zero gives very basic health info
+                if (target.IsA('ScriptedPawn'))
+                    mult = float(ScriptedPawn(target).Health) / float(ScriptedPawn(target).default.Health);
+                else if (target.IsA('DeusExDecoration'))
+                    mult = float(DeusExDecoration(target).HitPoints) / float(DeusExDecoration(target).default.HitPoints);
+                else
+                    mult = 1.0;
+
+                if (targetLevel == 0)
+                {
+                    // level zero only gives us general health readings
+                    if (mult >= 0.66)
+                    {
+                        str = class'DeusExHUD'.default.msgHigh;
+                        mult = 1.0;
+                    }
+                    else if (mult >= 0.33)
+                    {
+                        str = class'DeusExHUD'.default.msgMedium;
+                        mult = 0.5;
+                    }
+                    else
+                    {
+                        str = class'DeusExHUD'.default.msgLow;
+                        mult = 0.05;
+                    }
+
+                    str = str @ class'DeusExHUD'.default.msgHealth;
+                }
+                else
+                {
+                    // level one gives exact health readings
+                    str = int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent;
+                    if (target.IsA('ScriptedPawn') && !target.IsA('Robot') && !target.IsA('Animal'))
+                    {
+                        x = mult;       // save this for color calc
+                        str = str @ class'DeusExHUD'.default.msgOverall;
+                        mult = Float(ScriptedPawn(target).HealthHead) / Float(ScriptedPawn(target).default.HealthHead);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgHead;
+                        mult = Float(ScriptedPawn(target).HealthTorso) / Float(ScriptedPawn(target).default.HealthTorso);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgTorso;
+                        mult = Float(ScriptedPawn(target).HealthArmLeft) / Float(ScriptedPawn(target).default.HealthArmLeft);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgLeftArm;
+                        mult = Float(ScriptedPawn(target).HealthArmRight) / Float(ScriptedPawn(target).default.HealthArmRight);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgRightArm;
+                        mult = Float(ScriptedPawn(target).HealthLegLeft) / Float(ScriptedPawn(target).default.HealthLegLeft);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgLeftLeg;
+                        mult = Float(ScriptedPawn(target).HealthLegRight) / Float(ScriptedPawn(target).default.HealthLegRight);
+                        str = str $ CR() $ Int(mult * 100.0) $ class'DeusExHUD'.default.msgPercent @ class'DeusExHUD'.default.msgRightLeg;
+                        mult = x;
+                    }
+                    else
+                    {
+                        str = str @ class'DeusExHUD'.default.msgHealth;
+                    }
+                }
+
+                C.Font = font'DXFonts.MSS_8';
+                C.StrLen(str, w, h);
+                C.WrapStringToArray(str, Lines, w, "|");
+                x = boxTLX + marginX;
+                y = boxTLY + marginX;
+                C.DrawColor = GetColorScaled(mult);
+                C.DrawColor.A = 255;
+                    for ( r = 0; r < Lines.Length; r++ )
+                    {
+                        C.SetPos(x,y += 15);
+                        C.DrawText(lines[r]);
+                    }
+                C.DrawColor = colHeaderText;
+
+                if (targetLevel > 1)
+                {
+                    // level two gives us weapon info as well
+                    if (target.IsA('Pawn'))
+                    {
+                        str = class'DeusExHUD'.default.msgWeapon;
+
+                        if (Pawn(target).Weapon != None)
+                            str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
+                        else
+                            str = str @ class'DeusExHUD'.default.msgNone;
+
+                        c.textsize(str, w,h);
+                        x = boxTLX + marginX;
+                        y = boxBRY - h - marginX;
+                        c.setpos(x,y);
+                        c.drawtext(str);
+                    }
+                }
+            }
+            else
+            {
+                // display disabled robots
+                if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
+                {
+                    str = class'DeusExHUD'.default.msgDisabled;
+                    crossColor.A = 255;
+                    c.drawColor = crossColor;
+                    c.textsize(str, w,h);
+                    x = boxCX - w / 2;// Верно. - c.SizeX / 2; //w/2;
+                    y = boxTLY + h + marginX;
+
+                    c.SetPos(200,200);
+                    c.DrawText("Robots: X = "$x$" Y = "$y $ "  boxTLY = "$boxTLY$"  boxTLX = "$boxTLX);
+
+                    c.setpos(x,y);
+                    c.drawtext(str);
+                }
+            }
+    }
+    else if (bTargetActive)
+    {
+        if (Level.TimeSeconds % 1.5 > 0.75)
+            str = class'DeusExHUD'.default.msgScanning1;
+        else
+            str = class'DeusExHUD'.default.msgScanning2;
+        c.textsize(str, w,h);
+        x = c.SizeX/2 - w/2;
+        y = (c.sizeY/2 - h) - 20;
+        c.setpos(x,y);
+        c.DrawText(str);
+    }
+    c.Reset();
+}
+
+//
+// Сообщение о захвате цели просто не умещается в
+// отведенную рамку. Поэтому я нарисую его здесь.
+//
+function RenderCrosshair(Canvas C)
+{
+   local float X,Y;
+   local string MSTarget;
+
+//   if (bDrawInfo)
+//   return;
+
+   X = C.ClipX * 0.5 + class'DeusExHUD'.default.CrosshairCorrectionX;
+   Y = C.ClipY * 0.5 + class'DeusExHUD'.default.CrosshairCorrectionY;
+
+    if (bCrosshairVisible)
+    {
+        C.SetPos(X,Y);
+        c.DrawColor = crossColor;
+        C.DrawIcon(class'DeusExHUD'.default.CrosshairTex, 1);
+    }
+
+    if (DeusExWeapon(weapon) != none)
+    {
+        if (DeusExWeapon(weapon).bCanTrack == true)
+        {
+            MStarget = DeusExWeapon(weapon).TargetMessage;
+
+            c.SetPos(X + 35,Y + 35); // Чтобы не перекрывало прицел
+            c.font=font'DxFonts.EUX_8';
+
+            if (DeusExWeapon(weapon).LockMode == LOCK_Locked)
+                c.SetDrawColor(255,0,0); // красный
+            else if (DeusExWeapon(weapon).LockMode == LOCK_Acquire)
+                c.SetDrawColor(255,255,0); // желтый
+            else
+                c.SetDrawColor(0,255,0); // зеленый
+         c.DrawText(MStarget);
+      }
+  }
+}
+
+
+
 
 /* ----------------------------------------------------------------- */
 defaultproperties
 {
+/* From DeusExBasicHUD */
+    marginX=4.00
+    corner=9.00
+    margin=70.00 // for highlight 
+    barLength=50.00
+
+    colAmmoText=(R=0,G=255,B=0,A=255)
+    colAmmoLowText=(R=255,G=0,B=0,A=255)
+    colHeaderText=(R=255,G=255,B=255,A=255)
+
+    RadarScale=0.20
+    RadarPosX=0.840
+    RadarPosY=0.540
+    RadarBackground=Texture'UT2k4Extra.RadarQ'
+
+    bSpecialHUD=true
+
     bCanWalkOffLedges=true
     bAvoidLedges=false      // don't get too close to ledges
     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
@@ -5546,9 +6496,6 @@ defaultproperties
 
     fireDamage=1 // для тестирования пока 1
     Alliance=Player
-
-//    currentBeltNum=0
-//    bLOSHearing=false// true
 
     DefaultStartMap="01_NYC_UNATCOIsland"
 }

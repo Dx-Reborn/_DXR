@@ -59,7 +59,7 @@ function bool SpecialCalcView(out actor ViewActor, out vector CameraLocation, ou
     else
         CameraLocation = Location + (vect(-800,0,300) >> CameraRotation);
 
-    if( Trace( HitLocation, HitNormal, CameraLocation, Location,false,vect(10,10,10) ) != None )
+    if( Trace(HitLocation, HitNormal, CameraLocation, Location,false,vect(10,10,10)) != None)
         CameraLocation = HitLocation;
 
     return True;

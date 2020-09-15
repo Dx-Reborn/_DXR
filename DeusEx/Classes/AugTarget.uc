@@ -6,14 +6,14 @@ class AugTarget extends Augmentation;
 state Active
 {
 Begin:
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bTargetActive = True;
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).targetLevel = CurrentLevel;
+    Player.bTargetActive = True;
+    Player.targetLevel = CurrentLevel;
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
-	DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD).bTargetActive = false;
+    Super.Deactivate();
+    Player.bTargetActive = false;
 }
 
 
