@@ -278,6 +278,56 @@ function Sound GetLandedSound()
    return default.LandSound;
 }
 
+event RenderOverlays(Canvas u)
+{
+    Super.RenderOverlays(u);
+
+    if (bZoomed)
+    {
+        renderScopeView(u);
+
+//        if ((DeusExPlayerController(Instigator.Controller)) != None)
+        DeusExPlayerController(Instigator.Controller).DesiredFOV = ScopeFOV;
+    }
+}
+
+
+function renderScopeView(canvas u)
+{
+    local texture bg, cr;
+
+    bg = texture'HUDScopeView';
+    cr = texture'HUDScopeCrosshair';
+
+     if (DeusExPlayer(Owner) != none)
+     {
+        // Вид из прицела...
+        u.SetDrawColor(255,255,255,255);
+        u.setPos(u.sizeX / 2 - 256,u.sizeY / 2 - 256);
+        u.Style = ERenderStyle.STY_Modulated;
+        u.DrawTileJustified(bg, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
+        u.Style = ERenderStyle.STY_Normal;
+        u.SetDrawColor(255,255,255,255);
+        u.DrawTileJustified(cr, 1, 512, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
+
+        // Заполнители
+        u.Style = ERenderStyle.STY_Normal;
+        u.DrawColor = class'DeusExHUD'.default.blackColor;
+
+        u.SetPos(0,0); // верхний
+        u.DrawTileStretched(texture'solid', u.sizeX, (u.sizeY / 2) - 256);
+
+        u.SetPos(0,(u.sizeY / 2) + 256); // Нижний заполнитель...
+        u.DrawTileStretched(texture'solid', u.sizeX, u.sizeY );
+
+        u.SetPos(0,(u.sizeY /2) - 256); // Левый заполнитель...
+        u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 256, (u.sizeY / 2) + 152);
+
+        u.SetPos((u.SizeX / 2) + 256,(u.sizeY /2) - 256); // Правый заполнитель...
+        u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 256, (u.sizeY / 2) + 152);
+     }
+}
+
 function bool isPlayingIdleAnim()
 {
    if (GetAnimSequence() == 'Idle1' || GetAnimSequence() == 'Idle2' || GetAnimSequence() == 'Idle3')
@@ -1195,7 +1245,7 @@ function ScopeOn()
     {
         // Show the Scope View
         bZoomed = True;
-        RefreshScopeDisplay(DeusExPlayer(Owner), False);
+//        RefreshScopeDisplay(DeusExPlayer(Owner), False);
     }
 }
 
@@ -1206,6 +1256,7 @@ function ScopeOff()
         // Hide the Scope View
 //        DeusExRootWindow(DeusExPlayer(Owner).rootWindow).scopeView.DeactivateView();
         bZoomed = False;
+        DeusExPlayerController(Instigator.Controller).ResetFOV();
     }
 }
 
@@ -1222,10 +1273,6 @@ function ScopeToggle()
         }
     }
 }
-
-// ----------------------------------------------------------------------
-// RefreshScopeDisplay()
-// ----------------------------------------------------------------------
 
 function RefreshScopeDisplay(DeusExPlayer player, bool bInstant)
 {
