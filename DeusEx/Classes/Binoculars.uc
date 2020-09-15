@@ -4,6 +4,8 @@
 class Binoculars extends DeusExPickup;
 
 var localized string binocsActive, binocsInactive;
+var int BinocularsMaxRange;
+var int ZoomFOV;
 
 state Activated
 {
@@ -15,7 +17,6 @@ state Activated
 
 Begin:
 }
-
 
 state DeActivated
 {
@@ -36,25 +37,117 @@ state DeActivated
 
 function ToggleBinocularsView(bool bDoIt)
 {
-   local DeusExHUD dh;
    local DeusExPlayerController dc;
 
-   dh = DeusExHUD(level.getLocalPlayerController().myHUD);
    dc = DeusExPlayerController(level.GetLocalPlayerController());
-   dh.bUseBinocularView = bDoIt;
 
    if (bDoIt)
    {
        bIsActive = true;
-       dc.DesiredFOV=20;
+       dc.DesiredFOV = ZoomFOV;
+       SetDrawType(DT_None);
    }
    else
    {
        bIsActive = false;
        dc.ResetFOV();
+       SetDrawType(default.DrawType);
    }
 }
 
+event RenderOverlays(Canvas u)
+{
+    Super.RenderOverlays(u);
+
+    if (bActive)
+    {
+        RenderBinoculars(u);
+    }
+}
+
+function RenderBinoculars(Canvas u)
+{
+    local ScriptedPawn target;
+    local texture bg, cr;
+    local shader Lines;
+
+    bg = texture'HUDBinocularView';
+    cr = texture'HUDBinocularCrossHair';
+    Lines = shader'VisionLined_Gray_SH';
+
+    // Вид из бинокля...
+    u.setPos(u.sizeX / 2 - 512,u.sizeY / 2 - 256);
+    u.Style = ERenderStyle.STY_Modulated;
+    u.DrawTileJustified(bg, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
+    u.Style = ERenderStyle.STY_Normal;
+
+    u.SetDrawColor(0,255,0,255);// Green crosshair
+    u.DrawTileJustified(cr, 1, 1024, 512); 
+
+    u.SetPos(0,0);
+    u.SetDrawColor(255,255,255,255);
+    u.DrawPattern(Lines, u.SizeX, u.SizeY, 1);
+
+    // Заполнители
+    u.Style = ERenderStyle.STY_Normal;
+    u.DrawColor = class'DeusExHUD'.default.blackColor;
+
+    u.SetPos(0,0); // верхний
+    u.DrawTileStretched(texture'solid', u.sizeX, (u.sizeY / 2) - 256);
+
+    u.SetPos(0,(u.sizeY / 2) + 256); // Нижний заполнитель...
+    u.DrawTileStretched(texture'solid', u.sizeX, u.sizeY);
+
+    u.SetPos(0,(u.sizeY /2) - 256); // Левый заполнитель...
+    u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 512, (u.sizeY / 2) + 152);
+
+    u.SetPos((u.SizeX / 2) + 512,(u.sizeY /2) - 256); // Правый заполнитель...
+    u.DrawTileStretched(texture'solid', (u.sizeX / 2) - 512, (u.sizeY / 2) + 152);
+
+                                  
+    foreach Instigator.VisibleCollidingActors(class'ScriptedPawn', target, BinocularsMaxRange, Instigator.Location + vector(Instigator.GetViewRotation()))
+            if (target.PlayerCanSeeMe() == true)
+                DrawBinocularsView(target,u);
+}
+
+//dist = int(vsize(TCP.Location-wpTarget.Location)/52);
+// Вид из бинокля: расстояние до цели.
+function DrawBinocularsView(Pawn Target, Canvas u)
+{
+    local String str;
+    local float boxCX, boxCY;
+    local float x, y, w, h, mult;
+    local vector sp1, EyePos;
+
+    if (Target != None)
+    {
+        u.Font = font'DXFonts.EU_9';
+        mult = VSize(Target.Location - Instigator.Location);
+        str = class'DeusExHUD'.default.msgRange @ (mult/52) @ class'DeusExHUD'.default.strMeters;
+
+        EyePos = Instigator.Location;
+        EyePos.Z += Instigator.EyeHeight;
+
+        // Расстояние до Pawn
+        sp1 = u.WorldToScreen(Target.Location);
+        boxCX = sp1.X;
+        boxCY = sp1.Y;
+
+        u.TextSize(str, w, h);
+        x = boxCX - w/2;
+        y = boxCY - h;
+        u.DrawColor = class'DeusExHUD'.default.RedColor;
+
+        u.SetPos(x,y);
+        u.Style=ERenderStyle.STY_Normal;
+        u.DrawText(str);
+
+        u.SetPos(x-4,y-4);
+        u.Style = ERenderStyle.STY_Translucent;
+        u.drawTileStretched(texture'ItemNameBox', w+4,h+4);
+    }
+    u.reset();
+}
 
 function string GetDescription()
 {
@@ -64,6 +157,9 @@ function string GetDescription()
 
 defaultproperties
 {
+    BinocularsMaxRange=2000
+    ZoomFOV=20
+
     bActivatable=True
     PlayerViewOffset=(X=18.00,Y=0.00,Z=-6.00)
     PlayerViewPivot=(Pitch=0,Roll=0,Yaw=16384)
