@@ -4742,7 +4742,7 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
             count        = 0;
             checked      = 0;
             lastCycle    = CycleIndex;
-            foreach CycleActors(Class'DeusExPawn', candidate, CycleIndex)
+            foreach CycleActors(class'DeusExPawn', candidate, CycleIndex)
             {
                 bValidEnemy = IsValidEnemy(candidate);
 
@@ -4807,7 +4807,8 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
     }
 
     // Handle surprise levels...
-    UpdateReactionLevel((EnemyReadiness > 0) || (controller.GetStateName() == 'Seeking') || bDistressed, deltaSeconds);
+    if (Controller != None) // DXR: To avoid SpamLog (whem pawn is in Dying state and has no controller)
+        UpdateReactionLevel((EnemyReadiness > 0) || (controller.GetStateName() == 'Seeking') || bDistressed, deltaSeconds);
 
     if (!bValid)
     {
@@ -5492,10 +5493,12 @@ event Tick(float deltaTime)
     local bool         bDoLowPriority;
     local bool         bCheckOther;
     local bool         bCheckPlayer;
-//    local bool         bCheckEnemy;
 
     if (!bInWorld)
     return;
+
+    if (DistanceFromPlayer() > 2505)
+        return;
 
     player = DeusExPlayer(GetPlayerPawn());
     myDxPlayer = player;
@@ -5506,9 +5509,8 @@ event Tick(float deltaTime)
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
 
-    if (DistanceFromPlayer() > 2500)
-        return;
-
+//    if (DistanceFromPlayer() > 2505)
+//        return;
 
     bDoLowPriority = true;
     bCheckPlayer   = true;

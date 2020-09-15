@@ -10,6 +10,6 @@ var localized string strOk, strDefault, strCancel;
 defaultproperties
 {
     strOk="OK"
-    strDefault="Cancel"
-    strCancel="Reset to Defaults"
+    strDefault="Reset to Defaults"
+    strCancel="Cancel"
 }
