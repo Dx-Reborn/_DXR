@@ -270,7 +270,8 @@ defaultproperties
 //----------------------------
     // Default
     Begin Object Class=DXRColors.DXR_HUDColor Name=col03
-     MessageBG=(R=255,G=255,B=255,A=255)   // ClientMessage Background
+//     MessageBG=(R=255,G=255,B=255,A=255)   // ClientMessage Background
+     MessageBG=(R=128,G=128,B=128,A=255)   // ClientMessage Background
      MessageText=(R=255,G=255,B=255,A=255) // ClientMessage Text
      MessageFrame=(R=255,G=255,B=255,A=255) // ClientMessage frame
 
