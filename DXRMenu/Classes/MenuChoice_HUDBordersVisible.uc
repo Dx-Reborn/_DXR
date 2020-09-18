@@ -10,7 +10,7 @@ class MenuChoice_HUDBordersVisible extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(DeusExPlayer(PlayerOwner().pawn).bHUDBordersVisible));
+    SetValue(int(DeusExPlayerController(PlayerOwner()).bHUDBordersVisible));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	DeusExPlayer(PlayerOwner().pawn).bHUDBordersVisible = bool(GetValue());
+    DeusExPlayerController(PlayerOwner()).bHUDBordersVisible = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,9 +28,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	DeusExPlayer(PlayerOwner().pawn).bHUDBordersVisible = bool(defaultValue);
-	SetValue(defaultValue);
-	ChangeStyle();
+    DeusExPlayerController(PlayerOwner()).bHUDBordersVisible = bool(defaultValue);
+    SetValue(defaultValue);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -39,9 +39,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	DeusExPlayer(PlayerOwner().pawn).bHUDBordersVisible = bool(GetValue());
-	ChangeStyle();
+    Super.CycleNextValue();
+    DeusExPlayerController(PlayerOwner()).bHUDBordersVisible = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	DeusExPlayer(PlayerOwner().pawn).bHUDBordersVisible = bool(GetValue());
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    DeusExPlayerController(PlayerOwner()).bHUDBordersVisible = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

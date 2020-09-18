@@ -40,21 +40,21 @@ function SaveSetting()
     {
       case 0:
            class'GameManager'.static.SetGameLanguage(englishEnumText[0]);
-           class'GameManager'.static.SetGameIniProperties("Engine.Engine", "Language", englishEnumText[0]);
+           class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[0]);
 
            log("Setting game language to: "$englishEnumText[0]);
       break;
 
       case 1:
            class'GameManager'.static.SetGameLanguage(englishEnumText[1]);
-           class'GameManager'.static.SetGameIniProperties("Engine.Engine", "Language", englishEnumText[1]);
+           class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[1]);
 
            log("Setting game language to: "$englishEnumText[1]);
       break;
 
       case 2:
            class'GameManager'.static.SetGameLanguage(englishEnumText[2]);
-           class'GameManager'.static.SetGameIniProperties("Engine.Engine", "Language", englishEnumText[2]);
+           class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[2]);
 
            log("Setting game language to: "$englishEnumText[2]);
       break;

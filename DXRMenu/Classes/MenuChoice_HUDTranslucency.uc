@@ -10,7 +10,7 @@ class MenuChoice_HUDTranslucency extends MenuChoice_OnOff;
 
 function LoadSetting()
 {
-	SetValue(int(DeusExPlayer(PlayerOwner().pawn).bHUDBackgroundTranslucent));
+    SetValue(int(DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent));
 }
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,7 @@ function LoadSetting()
 
 function SaveSetting()
 {
-	DeusExPlayer(PlayerOwner().pawn).bHUDBackgroundTranslucent = bool(GetValue());
+    DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent = bool(GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -28,9 +28,9 @@ function SaveSetting()
 
 function ResetToDefault()
 {
-	DeusExPlayer(PlayerOwner().pawn).bHUDBackgroundTranslucent = bool(defaultValue);
-	SetValue(defaultValue);
-	ChangeStyle();
+    DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent = bool(defaultValue);
+    SetValue(defaultValue);
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -39,9 +39,9 @@ function ResetToDefault()
 
 function CycleNextValue()
 {
-	Super.CycleNextValue();
-	DeusExPlayer(PlayerOwner().pawn).bHUDBackgroundTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CycleNextValue();
+    DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------
@@ -50,9 +50,9 @@ function CycleNextValue()
 
 function CyclePreviousValue()
 {
-	Super.CyclePreviousValue();
-	DeusExPlayer(PlayerOwner().pawn).bHUDBackgroundTranslucent = bool(GetValue());
-	ChangeStyle();
+    Super.CyclePreviousValue();
+    DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent = bool(GetValue());
+    ChangeStyle();
 }
 
 // ----------------------------------------------------------------------

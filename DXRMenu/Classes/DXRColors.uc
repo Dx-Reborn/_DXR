@@ -159,7 +159,7 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
-    DeusExPlayer(playerOwner().pawn).SaveConfig();
+  /*DeusExPlayer(playerOwner().pawn).*/SaveConfig();
 }
 
 function SaveSettings()
@@ -216,11 +216,11 @@ function PaintOnBG(Canvas u)
   Super.PaintOnBG(u);
 
 
-  if (DeusExPlayer(playerOwner().pawn).bHUDBordersVisible)
+  if (DeusExPlayerController(playerOwner()).bHUDBordersVisible)
   {
-    if (DeusExPlayer(playerOwner().pawn).bHUDBordersTranslucent)
+    if (DeusExPlayerController(playerOwner()).bHUDBordersTranslucent)
     u.Style = EMenuRenderStyle.MSTY_Translucent;
-    else
+       else
     u.Style = EMenuRenderStyle.MSTY_Alpha;
 
     u.DrawColor = class'DXR_HUD'.static.GetInfoLinkFrame(gl.HudThemeIndex);
@@ -228,10 +228,11 @@ function PaintOnBG(Canvas u)
     u.DrawIcon(texture'MenuColorHUDBorders',1);
   }
 
-  if (DeusExPlayer(playerOwner().pawn).bHUDBackgroundTranslucent)
-  u.Style = EMenuRenderStyle.MSTY_Translucent;
-  else
-  u.Style = EMenuRenderStyle.MSTY_Alpha;
+  if (DeusExPlayerController(playerOwner()).bHUDBackgroundTranslucent)
+     u.Style = EMenuRenderStyle.MSTY_Translucent;
+        else
+     u.Style = EMenuRenderStyle.MSTY_Alpha;
+
   u.DrawColor = class'DXR_HUD'.static.GetInfoLinkBG(gl.HudThemeIndex);
   u.SetPos(x + ExamplePosX,y + ExamplePosY);
   u.DrawIcon(texture'DXR_HUDExample',1);
