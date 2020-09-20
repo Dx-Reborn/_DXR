@@ -99,13 +99,6 @@ function LoadColorTheme()
    FrobBoxText = class'DXR_HUD'.static.GetFrobBoxText(index);
 }
 
-// Useless?
-event PostLoadSavedGame()
-{
-  if (dxc == none)
-    dxc = new(none) class'DxCanvas';
-}
-
 exec function ExtraHUDDebugInfo()
 {
    if (DeusExPlayer(PawnOwner) != none)
@@ -117,15 +110,11 @@ event PostRender(canvas C)
 {
     super.postrender(C);
 
-    if (PawnOwner == none)
+    if (PawnOwner == none || !PawnOwner.IsA('DeusExPlayer'))
         return;
 
     if (DeusExPlayer(PawnOwner).bExtraDebugInfo)
         RenderDebugInfo(C);
-
-/*    if ((DeusExWeapon(PlayerOwner.pawn.Weapon) != none) && (DeusExWeapon(PlayerOwner.pawn.Weapon).bZoomed))
-        renderScopeView(C);
-  */
 }
 
 simulated function DisplayMessages(Canvas C)
@@ -134,7 +123,7 @@ simulated function DisplayMessages(Canvas C)
     local float w,h;
     local texture border;
 
-    if ((cubeMapMode) || (PlayerOwner.pawn == none) || bShowDebugInfo)
+    if ((cubeMapMode) || (PawnOwner == none) || bShowDebugInfo || !PawnOwner.IsA('DeusExPlayer'))
     return;
 
         for(i = 0; i<ConsoleMessageCount; i++)
@@ -161,10 +150,9 @@ simulated function DisplayMessages(Canvas C)
     if ((messageCount > 0) && (DeusExPlayer(PawnOwner).DataLinkPlay == none))
     {
         if (dxc != none)
-         dxc.SetCanvas(C);
+            dxc.SetCanvas(C);
 
         c.Font = font'DXFonts.EU_8';
-//        c.Style=ERenderStyle.STY_Translucent;
 
         c.SetOrigin(0,0);
         c.SetClip(c.SizeX - 200, c.SizeY);
@@ -182,7 +170,7 @@ simulated function DisplayMessages(Canvas C)
                     c.SetClip(w, (14 * messagecount));
                 }
        // Фон
-        if (DeusExPlayer(PawnOwner).bHUDBackgroundTranslucent)
+        if (DeusExPlayerController(PlayerOwner).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
                else
             c.Style = ERenderStyle.STY_Normal;
@@ -238,9 +226,9 @@ simulated function DisplayMessages(Canvas C)
 
         // Рамки
 
-   if (DeusExPlayer(PawnOwner).bHUDBordersVisible)
+   if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
    {
-        if (DeusExPlayer(PawnOwner).bHUDBordersTranslucent)
+        if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
               else
             c.Style = ERenderStyle.STY_Alpha;
@@ -419,10 +407,10 @@ function RenderDebugInfo(Canvas c)
 
     c.SetPos(c.SizeX/3, c.CurY);
     c.DrawText(DebugConString);
-      if (DeusExPlayer(playerOwner.pawn).conPlay != none)
+      if (DeusExPlayer(PawnOwner).conPlay != none)
       {
         c.SetPos(c.SizeX/3, c.CurY);
-        c.DrawText(DeusExPlayer(playerOwner.pawn).conPlay.currentEvent);
+        c.DrawText(DeusExPlayer(PawnOwner).conPlay.currentEvent);
       }
 }
 
@@ -618,7 +606,7 @@ function bool ActivateObjectInBelt(int pos)
     retval = false;
 
     item = GetObjectFromBelt(pos);
-    myPlayer = DeusExPlayer(PlayerOwner.pawn);
+    myPlayer = DeusExPlayer(PawnOwner);
     if (myPlayer != None)
     {
        // if the object is an ammo box, load the correct ammo into
@@ -650,7 +638,7 @@ function RenderToolBelt(Canvas C)
    local int beltIt;
    local SkilledTool sitem;
 
-   if ((playerowner.Pawn == None) || (DeusExPlayer(playerowner.Pawn).bObjectBeltVisible == false))
+   if ((playerowner.Pawn == None) || (DeusExPlayerController(playerowner).bObjectBeltVisible == false))
        return;
 
    if (dxc != none)
@@ -661,7 +649,7 @@ function RenderToolBelt(Canvas C)
     c.DrawColor = ToolBeltBG;//(127,127,127);
     c.SetPos(C.SizeX-544,C.SizeY-62);
 
-    if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+    if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
             else
         c.Style = ERenderStyle.STY_Normal;
@@ -676,7 +664,7 @@ function RenderToolBelt(Canvas C)
 
         c.Font=Font'DXFonts.DPix_6';
         c.DrawColor = ToolBeltBG;
-        if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+        if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
                else
             c.Style = ERenderStyle.STY_Normal;
@@ -757,7 +745,7 @@ function RenderToolBelt(Canvas C)
 
     c.Font=Font'DXFonts.DPix_7';
 
-   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+   if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
        c.Style = ERenderStyle.STY_Translucent;
           else
        c.Style = ERenderStyle.STY_Normal;
@@ -783,9 +771,9 @@ function RenderToolBelt(Canvas C)
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }
 
-    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+    if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
     {
-      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+      if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
           c.Style = ERenderStyle.STY_Translucent;
             else
           c.Style = ERenderStyle.STY_Alpha;
@@ -805,7 +793,7 @@ function renderToolBeltSelection(canvas u)
 {
   local DeusExPlayer p;
 
-  p=Human(PlayerOwner.Pawn);
+  p = Human(PawnOwner);
   if (p == none) // || (p.InHand == none));
       return;
 
@@ -865,6 +853,36 @@ function renderToolBeltSelection(canvas u)
   }
 }
 
+
+simulated function LinkActors()
+{
+    PlayerOwner = PlayerController(Owner);
+
+    if (PlayerOwner == None)
+    {
+        PlayerConsole = None;
+        PawnOwner = None;
+        PawnOwnerPRI = None;
+        return;
+    }
+
+    if (PlayerOwner.Player != None)
+        PlayerConsole = PlayerOwner.Player.Console;
+    else
+        PlayerConsole = None;
+
+    if ((Pawn(PlayerOwner.ViewTarget) != None) && (Pawn(PlayerOwner.ViewTarget).Health > 0))
+        PawnOwner = Pawn(PlayerOwner.ViewTarget);
+    else if (PlayerOwner.Pawn != None )
+        PawnOwner = PlayerOwner.Pawn;
+//    else
+//        PawnOwner = None;
+
+    if ((PawnOwner != None) && (PawnOwner.PlayerReplicationInfo != None))
+        PawnOwnerPRI = PawnOwner.PlayerReplicationInfo;
+    else
+        PawnOwnerPRI = PlayerOwner.PlayerReplicationInfo;
+}
 
 
 

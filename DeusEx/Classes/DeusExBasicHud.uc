@@ -24,8 +24,6 @@
 
 class DeusExBasicHUD extends HUD;
 
-//const TRACE_LOS_DIST = 8000;
-
 struct sToolBeltSelectedItem
 {
   var() int positionX;
@@ -150,7 +148,7 @@ var texture HudHitBase, HudHitFrame, HudHitBody,HudHitArmL,  HudHitArmR,HudHitLe
 var material HitMarkerMat;
 var material INBox;
 
-var PlayerController Player;
+//var PlayerController Player;
 
 var float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
 var int ItemNameOffsetV, ItemNameOffSetH;
@@ -180,12 +178,12 @@ var bool bDrawInfo;
 var bool bDefenseActive;
 var int defenseLevel;
 var DeusExProjectile defenseTarget;
-
+/*
 var bool bSpyDroneActive;
 var int spyDroneLevel;
 var float spyDroneLevelValue;
 var SpyDrone aDrone;
-
+*/
 var bool bTargetActive;
 var int targetLevel;
 var Actor lastTarget;
@@ -198,7 +196,6 @@ var int activeCount;
 
 
 var bool bDrawCrossHair, bDrawHealth, bDrawFrobBox;
-var float textYStep, textYStart, ttySize, ttyCounter, ttyRate, ttyCRate, resistance;
 
 var float recentItemTime, recentPainTime;
 
@@ -230,788 +227,17 @@ static function bool IsTargetInFrontOfPlayer(Canvas C, Actor Target, out Vector 
     return true;
 }
 
-
-
-
-
-//=======================================================================
-// Адаптация AugmentationDisplayWindow
-//=======================================================================
-
-// SpyDrone: ошибок не замечено, работает точно как в оригинале.
-// Перемещение дрона работает из DeusExPlayerController.
-/*function DrawSpyDroneAugmentation(Canvas c)
-{
-    local String str;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-    local float x, y, w, h;//, mult;
-    local Vector loc;
-
-    // set the coords of the drone window
-    boxW = c.SizeX/4;
-    boxH = c.SizeY/4;
-    boxCX = c.SizeX/8 + marginX;
-    boxCY = c.SizeY/2;
-    boxTLX = boxCX - boxW/2;
-    boxTLY = boxCY - boxH/2;
-    boxBRX = boxCX + boxW/2;
-    boxBRY = boxCY + boxH/2;
-
-        str = msgDroneActive;
-        c.textsize(str, w,h);
-        x = boxCX - w/2;
-        y = boxTLY - h - marginX;
-        c.SetPos(x,y);
-        c.DrawText(str);
-
-    if (aDrone == None)
-    {
-        loc = (2.0 + class'SpyDrone'.Default.CollisionRadius + Playerowner.pawn.CollisionRadius) * Vector(Playerowner.pawn.GetViewRotation());
-        loc.Z = Playerowner.pawn.BaseEyeHeight;
-        loc += Playerowner.pawn.Location;
-        aDrone = Playerowner.pawn.Spawn(class'SpyDrone', Playerowner.pawn,, loc, Playerowner.pawn.Rotation);
-    }
-        if (aDrone != None)
-        {
-            aDrone.Speed = 3 * spyDroneLevelValue;
-            aDrone.MaxSpeed = 3 * spyDroneLevelValue;
-            aDrone.Damage = 5 * spyDroneLevelValue;
-            aDrone.blastRadius = 8 * spyDroneLevelValue;
-
-            c.reset();
-            C.Font = LoadProgressFont();
-            C.DrawActor(None, false, true); // Clear the z-buffer here
-            c.DrawPortal(boxTLX, boxTLY, boxW,boxH, aDrone, aDrone.Location, aDrone.Rotation, 90);
-            DrawDropShadowBox(c, boxTLX, boxTLY, boxW, boxH);
-
-                    // print a low energy warning message
-                if ((Human(Playerowner.pawn).Energy / Human(Playerowner.pawn).Default.Energy) < 0.2)
-                {
-                str = msgEnergyLow;
-                c.TextSize(str, w, h);
-                x = boxCX - w/2;
-                y = boxTLY + marginX;
-                c.SetDrawColor(255,0,0);
-                c.SetPos(x,y);
-                c.DrawText(str);
-                c.DrawColor = colHeaderText;
-                }
-
-        }
-        else
-            Playerowner.ClientMessage(msgCantLaunch);
-} */
-
-
-// ----------------------------------------------------------------------
-// DrawTargetAugmentation()
-// ----------------------------------------------------------------------
-// Есть проблемы с изображением объекта, как обойти пока не знаю.
-/*function DrawTargetAugmentation(Canvas C)
-{
-    local String str, strG;
-    local Actor target;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;//, XL;
-    local float x, y, w, h, mult;//, x2, y2;
-    local Vector v1, v2, sp1, sp2;
-    local int i, j, k, r;
-    local DeusExWeapon weapon;
-    local bool bUseOldTarget;
-    local vector AimLocation;
-    local array<string> Lines;
-
-    crossColor.R = 255;
-    crossColor.G = 255;
-    crossColor.B = 255;
-    crossColor.A = 255;
-
-    C.Font = LoadProgressFont();
-
-    // check 500 feet in front of the player
-    target = TraceLOS(TRACE_LOS_DIST, AimLocation);
-
-    // draw targetting reticle information based on the weapon's accuracy
-    // reticle size is based on accuracy - larger box = higher (worse) accuracy value
-    // reticle shrinks as accuracy gets better (value decreases)
-//    if ((target != None) && (!target.IsA('StaticMeshActor'))) // Ах-ох
-    if (Target != None)
-    {
-        // get friend/foe color info
-        if (target.IsA('ScriptedPawn'))
-        {
-            if (ScriptedPawn(target).GetPawnAllianceType(DeusExPawn(Playerowner.pawn)) == ALLIANCE_Hostile)
-            {
-                crossColor.R = 255;
-                crossColor.G = 0;
-                crossColor.B = 0;
-            }
-            else
-            {
-                crossColor.R = 0;
-                crossColor.G = 255;
-                crossColor.B = 0;
-            }
-        }
-
-        weapon = DeusExWeapon(Playerowner.pawn.Weapon);
-        if ((weapon != None) && !weapon.bHandToHand && !bUseOldTarget)
-        {
-            // if the target is out of range, don't draw the reticle
-            if (weapon.MaxRange >= VSize(target.Location - Playerowner.pawn.Location))
-            {
-                w = c.sizeX;
-                h = c.sizeY;
-                x = int(w * 0.5)-1;
-                y = int(h * 0.5)-1;
-
-                // scale based on screen resolution - default is 640x480
-                mult = FClamp(weapon.currentAccuracy * 80.0 * (c.sizeX/640.0), corner, 80.0);
-
-                // make sure it's not too close to the center unless you have a perfect accuracy
-                mult = FMax(mult, corner+4.0);
-                if (weapon.currentAccuracy == 0.0)
-                    mult = corner;
-
-                // draw the drop shadowed reticle
-                c.SetDrawColor(0,0,0);
-                for (i=1; i>=0; i--)
-                {
-                    c.setpos(x+i, y-mult+i);
-                    c.DrawTileStretched(texture'Solid', 1, corner);
-
-                    c.setpos(x+i, y+mult-corner+i);
-                    c.DrawTileStretched(texture'Solid', 1, corner);
-
-                    c.setpos(x-(corner-1)/2+i, y-mult+i);
-                    c.DrawTileStretched(texture'Solid', corner, 1);
-
-                    c.setpos(x-(corner-1)/2+i, y+mult+i);
-                    c.DrawTileStretched(texture'Solid', corner, 1);
-
-
-                    c.setpos(x-mult+i, y+i);
-                    c.DrawTileStretched(texture'Solid', corner, 1);
-
-                    c.setpos(x+mult-corner+i, y+i);
-                    c.DrawTileStretched(texture'Solid', corner, 1);
-
-                    c.setpos(x-mult+i, y-(corner-1)/2+i);
-                    c.DrawTileStretched(texture'Solid', 1, corner);
-
-                    c.setpos(x+mult+i, y-(corner-1)/2+i);
-                    c.DrawTileStretched(texture'Solid', 1, corner);
-
-                    c.DrawColor = crossColor;
-                }
-            }
-        }
-
-        // movers are invalid targets for the aug
-        if (target.IsA('DeusExMover'))
-            target = None;
-    }
-
-    // let there be a 0.5 second delay before losing a target
-    if (target == None)
-    {
-        if ((Playerowner.pawn.Level.TimeSeconds - lastTargetTime < 0.5)  && (lastTarget != none))
-        {
-            target = lastTarget;
-            bUseOldTarget = True;
-
-            if (target.IsA('ScriptedPawn')) // DXR: Set back to default if pawn is not our target.
-               ScriptedPawn(Target).bOwnerNoSee = ScriptedPawn(Target).default.bOwnerNoSee;
-        }
-        else
-        {
-            lastTarget = None;
-        }
-    }
-    else
-    {
-        lastTargetTime = Playerowner.Pawn.Level.TimeSeconds;
-        bUseOldTarget = False;
-        if (lastTarget != target)
-        {
-            lastTarget = target;
-        }
-    }
-
-    if (target != None)
-    {
-        // draw a cornered targetting box
-        v1.X = target.CollisionRadius;
-        v1.Y = target.CollisionRadius;
-        v1.Z = target.CollisionHeight;
-            
-            sp1 = C.WorldToScreen(target.Location);
-
-            boxCX = sp1.X;
-            boxCY = sp1.Y;
-
-            boxTLX = boxCX;
-            boxTLY = boxCY;
-            boxBRX = boxCX;
-            boxBRY = boxCY;
-
-            // get the smallest box to enclose actor
-            // modified from Scott's ActorDisplayWindow
-            for (i=-1; i<=1; i+=2)
-            {
-                for (j=-1; j<=1; j+=2)
-                {
-                    for (k=-1; k<=1; k+=2)
-                    {
-                        v2 = v1;
-                        v2.X *= i;
-                        v2.Y *= j;
-                        v2.Z *= k;
-                        v2.X += target.Location.X;
-                        v2.Y += target.Location.Y;
-                        v2.Z += target.Location.Z;
-
-                            sp2 = C.WorldToScreen(v2);
-                            x = sp2.X;
-                            x = sp2.Y;
-
-                            boxTLX = FMin(boxTLX, x);
-                            boxTLY = FMin(boxTLY, y);
-                            boxBRX = FMax(boxBRX, x);
-                            boxBRY = FMax(boxBRY, y);
-                    }
-                }
-            }
-
-            boxTLX = FClamp(boxTLX, marginX, c.SizeX-marginX);
-            boxTLY = FClamp(boxTLY, marginX, c.SizeY-marginX);
-            boxBRX = FClamp(boxBRX, marginX, c.SizeX-marginX);
-            boxBRY = FClamp(boxBRY, marginX, c.SizeY-marginX);
-
-            boxW = boxBRX - boxTLX;
-            boxH = boxBRY - boxTLY;
-
-            if (bTargetActive)
-            {
-                // set the coords of the zoom window, and draw the box
-                // even if we don't have a zoom window
-                x = c.sizeX/8 + marginX;
-                y = c.sizeY/2;
-                w = c.sizeX/4;
-                h = c.sizeY/4;
-
-//              DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
-
-                boxCX = c.SizeX/8 + marginX;
-                boxCY = c.SizeY/2;
-                boxTLX = boxCX - c.SizeX/8;
-                boxTLY = boxCY - c.SizeY/8;
-                boxBRX = boxCX + c.SizeX/8;
-                boxBRY = boxCY + c.SizeY/8;
-
-                if (targetLevel > 2)
-                {
-                        mult = (target.CollisionRadius + target.CollisionHeight);
-                        v1 = Playerowner.pawn.Location;
-                        v1.Z += Playerowner.pawn.BaseEyeHeight;
-                        v2 = 1.5 * Playerowner.pawn.Normal(target.Location - v1);
-
-                        C.DrawActor(None, false, true); // Clear the z-buffer here
-
-                        if (target.IsA('ScriptedPawn'))
-                            ScriptedPawn(Target).bOwnerNoSee = false;
-
-                        c.DrawPortal(boxTLX, boxTLY, w,h, target, target.Location - mult * v2, Playerowner.pawn.GetViewRotation(), 75);
-                        DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
-                }
-                else
-                {
-                    DrawDropShadowBox(c, x-w/2, y-h/2, w, h);
-                    // black out the zoom window and draw a "no image" message
-                    c.Style = ERenderStyle.STY_Normal;
-                    c.SetDrawColor(0,0,0);
-                    c.setpos(boxTLX, boxTLY);
-                    c.DrawPattern(texture'solid', w,h, 1); 
-
-                    c.SetDrawColor(255,255,255);
-                    c.drawcolor.a=255;
-                    c.TextSize(msgNoImage, w, h);
-                    x = boxCX - w/2;
-                    y = boxCY - h/2;
-                    c.SetPos(x,y);
-                    c.DrawText(msgNoImage);
-                }
-
-                // print the name of the target above the box
-                if (target.IsA('ScriptedPawn'))
-                    str = ScriptedPawn(target).BindName;
-                else if (target.IsA('DeusExDecoration'))
-                    str = DeusExDecoration(target).itemName;
-                else if (target.IsA('DeusExProjectile'))
-                    str = DeusExProjectile(target).itemName;
-                else
-                    str = target.GetItemName(String(target.Class));
-
-                // print disabled robot info
-                if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
-                    str = str $ " (" $ msgDisabled $ ")";
-                c.SetDrawColor(crossColor.r, crossColor.g, crossColor.b);
-
-                // print the range to target
-                mult = VSize(target.Location - Playerowner.pawn.Location);
-                //str = str $ CR() $ 
-                strG = msgRange @ Int(mult/16) @ msgRangeUnits;
-
-                c.textsize(str, w,h);
-                x = boxTLX + marginX;
-                y = boxTLY - h - marginX;
-                c.SetPos(x,y);
-                c.DrawText(str);
-                c.SetPos(x,y+20);
-                c.DrawText(strG);
-
-                // level zero gives very basic health info
-                if (target.IsA('ScriptedPawn'))
-                    mult = Float(ScriptedPawn(target).Health) / Float(ScriptedPawn(target).Default.Health);
-                else if (target.IsA('DeusExDecoration'))
-                    mult = Float(DeusExDecoration(target).HitPoints) / Float(DeusExDecoration(target).Default.HitPoints);
-                else
-                    mult = 1.0;
-
-                if (targetLevel == 0)
-                {
-                    // level zero only gives us general health readings
-                    if (mult >= 0.66)
-                    {
-                        str = msgHigh;
-                        mult = 1.0;
-                    }
-                    else if (mult >= 0.33)
-                    {
-                        str = msgMedium;
-                        mult = 0.5;
-                    }
-                    else
-                    {
-                        str = msgLow;
-                        mult = 0.05;
-                    }
-
-                    str = str @ msgHealth;
-                }
-                else
-                {
-                    // level one gives exact health readings
-                    str = Int(mult * 100.0) $ msgPercent;
-                    if (target.IsA('ScriptedPawn') && !target.IsA('Robot') && !target.IsA('Animal'))
-                    {
-                        x = mult;       // save this for color calc
-                        str = str @ msgOverall;
-                        mult = Float(ScriptedPawn(target).HealthHead) / Float(ScriptedPawn(target).Default.HealthHead);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgHead;
-                        mult = Float(ScriptedPawn(target).HealthTorso) / Float(ScriptedPawn(target).Default.HealthTorso);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgTorso;
-                        mult = Float(ScriptedPawn(target).HealthArmLeft) / Float(ScriptedPawn(target).Default.HealthArmLeft);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgLeftArm;
-                        mult = Float(ScriptedPawn(target).HealthArmRight) / Float(ScriptedPawn(target).Default.HealthArmRight);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgRightArm;
-                        mult = Float(ScriptedPawn(target).HealthLegLeft) / Float(ScriptedPawn(target).Default.HealthLegLeft);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgLeftLeg;
-                        mult = Float(ScriptedPawn(target).HealthLegRight) / Float(ScriptedPawn(target).Default.HealthLegRight);
-                        str = str $ CR() $ Int(mult * 100.0) $ msgPercent @ msgRightLeg;
-                        mult = x;
-                    }
-                    else
-                    {
-                        str = str @ msgHealth;
-                    }
-                }
-
-                C.Font = LoadProgressFont();
-                C.StrLen(str, w, h);
-                C.WrapStringToArray(str, Lines, w, "|");
-                x = boxTLX + marginX;
-                y = boxTLY + marginX;
-                C.DrawColor = GetColorScaled(mult);
-                C.DrawColor.A=255;
-                    for ( r = 0; r < Lines.Length; r++ )
-                    {
-                        C.SetPos(x,y += 15);
-                    C.DrawText(lines[r]);
-                }
-                C.DrawColor = colHeaderText;
-
-                if (targetLevel > 1)
-                {
-                    // level two gives us weapon info as well
-                    if (target.IsA('Pawn'))
-                    {
-                        str = msgWeapon;
-
-                        if (Pawn(target).Weapon != None)
-                            str = str @ target.GetItemName(String(Pawn(target).Weapon.Class));
-                        else
-                            str = str @ msgNone;
-
-                        c.textsize(str, w,h);
-                        x = boxTLX + marginX;
-                        y = boxBRY - h - marginX;
-                        c.setpos(x,y);
-                        c.drawtext(str);
-                    }
-                }
-            }
-            else
-            {
-                // display disabled robots
-                if (target.IsA('Robot') && (Robot(target).EMPHitPoints == 0))
-                {
-                    str = msgDisabled;
-                    crossColor.A = 255;
-                    c.drawColor = crossColor;
-                    c.textsize(str, w,h);
-                    x = boxCX - w / 2;// Верно. - c.SizeX / 2; //w/2;
-                    y = boxTLY + h + marginX;
-
-                    c.SetPos(200,200);
-                    c.DrawText("Robots: X = "$x$" Y = "$y $ "  boxTLY = "$boxTLY$"  boxTLX = "$boxTLX);
-
-                    c.setpos(x,y);
-                    c.drawtext(str);
-                }
-            }
-    }
-    else if (bTargetActive)
-    {
-        if (Playerowner.pawn.Level.TimeSeconds % 1.5 > 0.75)
-            str = msgScanning1;
-        else
-            str = msgScanning2;
-        c.textsize(str, w,h);
-        x = c.SizeX/2 - w/2;
-        y = (c.sizeY/2 - h) - 20;
-        c.setpos(x,y);
-        c.DrawText(str);
-    }
- c.ReSet();
-    // set the crosshair colors
-//  DeusExRootWindow(player.rootWindow).hud.cross.SetCrosshairColor(crossColor);
-}
-*/
-//
-// AugDefense. Обожаю этот ауг! Особенно веселит когда на максимальном уровне
-// NPC пытается бросить гранату :D
-// Работает как в оригинале, проблем не замечено.
-/*function DrawDefenseAugmentation(Canvas C)
-{
-    local String str, strA;
-    local float boxCX, boxCY;
-    local float x, y, w, h, mult;
-    local bool bDrawLine;
-    local vector sp1, EyePos, RelativeToPlayer;
-
-    C.Font = LoadProgressFont();
-    // Данные приходят из AugDefense с интервалом 0.1 сек.
-    if (defenseTarget != None)
-    {
-        bDrawLine = False;
-
-        if (defenseTarget.IsInState('Exploding'))
-        {
-            str = msgADSDetonating;
-            bDrawLine = True;
-        }
-        else
-            str = msgADSTracking;
-
-        mult = VSize(defenseTarget.Location - Playerowner.pawn.Location);
-//      str = str $ Cr() $ msgRange @ Int(mult/16) @ msgRangeUnits;
-        strA = msgRange @ Int(mult/16) @ msgRangeUnits;
-
-//
-        EyePos = Human(Playerowner.pawn).Location;
-    EyePos.Z += Human(Playerowner.pawn).EyeHeight;
-
-        RelativeToPlayer = (defenseTarget.Location - EyePos) << Human(Playerowner.pawn).GetViewRotation();
-        if (RelativeToPlayer.X < 0.01)
-        {
-            str = str @ msgBehind;
-        }
-//
-        sp1 = C.WorldToScreen(defenseTarget.Location);
-        boxCX = sp1.X;
-        boxCY = sp1.Y;
-
-        c.TextSize(str, w, h);
-        x = boxCX - w/2;
-        y = boxCY - h;
-        c.DrawColor = RedColor;
-
-        c.SetPos(x,y);
-        c.DrawText(str);
-// Возврат каретки игнорируется, либо перенос происходит за пределами моего сознания :\
-        c.SetPos(x + 20,y + 20);
-        c.DrawText(strA);
-
-        c.DrawColor = colHeaderText;
-
-        if (bDrawLine)
-        {
-            c.DrawColor = RedColor;
-            Interpolate(c, c.sizeX/2, c.sizeY/2, boxCX, boxCY, 64);
-            c.DrawColor = colHeaderText;
-        }
-    }
-} */
-
-//
-// AugVision
-// Подсказки: \/
-/*native(1288) final function DrawActor(Actor actor, optional bool bClearZ,
-                                      optional bool bConstrain, optional bool bUnlit,
-                                      optional float drawScale, optional float scaleGlow,
-                                      optional texture skin);
-
-native(1285) final function DrawPattern(float destX, float destY,
-                                        float destWidth, float destHeight,
-                                        float orgX, float orgY,
-                                        texture tx);*/
-// Требуется коррекция...
-/*function DrawVisionAugmentation(Canvas C)
-{
-    local Vector loc;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-    local float dist, x, y, w, h;
-    local Actor A;
-    local Material oldSkins[9];
-
-    // Улучшает видимость
-    C.ColorModulate.X = 8;
-    C.ColorModulate.Y = 8;
-    C.ColorModulate.Z = 8;
-    C.ColorModulate.W = 8;
-
-    boxW = C.SizeX / 2;
-    boxH = C.SizeY / 2;
-    boxCX = C.SizeX / 2;
-    boxCY = C.SizeY / 2;
-    boxTLX = boxCX - boxW/2;
-    boxTLY = boxCY - boxH/2;
-    boxBRX = boxCX + boxW/2;
-    boxBRY = boxCY + boxH/2;
-
-    // at level one and higher, enhance heat sources (FLIR)
-    // use DrawActor to enhance NPC visibility
-    if (visionLevel >= 1)
-    {
-        // shift the entire screen to dark red (except for the middle box)
-        C.Style = ERenderStyle.STY_Modulated;
-
-        c.SetPos(0,0);
-        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX,boxTLY);
-
-        c.SetPos(0,boxBRY);
-        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX,C.SizeY-boxBRY);
-
-        c.SetPos(0,boxTLY);
-        C.DrawTileStretched(Texture'ConWindowBackground',boxTLX,boxH);
-
-        c.SetPos(boxBRX,boxTLY);
-        C.DrawTileStretched(Texture'ConWindowBackground',C.SizeX-boxBRX,boxH);
-        //--//
-        c.SetPos(0,0);
-        C.DrawPattern(Texture'RedVisionVLined',C.SizeX,boxTLY,1);
-
-        c.SetPos(0,boxBRY);
-        C.DrawPattern(Texture'RedVisionVLined',C.SizeX,C.SizeY-boxBRY,1);
-
-        c.SetPos(0,boxTLY);
-        C.DrawPattern(Texture'RedVisionVLined',boxTLX,boxH,1);
-
-        c.SetPos(boxBRX,boxTLY);
-        C.DrawPattern(Texture'RedVisionVLined',C.SizeX-boxBRX,boxH,1); // SolidRed
-
-        // adjust for the player's eye height
-        loc = Human(Playerowner.pawn).Location;
-        loc.Z += Human(Playerowner.pawn).BaseEyeHeight;
-
-        // look for visible actors first
-        foreach Human(Playerowner.pawn).VisibleActors(class'Actor', A,, loc)
-            if (IsHeatSource(A))
-            {
-                SetSkins(A, oldSkins);
-                A.bUnlit=true;
-                c.DrawActor(A, false, true);
-                ResetSkins(A, oldSkins);
-            }
-
-        // now look through walls
-        if (visionLevel >= 2)
-        {
-            dist = visionLevelValue;
-            foreach Human(Playerowner.pawn).RadiusActors(class'Actor', A, dist, loc)
-                if (IsHeatSource(A))
-                {
-                    SetSkins(A, oldSkins);
-                    A.bUnlit=true;
-                    c.DrawActor(A, false, true);
-                    ResetSkins(A, oldSkins);
-                }
-        }
-
-            // draw text label
-            C.Style = ERenderStyle.STY_Normal;
-            C.TextSize (msgIRAmpActive, w, h);
-            x = boxTLX + marginX;
-            y = boxTLY - marginX - h;
-            C.SetDrawColor(255,255,255);
-            c.SetPos(x,y);
-            C.DrawText(msgIRAmpActive);
-    }
-
-    // shift the middle of the screen green (NV) and increase the contrast
-    C.Style = ERenderStyle.STY_Modulated;
-    c.SetPos(boxTLX, boxTLY);
-    C.SetDrawColor(32,255,16);
-    C.DrawPattern(Texture'GreenVisionLined',boxW,boxH,1); // Так от него куда больше пользы!
-    c.SetPos(boxTLX, boxTLY);
-    C.DrawPattern(Texture'GreenVisionLined',boxW,boxH,1);
-    C.Style = ERenderStyle.STY_Normal;
-
-    DrawDropShadowBox(c, boxTLX, boxTLY, boxW, boxH);
-
-    // draw text label
-    C.TextSize (msgLightAmpActive, w, h);
-    x = boxTLX + marginX;
-    y = boxTLY + marginX;
-    C.SetDrawColor(255,255,255);
-    c.SetPos(x,y);
-    C.DrawText(msgLightAmpActive);
-}*/
-
-
-
-// <Сервисные функции>
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function bool GetAssignedKeys( string BindAlias, out array<string> BindKeyNames, out array<string> LocalizedBindKeyNames )
-{
-    local int i, iKey;
-    local string s;
-
-    BindKeyNames.Length = 0;
-    LocalizedBindKeyNames.Length = 0;
-    s = PlayerOwner.ConsoleCommand("BINDINGTOKEY" @ "\"" $ BindAlias $ "\"");
-    if ( s != "" )
-    {
-        Split(s, ",", BindKeyNames);
-        for ( i = 0; i < BindKeyNames.Length; i++ )
-        {
-            iKey = int(PlayerOwner.ConsoleCommand("KEYNUMBER" @ BindKeyNames[i]));
-            if ( iKey != -1 )
-                LocalizedBindKeyNames[i] = PlayerOwner.ConsoleCommand("LOCALIZEDKEYNAME" @ iKey);
-        }
-    }
-    return BindKeyNames.Length > 0;
-}
-
-function bool GetAugBind(string BindKeyName, out string BindKeyValue)
-{
-    if (BindKeyName != "")
-    {
-        BindKeyValue = PlayerOwner.ConsoleCommand("KEYBINDING" @ BindKeyName);
-        return BindKeyValue != "";
-    }
-    return false;
-}
-
-
 function GetMapTrueNorth()
 {
     local DeusExLevelInfo info;
 
-    if (player != None) 
+    if (DeusExPlayer(PawnOwner) != None) 
     {
-        info = Human(Playerowner.pawn).GetLevelInfo();
+        info = DeusExPlayer(PawnOwner).GetLevelInfo();
 
         if (info != None)
             mapNorth = info.TrueNorth;
     }
-}
-
-// перенос строки
-function String CR()
-{
-    return "|";
-}
-
-// ----------------------------------------------------------------------
-// IsHeatSource()
-// ----------------------------------------------------------------------
-
-function bool IsHeatSource(Actor A)
-{
-    if (A.IsA('ScriptedPawn'))
-        return True;
-    else if (A.IsA('DeusExCarcass'))
-        return True;
-    else if (A.IsA('FleshFragment'))
-        return True;
-    else
-        return False;
-}
-
-// ----------------------------------------------------------------------
-// TraceLOS()
-// ----------------------------------------------------------------------
-function Actor TraceLOS(float checkDist, out vector HitLocation)
-{
-    local Actor target;
-    local Vector HitLoc, HitNormal, StartTrace, EndTrace;
-    local Human DXR;
-
-    target = None;
-
-    // figure out how far ahead we should trace
-    StartTrace = PlayerOwner.Pawn.Location;
-    EndTrace = PlayerOwner.Pawn.Location + (Vector(Player.GetViewRotation()) * checkDist);
-
-    // adjust for the eye height
-    StartTrace.Z += PlayerOwner.Pawn.BaseEyeHeight;
-    EndTrace.Z += PlayerOwner.Pawn.BaseEyeHeight;
-
-    // find the object that we are looking at
-    // make sure we don't select the object that we're carrying
-    DXR = Human(PlayerOwner.pawn);
-    foreach DXR.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
-    {
-      if (target.bWorldGeometry) //DXR: Not StaticMeshes.
-      {
-         target = none;
-         break;
-      }
-        //G-Flex: allow remote viewing of corpses too
-        //G-Flex: don't allow viewing of trash
-        //Bjorn: View pickups that are projectile targets.
-        if (target.IsA('Pawn') || target.IsA('DeusExCarcass') || (target.IsA('DeusExDecoration') && !target.IsA('Trash')) || target.IsA('ThrownProjectile') ||
-            (target.IsA('DeusExMover') || (target.IsA('Inventory') && Inventory(target).bProjTarget)))
-        {                                                              
-            //== Y|y: don't find hidden objects
-            if (target.bHidden)
-                target = None;
-            else if (target != DXR.CarriedDecoration)
-            {
-                //G-Flex: disallow viewing of invincible, no-highlight decorations like trees
-                if (target.IsA('DeusExDecoration'))
-                {
-                    if (!DeusExDecoration(target).bInvincible || DeusExDecoration(target).bHighlight)
-                        break;
-                }
-                else
-                    break;
-            }
-        }
-    }
-    HitLocation = HitLoc;
-    return target;
 }
 
 // ----------------------------------------------------------------------
@@ -1055,39 +281,6 @@ function Interpolate(Canvas C, float fromX, float fromY, float toX, float toY, i
     }
 }
 
-// Преобразованные функции из ActorDisplayWindow //
-// Рисует цилиндр коллизии.                      //
-function DrawCylinder(Canvas c, actor trackActor)
-{
-    local int         i;
-    local vector      topCircle[8];
-    local vector      bottomCircle[8];
-    local float       topSide, bottomSide;
-    local int         numPoints;
-
-        topSide = trackActor.Location.Z + trackActor.CollisionHeight;
-        bottomSide = trackActor.Location.Z - trackActor.CollisionHeight;
-        for (i=0; i<maxPoints; i++)
-        {
-            topCircle[i] = trackActor.Location;
-            topCircle[i].Z = topSide;
-            topCircle[i].X += sinTable[i]*trackActor.CollisionRadius;
-            topCircle[i].Y += sinTable[i+maxPoints/4]*trackActor.CollisionRadius;
-            bottomCircle[i] = topCircle[i];
-            bottomCircle[i].Z = bottomSide;
-        }
-        numPoints = maxPoints;
-
-    for (i=0; i<numPoints; i++)
-        DrawLineA(c, topCircle[i], bottomCircle[i]);
-    for (i=0; i<numPoints-1; i++)
-    {
-        DrawLineA(c, topCircle[i], topCircle[i+1]);
-        DrawLineA(c, bottomCircle[i], bottomCircle[i+1]);
-    }
-    DrawLineA(c, topCircle[i], topCircle[0]);
-    DrawLineA(c, bottomCircle[i], bottomCircle[0]);
-}
 
 function DrawLineA(Canvas c, vector point1, vector point2)
 {
@@ -1289,60 +482,60 @@ else
 
 function UpdateHud()
 {
- Player = PlayerOwner; //Level.GetLocalPlayerController();
+    if (PawnOwner != None)
+    {
+       if (Human(Playerowner.pawn)!=none) // && Human(player.pawn).Health > 0)
+       {
+           Health=                 Human(Playerowner.pawn).Health;
+           HealthHead=         Human(Playerowner.pawn).HealthHead;
+           HealthTorso=        Human(Playerowner.pawn).HealthTorso;
+           HealthLegLeft=  Human(Playerowner.pawn).HealthLegLeft;
+           HealthLegRight= Human(Playerowner.pawn).HealthLegRight;
+           HealthArmLeft=  Human(Playerowner.pawn).HealthArmLeft;
+           HealthArmRight= Human(Playerowner.pawn).HealthArmRight;
 
- if (player != none)
- {
-     If (Human(Playerowner.pawn)!=none) // && Human(player.pawn).Health > 0)
-     {
-        Health=                 Human(Playerowner.pawn).Health;
-        HealthHead=         Human(Playerowner.pawn).HealthHead;
-        HealthTorso=        Human(Playerowner.pawn).HealthTorso;
-        HealthLegLeft=  Human(Playerowner.pawn).HealthLegLeft;
-        HealthLegRight= Human(Playerowner.pawn).HealthLegRight;
-        HealthArmLeft=  Human(Playerowner.pawn).HealthArmLeft;
-        HealthArmRight= Human(Playerowner.pawn).HealthArmRight;
+           BioEnergy           = Human(Playerowner.pawn).Energy;
+           BioEnergyMax    = Human(Playerowner.pawn).EnergyMax;
 
-        BioEnergy           = Human(Playerowner.pawn).Energy;
-        BioEnergyMax    = Human(Playerowner.pawn).EnergyMax;
-
-        if (bUnderwater)
-        {
-            // if we are already underwater
-            if (Human(Playerowner.Pawn).HeadVolume.bWaterVolume)
-            {
-                // if we are still underwater
-                breathPercent = 100.0 * Human(Playerowner.pawn).swimTimer / Human(Playerowner.pawn).swimDuration;
-                breathPercent = FClamp(breathPercent, 0.0, 100.0);
-            }
-            else
-            {
-                // if we are getting out of the water
-                bUnderwater = False;
-                breathPercent = 100;
-            }
-        }
-        else if (Human(Playerowner.Pawn).HeadVolume.bWaterVolume)
-        {
-            // if we just went underwater
-            bUnderwater = True;
-            breathPercent = 100;
-        }
-     }
-        if (!bSpyDroneActive)
-        {
-            if (aDrone != None)
-            {
-                aDrone.TakeDamage(100, None, aDrone.Location, vect(0,0,0), class'DM_EMP');
-                aDrone = None;
-            }
-        }
- }
+           if (bUnderwater)
+           {
+               // if we are already underwater
+               if (PawnOwner.HeadVolume.bWaterVolume)
+               {
+                   // if we are still underwater
+                   breathPercent = 100.0 * Human(Playerowner.pawn).swimTimer / Human(Playerowner.pawn).swimDuration;
+                   breathPercent = FClamp(breathPercent, 0.0, 100.0);
+               }
+               else
+               {
+                   // if we are getting out of the water
+                   bUnderwater = False;
+                   breathPercent = 100;
+               }
+           }
+           else if (PawnOwner.HeadVolume.bWaterVolume)
+           {
+               // if we just went underwater
+               bUnderwater = true;
+               breathPercent = 100;
+           }
+       }
+       if (!DeusExPlayer(PawnOwner).bSpyDroneActive)
+       {
+          if (DeusExPlayer(PawnOwner).aDrone != None)
+          {
+              DeusExPlayer(PawnOwner).aDrone.TakeDamage(100, None, DeusExPlayer(PawnOwner).aDrone.Location, vect(0,0,0), class'DM_EMP');
+              DeusExPlayer(PawnOwner).aDrone = None;
+          }
+       }
+    }
 }
 
 event SetInitialState()
 {
     local int i; // Перенесено из ActorDisplayWindow > InitWindow()<<
+
+    dxc = new(Outer) class'DxCanvas';
 
     maxPoints = 8;
     for (i=0; i<maxPoints*2; i++)
@@ -1350,9 +543,9 @@ event SetInitialState()
         //>>
 
     GetMapTrueNorth();
-    ConsoleMessageCount=8; // Human(player.pawn).MaxLogLines;
+    ConsoleMessageCount = 8; // Human(player.pawn).MaxLogLines;
 
-    dxc = new(none) class'DxCanvas';
+
 
     Super.SetInitialState();
 }
@@ -1381,8 +574,8 @@ event PostRender(canvas u)
         u.DrawText("I'm here");*/
 
     super.postrender(u);
-    if ((cubemapmode) || (playerOwner.pawn == none))
-        return;
+    if ((cubemapmode) || (PawnOwner == none) || !pawnOwner.IsA('DeusExPlayer'))
+         return;
 
     if (menuMode)
     {
@@ -1449,7 +642,7 @@ function RenderHitMarker(canvas c)
    if (playerowner.pawn == None)
    return;
 
-   if (PlayerPawn(playerowner.pawn).HitMarkerTime > 0.05)
+   if (PlayerPawn(PawnOwner).HitMarkerTime > 0.05)
    {
         X = (C.SizeX * 0.5) -32;
         Y = (C.SizeY * 0.5) -32;
@@ -1461,10 +654,10 @@ function RenderHitMarker(canvas c)
 
 function RenderSmallHUDHitDisplay(Canvas C)
 {
-   if ((playerowner.pawn == None) || (PlayerPawn(playerowner.pawn).bHitDisplayVisible == false))
-       return;
+   if ((PawnOwner == None) || (PlayerPawn(PawnOwner).bHitDisplayVisible == false))
+        return;
 
-   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+   if (DeusExPlayerController(PlayerOwner).bHUDBackgroundTranslucent)
        c.Style = ERenderStyle.STY_Translucent;
           else
        c.Style = ERenderStyle.STY_Normal;
@@ -1473,9 +666,9 @@ function RenderSmallHUDHitDisplay(Canvas C)
        C.SetPos(11,11);
        C.DrawIcon(HudHitBase,1);
 
-     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+     if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
      {
-         if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
              c.Style = ERenderStyle.STY_Translucent;
          else
              c.Style = ERenderStyle.STY_Alpha;
@@ -1488,29 +681,36 @@ function RenderSmallHUDHitDisplay(Canvas C)
      C.SetPos(24,16);
      C.DrawIcon(HudHitBody,1);
 
+
      C.SetPos(39,18);
      C.DrawColor = GetColorScaled(HealthHead / 100);
-     C.DrawIcon(HudHitHead,1);
+     if (DeusExPlayer(PawnOwner).HealthHead > 0) // if health of this part is 0 or less, do not render it.
+         C.DrawIcon(HudHitHead,1); // Head
 
      C.SetPos(26,28);
      C.DrawColor = GetColorScaled(HealthArmRight / 100);
-     C.DrawIcon(HudHitArmR,1);
+     if (DeusExPlayer(PawnOwner).HealthArmRight > 0)
+         C.DrawIcon(HudHitArmR,1); // Right arm
 
-     C.SetPos(C.CurX-6,C.CurY-2);
+     C.SetPos(36,26);
      C.DrawColor = GetColorScaled(HealthTorso / 100);
-     C.DrawIcon(HudHitTorso,1);
+     if (DeusExPlayer(PawnOwner).HealthTorso > 0)
+         C.DrawIcon(HudHitTorso,1);  // Body
 
-     C.SetPos(C.CurX-6,C.CurY+2);
+     C.SetPos(46,28);
      C.DrawColor = GetColorScaled(HealthArmLeft / 100);
-     C.DrawIcon(HudHitArmL,1);
+     if (DeusExPlayer(PawnOwner).HealthArmLeft > 0)
+         C.DrawIcon(HudHitArmL,1); // Left arm
 
      C.SetPos(33,45);
      C.DrawColor = GetColorScaled(HealthLegRight / 100);
-     C.DrawIcon(HudHitLegR,1);
+     if (DeusExPlayer(PawnOwner).HealthLegRight > 0)
+         C.DrawIcon(HudHitLegR,1); // Right leg
 
-     C.SetPos(C.CurX,C.CurY);
+     C.SetPos(41,45);
      C.DrawColor = GetColorScaled(HealthLegLeft / 100);
-     C.DrawIcon(HudHitLegL,1);
+     if (DeusExPlayer(PawnOwner).HealthLegLeft > 0)
+         C.DrawIcon(HudHitLegL,1); // Left leg
 
 
      // From Reborn
@@ -1531,7 +731,7 @@ function RenderSmallHUDHitDisplay(Canvas C)
     // Рисуем индикатор кислорода...
     if (bUnderwater)
     {
-        breathPercent = 100.0 * Human(Playerowner.pawn).swimTimer / Human(Playerowner.pawn).swimDuration;
+        breathPercent = 100.0 * Human(PawnOwner).swimTimer / Human(PawnOwner).swimDuration;
         breathPercent = FClamp(breathPercent, 0.0, 100.0);
 
         C.SetPos(o2PosX,o2PosY);
@@ -1579,9 +779,9 @@ function RenderFrobTarget(Canvas C)
    C.SetPos(X,Y);
 
    C.Font = LoadProgressFont();
-   FrobName = DeusExPlayer(playerOwner.pawn).frobTarget; //DeusExPlayerController(Player).FrobTarget;
+   FrobName = DeusExPlayer(PawnOwner).frobTarget; //DeusExPlayerController(Player).FrobTarget;
 
-   if ((FrobName != None) && (DeusExPlayerController(Player).IsHighlighted(frobName)) && (!bDrawInfo))
+   if ((FrobName != None) && (DeusExPlayerController(PlayerOwner).IsHighlighted(frobName)) && (!bDrawInfo))
    {
         // пульсация рамки
           offset = (24.0 * (frobname.Level.TimeSeconds % 0.3)); // Original
@@ -2047,10 +1247,12 @@ function RenderCompass(Canvas C)
 
    c.DrawColor = compassBG;
    C.SetPos(11,116);
-   if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+
+   if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
        c.Style = ERenderStyle.STY_Translucent;
           else
-           c.Style = ERenderStyle.STY_Normal;
+       c.Style = ERenderStyle.STY_Normal;
+
    C.DrawIcon(Texture'HUDCompassBackground_1',1.0);
 
    c.DrawColor = compassFrame;
@@ -2061,7 +1263,7 @@ function RenderCompass(Canvas C)
    C.SetDrawColor(255,255,255);
    C.SetPos(11,116);
 
-   bearing = PlayerOwner.Pawn.GetViewRotation().Yaw - mapNorth;
+   bearing = PlayerOwner.GetViewRotation().Yaw - mapNorth;
    if(bearing < 0)
    {
       bearing = bearing * -1;
@@ -2100,11 +1302,9 @@ function RenderAugsBelt(Canvas C)
   local DeusExPlayer p;
   local Augmentation aug;
   local texture border;
-//  local int x;
-//  local array<string> bindKeyNames, localizedBindKeyNames;
   local string AugKeyName;
 
-    p=Human(PlayerOwner.Pawn);
+    p = Human(PawnOwner);
     if(p == none)
     {
         return;
@@ -2141,10 +1341,12 @@ function RenderAugsBelt(Canvas C)
             {
                 c.DrawColor = AugsBeltBG;//SetDrawColor(127,127,127);
                 C.SetPos(C.SizeX-44,holdY+6);
-                if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+
+                if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
                     c.Style = ERenderStyle.STY_Translucent;
                        else
-                        c.Style = ERenderStyle.STY_Normal;
+                    c.Style = ERenderStyle.STY_Normal;
+
                 C.DrawIcon(Texture'HUDIconsBackground',1.0);
 
                 if(aug.bIsActive)
@@ -2152,11 +1354,11 @@ function RenderAugsBelt(Canvas C)
                                     //if (Playerowner.pawn.Level.TimeSeconds % 1.5 > 0.75)
                       //  c.SetDrawColor(0,255,0);
                           //  else
-                            c.DrawColor = AugsBeltActive;//SetDrawColor(255,0,0);
+                            c.DrawColor = AugsBeltActive;
                 }
                 else
                 {
-                    c.DrawColor = AugsBeltInActive;//SetDrawColor(127,127,127);
+                    c.DrawColor = AugsBeltInActive;
                 }
 
                 c.Style = 3;
@@ -2164,31 +1366,24 @@ function RenderAugsBelt(Canvas C)
                 border=aug.smallIcon;
                 c.DrawIcon(border,1.0);
 
-//                c.SetDrawColor(255,255,255);
-//                if(GetAssignedKeys("ActivateAugmentation "$x, bindKeyNames, localizedBindKeyNames))
-//                {
-                    c.DrawColor = AugsBeltText;//SetDrawColor(255,255,255);
+                    c.DrawColor = AugsBeltText;
                     C.Style = 1;
                     C.SetPos(C.SizeX-38,holdY);
-//                    dxc.DrawTextJustified(AugKeyName, 2, C.SizeX-42, holdY+5, c.SizeX-12, holdY+20);
-                    AugKeyName=string(aug.GetHotKey());//DeusExPlayer(playerowner.pawn)
+                    AugKeyName=string(aug.GetHotKey());
                     dxc.DrawTextJustified("F"$AugKeyName, 2, C.SizeX-42, holdY+5, c.SizeX-12, holdY+20);
-//                }
                 holdY += 36;
             }
             aug = aug.next;
         }
-        //c.SetDrawColor(127,127,127);
-        //c.Style = 3;
 
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+        if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
         {
-           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+           if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
                c.Style = ERenderStyle.STY_Translucent;
                  else
                    c.Style = ERenderStyle.STY_Alpha;
 
-            c.DrawColor = AugsBeltFrame;//SetDrawColor(127,127,127);
+            c.DrawColor = AugsBeltFrame;
             C.SetPos(C.SizeX-64,0);
             border=Texture'DeusExUI.HUDAugmentationsBorder_Top';
             C.DrawIcon(border,1.0);
@@ -2208,12 +1403,12 @@ function RenderChargedPickups(Canvas u)
   local inventory inv;
   local int step, hudY, amount;
 
-  if (playerOwner.pawn == none)
-     return;
+  if (PawnOwner == none)
+      return;
 
   hudY = u.SizeY - 80; // Отступ от размера экрана по вертикали
 
-  for (inv=PlayerOwner.pawn.Inventory; inv!=None; inv=inv.Inventory)
+  for (inv=PawnOwner.Inventory; inv!=None; inv=inv.Inventory)
   {
     if (ChargedPickup(inv) != none && ChargedPickup(inv).IsActive())
     {
@@ -2246,16 +1441,16 @@ function RenderChargedPickups(Canvas u)
       {*/
         u.SetPos(u.SizeX-50 + HI_Back_X,hudY - step + HI_Back_Y);
         u.DrawColor = AugsBeltBG;
-            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+            if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
                 u.Style = ERenderStyle.STY_Translucent;
                   else
                     u.Style = ERenderStyle.STY_Normal;
         u.DrawTileStretched(texture'DeusExUI.UserInterface.HUDIconsBackground',64, 64); // background...
 
 //      u.Style = ERenderStyle.STY_Normal;
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+        if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
         {
-          if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+          if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
               u.Style = ERenderStyle.STY_Translucent;
               else
               u.Style = ERenderStyle.STY_Alpha;
@@ -2290,7 +1485,7 @@ function RenderAmmoDisplay(Canvas c)
 
     local inventory item;
 
-    item = DeusExPlayer(playerowner.pawn).InHand;
+    item = DeusExPlayer(PawnOwner).InHand;
 
     if (item == none)
         return;
@@ -2299,28 +1494,29 @@ function RenderAmmoDisplay(Canvas c)
 
           if (item.IsA('SkilledTool'))
           {
-                ico =  SkilledTool(DeusExPlayer(playerowner.pawn).inhand).icon;
-                toolsleft = SkilledTool(DeusExPlayer(playerowner.pawn).inhand).NumCopies;
+                ico =  SkilledTool(DeusExPlayer(PawnOwner).inhand).icon;
+                toolsleft = SkilledTool(DeusExPlayer(PawnOwner).inhand).NumCopies;
                 if (toolsleft == 0)
-                     toolsleft = 1;
+                    toolsleft = 1;
 
-                if (DeusExPlayer(playerowner.pawn).InHand.IsA('NanoKeyRing'))
-                    toolsleft = NanoKeyRing(DeusExPlayer(playerowner.pawn).inhand).GetKeyCount();
+                if (DeusExPlayer(PawnOwner).InHand.IsA('NanoKeyRing'))
+                    toolsleft = NanoKeyRing(DeusExPlayer(PawnOwner).inhand).GetKeyCount();
 
             c.DrawColor = AmmoDisplayBG;
             C.SetPos(13,C.SizeY-63);
-            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+
+            if (DeusExPlayerController(playerowner).bHUDBackgroundTranslucent)
                 c.Style = ERenderStyle.STY_Translucent;
-                  else
-                    c.Style = ERenderStyle.STY_Normal;
+                   else
+                c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
 /*            c.DrawColor = AmmoDisplayFrame;
             C.SetPos(0,C.SizeY-77);
             C.DrawIcon(Texture'HUDAmmoDisplayBorder_1',1.0);*/
-           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+           if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
            {
-            if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+            if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
               c.Style = ERenderStyle.STY_Translucent;
               else
               c.Style = ERenderStyle.STY_Alpha;
@@ -2342,8 +1538,8 @@ function RenderAmmoDisplay(Canvas c)
           }
           else if (item.IsA('DeusExWeapon'))
           {
-            if (DeusExPlayer(playerowner.pawn) != None)
-                weapon = DeusExWeapon(DeusExPlayer(playerowner.pawn).InHand);
+            if (DeusExPlayer(PawnOwner) != None)
+                weapon = DeusExWeapon(DeusExPlayer(PawnOwner).InHand);
 
             if (weapon == none)
                 return;
@@ -2352,15 +1548,15 @@ function RenderAmmoDisplay(Canvas c)
 
             c.DrawColor = AmmoDisplayBG;
             C.SetPos(13,C.SizeY-63);
-            if (DeusExPlayer(playerowner.pawn).bHUDBackgroundTranslucent)
+            if (DeusExPlayerController(PlayerOwner).bHUDBackgroundTranslucent)
                 c.Style = ERenderStyle.STY_Translucent;
                   else
                     c.Style = ERenderStyle.STY_Normal;
             C.DrawIcon(Texture'HUDAmmoDisplayBackground_1',1.0);
 
-           if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+           if (DeusExPlayerController(PlayerOwner).bHUDBordersVisible)
            {
-            if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+            if (DeusExPlayerController(PlayerOwner).bHUDBordersTranslucent)
               c.Style = ERenderStyle.STY_Translucent;
               else
               c.Style = ERenderStyle.STY_Alpha;
@@ -2419,7 +1615,7 @@ function RenderAmmoDisplay(Canvas c)
               else
               {
                 C.SetPos(66,C.SizeY-38);
-                if (DeusExPlayer(PlayerOwner.pawn).RemainingAmmoMode == 0)
+                if (DeusExPlayer(PawnOwner).RemainingAmmoMode == 0)
                    C.DrawTextJustified(clipsRemaining,1,66,C.SizeY-38,85,C.SizeY-29);
                else
                    C.DrawTextJustified(weapon.AmmoType.AmmoAmount - weapon.AmmoLeftInClip(),1,66,C.SizeY-38,85,C.SizeY-29);
@@ -2554,10 +1750,7 @@ defaultproperties
 
 //-------------------------------------------------------
 
-    textYStep=-1
-    textYStart=0
-    ttyRate=1.6
-    ttyCRate=0.05
+
     marginX=4.00 // Для аугментаций с графическим интерфейсом !!!
     corner=9.00
     margin=70.00 // Для рамки выделения!!!
