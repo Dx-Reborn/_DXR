@@ -43,6 +43,18 @@ auto state Flying
     }
 }
 
+function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
+{
+    local spark spark;
+    local vector mEndTrace, mHitLocation, mHitNormal;
+
+    mEndTrace = Location + 30 * vector(Rotation);
+
+    Trace(mHitLocation, mHitNormal, mEndTrace, , false, ,);
+    spark = Spawn(class'spark',self,'',mHitLocation + mHitNormal, rotator(mHitNormal));
+    spark.ExcludeTag[7] = 'NoDecal';
+}
+
 
 
 defaultproperties

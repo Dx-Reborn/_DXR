@@ -5,6 +5,8 @@ class Spark extends Effects;
 
 #exec OBJ LOAD FILE=Effects
 
+var float TraceMult;
+
 var Rotator rot;
 var Sound Metal[4]; // metal_impact
 var Sound Wood[4]; //?
@@ -24,12 +26,6 @@ var sound Plastic[4];
 var sound FallBack[4];
 
 
-event PostBeginPlay()
-{
-   Super.PostBeginPlay();       
-   MakeSound();
-}
-
 function SpawnDecal(Name DecalName, vector HitLoc, vector HitNormal)
 {
    local BulletHole hole;
@@ -39,6 +35,9 @@ function SpawnDecal(Name DecalName, vector HitLoc, vector HitNormal)
    local ConcreteCrack keyGen;
    local EarthHit eh;
    local BrickHit br;
+
+   if (ExcludeTag[7] == 'NoDecal')
+       return;
 
    if (DecalName == 'Metal' || DecalName == 'Ladder') // Металл
        dent = spawn(class'MetalDent', , , HitLoc, Rotator(-HitNormal));
@@ -251,7 +250,10 @@ auto state Flying
         rot.Roll += FRand() * 65535;
         SetRotation(rot);
     }
-}
+begin:
+  Sleep(0.0001);
+  MakeSound();
+} 
 
 
 function name GetImpactMaterial()
@@ -262,7 +264,7 @@ function name GetImpactMaterial()
     local name texName, texGroup;
     local material mat;
 
-    EndTrace = Location - (Vector(Rotation) * 5.0);
+    EndTrace = Location - (Vector(Rotation) * TraceMult);
 
     foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace)
     {
@@ -383,4 +385,6 @@ defaultproperties
      bCollideWorld=True
      bBounce=True
      bFixedRotationDir=True
+     TraceMult=5.0
+     Tag="123"
 }

@@ -4,21 +4,33 @@
 class Shuriken extends DeusExProjectile;
 
 // set it's rotation correctly
+// DXR: Now using correctly rotated mesh.
 event Tick(float deltaTime)
 {
-    local Rotator rot;
+//    local Rotator rot;
 
     if (bStuck)
         return;
 
-    Super.Tick(deltaTime);  
+    Super.Tick(deltaTime);
 
-    rot = Rotation;
+/*    rot = Rotation;
     rot.Roll += 16384;
     rot.Pitch -= 16384;
-    SetRotation(rot);
+    SetRotation(rot);*/
 }
 
+function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
+{
+    local spark spark;
+    local vector mEndTrace, mHitLocation, mHitNormal;
+
+    mEndTrace = Location + 30 * vector(Rotation);
+
+    Trace(mHitLocation, mHitNormal, mEndTrace, , false, ,);
+    spark = Spawn(class'spark',self,'',mHitLocation + mHitNormal, rotator(mHitNormal));
+    spark.ExcludeTag[7] = 'NoDecal';
+}
 
 defaultproperties
 {
