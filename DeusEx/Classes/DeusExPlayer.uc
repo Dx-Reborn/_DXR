@@ -209,6 +209,8 @@ var color colAmmoLowText, colAmmoText, colHeaderText;
 var Color crossColor; // цвет перекрестия
 /*-------------------------------------------------*/
 
+function UnPossessed();
+
 /* В оригинале используется при начале новой игры. Предполагаю
    что просто очищает каталог Current. Готовая функция уже есть,
    нужно просто выставить флаг, обозначающий что это еще не 
@@ -3100,15 +3102,15 @@ exec function PrevBeltItem()
 // ----------------------------------------------------------------------
 exec function PutInHand(optional Inventory inv)
 {
-    local DeusExHUD hud;
+//    local DeusExHUD hud;
 
     if (DeusExPlayerController(Controller).RestrictInput())
         return;
 
-    hud = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+//    hud = DeusExHUD(Level.GetLocalPlayerController().myHUD);
 
     // can't put anything in hand if you're using a spy drone
-    if ((inHand == None) && hud.bSpyDroneActive)
+    if ((inHand == None) && bSpyDroneActive)
         return;
 
     // can't do anything if you're carrying a corpse
@@ -5463,8 +5465,26 @@ function RemoveItemDuringConversation(Inventory item)
     }
 }
 
+/*
+   Works if bSpecialHUD=true
+*/
 function DrawHUD(Canvas u)
 {
+    local DeusExHUD hud;
+
+/*    u.Font = font'DXFonts.MSS_8';
+    u.SetDrawColor(0,255,255,255);
+    u.SetPos(200, 200);
+    u.DrawText(self@GetStateName()@" GetPlayerPawn() = "@Level.GetLocalPlayerController().myHUD.pawnOwner);
+  */
+    if (Health < 1)
+        return;
+
+    hud = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+
+    if ((hud != None) && (hud.cubemapMode || hud.menuMode))
+        return;
+
     if (bRadarActive)
     {
         DrawRadarCircle(u); // Фон радара
@@ -5483,7 +5503,6 @@ function DrawHUD(Canvas u)
         DrawSpyDroneAugmentation(u);
     }
     DrawTargetAugmentation(u);
-
 
     RenderCrosshair(u);
 }
@@ -6346,9 +6365,6 @@ function RenderCrosshair(Canvas C)
 {
    local float X,Y;
    local string MSTarget;
-
-//   if (bDrawInfo)
-//   return;
 
    X = C.ClipX * 0.5 + class'DeusExHUD'.default.CrosshairCorrectionX;
    Y = C.ClipY * 0.5 + class'DeusExHUD'.default.CrosshairCorrectionY;
