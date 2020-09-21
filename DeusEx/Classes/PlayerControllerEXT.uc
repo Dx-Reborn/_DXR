@@ -9,7 +9,12 @@ class PlayerControllerEXT extends DeusExPlayerControllerBase;
 
 const DEATH_CAM_VIEWDIST = 190;
 
-var config bool bMenusTranslucent; // Note: PlayerInterface translucency depends on color theme. //Moved from PlayerPawn
+var config bool bMenusTranslucent; // Note: PlayerInterface translucency depends on color theme. 
+var config bool bHUDBordersVisible; //Moved from PlayerPawn
+var config bool bHUDBordersTranslucent; //Moved from PlayerPawn
+var config bool bHUDBackgroundTranslucent; //Moved from PlayerPawn
+
+var config bool bObjectBeltVisible;           // Toolbelt
 
 enum EMusicMode 
 {
@@ -54,9 +59,9 @@ var input float aExtra0;
 
 var bool bCheatsEnabled;
 
-var(flashFineTuning) float deltaStep, flashFogMult;
-
 var transient Texture CurrentCubeMapTexture;
+
+
 
 event PostLoadSavedGame()
 {

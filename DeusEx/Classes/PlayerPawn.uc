@@ -7,8 +7,8 @@ class PlayerPawn extends DeusExPlayerPawn;
 const DefaultPlayerHeight = 43.5;
 const DefaultPlayerRadius = 20.0;
 const RADAR_DIST = 3000;
-const TRACE_LOS_DIST = 8000;
-const MAX_FIRE_ACTORS = 1; // Максимальная дистанция для работы аугментаций. CullDistance для ScriptedPawn также 8000.
+const TRACE_LOS_DIST = 8000;  // Максимальная дистанция для работы аугментаций. CullDistance для ScriptedPawn также 8000.
+const MAX_FIRE_ACTORS = 1;
 const MAX_INVENTORY_CELLS = 30;
 
 var() travel inventory objects[10]; // DXR: for toolbelt
@@ -43,7 +43,6 @@ var config float logTimeout;                  // Log Timeout Value
 var config byte  maxLogLines;                 // Maximum number of log lines visible
 var config bool bHUDShowAllAugs;              // TRUE = Always show Augs on HUD
 
-var config bool bObjectBeltVisible;           // Toolbelt
 var config bool bHitDisplayVisible;           // Индикатор здоровья
 var config bool bAmmoDisplayVisible;          // ToDo: Implement this.
 var config bool bAugDisplayVisible;           // ToDo: Implement this.
@@ -66,11 +65,6 @@ var config int RemainingAmmoMode;// 0: by clips (default), 1: by rounds
 
 // DXR: New option to display debug info, in addition to built-in ShowDebug()
 var config bool bExtraDebugInfo;
-
-var config bool bHUDBordersVisible;
-var config bool bHUDBordersTranslucent;
-var config bool bHUDBackgroundTranslucent;
-
 
 // used while crouching
 var travel bool bForceDuck;
@@ -147,6 +141,11 @@ function int StandingCount()
 
 function p_HandleWalking();
 exec function PutInHand(optional Inventory inv);
+
+function PlayBodyThud()
+{
+    PlaySound(sound'BodyThud', SLOT_Interact);
+}
 
 /*- Assing Conversations to pawn ---------------------------------------------------------------------------------*/
 
@@ -570,6 +569,14 @@ function HeadWoundEffects(float deltaTime)
 //             DeusExHud(hud).bGrayPoison = false;
         }
     }
+}
+
+exec function ListObjects()
+{
+   local object wtf;
+
+   foreach AllObjects(class'Object', wtf)
+           log("Object: "$wtf$" and Outer is: "$wtf.Outer);
 }
 
 
