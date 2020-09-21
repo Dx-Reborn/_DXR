@@ -5,6 +5,11 @@
 
 class MailLetter extends TrashObjects;
 
+event Landed(vector HitNormal)
+{
+    SetCollision(true, true);
+}
+
 defaultproperties
 {
      DrawType=DT_StaticMesh
@@ -16,4 +21,5 @@ defaultproperties
      buoyancy=1.0
      HitPoints=2
      fragtype=class'PaperFragment'
+     bCollideActors=false
 }

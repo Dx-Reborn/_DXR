@@ -7,19 +7,19 @@ state Active
 {
 Begin:
 Loop:
-	if (Player.Health < 100)
-		Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
-	else
-		Deactivate();
+    if (Player.Health < 100)
+        Player.HealPlayer(Int(LevelValues[CurrentLevel]), False);
+    else
+        Deactivate();
 
-//	Player.ClientFlash(0.5, vect(0, 0, 500));
-	Sleep(1.0);
-	Goto('Loop');
+    Level.GetLocalPlayerController().ClientFlash(0.5, vect(0, 0, 500));
+    Sleep(1.0);
+    Goto('Loop');
 }
 
 function Deactivate()
 {
-	Super.Deactivate();
+    Super.Deactivate();
 }
 
 

@@ -76,8 +76,8 @@ function DeleteSaveGameFiles(String Dir)
    local array<string> FoundFiles;
    local bool bDeleted;
 
-   log("Unloading level "$xLevel$"...");
-   class'PackageManager'.static.UnloadUnrealPackage(xLevel, false, false);
+//   log("Unloading level "$xLevel$"...");
+//   class'PackageManager'.static.UnloadUnrealPackage(xLevel, false, false); // DXR: Не помню зачем мне это было нужно
 
    FoundFiles = class'FileManager'.static.FindFiles(Dir$"\\*.*", true, false);
    for (i=0; i<FoundFiles.Length; i++)

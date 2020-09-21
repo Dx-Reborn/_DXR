@@ -141,203 +141,203 @@ function CreateControls()
     AppendComponent(btnPanRight, true);
 
     /*-- Text labels -----------------------------------*/
-  lOptions = new(none) class'GUILabel';
-  lOptions.bBoundToParent = true;
-  lOptions.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
-  lOptions.caption = ActiveWindowOptionsHeader;
-  lOptions.TextFont="UT2HeaderFont";
-  lOptions.bMultiLine = true;
-  lOptions.TextAlign = TXTA_Left;
-  lOptions.VertAlign = TXTA_Center;
-  lOptions.FontScale = FNS_Small;
-  lOptions.WinHeight = 20;
-  lOptions.WinWidth = 267;
-  lOptions.WinLeft = 11;//66;
-  lOptions.WinTop = 38;
-  AppendComponent(lOptions, true);
+    lOptions = new(none) class'GUILabel';
+    lOptions.bBoundToParent = true;
+    lOptions.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    lOptions.caption = ActiveWindowOptionsHeader;
+    lOptions.TextFont="UT2HeaderFont";
+    lOptions.bMultiLine = true;
+    lOptions.TextAlign = TXTA_Left;
+    lOptions.VertAlign = TXTA_Center;
+    lOptions.FontScale = FNS_Small;
+    lOptions.WinHeight = 20;
+    lOptions.WinWidth = 267;
+    lOptions.WinLeft = 11;//66;
+    lOptions.WinTop = 38;
+    AppendComponent(lOptions, true);
 
-  lMovement = new(none) class'GUILabel';
-  lMovement.bBoundToParent = true;
-  lMovement.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
-  lMovement.caption = CameraOptionsHeader;
-  lMovement.TextFont="UT2HeaderFont";
-  lMovement.bMultiLine = true;
-  lMovement.TextAlign = TXTA_Left;
-  lMovement.VertAlign = TXTA_Center;
-  lMovement.FontScale = FNS_Small;
-  lMovement.WinHeight = 20;
-  lMovement.WinWidth = 160;
-  lMovement.WinLeft = 295;//350;
-  lMovement.WinTop = 38;
-  AppendComponent(lMovement, true);
+    lMovement = new(none) class'GUILabel';
+    lMovement.bBoundToParent = true;
+    lMovement.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    lMovement.caption = CameraOptionsHeader;
+    lMovement.TextFont="UT2HeaderFont";
+    lMovement.bMultiLine = true;
+    lMovement.TextAlign = TXTA_Left;
+    lMovement.VertAlign = TXTA_Center;
+    lMovement.FontScale = FNS_Small;
+    lMovement.WinHeight = 20;
+    lMovement.WinWidth = 160;
+    lMovement.WinLeft = 295;//350;
+    lMovement.WinTop = 38;
+    AppendComponent(lMovement, true);
 
-  lPanSpeed = new(none) class'GUILabel';
-  lPanSpeed.bBoundToParent = true;
-  lPanSpeed.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
-  lPanSpeed.caption = PanZoomSpeedHeader;
-  lPanSpeed.TextFont="UT2HeaderFont";
-  lPanSpeed.bMultiLine = true;
-  lPanSpeed.TextAlign = TXTA_Center;
-  lPanSpeed.VertAlign = TXTA_Center;
-  lPanSpeed.FontScale = FNS_Small;
-  lPanSpeed.WinHeight = 28;
-  lPanSpeed.WinWidth = 124;
-  lPanSpeed.WinLeft = 297;//352;
-  lPanSpeed.WinTop = 152;
-  AppendComponent(lPanSpeed, true);
+    lPanSpeed = new(none) class'GUILabel';
+    lPanSpeed.bBoundToParent = true;
+    lPanSpeed.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    lPanSpeed.caption = PanZoomSpeedHeader;
+    lPanSpeed.TextFont="UT2HeaderFont";
+    lPanSpeed.bMultiLine = true;
+    lPanSpeed.TextAlign = TXTA_Center;
+    lPanSpeed.VertAlign = TXTA_Center;
+    lPanSpeed.FontScale = FNS_Small;
+    lPanSpeed.WinHeight = 28;
+    lPanSpeed.WinWidth = 124;
+    lPanSpeed.WinLeft = 297;//352;
+    lPanSpeed.WinTop = 152;
+    AppendComponent(lPanSpeed, true);
 
   /*---------------------------------------------------------------*/
-  winTitle = new(none) class'GUILabel';
-  winTitle.bBoundToParent = true;
-  winTitle.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    winTitle = new(none) class'GUILabel';
+    winTitle.bBoundToParent = true;
+    winTitle.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
 //  winTitle.caption = "WinTitle";
-  winTitle.TextFont="UT2HeaderFont";
-  winTitle.bMultiLine = true;
-  winTitle.TextAlign = TXTA_Left;
-  winTitle.VertAlign = TXTA_Center;
-  winTitle.FontScale = FNS_Small;
-  winTitle.WinHeight = 20;
-  winTitle.WinWidth = 500;
-  winTitle.WinLeft = 6;//61;
-  winTitle.WinTop = 205;
-  AppendComponent(winTitle, true);
+    winTitle.TextFont="UT2HeaderFont";
+    winTitle.bMultiLine = true;
+    winTitle.TextAlign = TXTA_Left;
+    winTitle.VertAlign = TXTA_Center;
+    winTitle.FontScale = FNS_Small;
+    winTitle.WinHeight = 20;
+    winTitle.WinWidth = 500;
+    winTitle.WinLeft = 6;//61;
+    winTitle.WinTop = 205;
+    AppendComponent(winTitle, true);
 
-  winDoorStatus = new(none) class'GUILabel';
-  winDoorStatus.bBoundToParent = true;
-  winDoorStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    winDoorStatus = new(none) class'GUILabel';
+    winDoorStatus.bBoundToParent = true;
+    winDoorStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
 //  winDoorStatus.caption = "winDoorStatus";
-  winDoorStatus.TextFont="UT2HeaderFont";
-  winDoorStatus.bMultiLine = true;
-  winDoorStatus.TextAlign = TXTA_Left;
-  winDoorStatus.VertAlign = TXTA_Center;
-  winDoorStatus.FontScale = FNS_Small;
-  winDoorStatus.WinHeight = 28;
-  winDoorStatus.WinWidth = 300;
-  winDoorStatus.WinLeft = 348;//403;
-  winDoorStatus.WinTop = 504;
-  AppendComponent(winDoorStatus, true);
+    winDoorStatus.TextFont="UT2HeaderFont";
+    winDoorStatus.bMultiLine = true;
+    winDoorStatus.TextAlign = TXTA_Left;
+    winDoorStatus.VertAlign = TXTA_Center;
+    winDoorStatus.FontScale = FNS_Small;
+    winDoorStatus.WinHeight = 28;
+    winDoorStatus.WinWidth = 300;
+    winDoorStatus.WinLeft = 348;//403;
+    winDoorStatus.WinTop = 504;
+    AppendComponent(winDoorStatus, true);
 
-  winCameraStatus = new(none) class'GUILabel';
-  winCameraStatus.bBoundToParent = true;
-  winCameraStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    winCameraStatus = new(none) class'GUILabel';
+    winCameraStatus.bBoundToParent = true;
+    winCameraStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
 //  winCameraStatus.caption = "winCameraStatus";
-  winCameraStatus.TextFont="UT2HeaderFont";
-  winCameraStatus.bMultiLine = true;
-  winCameraStatus.TextAlign = TXTA_Left;
-  winCameraStatus.VertAlign = TXTA_Center;
-  winCameraStatus.FontScale = FNS_Small;
-  winCameraStatus.WinHeight = 20;
-  winCameraStatus.WinWidth = 300;
-  winCameraStatus.WinLeft = 9;//64;
-  winCameraStatus.WinTop = 501;
-  AppendComponent(winCameraStatus, true);
+    winCameraStatus.TextFont="UT2HeaderFont";
+    winCameraStatus.bMultiLine = true;
+    winCameraStatus.TextAlign = TXTA_Left;
+    winCameraStatus.VertAlign = TXTA_Center;
+    winCameraStatus.FontScale = FNS_Small;
+    winCameraStatus.WinHeight = 20;
+    winCameraStatus.WinWidth = 300;
+    winCameraStatus.WinLeft = 9;//64;
+    winCameraStatus.WinTop = 501;
+    AppendComponent(winCameraStatus, true);
 
-  winTurretStatus = new(none) class'GUILabel';
-  winTurretStatus.bBoundToParent = true;
-  winTurretStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
+    winTurretStatus = new(none) class'GUILabel';
+    winTurretStatus.bBoundToParent = true;
+    winTurretStatus.TextColor = class'Canvas'.static.MakeColor(255, 255, 255);
 //  winTurretStatus.caption = "winTurretStatus";
-  winTurretStatus.TextFont="UT2HeaderFont";
-  winTurretStatus.bMultiLine = true;
-  winTurretStatus.TextAlign = TXTA_Left;
-  winTurretStatus.VertAlign = TXTA_Center;
-  winTurretStatus.FontScale = FNS_Small;
-  winTurretStatus.WinHeight = 20;
-  winTurretStatus.WinWidth = 300;
-  winTurretStatus.WinLeft = 9;//64;
-  winTurretStatus.WinTop = 515;
-  AppendComponent(winTurretStatus, true);
+    winTurretStatus.TextFont="UT2HeaderFont";
+    winTurretStatus.bMultiLine = true;
+    winTurretStatus.TextAlign = TXTA_Left;
+    winTurretStatus.VertAlign = TXTA_Center;
+    winTurretStatus.FontScale = FNS_Small;
+    winTurretStatus.WinHeight = 20;
+    winTurretStatus.WinWidth = 300;
+    winTurretStatus.WinLeft = 9;//64;
+    winTurretStatus.WinTop = 515;
+    AppendComponent(winTurretStatus, true);
 
-  SetTimer(0.25, true);
+    SetTimer(0.25, true);
 }
 
 event Timer()
 {
-  UpdateDoorStatus();
+   UpdateDoorStatus();
 }
 
 function CreateChoices()
 {
-  infoTurret = new(none) class'DXRChoiceInfo';
-  infoTurret.WinLeft = 167;//222;
-  infoTurret.WinTop = 62;
-  AppendComponent(infoTurret, true);
+    infoTurret = new(none) class'DXRChoiceInfo';
+    infoTurret.WinLeft = 167;//222;
+    infoTurret.WinTop = 62;
+    AppendComponent(infoTurret, true);
 
-  infoCamera = new(none) class'DXRChoiceInfo';
-  infoCamera.WinLeft = 167;
-  infoCamera.WinTop = 96;
-  AppendComponent(infoCamera, true);
+    infoCamera = new(none) class'DXRChoiceInfo';
+    infoCamera.WinLeft = 167;
+    infoCamera.WinTop = 96;
+    AppendComponent(infoCamera, true);
 
-  infoDoor = new(none) class'DXRChoiceInfo';
-  infoDoor.WinLeft = 167;
-  infoDoor.WinTop = 130;
-  AppendComponent(infoDoor, true);
+    infoDoor = new(none) class'DXRChoiceInfo';
+    infoDoor.WinLeft = 167;
+    infoDoor.WinTop = 130;
+    AppendComponent(infoDoor, true);
 
-  infoDoorAccess = new(none) class'DXRChoiceInfo';
-  infoDoorAccess.WinLeft = 167;
-  infoDoorAccess.WinTop = 164;
-  AppendComponent(infoDoorAccess, true);
+    infoDoorAccess = new(none) class'DXRChoiceInfo';
+    infoDoorAccess.WinLeft = 167;
+    infoDoorAccess.WinTop = 164;
+    AppendComponent(infoDoorAccess, true);
 
 /*----------------------------------------------------------------------------*/
 
-  Choice_Turret = new(none) class'ComputerSecurityChoice_Turret';
-  Choice_Turret.WinLeft = 13;//68;
-  Choice_Turret.WinTop = 62;
-  Choice_Turret.Info = infoTurret;
-  AppendComponent(Choice_Turret, true);
-  Choice_Turret.SetCameraView(self);
+    Choice_Turret = new(none) class'ComputerSecurityChoice_Turret';
+    Choice_Turret.WinLeft = 13;//68;
+    Choice_Turret.WinTop = 62;
+    Choice_Turret.Info = infoTurret;
+    AppendComponent(Choice_Turret, true);
+    Choice_Turret.SetCameraView(self);
 
-  Choice_Camera = new(none) class'ComputerSecurityChoice_Camera';
-  Choice_Camera.WinLeft = 13;
-  Choice_Camera.WinTop = 96;
-  Choice_Camera.Info = infoCamera;
-  AppendComponent(Choice_Camera, true);
-  Choice_Camera.SetCameraView(self);
+    Choice_Camera = new(none) class'ComputerSecurityChoice_Camera';
+    Choice_Camera.WinLeft = 13;
+    Choice_Camera.WinTop = 96;
+    Choice_Camera.Info = infoCamera;
+    AppendComponent(Choice_Camera, true);
+    Choice_Camera.SetCameraView(self);
 
-  Choice_DoorOpen = new(none) class'ComputerSecurityChoice_DoorOpen';
-  Choice_DoorOpen.WinLeft = 13;
-  Choice_DoorOpen.WinTop = 130;
-  Choice_DoorOpen.Info = infoDoor;
-  AppendComponent(Choice_DoorOpen, true);
-  Choice_DoorOpen.SetCameraView(self); // Ёто должно быть здесь. ≈сли поставить перед AppendComponent, будет ошибка доступа к контроллеру.
+    Choice_DoorOpen = new(none) class'ComputerSecurityChoice_DoorOpen';
+    Choice_DoorOpen.WinLeft = 13;
+    Choice_DoorOpen.WinTop = 130;
+    Choice_DoorOpen.Info = infoDoor;
+    AppendComponent(Choice_DoorOpen, true);
+    Choice_DoorOpen.SetCameraView(self); // Ёто должно быть здесь. ≈сли поставить перед AppendComponent, будет ошибка доступа к контроллеру.
 
-  Choice_DoorAccess = new(none) class'ComputerSecurityChoice_DoorAccess';
-  Choice_DoorAccess.WinLeft = 13;
-  Choice_DoorAccess.WinTop = 164;
-  Choice_DoorAccess.Info = infoDoorAccess;
-  AppendComponent(Choice_DoorAccess, true);
-  Choice_DoorAccess.SetCameraView(self);
+    Choice_DoorAccess = new(none) class'ComputerSecurityChoice_DoorAccess';
+    Choice_DoorAccess.WinLeft = 13;
+    Choice_DoorAccess.WinTop = 164;
+    Choice_DoorAccess.Info = infoDoorAccess;
+    AppendComponent(Choice_DoorAccess, true);
+    Choice_DoorAccess.SetCameraView(self);
 
-   //  ак в оригинале, котроль турели только на максимальном уровне навыка.
-   if ((winTerm.GetSkillLevel()  < 2) && (winTerm.bHacked))
-   {
-      DisableTurretControl();
-   }
+    //  ак в оригинале, контроль турели только на максимальном уровне навыка.
+    if ((winTerm.GetSkillLevel()  < 2) && (winTerm.bHacked))
+    {
+        DisableTurretControl();
+    }
 }
 
 function DisableTurretControl()
 {
-  if (Choice_Turret != none)
-      Choice_Turret.DisableChoice();
+    if (Choice_Turret != none)
+        Choice_Turret.DisableChoice();
 }
 
 function InternalOnRendered(canvas u)
 {
-  local material mt;
+    local material mt;
 
-  mt = texPanner'DeusExControls.Controls.static';
+    mt = texPanner'DeusExControls.Controls.static';
 
-  if (selectedCamera == none)
-  {
-     u.SetPos(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY);
-     u.DrawTile(mt, 652, 272, 0, 128, 128, 128);
-     u.SetPos(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY);
-     u.DrawTile(TexPanner'DeusExControls.Controls.scrolling',652,272,0,0,64,64);
-     return;
-  }
-  u.DrawActor(None, false, true); // Clear the z-buffer here
-  u.DrawActor(None, false, true); // ... twice!
-  u.DrawPortal(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY, portalSizeX, portalSizeY, selectedCamera, selectedCamera.Location, selectedCamera.Rotation,Camfov);
-  u.ReSet();
+    if (selectedCamera == none)
+    {
+        u.SetPos(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY);
+        u.DrawTile(mt, 652, 272, 0, 128, 128, 128);
+        u.SetPos(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY);
+        u.DrawTile(TexPanner'DeusExControls.Controls.scrolling',652,272,0,0,64,64);
+        return;
+    }
+    u.DrawActor(None, false, true); // DXR: Clear the z-buffer here
+    u.DrawActor(None, false, true); // ... twice!
+    u.DrawPortal(ActualLeft() - portalCorrectionX, ActualTop() - portalCorrectionY, portalSizeX, portalSizeY, selectedCamera, selectedCamera.Location, selectedCamera.Rotation,Camfov);
+    u.ReSet();
 }
 
 function bool InternalOnClick(GUIComponent Sender)
@@ -393,7 +393,7 @@ function PanCamera(Interactions.EInputKey key)
 
     localPanMod = panMod;
 
-   if (controller.ShiftPressed)
+    if (controller.ShiftPressed)
         localPanMod = Max(localPanMod * 2, 5.0);
 
     rot = selectedCamera.DesiredRotation;
@@ -420,13 +420,13 @@ function PanCamera(Interactions.EInputKey key)
 //      case IK_GreyPlus:
         case IK_Equals:     
         case IK_MouseWheelUp:
-    fov -= localPanMod * zoomSize;
+        fov -= localPanMod * zoomSize;
         break;
 
         case IK_GreyMinus:
         case IK_Minus:
         case IK_MouseWheelDown: // DXR: Mouse wheel added
-    fov += localPanMod * zoomSize;
+        fov += localPanMod * zoomSize;
         break;
     }
 
@@ -453,14 +453,14 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
     {
         PanCamera(ikey);
     }
-  return true;
+    return true;
 }
 
 function SliderOnChange(GUIComponent Sender)
 {
-  if (Sender==winPanSlider)
-  {
-    panMod = winPanSlider.Value;    
+    if (Sender==winPanSlider)
+    {
+        panMod = winPanSlider.Value;    
     }
 }
 
@@ -469,21 +469,20 @@ function ToggleCameraState()
 {
     local SecurityCamera cam;
 
-        cam = selectedCamera;
+    cam = selectedCamera;
 
-        if (cam != None)
-        {
-            if (cam.bActive)
-                cam.UnTrigger(compOwner, player);
-            else
-                cam.Trigger(compOwner, player);
+    if (cam != None)
+    {
+        if (cam.bActive)
+            cam.UnTrigger(compOwner, player);
+        else
+            cam.Trigger(compOwner, player);
 
-            // Make sure the camera isn't in bStasis=True
-            // so it responds to our every whim.
-            cam.bStasis = false;
-
-            UpdateCameraStatus();
-        }
+         // Make sure the camera isn't in bStasis=True
+         // so it responds to our every whim.
+         cam.bStasis = false;
+         UpdateCameraStatus();
+    }
 }
 
 function ToggleDoorLock()

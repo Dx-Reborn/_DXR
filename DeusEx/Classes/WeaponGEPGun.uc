@@ -12,7 +12,7 @@ event PostBeginPlay()
     // don't let NPC geps lock on to targets
     if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
         bCanTrack = False;
-}
+} 
 
 function Sound GetSelectSound()
 {

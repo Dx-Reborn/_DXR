@@ -11,9 +11,9 @@ var() bool bIcon;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-  dxc = new(none) class'DxCanvas';	
-  gl = class'DeusExGlobals'.static.GetGlobals();
-	Super.InitComponent(MyController, MyOwner);
+    dxc = DeusExHUD(PlayerOwner().myHUD).dxc; //new(none) class'DxCanvas';  
+    gl = class'DeusExGlobals'.static.GetGlobals();
+    Super.InitComponent(MyController, MyOwner);
 }
 
 
@@ -24,7 +24,7 @@ function bool InternalOnDraw(canvas c)
 
     dxc.SetCanvas(c);
 
-	  c.Style = EMenuRenderStyle.MSTY_Translucent;
+      c.Style = EMenuRenderStyle.MSTY_Translucent;
 
     if(MenuState == MSAT_Pressed)
     {
@@ -81,8 +81,8 @@ function bool InternalOnDraw(canvas c)
     }
      if (bAcceptsInput == false)
      {
-	    //c.SetDrawColor(164,164,164);
-	    c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceButtonDisabled(gl.MenuThemeIndex);
+        //c.SetDrawColor(164,164,164);
+        c.DrawColor = class'DXR_Menu'.static.GetPlayerInterfaceButtonDisabled(gl.MenuThemeIndex);
      }
      else
     //c.SetDrawColor(255,255,255);

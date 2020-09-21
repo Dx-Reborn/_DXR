@@ -4,6 +4,6 @@
 
 class HudOverlay_Log extends HUDOverlay;
 
- function Render(Canvas C)
+function Render(Canvas C)
 {
 }

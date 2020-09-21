@@ -3,7 +3,8 @@
    Contains text parser and some useful functions.
 ------------------------------------------------------*/
 
-class DXCanvas extends Object;
+class DXCanvas extends Object 
+                       Transient;
 
 var Canvas c;
 var color TeleTypeTextColor;

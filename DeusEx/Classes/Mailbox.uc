@@ -22,10 +22,10 @@ event Destroyed()
            L = spawn(class'MailLetter', , , Location, );
            if (L != None)
            {
-              L.Velocity = vRand() * 50;
-              L.velocity.Z = -2 - fRand();
+              L.Velocity = vRand() * 15;
+              L.velocity.Z = -200 * fRand();
               L.Lifespan = 10.0 + Rand(30);
-              L.SetPhysics(Phys_Flying);
+              L.SetPhysics(PHYS_Flying);
            }
        }
     }
