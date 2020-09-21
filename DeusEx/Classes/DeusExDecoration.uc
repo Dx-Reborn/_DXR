@@ -3,7 +3,7 @@
 //=============================================================================
 class DeusExDecoration extends DeusExDecorationBase;
 
-#exec obj load file=DXR_PoolTable_Set.ukx
+#exec obj load file=DXR_PoolTable_Set.usx
 #exec obj load file=DeusExDeco.ukx
 #exec OBJ LOAD FILE=Effects
 #exec OBJ LOAD FILE=Effects_EX // шейдеры
