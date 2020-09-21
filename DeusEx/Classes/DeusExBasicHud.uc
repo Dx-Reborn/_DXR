@@ -14,6 +14,7 @@
   21/06/2018: Как мне реализовать цветовые темы ? :))) 
   11/07/2018: Исправлено растягивание перекрестия с оружием в руке.
   18/06/2020: Реализован индикатор повреждения (за основу взят код из GMDX)
+  21/09/2020: Часть кода перенесена в DeusExPlayer (DrawHUD).
 -------------------------------------------------------------------------------------------------------*/
 
 
@@ -148,8 +149,6 @@ var texture HudHitBase, HudHitFrame, HudHitBody,HudHitArmL,  HudHitArmR,HudHitLe
 var material HitMarkerMat;
 var material INBox;
 
-//var PlayerController Player;
-
 var float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
 var int ItemNameOffsetV, ItemNameOffSetH;
 var int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
@@ -168,46 +167,17 @@ var float   BioEnergyMax;
 var bool bGreenPoison, bGrayPoison, bDoubledPoisonEffect;
 
 var bool bUnderwater;
-var float   breathPercent;
+var float breathPercent;
 var float o2cr; // корректор индикатора кислорода
 
 var bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключают весь ГДИ, midMenuMode растягивает скриншот на фоне.
 
 var bool bDrawInfo;
-
-var bool bDefenseActive;
-var int defenseLevel;
-var DeusExProjectile defenseTarget;
-/*
-var bool bSpyDroneActive;
-var int spyDroneLevel;
-var float spyDroneLevelValue;
-var SpyDrone aDrone;
-*/
-var bool bTargetActive;
-var int targetLevel;
-var Actor lastTarget;
-var float lastTargetTime;
-
-var bool bVisionActive;
-var int visionLevel;
-var float visionLevelValue;
-var int activeCount;
-
-
 var bool bDrawCrossHair, bDrawHealth, bDrawFrobBox;
 
-var float recentItemTime, recentPainTime;
 
 // Указатель на Север (Задается в DeusExLevelInfo (TrueNorth))
 var Int mapNorth;
-
-// Для диалоговой системы.
-var ConPlay ConPlay;
-
-var float sinTable[16];
-var int   maxPoints;
-
 
 /* returns true if target is projected on visible canvas area */
 static function bool IsTargetInFrontOfPlayer(Canvas C, Actor Target, out Vector ScreenPos, Vector CamLoc, Rotator CamRot)
@@ -240,154 +210,6 @@ function GetMapTrueNorth()
     }
 }
 
-// ----------------------------------------------------------------------
-// Interpolate()
-// ----------------------------------------------------------------------
-function Interpolate(Canvas C, float fromX, float fromY, float toX, float toY, int power)
-{
-    local float xPos, yPos;
-    local float deltaX, deltaY;
-    local float maxDist;
-    local int   points;
-    local int   i;
-
-    maxDist = 16;
-
-    points = 1;
-    deltaX = (toX-fromX);
-    deltaY = (toY-fromY);
-    while (power >= 0)
-    {
-        if ((deltaX >= maxDist) || (deltaX <= -maxDist) || (deltaY >= maxDist) || (deltaY <= -maxDist))
-        {
-            deltaX *= 0.5;
-            deltaY *= 0.5;
-            points *= 2;
-            power--;
-        }
-        else
-            break;
-    }
-
-    xPos = fromX + ((Playerowner.pawn.Level.TimeSeconds % 0.5) * deltaX * 2);
-    yPos = fromY + ((Playerowner.pawn.Level.TimeSeconds % 0.5) * deltaY * 2);
-
-    for (i=0; i<points-1; i++)
-    {
-        xPos += deltaX;
-        yPos += deltaY;
-        C.SetPos(xPos, yPos);
-        C.DrawTileStretched(Texture'Solid', 2, 2);
-    }
-}
-
-
-function DrawLineA(Canvas c, vector point1, vector point2)
-{
-    local float toX, toY;
-    local float fromX, fromY;
-    local vector tVect1, tVect2;
-
-  tVect1 = c.WorldToScreen(point1);
-  tVect2 = c.WorldToScreen(point2);
-
-  fromX = tVect1.X;
-  fromY = tVect1.Y;
-  toX = tVect2.X;
-  toY = tVect2.Y;
-
-//  if (ConvertVectorToCoordinates(point1, fromX, fromY) && ConvertVectorToCoordinates(point2, toX, toY))
-//  {
-    c.Style=ERenderStyle.STY_Normal;
-
-        c.SetDrawColor(255, 255, 255);
-        DrawPoint(c, fromX, fromY);
-        DrawPoint(c, toX, toY);
-
-        c.SetDrawColor(128, 128, 128);
-        Interpolate(c, fromX, fromY, toX, toY, 8);
-//  }
-}
-
-function DrawPoint(Canvas c, float xPos, float yPos)
-{
-    c.SetPos(xPos, yPos);
-    c.DrawTilePartialStretched(Texture'Solid',1, 1);
-}
-
-
-
-
-// ----------------------------------------------------------------------
-// SetSkins()
-//
-// copied from ActorDisplayWindow
-// ----------------------------------------------------------------------
-
-function SetSkins(Actor actor, out Material oldSkins[9])
-{
-    actor.OverlayMaterial = material'GuiContent.back.AUGVIS_Shader';
-//  local int     i;
-//  local material curSkin;
-
-//  for (i=0; i<8; i++)
-//      oldSkins[i] = actor.Skins[i];
-//  oldSkins[i] = actor.Skin;
-
-//  for (i=0; i<8; i++)
-//  {
-//      curSkin = actor.GetMeshTexture(i);
-//      actor.Skins[i] = GetGridTexture(curSkin);
-//  }
-//  actor.Skin = GetGridTexture(oldSkins[i]);
-}
-
-// ----------------------------------------------------------------------
-// ResetSkins()
-//
-// copied from ActorDisplayWindow
-// ----------------------------------------------------------------------
-
-function ResetSkins(Actor actor, Material oldSkins[9])
-{
-        actor.Overlaymaterial = none;
-//  local int i;
-
-//  for (i=0; i<8; i++)
-//      actor.Skins[i] = oldSkins[i];
-//  actor.Skin = oldSkins[i];
-}
-
-// ----------------------------------------------------------------------
-// DrawDropShadowBox()
-// ----------------------------------------------------------------------
-
-function DrawDropShadowBox(Canvas C, float x, float y, float w, float h)
-{
-    local Color oldColor;
-
-    oldColor = C.DrawColor; // Запомнить цвет
-    C.SetDrawColor(0,0,0);
-    C.Style = ERenderStyle.Sty_Normal; //STY_Modulated;
-
-    C.SetPos(x, y+h+1);
-    C.DrawTileStretched(texture'ShadowBox',w+2,1);
-
-    C.SetPos(x+w+1, y);
-    C.DrawTileStretched(texture'ShadowBox',1,h+2);
-
-    C.SetDrawColor(128,128,128);
-
-    C.SetPos(x-1,y-1);
-    C.DrawTileStretched(texture'ShadowBox', w+2, h+2);
-
-    C.SetDrawColor(oldColor.R,oldColor.G,oldColor.B, oldColor.A);
-}
-
-// ----------------------------------------------------------------------
-// FormatString()
-// ----------------------------------------------------------------------
-
 function string FormatString(float num)
 {
     local string tempstr;
@@ -405,38 +227,16 @@ function string FormatString(float num)
     return tempstr;
 }
 
-// Based on UnrealWiki examples
-/*function bool ConvertVectorToCoordinates(canvas C, vector loc,out float relativeX,out float relativeY)
-{
-    local vector EyePos, RelativeToPlayer;
-
-    C.WorldToScreen(loc);
-
-    relativeX=loc.X;
-    relativeY=loc.Y;
-
-     EyePos = Human(Playerowner.pawn).Location;
-   EyePos.Z += Human(Playerowner.pawn).EyeHeight;
-
-    RelativeToPlayer = (loc - EyePos) << Human(Playerowner.pawn).GetViewRotation();
-    if (RelativeToPlayer.X < 0.01)
-    {
-//          log("false");
-      return false;
-  }
-//log("true");
-return true;
-}*/
-
 function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplicationInfo PRI)
 {
     local int i;
-    if( bMessageBeep && MessageClass.Default.bBeep )
+
+    if (bMessageBeep && MessageClass.Default.bBeep)
         PlayerOwner.PlayBeepSound();
 
-    for( i=0; i<ConsoleMessageCount; i++ )
+    for(i=0; i<ConsoleMessageCount; i++)
     {
-        if ( TextMessages[i].Text == "" )
+        if (TextMessages[i].Text == "")
             break;
     }
     if( i == ConsoleMessageCount )
@@ -454,31 +254,29 @@ function AddTextMessage(string M, class<LocalMessage> MessageClass, PlayerReplic
     TextMessages[i].PRI = PRI;
 }
 
-/* Specific function to use Canvas.DrawActor()
- Clear Z-Buffer once, prior to rendering all actors */
-// Функция для познания Истины.
+/* 
+   Specific function to use Canvas.DrawActor()
+   Clear Z-Buffer once, prior to rendering all actors
+   Функция для познания Истины.
+*/
 function CanvasDrawActors(Canvas C, bool bClearedZBuffer)
 {
- if (PlayerOwner.pawn != none)
- {
-    if (!PlayerOwner.bBehindView && PawnOwner.Weapon != None)
-    {
-        if (!bClearedZBuffer)
-            C.DrawActor(None, false, true); // Clear the z-buffer here
-            PawnOwner.Weapon.RenderOverlays(C);
-    }
-else
-    if ((Human(Playerowner.pawn).inHand != None) && (!Human(Playerowner.pawn).inHand.IsA('Weapon')) && (!playerOwner.bBehindView))
-    {
-            Human(Playerowner.pawn).inHand.RenderOverlays(C);
-    }
- }
- super.CanvasDrawActors(C, bClearedZBuffer);
+   if (PlayerOwner.pawn != none)
+   {
+      if (!PlayerOwner.bBehindView && PawnOwner.Weapon != None)
+      {
+          if (!bClearedZBuffer)
+              C.DrawActor(None, false, true); // Clear the z-buffer here
+              PawnOwner.Weapon.RenderOverlays(C);
+      }
+      else
+      if ((Human(Playerowner.pawn).inHand != None) && (!Human(Playerowner.pawn).inHand.IsA('Weapon')) && (!playerOwner.bBehindView))
+      {
+          Human(Playerowner.pawn).inHand.RenderOverlays(C);
+      }
+   }
+   super.CanvasDrawActors(C, bClearedZBuffer);
 }
-
-// >Сервисные функции<
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 function UpdateHud()
 {
@@ -509,7 +307,7 @@ function UpdateHud()
                else
                {
                    // if we are getting out of the water
-                   bUnderwater = False;
+                   bUnderwater = false;
                    breathPercent = 100;
                }
            }
@@ -533,34 +331,11 @@ function UpdateHud()
 
 event SetInitialState()
 {
-    local int i; // Перенесено из ActorDisplayWindow > InitWindow()<<
-
     dxc = new(Outer) class'DxCanvas';
-
-    maxPoints = 8;
-    for (i=0; i<maxPoints*2; i++)
-        sinTable[i] = sin(2*3.1415926*(i/float(maxPoints)));
-        //>>
-
     GetMapTrueNorth();
     ConsoleMessageCount = 8; // Human(player.pawn).MaxLogLines;
-
-
-
     Super.SetInitialState();
 }
-
-function DeusExPlayer findPlayer()
-{
-    local DeusExPlayer pl;
-
-    foreach DynamicActors(class'DeusExPlayer', pl)
-            break;
-
-    if (pl != None)
-        return pl;
-}
-
 
 // TODO: Добавить условия для включения и отключение ГДИ или его частей
 // Стоит использовать переменные из оригинала.
