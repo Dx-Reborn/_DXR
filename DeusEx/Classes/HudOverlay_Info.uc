@@ -7,11 +7,11 @@
 
 #exec OBJ LOAD FILE=DeusExUI
 
-class HudOverlay_info extends HUDOverlay;
+class HudOverlay_info extends DXRHudOverlay;
 
 var bool bDrawInfo;
 var ExtString currentInfo;
-var transient DxCanvas dxc;
+
 
 var color BooksBG, BooksText, BooksFrame;
 
@@ -23,7 +23,6 @@ event SetInitialState()
   BooksBG = h.BooksBG;
   BooksText = h.BooksText;
   BooksFrame = h.BooksFrame;
-  dxc = new(Outer) class'DxCanvas';
   Super.SetInitialState();
 }
 
@@ -71,10 +70,10 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
-              else
-                c.Style = ERenderStyle.STY_Normal;
+               else
+            c.Style = ERenderStyle.STY_Normal;
 
         c.DrawColor = BooksBG;
 
@@ -113,9 +112,9 @@ function Render(Canvas C)
 
 
    // Рисуем рамки
-   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
    {
-     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+     if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
         else
         c.Style = ERenderStyle.STY_Alpha;

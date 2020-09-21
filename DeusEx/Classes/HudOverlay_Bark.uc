@@ -2,9 +2,7 @@
 // Оверлей для AI Barks
 //
 
-class HudOverlay_Bark extends HUDOverlay;
-
-var transient DxCanvas dxc;
+class HudOverlay_Bark extends DXRHudOverlay;
 
 var() private string Speaker;
 var() private string fpsSpeech;
@@ -14,16 +12,15 @@ var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 event SetInitialState()
 {
-  local DeusExHUD h;
+    local DeusExHUD h;
 
-    dxc = new(Outer) class'DxCanvas';
     Super.SetInitialState();
 
-  h = DeusExHUD(level.GetLocalPlayerController().myHUD);
-  InfoLinkBG = h.InfoLinkBG;
-  InfoLinkText = h.InfoLinkText;
-  InfoLinkTitles = h.InfoLinkTitles;
-  InfoLinkFrame = h.InfoLinkFrame;
+    h = DeusExHUD(level.GetLocalPlayerController().myHUD);
+    InfoLinkBG = h.InfoLinkBG;
+    InfoLinkText = h.InfoLinkText;
+    InfoLinkTitles = h.InfoLinkTitles;
+    InfoLinkFrame = h.InfoLinkFrame;
 }
 
 
@@ -71,11 +68,10 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
 
-//        c.Style=3;
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
-              else
-               c.Style = ERenderStyle.STY_Normal;
+               else
+            c.Style = ERenderStyle.STY_Normal;
 
         //TL
         c.SetPos(-13,-16);
@@ -115,9 +111,9 @@ function Render(Canvas C)
         c.SetClip(w, h);
 
         c.DrawColor = InfoLinkFrame;
-       if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+       if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
        {
-         if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+         if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
           else
             c.Style = ERenderStyle.STY_Alpha;

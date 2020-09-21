@@ -2891,7 +2891,6 @@ function PlayFutzSound()
         {
             conName = dxPlayer.barkManager.BuildBarkName(self, BM_Futz);
             dxPlayer.StartConversationByName(conName, self, !bInterruptState);
-//          dxPlayer.StartAIBarkConversation(self, BM_Futz); // Пока так
         }
     }
 }
@@ -5497,9 +5496,6 @@ event Tick(float deltaTime)
     if (!bInWorld)
     return;
 
-    if (DistanceFromPlayer() > 2505)
-        return;
-
     player = DeusExPlayer(GetPlayerPawn());
     myDxPlayer = player;
 
@@ -5509,8 +5505,8 @@ event Tick(float deltaTime)
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
 
-//    if (DistanceFromPlayer() > 2505)
-//        return;
+    if (DistanceFromPlayer() > 2505)
+        return;
 
     bDoLowPriority = true;
     bCheckPlayer   = true;
@@ -6647,8 +6643,14 @@ function bool SpecialCalcView(out Actor ViewActor, out vector CameraLocation, ou
 
 function pawn GetPlayerPawn()
 {
-  if (level.GetLocalPlayerController().pawn != none)
-  return level.GetLocalPlayerController().pawn;
+  local pawn FoundPawn;
+
+  FoundPawn = level.GetLocalPlayerController().myHUD.PawnOwner;
+  if (FoundPawn != None && FoundPawn.IsA('DeusExPlayer'))
+      return FoundPawn;
+
+  else if (level.GetLocalPlayerController().pawn != none)
+      return level.GetLocalPlayerController().pawn;
 }
 
 function DeusExGameInfo getFlagBase()

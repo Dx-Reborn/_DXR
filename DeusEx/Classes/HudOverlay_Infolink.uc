@@ -6,7 +6,7 @@
 // 19/09/2018: Избавилась от спама вида 'accessed none' (Наконец-то !!)
 //
 
-class HudOverlay_Infolink extends HudOverlay;
+class HudOverlay_Infolink extends DXRHudOverlay;
 
 #exec OBJ LOAD FILE=InfoPortraits
 #exec OBJ LOAD FILE=DeusExControls
@@ -14,7 +14,6 @@ class HudOverlay_Infolink extends HudOverlay;
 var DeusExPlayer player;
 var dataLinkPlay dataLinkPlay;
 var bool bRenderText;
-var transient DxCanvas dxc;
 
 var localized String IncomingTransmission, EndTransmission, strQueued;
 
@@ -39,10 +38,10 @@ function Render(canvas u)
      dxc.SetCanvas(u);
 
     u.DrawColor = InfoLinkBG;
-    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+    if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
         u.Style = ERenderStyle.STY_Translucent;
            else
-             u.Style = ERenderStyle.STY_Normal;
+        u.Style = ERenderStyle.STY_Normal;
 
         // Фон и рамки
     u.SetPos(104,0);
@@ -50,12 +49,12 @@ function Render(canvas u)
     u.DrawIcon(texture'DeusExUI.HUDInfolinkBackground_2',1.0);
 
 
-    if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+    if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
     {
-      if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
-         u.Style = ERenderStyle.STY_Translucent;
-          else
-           u.Style = ERenderStyle.STY_Alpha;
+      if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
+          u.Style = ERenderStyle.STY_Translucent;
+             else
+          u.Style = ERenderStyle.STY_Alpha;
 
       u.DrawColor = InfoLinkFrame;
       border = texture'DeusExUI.HUDInfolinkBorder_1';
@@ -243,8 +242,7 @@ event SetInitialState()
   local DeusExHUD h;
 
   h = DeusExHUD(level.GetLocalPlayerController().myHUD);
-    dxc = new(Outer) class'DxCanvas';
-    SetTimer(0.25, true);
+  SetTimer(0.25, true);
   InfoLinkBG = h.InfoLinkBG;
   InfoLinkText = h.InfoLinkText;
   InfoLinkTitles = h.InfoLinkTitles;

@@ -130,13 +130,15 @@ function bool StartBark(ScriptedPawn newBarkPawn, eventManager.EBarkModes newBar
             barkDuration = FMax(Len(conEventSpeech.speech) * perCharDelay, minimumTextPause);
 
         // Show the speech if Subtitles are on //CyberP: and isn't in state dying HACK
-        if ((DeusExPlayer(owner) != None) && (DeusExPlayer(owner).bSubtitles) && (conEventSpeech != None) && (conEventSpeech.speech != "") && (!DeusExPlayer(owner).IsInState('Dying')))
+//        if ((DeusExPlayer(owner) != None) && (DeusExPlayer(owner).bSubtitles) && (conEventSpeech != None) && (conEventSpeech.speech != "") && (!DeusExPlayer(owner).IsInState('Dying')))
+        if ((DeusExPlayer(owner) != None) && (DeusExPlayer(owner).bSubtitles) && (conEventSpeech != None) && (conEventSpeech.speech != ""))
         {
             // Âûגמה מגונכוÿ םא ÃÄÈ
             if (barkDisplay == none)
-            barkDisplay = spawn(class'HudOverlay_Bark', PC);
+                barkDisplay = spawn(class'HudOverlay_Bark', PC);
+
             barkDisplay.AddBark(conEventSpeech.speech, barkDuration, newBarkPawn);
-        pc = DeusExPlayerController(DeusExPlayer(owner).Controller);
+            pc = DeusExPlayerController(DeusExPlayer(owner).Controller);
             PC.myHUD.AddHudOverlay(barkDisplay);
         }
         // Keep track fo the bark

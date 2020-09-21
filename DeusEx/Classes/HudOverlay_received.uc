@@ -2,11 +2,10 @@
 //
 //
 
-class HudOverlay_received extends HudOverlay;
+class HudOverlay_received extends DXRHudOverlay;
 
 var() array<Inventory> recentItems;
 var localized string strReceived;
-var transient DxCanvas dxc;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 const MIN_OVERLAY_DELAY = 0.9;
@@ -28,7 +27,6 @@ event SetInitialState()
 
     SetTimer(FMax(MIN_OVERLAY_DELAY,recentItems.Length), false);
 
-    dxc = new(Outer) class'DxCanvas';
     Super.SetInitialState();
 
     h = DeusExHUD(level.GetLocalPlayerController().myHUD);
@@ -84,10 +82,10 @@ function Render(Canvas C)
         c.SetClip(w, h);
 
         c.DrawColor=InfoLinkBG;
-        if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBackgroundTranslucent)
+        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
             c.Style = ERenderStyle.STY_Translucent;
-              else
-                c.Style = ERenderStyle.STY_Normal;
+               else
+            c.Style = ERenderStyle.STY_Normal;
 
         //TL
         c.SetPos(-13,-16);
@@ -124,9 +122,9 @@ function Render(Canvas C)
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
         c.SetClip(w, h);
 
-   if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersVisible)
+   if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
    {
-     if (DeusExPlayer(Level.GetLocalPlayerController().pawn).bHUDBordersTranslucent)
+     if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
         c.Style = ERenderStyle.STY_Translucent;
         else
         c.Style = ERenderStyle.STY_Alpha;
