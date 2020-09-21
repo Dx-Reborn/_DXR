@@ -382,6 +382,6 @@ defaultproperties
      RemoteRole=ROLE_SimulatedProxy
      LifeSpan=60.000000
      bUseExplosionEffects=true
-     bAddRings=false
+     bAddRings=true
 //     RotationRate=(Pitch=65536,Yaw=65536)
 }

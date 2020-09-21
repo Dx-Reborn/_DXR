@@ -360,7 +360,7 @@ event TravelPostAccept()
 
     // make sure the AmmoName matches the currently loaded AmmoType
     if (AmmoType != None)
-        AmmoName = AmmoType.Class;
+        AmmoName = AmmoType.class;
 
     if (!bInstantHit)
     {
@@ -1089,7 +1089,7 @@ event Tick(float deltaTime)
 
             // change LockTime based on skill
             // -0.7 = max skill
-            LockTime = FMax(Default.LockTime + 3.0 * GetWeaponSkill(), 0.0);
+            LockTime = FMax(default.LockTime + 3.0 * GetWeaponSkill(), 0.0);
 
             // calculate the range
             if (Target != None)
@@ -1380,8 +1380,8 @@ function MuzzleFlashLight()
 // called by the MESH NOTIFY for the H2H weapons
 function HandToHandAttack()
 {
-    if (bOwnerWillNotify)
-        return;
+    if ((bOwnerWillNotify) || (Owner.IsInState('Dying'))) // DXR: Added exclusion for state dying 
+         return;
 
     if (ScriptedPawn(Owner) != None)
         ScriptedPawn(Owner).SetAttackAngle();
@@ -1861,7 +1861,7 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
 function TraceFire(float Accuracy)
 {
     local vector HitLocation, HitNormal, StartTrace, EndTrace, X, Y, Z;
-//    local Rotator rot;
+    local Rotator rot;
     local actor Other;
     local float dist, alpha, degrade;
     local int i, numSlugs;
@@ -1898,31 +1898,26 @@ function TraceFire(float Accuracy)
 
     for (i=0; i<numSlugs; i++)
     {
-//    EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000 ;
-//    EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
-      EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
+        EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000;
 
-      if (DXRWeaponAttachment(ThirdPersonActor) != None)
-          DXRWeaponAttachment(ThirdPersonActor).EndTraceExtra = EndTrace;
+        if (DXRWeaponAttachment(ThirdPersonActor) != None)
+            DXRWeaponAttachment(ThirdPersonActor).EndTraceExtra = EndTrace;
 
-      if (Owner.IsA('DeusExPlayer') && MaxRange >= 1024)
-      {
-          //RSD: range no longer influences player accuracy (took GMDX pistol range as baseline) 
-          EndTrace += 4000.0 * vector(AdjustedAim);
-          //RSD: Extend length of vector to max range
-          EndTrace = (FMax(1024.0, MaxRange)*Normal(EndTrace-StartTrace)) + StartTrace; 
-      }
-      //RSD: If short range weapon or not a DeusExPlayer, use the old routine
-      else
-          EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
+        if (Owner.IsA('DeusExPlayer') && MaxRange >= 1024)
+        {
+            EndTrace += 4000.0 * vector(AdjustedAim);  //RSD: range no longer influences player accuracy (took GMDX pistol range as baseline) 
+            EndTrace = (FMax(1024.0, MaxRange)*Normal(EndTrace-StartTrace)) + StartTrace;  //RSD: Extend length of vector to max range
+        }
+        else 
+            EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim)); //RSD: If short range weapon or not a DeusExPlayer, use the old routine
 
-        Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
+            Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
 
         // randomly draw a tracer for relevant ammo types
         // don't draw tracers if we're zoomed in with a scope - looks stupid
-/*        if (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))
+        if (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))
         {
-            if ((AmmoName == Class'Ammo10mm') || (AmmoName == Class'Ammo3006') || (AmmoName == Class'Ammo762mm'))
+            if ((AmmoName == class'Ammo10mm') || (AmmoName == class'Ammo3006') || (AmmoName == class'Ammo762mm'))
             {
                 if (VSize(HitLocation - StartTrace) > 250)
                 {
@@ -1930,13 +1925,15 @@ function TraceFire(float Accuracy)
                     Spawn(class'Tracer',,, StartTrace + 96 * Vector(rot), rot);
                 }
             }
-        }*/
+        }
 
         // check our range
         dist = Abs(VSize(HitLocation - Owner.Location));
 
         if (dist <= AccurateRange)      // we hit just fine
+        {
             ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+        }
         else if (dist <= MaxRange)
         {
             // simulate gravity by lowering the bullet's hit point
@@ -1948,7 +1945,6 @@ function TraceFire(float Accuracy)
         }
 
     }
-
     // otherwise we don't hit the target at all
 }
 
@@ -2036,18 +2032,18 @@ function Finish()
         return;
     }
 
-    if ( PlayerPawn(Owner) == None )
+    if (PlayerPawn(Owner) == None)
     {
         //bFireMem = false;
         //bAltFireMem = false;
-        if ( ((AmmoType==None) || (AmmoType.AmmoAmount<=0)) && ReloadCount!=0 )
+        if (((AmmoType==None) || (AmmoType.AmmoAmount<=0)) && ReloadCount!=0)
         {
             Pawn(Owner).Controller.StopFiring();
             Pawn(Owner).SwitchToBestWeapon();
         }
-        else if ( (Pawn(Owner).Controller.bFire != 0) && (FRand() < RefireRate) )
+        else if ((Pawn(Owner).Controller.bFire != 0) && (FRand() < RefireRate))
             Global.Fire(0);
-        else if ( (Pawn(Owner).Controller.bAltFire != 0) && (FRand() < AltRefireRate) )
+        else if ((Pawn(Owner).Controller.bAltFire != 0) && (FRand() < AltRefireRate))
             Global.AltFire(0);  
         else 
         {
