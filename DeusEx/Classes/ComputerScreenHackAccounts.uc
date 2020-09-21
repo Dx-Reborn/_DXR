@@ -5,7 +5,7 @@ var GUIButton btnChangeAccount;
 var GUILabel winCurrentUser, lAccounts, lCurrent;
 var GUIListBox lstAccounts;
 
-var Computers compOwner;		// what computer owns this window?
+//var Computers compOwner;        // what computer owns this window?
                             // Note: overriding variable that already defined in parent class will lead to compiler warning!
 
 var localized String ChangeAccountButtonLabel;
@@ -37,7 +37,7 @@ function CreateMyControls()
   lstAccounts.WinWidth = 171;
   lstAccounts.WinLeft = 7;
   lstAccounts.WinTop = 59;
-	AppendComponent(lstAccounts, true);
+    AppendComponent(lstAccounts, true);
   lstAccounts.list.TextAlign = TXTA_Left;
   lstAccounts.list.OnDblClick = ListDoubleClick;
 
@@ -51,7 +51,7 @@ function CreateMyControls()
   winCurrentUser.TextAlign = TXTA_Left;
   winCurrentUser.VertAlign = TXTA_Center;
   winCurrentUser.FontScale = FNS_Small;
- 	winCurrentUser.WinHeight = 20;
+    winCurrentUser.WinHeight = 20;
   winCurrentUser.WinWidth = 169;
   winCurrentUser.WinLeft = 8;
   winCurrentUser.WinTop = 15;
@@ -66,7 +66,7 @@ function CreateMyControls()
   lAccounts.TextAlign = TXTA_Left;
   lAccounts.VertAlign = TXTA_Center;
   lAccounts.FontScale = FNS_Small;
- 	lAccounts.WinHeight = 20;
+    lAccounts.WinHeight = 20;
   lAccounts.WinWidth = 169;
   lAccounts.WinLeft = 8;
   lAccounts.WinTop = 39;
@@ -81,7 +81,7 @@ function CreateMyControls()
   lCurrent.TextAlign = TXTA_Left;
   lCurrent.VertAlign = TXTA_Center;
   lCurrent.FontScale = FNS_Small;
- 	lCurrent.WinHeight = 20;
+    lCurrent.WinHeight = 20;
   lCurrent.WinWidth = 169;
   lCurrent.WinLeft = 8;
   lCurrent.WinTop = 2; // lowest possible value is 2.0 (float). If value less than 2.0, UT2004 windows starts working in "relative mode"
@@ -92,39 +92,39 @@ function CreateMyControls()
 // SetNetworkTerminal()
 function SetNetworkTerminal(NetworkTerminal newTerm)
 {
-	winTerm = newTerm;
-	UpdateCurrentUser();
+    winTerm = newTerm;
+    UpdateCurrentUser();
 }
 
 // SetCompOwner()
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local int compIndex;
-	local int rowId;
-	local int userRowIndex;
+    local int compIndex;
+    local int rowId;
+    local int userRowIndex;
 
-	compOwner = Computers(newCompOwner);
+    compOwner = Computers(newCompOwner);
 
-	// Loop through the names and add them to our listbox
-	for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
-	{
-		lstAccounts.list.Add(Caps(compOwner.GetUserName(compIndex)));
+    // Loop through the names and add them to our listbox
+    for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
+    {
+        lstAccounts.list.Add(Caps(compOwner.GetUserName(compIndex)));
 
-		if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
-			userRowIndex = compIndex;
-	}
+        if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
+            userRowIndex = compIndex;
+    }
 
-	// Select the row that matches the current user
-//	rowId = lstAccounts.IndexToRowId(userRowIndex);
-	rowid = lstAccounts.list.FindIndex(winTerm.GetUserName(), false);//SetRow(rowId, True);
-	log("RowId = "$rowId);
+    // Select the row that matches the current user
+//  rowId = lstAccounts.IndexToRowId(userRowIndex);
+    rowid = lstAccounts.list.FindIndex(winTerm.GetUserName(), false);//SetRow(rowId, True);
+    log("RowId = "$rowId);
 }
 
 // UpdateCurrentUser()
 function UpdateCurrentUser()
 {
-	if (winTerm != None)
-		winCurrentUser.Caption = winTerm.GetUserName();
+    if (winTerm != None)
+        winCurrentUser.Caption = winTerm.GetUserName();
 }
 
 // ----------------------------------------------------------------------
@@ -133,13 +133,13 @@ function UpdateCurrentUser()
 
 function ChangeSelectedAccount()
 {
-	local int userIndex;
+    local int userIndex;
 
-	userIndex = lstAccounts.list.FindIndex(lstAccounts.list.SelectedText()); // lstAccounts.RowIdToIndex(lstAccounts.GetSelectedRow());
-	log(userIndex);
+    userIndex = lstAccounts.list.FindIndex(lstAccounts.list.SelectedText()); // lstAccounts.RowIdToIndex(lstAccounts.GetSelectedRow());
+    log(userIndex);
 
-	if (winTerm != None)
-		winTerm.ChangeAccount(userIndex);
+    if (winTerm != None)
+        winTerm.ChangeAccount(userIndex);
 }
 
 function bool ListDoubleClick(GUIComponent Sender)      // The mouse was double-clicked on this control
@@ -153,26 +153,26 @@ function bool ListDoubleClick(GUIComponent Sender)      // The mouse was double-
 // ----------------------------------------------------------------------
 function bool InternalOnClick(GUIComponent Sender)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch (Sender)
-	{
-		case btnChangeAccount:
-			ChangeSelectedAccount();
-     			UpdateCurrentUser(); // Добавлено
-			break;
+    switch (Sender)
+    {
+        case btnChangeAccount:
+            ChangeSelectedAccount();
+                UpdateCurrentUser(); // Добавлено
+            break;
 
-		default:
-			bHandled = false;
-			break;
-	}
+        default:
+            bHandled = false;
+            break;
+    }
 
-	if (bHandled)
-		return true;
-	else
-		return Super.InternalOnClick(Sender);
+    if (bHandled)
+        return true;
+    else
+        return Super.InternalOnClick(Sender);
 }
 
 function bool AlignFrame(Canvas C)
@@ -182,7 +182,7 @@ function bool AlignFrame(Canvas C)
 
   bVisible=true;
 
-	return bInit;
+    return bInit;
 }
 
 function bool OnCanClose(optional Bool bCancelled)
@@ -210,37 +210,37 @@ defaultproperties
     fx=5
     fy=7
 
-		DefaultHeight=190
-		DefaultWidth=190
-		MaxPageHeight=190
-		MaxPageWidth=190
-		MinPageHeight=190
-		MinPageWidth=190
+        DefaultHeight=190
+        DefaultWidth=190
+        MaxPageHeight=190
+        MaxPageWidth=190
+        MinPageHeight=190
+        MinPageWidth=190
 
     ChangeAccountButtonLabel="|&Change Account"
     AllAccountsHeader="All User Accounts"
     CurrentAccountHeader="Current User"
 
-	Begin Object Class=FloatingImage Name=FloatingFrameBackground
-		Image=Texture'ComputerHackAccountsBackground'
-		ImageRenderStyle=MSTY_Normal
-		ImageStyle=ISTY_Tiled //PartialScaled
-		ImageColor=(R=255,G=255,B=255,A=255)
-		DropShadow=None
-		WinWidth=189
-		WinHeight=183
-		WinLeft=0
-		WinTop=0
-		RenderWeight=0.000003
-		bBoundToParent=True
-		bScaleToParent=True
-		OnRendered=PaintListWindowFrame
-	End Object
-	i_FrameBG=FloatingFrameBackground
+    Begin Object Class=FloatingImage Name=FloatingFrameBackground
+        Image=Texture'ComputerHackAccountsBackground'
+        ImageRenderStyle=MSTY_Normal
+        ImageStyle=ISTY_Tiled //PartialScaled
+        ImageColor=(R=255,G=255,B=255,A=255)
+        DropShadow=None
+        WinWidth=189
+        WinHeight=183
+        WinLeft=0
+        WinTop=0
+        RenderWeight=0.000003
+        bBoundToParent=True
+        bScaleToParent=True
+        OnRendered=PaintListWindowFrame
+    End Object
+    i_FrameBG=FloatingFrameBackground
 
-	Begin Object Class=GUIHeader Name=TitleBar
-		WinWidth=0.0
-		WinHeight=0
-	End Object
-	t_WindowTitle=TitleBar
+    Begin Object Class=GUIHeader Name=TitleBar
+        WinWidth=0.0
+        WinHeight=0
+    End Object
+    t_WindowTitle=TitleBar
 }
