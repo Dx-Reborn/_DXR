@@ -10,12 +10,12 @@ var Canvas c;
 var color TeleTypeTextColor;
 var string CursorChar;
 
-function SetCanvas(Canvas inc)
+final function SetCanvas(Canvas inc)
 {
     c=inc;
 }
 
-function TextSize(string text, out float x, out float y)
+final function TextSize(string text, out float x, out float y)
 {
     local float holdx, holdy;
     local float width, height;
@@ -34,7 +34,7 @@ function TextSize(string text, out float x, out float y)
     c.FontScaleY=holdy;
 }
 
-function DrawTextTeletype(string text, string newline, float time, float rate)
+final function DrawTextTeletype(string text, string newline, float time, float rate)
 {
     local float holdx, holdy, holdxclip, xstep, ystep, R,G,B;// alpha;
     local int x, y, z, strlen;
@@ -107,7 +107,7 @@ function DrawTextTeletype(string text, string newline, float time, float rate)
     }
 }
 
-function Vector DrawText(string text, optional string newline)
+final function Vector DrawText(string text, optional string newline)
 {
     local Vector dimensions;
     local float holdx, holdy, ystep;
@@ -142,7 +142,7 @@ function Vector DrawText(string text, optional string newline)
     return dimensions;
 }
 
-function DrawTextJustified(string text, byte justification, float x1, float y1, float x2, float y2)
+final function DrawTextJustified(string text, byte justification, float x1, float y1, float x2, float y2)
 {
     local float width, height;
     local float ypos;
@@ -173,7 +173,7 @@ function DrawTextJustified(string text, byte justification, float x1, float y1, 
     c.SetPos(holdx,holdy);
 }
 
-function DrawTileStretched(material mat, float width, float height)
+final function DrawTileStretched(material mat, float width, float height)
 {
     local float usize, vsize;
     local float holdx, holdy;
@@ -211,7 +211,7 @@ function DrawTileStretched(material mat, float width, float height)
     c.SetPos(holdx,holdy);
 }
 
-function DrawTileClipped( Material Mat, float XL, float YL, float U, float V, float UL, float VL )
+final function DrawTileClipped( Material Mat, float XL, float YL, float U, float V, float UL, float VL )
 {
     local float x, y;
     local float left,top,bottom,right;
@@ -277,7 +277,7 @@ function DrawTileClipped( Material Mat, float XL, float YL, float U, float V, fl
     c.DrawTile(mat,newxl,newyl,newu,newv,newul,newvl);
 }
 
-function DrawVertical(float X, float height)
+final function DrawVertical(float X, float height)
 {
     local float cX,cY;
 
@@ -288,7 +288,7 @@ function DrawVertical(float X, float height)
     c.SetPos(cx,cy);
 }
 
-function DrawLine(int direction, float size)
+final function DrawLine(int direction, float size)
 {
     local float cx,cy;
     CX = c.CurX;
@@ -315,12 +315,12 @@ function DrawLine(int direction, float size)
     c.CurY = CY;
 }
 
-function SetPos(float X, float Y)
+final function SetPos(float X, float Y)
 {
     c.SetPos(X,Y);
 }
 
-function DrawHorizontal(float y, float width)
+final function DrawHorizontal(float y, float width)
 {
     local float cx,cy;
 
@@ -331,7 +331,7 @@ function DrawHorizontal(float y, float width)
     c.SetPos(cx,cy);
 }
 
-function DrawBox(float width, float height)
+final function DrawBox(float width, float height)
 {
     local float cx,cy;
 
@@ -347,7 +347,7 @@ function DrawBox(float width, float height)
     c.SetPos(cx,cy);
 }
 
-function NoDrawParseText(string text)
+final function NoDrawParseText(string text)
 {
     local string result, char, tag, attrib, value;
     local array<string> parts;
@@ -432,7 +432,7 @@ function NoDrawParseText(string text)
     }
 }
 
-function DrawParseText(string text)
+final function DrawParseText(string text)
 {
     local string result, char, tag, attrib, value;
     local array<string> parts;
