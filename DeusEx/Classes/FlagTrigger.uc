@@ -12,7 +12,8 @@ var() int flagExpiration;
 
 function Pawn GetPlayerPawn()
 {
-    return Level.GetLocalPlayerController().Pawn;
+    //return Level.GetLocalPlayerController().Pawn;
+    return Level.GetLocalPlayerController().myHUD.PawnOwner;
 }
 
 function DeusExGameInfo GetFlagBase()

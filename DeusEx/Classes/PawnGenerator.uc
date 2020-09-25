@@ -429,8 +429,9 @@ function bool PlayerCanSeeActor(Actor testActor, bool bCreating)
     }
     else
     {
-        if (testActor.LastRenderTime <= 5.0)
-            bCanSee = true;
+//        if (testActor.LastRenderTime <= 5.0)
+       if (Level.TimeSeconds - testActor.LastRenderTime <= 5.0)
+           bCanSee = true;
     }
 
     return (bCanSee);
@@ -655,7 +656,7 @@ function GeneratePawn(optional bool bBurst)
         // Set up our center point...
         newPhysics = GetClassPhysics(PawnClasses[classNum].PawnClass);
         if (newPhysics == PHYS_Walking)
-            startLocation = GroundLocation+vect(0,0,1)*(PawnClasses[classNum].PawnClass.Default.CollisionHeight);
+            startLocation = GroundLocation+vect(0,0,1)*(PawnClasses[classNum].PawnClass.default.CollisionHeight);
         else
             startLocation = Location;
         bSpawn = false;
@@ -664,8 +665,8 @@ function GeneratePawn(optional bool bBurst)
         Scout.bCollideWorld = false;
         Scout.SetCollisionSize(5, 5);
         Scout.SetLocation(startLocation);
-        Scout.SetCollisionSize(PawnClasses[classNum].PawnClass.Default.CollisionRadius,
-                                PawnClasses[classNum].PawnClass.Default.CollisionHeight);
+        Scout.SetCollisionSize(PawnClasses[classNum].PawnClass.default.CollisionRadius,
+                                PawnClasses[classNum].PawnClass.default.CollisionHeight);
         Scout.SetPhysics(newPhysics);
         Scout.bCollideWorld = true;
 
