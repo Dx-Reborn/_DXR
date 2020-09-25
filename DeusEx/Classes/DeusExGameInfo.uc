@@ -13,7 +13,7 @@ function SpawnScript()
     local bool bFound;
 
     if ((GetLevelInfo().missionNumber == -2) || (GetLevelInfo().missionNumber == -1))
-    DeusExHUD(level.GetLocalPlayerController().myHUD).cubemapmode = true;
+         DeusExHUD(level.GetLocalPlayerController().myHUD).cubemapmode = true;
 
     // check to see if this script has already been spawned
     if (GetLevelInfo().Script != None)
@@ -136,15 +136,6 @@ function NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam
 }
 
 //-----------------------------------------------------------------------------------------------------------
-function DeusExLevelInfo GetLevelInfo()
-{
-    local DeusExLevelInfo info;
-
-    foreach AllActors(class'DeusExLevelInfo', info)
-        break;
-    return info;
-}
-
 event PlayerController Login(string Portal,string Options,out string Error)
 {
     local NavigationPoint   StartSpot;
@@ -162,7 +153,7 @@ event PlayerController Login(string Portal,string Options,out string Error)
     InName     = Left(ParseOption ( Options, "Name"), 20);
     InTeam     = GetIntOption( Options, "Team", 255 ); // default to "no team"
 
-    DX=GetLevelInfo();
+    DX = GetLevelInfo();
 
     if (HasOption(Options, "Load"))
     {

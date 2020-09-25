@@ -44,6 +44,7 @@ var string TravelDeco; // переносимая декорация
 var rotator decoRotation; // вращение переносимой декорации
 
 var DeusExPlayer player;
+var DeusExLevelInfo DxLevelInfo; // for faster access from GetLevelInfo(). Set in GameInfoExt::InitGame()
 
 struct SInventoryItem
 {

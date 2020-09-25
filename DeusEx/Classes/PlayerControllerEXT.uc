@@ -428,12 +428,16 @@ function bool IsFrobbable(actor A)
     return false;
 }
 
-function DeusExLevelInfo GetLevelInfo()
+final function DeusExLevelInfo GetLevelInfo()
 {
     local DeusExLevelInfo info;
 
+    info = class'DeusExGlobals'.static.GetGlobals().DxLevelInfo;
+    if (info != None)
+        return info;
+    else // Запасной вариант
     foreach AllActors(class'DeusExLevelInfo', info)
-        break;
+            break;
     return info;
 }
 
