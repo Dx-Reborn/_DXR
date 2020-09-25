@@ -43,6 +43,12 @@ function WaitForMover(Mover M);
 function NotifyTouch(actor toucher);
 function SwitchToBestWeapon();
 
+event Destroyed()
+{
+    Super.Destroyed();
+    log(self@"Has been destroyed! Pawn was"$pawn);
+}
+
 // Приходит из ScriptedPawn, передаем в другую функцию. Нужно для переопределения в состояниях. 
 // Global(NotifyTakeDamage(...)) вызовет именно этот вариант.
 function NotifyTakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
@@ -1133,45 +1139,45 @@ function bool HandleTurn(actor Other)
 
 auto state StartUp
 {
-  function BeginState()
+  event BeginState()
   {
-   if (scriptedPawn(pawn) != none)
-   {
-    scriptedPawn(pawn).bInterruptState = true;
-    scriptedPawn(pawn).bCanConverse = false;
+     if (scriptedPawn(pawn) != none)
+     {
+        scriptedPawn(pawn).bInterruptState = true;
+        scriptedPawn(pawn).bCanConverse = false;
 
-    scriptedPawn(pawn).SetMovementPhysics(); 
+        scriptedPawn(pawn).SetMovementPhysics(); 
 
-    if (pawn.Physics == PHYS_Walking)
-      pawn.SetPhysics(PHYS_Falling);
+        if (pawn.Physics == PHYS_Walking)
+            pawn.SetPhysics(PHYS_Falling);
       
-    scriptedPawn(pawn).bStasis = false;
-    ScriptedPawn(pawn).SetDistress(false);
-    ScriptedPawn(pawn).BlockReactions();
-    scriptedPawn(pawn).ResetDestLoc();
-   }
+        scriptedPawn(pawn).bStasis = false;
+        ScriptedPawn(pawn).SetDistress(false);
+        ScriptedPawn(pawn).BlockReactions();
+        scriptedPawn(pawn).ResetDestLoc();
+     }
   }
 
-  function EndState()
+  event EndState()
   {
-    scriptedPawn(pawn).bCanConverse = true;
-    scriptedPawn(pawn).bStasis = true;
-    ScriptedPawn(pawn).ResetReactions();
+     scriptedPawn(pawn).bCanConverse = true;
+     scriptedPawn(pawn).bStasis = true;
+     ScriptedPawn(pawn).ResetReactions();
   }
 
   event Tick(float deltaSeconds)
   {
-   Global.Tick(deltaSeconds);
-   SetFall();//
-//   scriptedPawn(pawn).ResetReactions();
-    if (scriptedPawn(pawn).LastRenderTime <= 1.0)
-    {
-      pawn.PlayWaiting();
-      scriptedPawn(pawn).InitializePawn();
+//     Global.Tick(deltaSeconds);
+     SetFall();//
+     if (pawn.LastRenderTime <= 1.0)
+     {
+        pawn.PlayWaiting();
+        log(pawn@"controller State StartUp.Tick() -- Is it executed?");
+        scriptedPawn(pawn).InitializePawn();
 
-      if (scriptedPawn(pawn).bInWorld) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
-          FollowOrders();
-    }
+        if (scriptedPawn(pawn).bInWorld) // Fixed crash on 03_NYC_Airfield, when pawn tried to patrol outside of world 0_o
+            FollowOrders();
+     }
   }
 
 Begin:
@@ -4945,10 +4951,10 @@ state Wandering
             // If we got a destination, go there
             if (iterations <= 0)
             {
-                //ScriptedPawn(pawn).destLoc = ScriptedPawn(pawn).Location;
-                log(pawn$" -- iterations are over, gonna stay at my location, Giving extra 10 seconds!");
-                if (MoveTimer >= -20);
-                    MoveTimer = 10;
+                ScriptedPawn(pawn).destLoc = /*pawn.*/Location;
+                //log(pawn$" -- iterations are over, gonna stay at my location, Giving extra 10 seconds!");
+                //if (MoveTimer >= -20);
+                  //  MoveTimer = 10;
 
             }
         }
