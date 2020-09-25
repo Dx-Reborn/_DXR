@@ -19,7 +19,7 @@ state NormalFire
 }
 
 // unpinkmask the arrow when we reload
-function WeaponTick(float deltaTime)
+event WeaponTick(float deltaTime)
 {
     if (Skins[3] != None)
         if ((AmmoType != None) && (AmmoType.AmmoAmount > 0) && (ClipCount < ReloadCount))
@@ -178,6 +178,8 @@ defaultproperties
      CollisionHeight=3.00
 //     CollisionHeight=1.000000
      Mass=15.000000
+
+     Skins[3] = Texture'PinkMaskTex' //
 
      FirstPersonViewSkins(0)=Texture'DeusExItems.Skins.MiniCrossbowTex1'
      FirstPersonViewSkins(1)=Texture'DeusExItems.Skins.MiniCrossbowTex2'
