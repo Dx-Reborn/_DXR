@@ -6,7 +6,7 @@
 class ConWindowActive extends floatingwindow
                               transient;
 
-const WHEEL_SCROLL_DELAY = 0.05; // Максимальноый интервал для "проматывания" диалогов.
+const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
 const SINGLE_ITEM_DELAY = 1.0f;
 const AMOUNT_OF_CHOICES = 10;
 
@@ -37,6 +37,7 @@ var bool bTickEnabled;
 var float fadealpha;
 
 var bool bCanBeClosed;
+var bool bRenderPlayerCredits;
 
 var string speech;
 var bool bForcePlay;
@@ -44,7 +45,7 @@ var bool bSafeToClose;
 var float conStartTime;
 var float movePeriod;
 var float aTime;
-var localized string ChoiceBeginningChar;
+var localized string ChoiceBeginningChar, strPlayerCredits;
 
 var() automated GUILabel SpeakerName;
 var() automated floatingimage i_FrameBG2;
@@ -146,9 +147,10 @@ function RemoveChoices()
         conChoices[buttonIndex] = none;
     }
     numChoices = 0;
+    bRenderPlayerCredits = false;
 }
 
-function InternalOnClose(optional Bool bCanceled)
+function InternalOnClose(optional bool bCanceled)
 {
     RemoveChoices();
     Super.OnClose(bCanceled);
@@ -170,11 +172,13 @@ function DisplayChoice(ConChoice choice)
     newButton.SetUserObject(choice);
 
     // These next two calls handle highlighting of the choice
-//  newButton.SetButtonTextures(,Texture'Solid', Texture'Solid', Texture'Solid');
-//  newButton.SetButtonColors(,colConTextChoice, colConTextChoice, colConTextChoice);
+    newButton.SetButtonTextures(,Texture'Solid', Texture'Solid', Texture'Solid');
+    newButton.SetButtonColors(,colConTextChoice, colConTextChoice, colConTextChoice);
 
     // Add the button
     AddButton(newButton);
+
+    bRenderPlayerCredits = true;
 }
 
 // ----------------------------------------------------------------------
@@ -260,6 +264,8 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     newButton.OnClick = InternalOnClick;
     AppendComponent(newButton, true);
 
+    newButton.SetTextColors(colTextNormal, colTextFocus, colTextFocus, colTextFocus);
+
     return newButton;
 }
 
@@ -312,7 +318,10 @@ function Tick(float deltaTime)
        if (i_FrameBG.ImageColor.A > 254)
        {
          i_FrameBG.ImageColor.A = FadeAlpha;
+         i_FrameBG.StandardHeight -= deltaTime;
+
          i_FrameBG2.ImageColor.A = FadeAlpha;
+         i_FrameBG2.StandardHeight -= deltaTime;
        }
        break;
 
@@ -423,10 +432,13 @@ function RenderExtraStuff(canvas u)
     u.SetOrigin(self.ActualLeft(), self.ActualTop());
     u.SetClip(self.ActualWidth(), self.ActualHeight());
     u.font = font'dxFonts.MSS_10';
-    u.SetDrawColor(128,255,128,255); // RGB Alpha
-    u.SetPos(20,200);
 
-    u.DrawText("Canvas: Test text here! Coords X="$u.CurX @"Y="$u.CurY);
+    if ((DeusExPlayer(playerOwner().pawn) != None) && (bRenderPlayerCredits))
+    {
+        u.SetDrawColor(128,255,128,255); // RGB Alpha
+        u.SetPos(ActualWidth() - 200,ActualHeight() - 200);
+        u.DrawText(strPlayerCredits$DeusExPlayer(playerOwner().pawn).Credits);
+    }
 }
 
 
@@ -494,14 +506,16 @@ event Timer()
 
 defaultproperties
 {
+    strPlayerCredits="Credits: "
+
     OnCanClose=CanCloseWindow
     OnPreDraw=InternalOnPreDraw
     OnKeyEvent=ConWindowActive.InternalOnKeyEvent
     OnMouseRelease=ConWindowActive.InternalOnMouseRelease
 
-    colConTextFocus=(R=255,G=255,B=0,A=0)
-    colConTextChoice=(R=0,G=0,B=255,A=0)
-    colConTextSkill=(R=255,G=0,B=0,A=0)
+    colConTextFocus=(R=255,G=255,B=0,A=255)
+    colConTextChoice=(R=0,G=0,B=255,A=255)
+    colConTextSkill=(R=255,G=0,B=0,A=255)
 
     DefaultWidth=1.0 //0.2
     DefaultHeight=1.0 //0.6
@@ -519,7 +533,7 @@ defaultproperties
     WinTop=0.000000
     WinHeight=1.000000
 
-    ChoiceBeginningChar="  "
+    ChoiceBeginningChar="  "
     movePeriod=0.60
 
     Begin Object class=GUIScrollTextBox Name=MySubTitles
