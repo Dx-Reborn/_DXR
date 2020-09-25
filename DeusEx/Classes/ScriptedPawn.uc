@@ -4713,8 +4713,9 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
 
 //    log(self@"CheckEnemyPresence(bCheckPlayer? "$bCheckPlayer @ "bCheckOther? "$bCheckOther);
 
-//    if (DistanceFromPlayer() > SKIP_ENEMY_DISTANCE)
-//        return false;
+    if (DistanceFromPlayer() >= 1200 /*SKIP_ENEMY_DISTANCE*/)
+        return false;
+
     bValid  = false;
     bCanSee = false;
 
@@ -5493,6 +5494,9 @@ event Tick(float deltaTime)
     local bool         bCheckOther;
     local bool         bCheckPlayer;
 
+//    if (DistanceFromPlayer() > 2500)
+//        return;
+
     if (!bInWorld)
     return;
 
@@ -5505,7 +5509,7 @@ event Tick(float deltaTime)
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
 
-    if (DistanceFromPlayer() > 2505)
+    if (DistanceFromPlayer() > 2500)
         return;
 
     bDoLowPriority = true;
@@ -5521,7 +5525,7 @@ event Tick(float deltaTime)
             bDoLowPriority = false;
         if (DistanceFromPlayer() > 2500)
             bCheckPlayer = false;
-        if ((DistanceFromPlayer() > 600) && (LastRenderTime >= 5.0))
+        if ((DistanceFromPlayer() > 600) && (/*LastRenderTime*/LastRendered() >= 5.0))
             bCheckOther = false;
     }
 
@@ -6662,22 +6666,7 @@ function DeusExGameInfo getFlagBase()
     return flagBase;
 }
 
-function DeusExLevelInfo GetLevelInfo()
-{
-    local DeusExLevelInfo info;
-
-    foreach AllActors(class'DeusExLevelInfo', info)
-        break;
-
-        if (info != none)
-            DxLevel = info;
-
-    return info;
-}
-
-
 function LipSynch(float deltatime);
-
 
 function HandleFutz(Name event, EAIEventState state, XAIParams params)
 {
