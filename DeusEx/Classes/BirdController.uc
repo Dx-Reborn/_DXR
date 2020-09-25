@@ -17,24 +17,24 @@ state Wandering
 //      AIClearEventCallback('LoudNoise');
     }
 
-/*  function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation, 
-                        Vector momentum, name damageType)
+//    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+    function NotifyTakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
     {
         Global.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
 
-        if ((DamageType == 'EMP') || (DamageType == 'NanoVirus'))
+        if ((DamageType == class'DM_EMP') || (DamageType == class'DM_NanoVirus'))
             return;
 
-        if ( health <= 0 )
+        if (pawn.health <= 0)
             return;
         enemy = instigatedBy;
-        if ( Enemy != None )
+        if (Enemy != None)
             LastSeenPos = Enemy.Location;
         //SetNextState('Flying', 'Begin');
         //GotoState('TakingHit');
-        MakeFrightened();
+        bird(pawn).MakeFrightened();
         GotoState('Flying');
-    }*/
+    }
 
     function PickDestination()
     {
