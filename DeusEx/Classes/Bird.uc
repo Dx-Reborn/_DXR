@@ -106,6 +106,7 @@ defaultproperties
      bCanFly=True
      MaxiStepHeight=2.000000
      controllerClass=class'BirdController'
-
      orders=Flying
+
+     bAmbientCreature=true // do not display on Radar
 }
