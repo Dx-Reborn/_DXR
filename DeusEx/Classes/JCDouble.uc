@@ -41,7 +41,7 @@ defaultproperties
      BindName="JCDouble"
      FamiliarName="JC Denton"
      UnfamiliarName="JC Denton"
-     WalkingSpeed=0.120000
+     WalkingPct=0.120000
      bInvincible=True
      BaseAssHeight=-23.000000
      Mesh=mesh'DeusExCharacters.GM_Trench'

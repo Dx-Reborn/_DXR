@@ -11,7 +11,7 @@ defaultproperties
      UnfamiliarName="Mini-SpiderBot"
      MaxRange=640.000000
      MinRange=200.000000
-     WalkingSpeed=1.000000
+     WalkingPct=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSpiderBot_a')
      InitialInventory(1)=(Inventory=Class'DeusEx.AmmoBattery',Count=99)

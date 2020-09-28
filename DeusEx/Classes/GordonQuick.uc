@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Gordon Quick"
      UnfamiliarName="Gordon Quick"
      CarcassType=Class'DeusEx.GordonQuickCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000

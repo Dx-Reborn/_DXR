@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Scuba Diver"
      UnfamiliarName="Scuba Diver"
      CarcassType=Class'DeusEx.ScubaDiverCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      walkAnimMult=0.780000
      GroundSpeed=200.000000
      UnderWaterTime=-1.000000

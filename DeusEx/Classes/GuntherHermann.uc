@@ -126,7 +126,7 @@ defaultproperties
      FamiliarName="Gunther Hermann"
      UnfamiliarName="Gunther Hermann"
      CarcassType=Class'DeusEx.GuntherHermannCarcass'
-     WalkingSpeed=0.350000
+     WalkingPct=0.350000
      bImportant=True
      bInvincible=True
      CloseCombatMult=0.500000

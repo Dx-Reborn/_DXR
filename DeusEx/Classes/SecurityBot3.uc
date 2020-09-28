@@ -34,7 +34,7 @@ defaultproperties
      BindName="SecurityBot3"
      FamiliarName="Security Bot"
      UnfamiliarName="Security Bot"
-     WalkingSpeed=1.000000
+     WalkingPct=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponRobotMachinegun')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=50)

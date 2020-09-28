@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Gary Savage"
      UnfamiliarName="Gary Savage"
      CarcassType=Class'DeusEx.GarySavageCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000

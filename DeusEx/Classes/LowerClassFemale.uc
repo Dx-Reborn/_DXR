@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Lower Class"
      UnfamiliarName="Lower Class"
      CarcassType=Class'DeusEx.LowerClassFemaleCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000
      bIsFemale=True

@@ -308,8 +308,8 @@ function PreBeginPlay()
 
   Super.PreBeginPlay();
 
-  // DXR: Fix walking speed by just one line of code :)
-  WalkingPct = WalkingSpeed;
+  // DXR: Fix WalkingPct by just one line of code :)
+  WalkingPct = WalkingPct;
 
   // Set our alliance
   SetAlliance(Alliance);
@@ -3315,14 +3315,14 @@ function vector GetSwimPivot()
 
 
 // ----------------------------------------------------------------------
-// GetWalkingSpeed()
+// GetWalkingPct()
 // ----------------------------------------------------------------------
-function float GetWalkingSpeed()
+function float GetWalkingPct()
 {
   if (Physics == PHYS_Swimming)
     return MaxDesiredSpeed;
   else
-    return WalkingSpeed;
+    return WalkingPct;
 }
 
 // ----------------------------------------------------------------------
@@ -7120,7 +7120,7 @@ defaultproperties
      bAlliancesChanged=True
      Orders=Wandering
      HomeExtent=800.000000
-     WalkingSpeed=0.400000
+     WalkingPct=0.400000
      bCanBleed=True
      ClotPeriod=30.000000
      bShowPain=True

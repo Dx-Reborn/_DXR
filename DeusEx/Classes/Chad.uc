@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Chad"
      UnfamiliarName="Chad"
      CarcassType=Class'DeusEx.ChadCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      walkAnimMult=0.500000
      GroundSpeed=180.000000

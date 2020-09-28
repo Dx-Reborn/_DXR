@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Thug"
      UnfamiliarName="Thug"
      CarcassType=Class'DeusEx.ThugMale2Carcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=6)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCrowbar')

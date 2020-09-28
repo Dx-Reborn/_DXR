@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Tiffany Savage"
      UnfamiliarName="Tiffany Savage"
      CarcassType=Class'DeusEx.TiffanySavageCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000

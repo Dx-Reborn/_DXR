@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Hooker"
      UnfamiliarName="Hooker"
      CarcassType=Class'DeusEx.Hooker1Carcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      BaseAssHeight=-18.000000
      bIsFemale=True
      GroundSpeed=120.000000

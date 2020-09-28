@@ -10,7 +10,7 @@ defaultproperties
      FamiliarName="SpiderBot"
      UnfamiliarName="SpiderBot"
      MaxRange=1400.000000
-     WalkingSpeed=1.000000
+     WalkingPct=1.000000
      bEmitDistress=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSpiderBot')
      InitialInventory(1)=(Inventory=Class'DeusEx.AmmoBattery',Count=99)

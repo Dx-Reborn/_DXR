@@ -99,7 +99,7 @@ Wander:
 Moving:
     // Move from pathnode to pathnode until we get where we're going
     Rat(pawn).PlayWalking();
-    MoveTo(Rat(pawn).destLoc,,true);// GetWalkingSpeed());
+    MoveTo(Rat(pawn).destLoc,,true);// GetWalkingPct());
 
 Pausing:
     if (FRand() < 0.35)

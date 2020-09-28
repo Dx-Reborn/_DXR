@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Riot Cop"
      UnfamiliarName="Riot Cop"
      CarcassType=Class'DeusEx.RiotCopCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      walkAnimMult=0.780000
      GroundSpeed=200.000000
      Mesh=mesh'DeusExCharacters.GM_Jumpsuit'

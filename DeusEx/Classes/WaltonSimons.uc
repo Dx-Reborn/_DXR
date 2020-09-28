@@ -36,7 +36,7 @@ defaultproperties
      FamiliarName="Walton Simons"
      UnfamiliarName="Walton Simons"
      CarcassType=Class'DeusEx.WaltonSimonsCarcass'
-     WalkingSpeed=0.333333
+     WalkingPct=0.333333
      bImportant=True
      bInvincible=True
      CloseCombatMult=0.500000

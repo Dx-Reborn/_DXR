@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Michael Hamner"
      UnfamiliarName="Michael Hamner"
      CarcassType=Class'DeusEx.MichaelHamnerCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      walkAnimMult=0.750000
      GroundSpeed=180.000000

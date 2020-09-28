@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Stanton Dowd"
      UnfamiliarName="Stanton Dowd"
      CarcassType=Class'DeusEx.StantonDowdCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      bInvincible=True
      walkAnimMult=0.750000

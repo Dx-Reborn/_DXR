@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Max Chen"
      UnfamiliarName="Max Chen"
      CarcassType=Class'DeusEx.MaxChenCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      bInvincible=True
      walkAnimMult=0.750000

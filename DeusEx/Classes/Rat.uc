@@ -66,7 +66,7 @@ defaultproperties
      Wanderlust=0.200000
      MinHealth=2.000000
      CarcassType=Class'DeusEx.RatCarcass'
-     WalkingSpeed=0.360000
+     WalkingPct=0.360000
      GroundSpeed=250.000000
      WaterSpeed=24.000000
      AirSpeed=150.000000

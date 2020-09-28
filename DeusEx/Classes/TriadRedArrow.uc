@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Gang Member"
      UnfamiliarName="Gang Member"
      CarcassType=Class'DeusEx.TriadRedArrowCarcass'
-     WalkingSpeed=0.300000
+     WalkingPct=0.300000
      BaseAssHeight=-23.000000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=2)

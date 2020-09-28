@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Bob Page"
      UnfamiliarName="Bob Page"
      CarcassType=Class'DeusEx.BobPageCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      GroundSpeed=180.000000
      Mesh=mesh'DeusExCharacters.GM_Suit'

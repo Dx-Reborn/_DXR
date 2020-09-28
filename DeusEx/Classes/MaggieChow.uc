@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Maggie Chow"
      UnfamiliarName="Maggie Chow"
      CarcassType=Class'DeusEx.MaggieChowCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000

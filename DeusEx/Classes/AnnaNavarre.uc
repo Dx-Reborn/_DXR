@@ -101,7 +101,7 @@ defaultproperties
      FamiliarName="Anna Navarre"
      UnfamiliarName="Anna Navarre"
      CarcassType=Class'DeusEx.AnnaNavarreCarcass'
-     WalkingSpeed=0.280000
+     WalkingPct=0.280000
      bImportant=True
      bInvincible=True
      CloseCombatMult=0.500000

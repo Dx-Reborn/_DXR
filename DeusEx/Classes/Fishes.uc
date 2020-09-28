@@ -105,7 +105,7 @@ defaultproperties
 {
      bFlock=True
      BindName="Fishes"
-     WalkingSpeed=1.000000
+     WalkingPct=1.000000
      bHasShadow=False
      bHighlight=False
      bSpawnBubbles=False

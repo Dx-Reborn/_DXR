@@ -135,7 +135,7 @@ Moving:
     // Move from pathnode to pathnode until we get where we're going
     CleanerBot(Pawn).PlayWalking();
     MoveTo(CleanerBot(Pawn).destLoc,,true);
-//  MoveTo(destLoc, GetWalkingSpeed());
+//  MoveTo(destLoc, GetWalkingPct());
 
 Pausing:
     if (CleanerBot(Pawn).destLoc == pawn.Location)

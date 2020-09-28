@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Jock"
      UnfamiliarName="Jock"
      CarcassType=Class'DeusEx.JockCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000

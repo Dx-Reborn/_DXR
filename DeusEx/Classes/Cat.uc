@@ -60,7 +60,7 @@ defaultproperties
      UnfamiliarName="Cat"
      MinHealth=0.000000
      CarcassType=Class'DeusEx.CatCarcass'
-     WalkingSpeed=0.111111
+     WalkingPct=0.111111
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponCatScratch')
      GroundSpeed=180.000000
      WaterSpeed=50.000000

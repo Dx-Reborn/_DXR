@@ -17,7 +17,7 @@ defaultproperties
      FamiliarName="Dog"
      UnfamiliarName="Dog"
      CarcassType=Class'DeusEx.MuttCarcass'
-     WalkingSpeed=0.200000
+     WalkingPct=0.200000
      GroundSpeed=250.000000
      WaterSpeed=50.000000
      AirSpeed=144.000000

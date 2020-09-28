@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Jordan Shea"
      UnfamiliarName="Jordan Shea"
      CarcassType=Class'DeusEx.JordanSheaCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponSawedOffShotgun')
      InitialInventory(1)=(Inventory=Class'DeusEx.AmmoShell',Count=12)

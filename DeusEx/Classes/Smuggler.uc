@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Smuggler"
      UnfamiliarName="Smuggler"
      CarcassType=Class'DeusEx.SmugglerCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      BaseAssHeight=-23.000000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo10mm',Count=12)

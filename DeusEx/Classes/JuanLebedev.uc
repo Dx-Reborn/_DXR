@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Juan Lebedev"
      UnfamiliarName="Juan Lebedev"
      CarcassType=Class'DeusEx.JuanLebedevCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      BaseAssHeight=-23.000000
      GroundSpeed=180.000000

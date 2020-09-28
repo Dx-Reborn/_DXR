@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Scientist"
      UnfamiliarName="Scientist"
      CarcassType=Class'DeusEx.ScientistMaleCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      BaseAssHeight=-23.000000
      GroundSpeed=180.000000
      Mesh=mesh'DeusExCharacters.GM_Trench'

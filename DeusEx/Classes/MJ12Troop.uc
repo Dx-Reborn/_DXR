@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="MJ12 Troop"
      UnfamiliarName="MJ12 Troop"
      CarcassType=Class'DeusEx.MJ12TroopCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultGun')
      InitialInventory(1)=(Inventory=Class'DeusEx.Ammo762mm',Count=12)
      InitialInventory(2)=(Inventory=Class'DeusEx.WeaponCombatKnife')

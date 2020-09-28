@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Jaime Reyes"
      UnfamiliarName="Jaime Reyes"
      CarcassType=Class'DeusEx.JaimeReyesCarcass'
-     WalkingSpeed=0.240000
+     WalkingPct=0.240000
      bImportant=True
      bInvincible=True
      walkAnimMult=0.850000

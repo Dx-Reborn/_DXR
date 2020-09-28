@@ -107,7 +107,7 @@ defaultproperties
      BindName="MedicalBot"
      FamiliarName="Medical Bot"
      UnfamiliarName="Medical Bot"
-     WalkingSpeed=0.200000
+     WalkingPct=0.200000
      GroundSpeed=200.000000
      WaterSpeed=50.000000
      AirSpeed=144.000000

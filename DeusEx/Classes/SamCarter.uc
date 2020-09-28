@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Sam Carter"
      UnfamiliarName="Sam Carter"
      CarcassType=Class'DeusEx.SamCarterCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      bInvincible=True
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponAssaultShotgun')

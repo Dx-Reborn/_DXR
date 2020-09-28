@@ -10,7 +10,7 @@ defaultproperties
      UnfamiliarName="Baby Karkian"
      MinHealth=15.000000
      CarcassType=Class'DeusEx.KarkianBabyCarcass'
-     WalkingSpeed=0.185000
+     WalkingPct=0.185000
      bShowPain=True
      InitialInventory(1)=(Inventory=None)
      walkAnimMult=2.500000

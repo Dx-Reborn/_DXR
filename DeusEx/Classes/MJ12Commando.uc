@@ -16,7 +16,7 @@ defaultproperties
      UnfamiliarName="MJ12 Commando"
      MinHealth=0.000000
      CarcassType=Class'DeusEx.MJ12CommandoCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bCanCrouch=False
      CloseCombatMult=0.500000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponMJ12Commando')

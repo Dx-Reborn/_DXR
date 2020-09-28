@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Tracer Tong"
      UnfamiliarName="Tracer Tong"
      CarcassType=Class'DeusEx.TracerTongCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      bInvincible=True
      walkAnimMult=1.000000

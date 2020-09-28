@@ -71,7 +71,7 @@ defaultproperties
      FamiliarName="Paul Denton"
      UnfamiliarName="Paul Denton"
      CarcassType=Class'DeusEx.PaulDentonCarcass'
-     WalkingSpeed=0.120000
+     WalkingPct=0.120000
      bImportant=True
      bInvincible=True
      BaseAssHeight=-23.000000

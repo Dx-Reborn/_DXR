@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Joseph Manderley"
      UnfamiliarName="Joseph Manderley"
      CarcassType=Class'DeusEx.JosephManderleyCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      BaseAssHeight=-23.000000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponPistol')

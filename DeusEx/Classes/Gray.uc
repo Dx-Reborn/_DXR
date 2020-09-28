@@ -210,7 +210,7 @@ defaultproperties
      UnfamiliarName="Gray"
      MinHealth=10.000000
      CarcassType=Class'DeusEx.GrayCarcass'
-     WalkingSpeed=0.280000
+     WalkingPct=0.280000
      bCanBleed=True
      CloseCombatMult=0.500000
      ShadowScale=0.750000

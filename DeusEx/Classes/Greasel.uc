@@ -214,7 +214,7 @@ defaultproperties
      UnfamiliarName="Greasel"
      MinHealth=20.000000
      CarcassType=Class'DeusEx.GreaselCarcass'
-     WalkingSpeed=0.080000
+     WalkingPct=0.080000
      bCanBleed=True
      ShadowScale=1.000000
      InitialAlliances(0)=(AllianceName=Karkian,AllianceLevel=1.000000,bPermanent=True)

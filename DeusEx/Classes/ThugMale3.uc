@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Thug"
      UnfamiliarName="Thug"
      CarcassType=Class'DeusEx.ThugMale3Carcass'
-     WalkingSpeed=0.350000
+     WalkingPct=0.350000
      walkAnimMult=0.750000
      GroundSpeed=210.000000
      Mesh=mesh'DeusExCharacters.GM_DressShirt_B'

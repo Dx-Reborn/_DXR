@@ -15,7 +15,7 @@ defaultproperties
      FamiliarName="Child"
      UnfamiliarName="Child"
      CarcassType=Class'DeusEx.ChildMaleCarcass'
-     WalkingSpeed=0.256000
+     WalkingPct=0.256000
      walkAnimMult=1.150000
      GroundSpeed=150.000000
      BaseEyeHeight=26.000000

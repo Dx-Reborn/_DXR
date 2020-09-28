@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Gilbert Renton"
      UnfamiliarName="Gilbert Renton"
      CarcassType=Class'DeusEx.GilbertRentonCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      walkAnimMult=0.750000
      GroundSpeed=180.000000

@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Howard Strong"
      UnfamiliarName="Howard Strong"
      CarcassType=Class'DeusEx.HowardStrongCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      walkAnimMult=0.750000
      GroundSpeed=200.000000

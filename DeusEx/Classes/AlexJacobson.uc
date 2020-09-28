@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Alex Jacobson"
      UnfamiliarName="Hacker"
      CarcassType=Class'DeusEx.AlexJacobsonCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      bInvincible=True
      walkAnimMult=0.750000

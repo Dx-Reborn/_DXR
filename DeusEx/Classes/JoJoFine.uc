@@ -10,7 +10,7 @@ defaultproperties
      FamiliarName="JoJo Fine"
      UnfamiliarName="JoJo Fine"
      CarcassType=Class'DeusEx.JoJoFineCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      SprintRate=1.000000
      InitialInventory(0)=(Inventory=Class'DeusEx.WeaponStealthPistol')

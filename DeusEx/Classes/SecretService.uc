@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Secret Service Agent"
      UnfamiliarName="Secret Service Agent"
      CarcassType=Class'DeusEx.SecretServiceCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      walkAnimMult=0.750000
      GroundSpeed=180.000000
      Mesh=mesh'DeusExCharacters.GM_Suit'

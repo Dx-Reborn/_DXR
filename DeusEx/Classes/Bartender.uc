@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Bartender"
      UnfamiliarName="Bartender"
      CarcassType=Class'DeusEx.BartenderCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      walkAnimMult=0.750000
      runAnimMult=0.850000
      GroundSpeed=200.000000

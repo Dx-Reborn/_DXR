@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Bum"
      UnfamiliarName="Bum"
      CarcassType=Class'DeusEx.BumFemaleCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      BaseAssHeight=-18.000000
      bIsFemale=True
      GroundSpeed=120.000000

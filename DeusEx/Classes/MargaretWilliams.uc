@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Margaret Williams"
      UnfamiliarName="Margaret Williams"
      CarcassType=Class'DeusEx.MargaretWilliamsCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000

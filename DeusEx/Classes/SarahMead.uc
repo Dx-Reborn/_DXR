@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Sarah Mead"
      UnfamiliarName="Sarah Mead"
      CarcassType=Class'DeusEx.SarahMeadCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000

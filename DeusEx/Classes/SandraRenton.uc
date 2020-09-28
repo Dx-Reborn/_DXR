@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Sandra Renton"
      UnfamiliarName="Sandra Renton"
      CarcassType=Class'DeusEx.SandraRentonCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000

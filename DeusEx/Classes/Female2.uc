@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Female"
      UnfamiliarName="Female"
      CarcassType=Class'DeusEx.Female2Carcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      BaseAssHeight=-18.000000
      walkAnimMult=0.650000
      bIsFemale=True

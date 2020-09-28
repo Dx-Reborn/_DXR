@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Nicolette DuClare"
      UnfamiliarName="Nicolette DuClare"
      CarcassType=Class'DeusEx.NicoletteDuClareCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      bImportant=True
      BaseAssHeight=-18.000000
      walkAnimMult=1.460000

@@ -68,7 +68,7 @@ defaultproperties
      BindName="Fly"
      FamiliarName="Fly"
      UnfamiliarName="Fly"
-     WalkingSpeed=1.000000
+     WalkingPct=1.000000
      bHasShadow=False
      bHighlight=False
      bSpawnBubbles=False

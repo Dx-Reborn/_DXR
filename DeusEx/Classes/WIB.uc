@@ -22,7 +22,7 @@ defaultproperties
      UnfamiliarName="Woman In Black"
      MinHealth=0.000000
      CarcassType=Class'DeusEx.WIBCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      CloseCombatMult=0.500000
      BaseAssHeight=-18.000000
      walkAnimMult=0.870000

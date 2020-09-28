@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Lower Class"
      UnfamiliarName="Lower Class"
      CarcassType=Class'DeusEx.LowerClassMale2Carcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      walkAnimMult=0.750000
      GroundSpeed=180.000000
      Mesh=mesh'DeusExCharacters.GM_Suit'

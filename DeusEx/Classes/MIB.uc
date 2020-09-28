@@ -83,7 +83,7 @@ defaultproperties
      UnfamiliarName="Man In Black"
      MinHealth=0.000000
      CarcassType=Class'DeusEx.MIBCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      CloseCombatMult=0.500000
      GroundSpeed=180.000000
      Health=350

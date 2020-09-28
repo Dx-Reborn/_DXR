@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Ford Schick"
      UnfamiliarName="Ford Schick"
      CarcassType=Class'DeusEx.FordSchickCarcass'
-     WalkingSpeed=0.213333
+     WalkingPct=0.213333
      bImportant=True
      BaseAssHeight=-23.000000
      GroundSpeed=180.000000

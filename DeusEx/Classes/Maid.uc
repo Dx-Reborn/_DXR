@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Maid"
      UnfamiliarName="Maid"
      CarcassType=Class'DeusEx.MaidCarcass'
-     WalkingSpeed=0.320000
+     WalkingPct=0.320000
      BaseAssHeight=-19.000000
      walkAnimMult=0.650000
      bIsFemale=True

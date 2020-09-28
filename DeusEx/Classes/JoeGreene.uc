@@ -9,7 +9,7 @@ defaultproperties
      FamiliarName="Joe Greene"
      UnfamiliarName="Joe Greene"
      CarcassType=Class'DeusEx.JoeGreeneCarcass'
-     WalkingSpeed=0.296000
+     WalkingPct=0.296000
      bImportant=True
      walkAnimMult=0.750000
      GroundSpeed=200.000000
