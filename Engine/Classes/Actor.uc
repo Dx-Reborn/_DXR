@@ -141,7 +141,7 @@ var(Lighting) bool       bAttenByLife;          // sjs - attenuate light by dimi
 var(Lighting) bool       bLightingVisibility;   // Calculate lighting visibility for this actor with line checks.
 var(Display) bool        bUseDynamicLights;
 var bool                 bLightChanged;         // Recalculate this light's lighting now.
-var(Lighting)   bool                 bDramaticLighting; // 
+var(Lighting)   bool     bDramaticLighting; // 
 
 // Flags.
 var(Advanced)  const bool   bStatic;            // Does not move or change over time. Don't let L.D.s change this - screws up net play
@@ -226,9 +226,9 @@ enum ENetRole
 };
 var ENetRole RemoteRole, Role;
 var const transient int     NetTag;
-var float NetUpdateTime;    // time of last update
-var float NetUpdateFrequency; // How many net updates per seconds.
-var float NetPriority; // Higher priorities means update it more frequently.
+var(Network) float NetUpdateTime;    // time of last update
+var(Network) float NetUpdateFrequency; // How many net updates per seconds.
+var(Network) float NetPriority; // Higher priorities means update it more frequently.
 var Pawn                  Instigator;    // Pawn responsible for damage caused by this actor.
 var(Sound) sound          AmbientSound;  // Ambient sound effect.
 var const name          AttachmentBone;     // name of bone to which actor is attached (if attached to center of base, =='')
@@ -391,6 +391,7 @@ var(Display) enum ERenderStyle
     STY_AlphaZ,
 } Style;
 
+
 // Display.
 var(Display)  bool      bUnlit;                 // Lights don't affect actor.
 var(Display)  bool      bShadowCast;            // Casts static shadows.
@@ -430,6 +431,7 @@ var     const       bool    bClientAuthoritative; // Remains ROLE_Authority on c
 // Ambient sound.
 var(Sound) byte         SoundVolume;            // Volume of ambient sound.
 var(Sound) byte         SoundPitch;             // Sound pitch shift, 64.0=none.
+
 
 // Sound occlusion
 enum ESoundOcclusion
@@ -588,7 +590,6 @@ var (Force) float       ForceRadius;
 var (Force) float       ForceScale;
 var (Force) float       ForceNoise; // sjs - 0.0 - 1.0
 
-
 //-----------------------------------------------------------------------------
 // Networking.
 
@@ -622,6 +623,21 @@ var bool                  bScriptInitialized; // set to prevent re-initializing 
 var(Advanced) bool        bLockLocation; // Prevent the actor from being moved in the editor.
 
 var() bool              bTraceWater;    // if true, trace() by this actor returns collisions with water volumes
+
+/*
+How many bools I can add before LocalMessageClass ?
+
+32 - ((number of existing bools) % 32)
+bNetInitial to bTraceWater are like 25 or so
+so 7 or so*/
+// DEUS_EX STM - added new flags
+var(Advanced) bool        bBlockSight;   // True if pawns can't see through this actor.
+var(Advanced) bool        bDetectable;   // True if this actor can be detected (by sight, sound, etc).
+var(Advanced) bool        bTransient;    // True if this actor should be destroyed when it goes into stasis
+var           bool        bIgnore;       // True if this actor should be generally ignored; compliance is voluntary
+var(Advanced) bool        bOwned;        // just used for fuzzing
+//
+
 
 var class<LocalMessage> MessageClass;
 
@@ -1377,12 +1393,10 @@ event RenderTexture(ScriptedTexture Tex);
 event PreBeginPlay()
 {
     // Handle autodestruction if desired.
-    if( !bGameRelevant && (Level.NetMode != NM_Client) && !Level.Game.BaseMutator.CheckRelevance(Self) )
+    if(!bGameRelevant && (Level.NetMode != NM_Client) && !Level.Game.BaseMutator.CheckRelevance(Self))
         Destroy();
-    else if ( (Level.DetailMode == DM_Low) && (CullDistance == Default.CullDistance) )
+    else if ((Level.DetailMode == DM_Low) && (CullDistance == Default.CullDistance))
         CullDistance *= 0.8;
-
-   ShrinkCollision(); // DXR: Added
 }
 
 // DXR: Called when game has been saved
@@ -1596,24 +1610,24 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
         Canvas.SetPos(4,YPos);
     }
     T = "Physics ";
-    Switch(PHYSICS)
+    switch(PHYSICS) // what?
     {
-        case PHYS_None: T=T$"None"; break;
-        case PHYS_Walking: T=T$"Walking"; break;
-        case PHYS_Falling: T=T$"Falling"; break;
-        case PHYS_Swimming: T=T$"Swimming"; break;
-        case PHYS_Flying: T=T$"Flying"; break;
-        case PHYS_Rotating: T=T$"Rotating"; break;
-        case PHYS_Projectile: T=T$"Projectile"; break;
-        case PHYS_Interpolating: T=T$"Interpolating"; break;
-        case PHYS_MovingBrush: T=T$"MovingBrush"; break;
-        case PHYS_Spider: T=T$"Spider"; break;
-        case PHYS_Trailer: T=T$"Trailer"; break;
-        case PHYS_Ladder: T=T$"Ladder"; break;
-        case PHYS_Karma: T=T$"Karma"; break;
+        case PHYS_None: T=T$"ÿ€€PHYS_Noneÿÿÿ"; break;
+        case PHYS_Walking: T=T$"ÿ€€PHYS_Walkingÿÿÿ"; break;
+        case PHYS_Falling: T=T$"ÿ€€PHYS_Fallingÿÿÿ"; break;
+        case PHYS_Swimming: T=T$"ÿ€€PHYS_Swimmingÿÿÿ"; break;
+        case PHYS_Flying: T=T$"ÿ€€PHYS_Flyingÿÿÿ"; break;
+        case PHYS_Rotating: T=T$"ÿ€€PHYS_Rotatingÿÿÿ"; break;
+        case PHYS_Projectile: T=T$"ÿ€€PHYS_Projectileÿÿÿ"; break;
+        case PHYS_Interpolating: T=T$"ÿ€€PHYS_Interpolatingÿÿÿ"; break;
+        case PHYS_MovingBrush: T=T$"ÿ€€PHYS_MovingBrushÿÿÿ"; break;
+        case PHYS_Spider: T=T$"ÿ€€PHYS_Spiderÿÿÿ"; break;
+        case PHYS_Trailer: T=T$"ÿ€€PHYS_Trailerÿÿÿ"; break;
+        case PHYS_Ladder: T=T$"ÿ€€PHYS_Ladderÿÿÿ"; break;
+        case PHYS_Karma: T=T$"ÿ€€PHYS_Karmaÿÿÿ"; break;
     }
     T = T$" in physicsvolume "$GetItemName(string(PhysicsVolume))$" on base "$GetItemName(string(Base));
-    if ( bBounce )
+    if (bBounce)
         T = T$" - will bounce";
     Canvas.DrawText(T, false);
     YPos += YL;
@@ -1790,7 +1804,9 @@ simulated event TriggerEvent( Name EventName, Actor Other, Pawn EventInstigator 
 /*
 Untrigger an event
 */
-function UntriggerEvent( Name EventName, Actor Other, Pawn EventInstigator )
+//function UntriggerEvent( Name EventName, Actor Other, Pawn EventInstigator )
+// DXR: Conflict with HackableDevices.UntriggerEvent!
+function UntriggerEventX(Name EventName, Actor Other, Pawn EventInstigator)
 {
     local Actor A;
     local NavigationPoint N;
@@ -1959,20 +1975,6 @@ function float GetLastConEndTime();         // Time when last conversation ended
 function float GetConStartInterval() {return 5.0;} // Amount of time required between two convos.
 function EndConversation();
 
-function ShrinkCollision()
-{
-    // fake shrink to fix faked collision with floor problems - DEUS_EX CNN
-    if ((IsA('Decoration') || IsA('Pickup')) && (CollisionHeight > 0.75))
-        SetCollisionSize(CollisionRadius, CollisionHeight - 0.75);
-    else if (IsA('PlayerPawn'))
-    {
-        if (CollisionHeight > 9)
-            SetCollisionSize(CollisionRadius, CollisionHeight - 4.5);
-        else
-            SetCollisionSize(CollisionRadius, CollisionHeight*0.5);
-    }
-}
-
 //
 // DEUS_EX CNN - Sprintf function for simple string formatting
 // mostly useful for localized strings
@@ -2082,40 +2084,37 @@ static function Color GetColorScaled(float percent)
 
 }
 
-function sound PlaySoundEx(sound Sound, optional ESoundSlot Slot,   optional float Volume,
- optional bool bNoOverride, optional float Radius,
- optional float Pitch, optional bool Attenuate)
+// DXR: Returns a sound (for conversations)
+function sound PlaySoundEx(sound Sound, optional ESoundSlot Slot, optional float Volume, optional bool bNoOverride, optional float Radius, optional float Pitch, optional bool Attenuate)
 {
 //  if (slot==0)
 //  slot=SLOT_Misc;
 
-  if (Volume==0)
-  Volume=TransientSoundVolume;
+    if (Volume==0)
+        Volume=TransientSoundVolume;
 
-  if (Radius==0)
-  Radius=TransientSoundRadius;
+    if (Radius==0)
+        Radius=TransientSoundRadius;
 
-  if (Pitch==0.0)
-  Pitch=1.0f;
+    if (Pitch==0.0)
+        Pitch=1.0f;
 
 //  if (!Attenuate)
 //  Attenuate=true;
 
 //  log("Sound="$Sound @ "Slot="$Slot @ "Volume="$Volume @ "bNoOverride"$bNoOverride @ "Radius="$Radius @ "Pitch="$Pitch @ "Attenuate="$Attenuate);
 
-   PlaySound(Sound, Slot, Volume, bNoOverride, Radius, Pitch, Attenuate);
-   return Sound;
+     PlaySound(Sound, Slot, Volume, bNoOverride, Radius, Pitch, Attenuate);
+     return Sound;
 }
 
 // DXR: Returns Distance from player.
 function float DistanceFromPlayer()
 {
-  local pawn p;
+    local PlayerController pl;
 
-  p = level.GetLocalPlayerController().pawn;
-
-  if ((p != none) && (!p.IsInState('Dying')))
-       return vSize(location - p.location);
+    pl = level.GetLocalPlayerController();
+    return vSize(location - pl.location);
 }
 
 // DXR: for new conversations system.
@@ -2123,12 +2122,7 @@ function AssignConversations();
 function array<Object> GetConversations();
 function array<Object> GetConList();
 
-function bool IsOwned();  // bOwned
-function bool IgnoreMe(); // bIgnore
-function bool IsDetectable(); //bDetectable
-function bool BlockSight(); //bBlockSight
-
-// Äëÿ óäîáñòâà (èç íóëåâîãî êàíàëà)
+// DXR: Äëÿ óäîáñòâà (èç íóëåâîãî êàíàëà)
 simulated function name GetAnimSequence()
 {
     local name anim;
@@ -2166,8 +2160,29 @@ function int StandingCount()
     foreach BasedActors(class'Actor', A)
         count++;
 
- return count;
+    return count;
 }
+
+// A trace that has the hitlocation set to the end if it hits nothing, the normal fixed if it hits the back of a face and
+// the hitlocation moved 3 units towards the surface if it hits a static mesh...
+final function Actor CleanTrace(out vector HitLocation,out vector HitNormal,vector TraceEnd,optional vector TraceStart,optional bool bTraceActors,optional vector Extent,optional out material HitMaterial)
+{
+    local Actor T;
+
+    T = Trace(HitLocation, HitNormal, TraceEnd, TraceStart, bTraceActors, Extent, HitMaterial);
+
+    if (T == None)
+    {
+        HitLocation = TraceEnd;
+        return None;
+    }
+    if ((T.bWorldGeometry) || (T.DrawType == DT_StaticMesh))
+         HitLocation -= HitNormal*3;
+    if (HitNormal Dot Normal(TraceEnd - TraceStart) > 0.0)
+        HitNormal *= -1;
+    return T;
+}
+
 
 
 
@@ -2181,21 +2196,22 @@ defaultproperties
      ScaleGlow=1.0
 
      DrawScale3D=(X=1,Y=1,Z=1)
-/*     SoundRadius=64
+     SoundRadius=64
      SoundVolume=128
      SoundPitch=64
 
      TransientSoundVolume=0.3
-     TransientSoundRadius=300.0*/
+     TransientSoundRadius=300.0
 
-    bFullVolume=true
+     bDetectable=true
 
-    SoundRadius=32
+     bFullVolume=false
+/*    SoundRadius=32
     SoundVolume=128
     SoundPitch=64
     TransientSoundVolume=1.00
     TransientSoundRadius=0.0
-
+*/
      CollisionRadius=+00022.000000
      CollisionHeight=+00022.000000
      bJustTeleported=True

@@ -5,25 +5,27 @@
 //=============================================================================
 
 class StaticMeshActor extends Actor
-	native
-	placeable;
+    native
+    placeable;
 
-var() bool bExactProjectileCollision;		// nonzero extent projectiles should shrink to zero when hitting this actor
+var() bool bExactProjectileCollision;       // nonzero extent projectiles should shrink to zero when hitting this actor
 
 defaultproperties
 {
-	DrawType=DT_StaticMesh
-	bEdShouldSnap=True
-	bStatic=True
-	bStaticLighting=True
-	bShadowCast=True
-	bCollideActors=True
-	bBlockActors=True
-	bBlockKarma=True
-	bWorldGeometry=True
+    DrawType=DT_StaticMesh
+    bEdShouldSnap=True
+    bStatic=True
+    bStaticLighting=True
+    bShadowCast=True
+    bCollideActors=True
+    bBlockActors=True
+    bBlockKarma=True
+    bWorldGeometry=True
     CollisionHeight=+000001.000000
-	CollisionRadius=+000001.000000
-	bAcceptsProjectors=True
-	bExactProjectileCollision=true
-     bUseDynamicLights=true
+    CollisionRadius=+000001.000000
+    bAcceptsProjectors=True
+    bExactProjectileCollision=true
+    bUseDynamicLights=true
+
+    bBlockSight=true // DXR: Added
 }
