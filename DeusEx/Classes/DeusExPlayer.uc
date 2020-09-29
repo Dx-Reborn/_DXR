@@ -2975,7 +2975,7 @@ function PutCarriedDecorationInHand()
 }
 
 
-function RepairInventory()
+/*function RepairInventory()
 {
     local byte              LocalInvSlots[30];      // 5x6 grid of inventory slots
     local int i;
@@ -3010,8 +3010,7 @@ function RepairInventory()
          log("ERROR!!! Slot "$i$" should be "$LocalInvSlots[i]$", but isn't!!!!, repairing");
          invSlots[i] = LocalInvSlots[i];
       }
-
-}
+}*/
 
 
 exec function ActivateBelt(int objectNum)

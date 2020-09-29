@@ -20,9 +20,21 @@ enum EFlagType
 
 event InitGame(string Options, out string Error)
 {
-  Super.InitGame(Options, Error);
-  ClearCurrentDirectory();
+    class'DeusExGlobals'.Static.GetGlobals().DxLevelInfo = GetLevelInfo();
+
+    Super.InitGame(Options, Error);
+    ClearCurrentDirectory();
 }
+
+function DeusExLevelInfo GetLevelInfo()
+{
+    local DeusExLevelInfo info;
+
+    foreach AllActors(class'DeusExLevelInfo', info)
+        break;
+    return info;
+}
+
 
 /* Очистить каталог Save\Current */
 function ClearCurrentDirectory()

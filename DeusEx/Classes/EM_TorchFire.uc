@@ -79,14 +79,5 @@ defaultproperties
         StartVelocityRange=(X=(Min=-4.230000,Max=4.230000),Y=(Min=-4.230000,Max=4.230000),Z=(Min=66.375000,Max=66.375000))
     End Object
     Emitters(2)=SpriteEmitter'SpriteEmitter105'
-    bNetDirty=True
-    LastRenderTime=1631.149780
-    Tag="TorchFire2"  
-    Location=(X=985.426270,Y=-3567.013672,Z=5323.819824)
-    bLightChanged=True
-    bSelected=True
-    Name="TorchFire51"
-	
-
 }
 

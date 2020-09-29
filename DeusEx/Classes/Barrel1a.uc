@@ -1,0 +1,1 @@
+class Barrel1a extends Barrels;

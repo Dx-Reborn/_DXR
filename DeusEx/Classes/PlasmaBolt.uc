@@ -41,7 +41,7 @@ auto state Flying
     event BeginState()
     {
         Super.BeginState();
-        SetTimer(0.1, false); // Delay effects spawning a little bit.
+        SetTimer(0.1, false); // DXR: Delay effects spawning a little bit.
     }
 
     event Timer()

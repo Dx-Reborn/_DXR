@@ -679,7 +679,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdatePoison(deltaTime);
             Human(pawn).Bleed(deltaTime);
-            Human(pawn).RepairInventory();//
+            //Human(pawn).RepairInventory();//
             Human(pawn).HitMarkerTick(deltaTime); // DXR: for HitMarker
         
 
@@ -1132,7 +1132,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).UpdateInHand();
             Human(pawn).DrugEffects(deltaTime);
             Human(pawn).UpdateTimePlayed(DeltaTime);
-            Human(pawn).RepairInventory();
+//            Human(pawn).RepairInventory();
             Human(pawn).HitMarkerTick(deltaTime);
     
             pawn.SetWalking(true); // Перейти в режим ходьбы
@@ -1288,7 +1288,7 @@ ignores SeePlayer, HearNoise, Bump;
 //        Human(pawn).ShouldCrouch(false);
 //    }
 
-        function PlayerTick( float DeltaTime )
+        function PlayerTick(float DeltaTime)
         {
             HighlightCenterObject();
             FrobTime += deltaTime;
@@ -1298,7 +1298,7 @@ ignores SeePlayer, HearNoise, Bump;
             Human(pawn).UpdatePoison(deltaTime);
             Human(pawn).Bleed(deltaTime);
             Human(pawn).UpdateTimePlayed(DeltaTime);
-            Human(pawn).RepairInventory(); //
+//            Human(pawn).RepairInventory(); //
             Human(pawn).HitMarkerTick(deltaTime);
 
         if (Human(pawn).bOnFire)

@@ -1209,7 +1209,7 @@ State Seeking
 
         Global.HitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
-        return !ScriptedPawn(pawn).bCrouchToPassObstacles;
+        return false;  //!ScriptedPawn(pawn).bCrouchToPassObstacles;
     }
 
     function bool GetNextLocation(out vector nextLoc)
@@ -1363,8 +1363,8 @@ State Seeking
         navPoint = FindRandomDest();
         if (navPoint != None)
         {
-//           log(pawn@"State Seeking() picked "$navPoint);
-           return NavigationPoint(FindPathToward(navPoint,false));// bestPoint; Пока заглушка
+             log(pawn@"State Seeking() picked "$navPoint);
+             return NavigationPoint(FindPathToward(navPoint,false));// bestPoint; Пока заглушка
         }
     }
 
@@ -3505,7 +3505,7 @@ MoveToSeat:
         {
             if (scriptedPawn(pawn).ShouldPlayWalk(scriptedPawn(pawn).destLoc))
                 scriptedPawn(pawn).PlayWalking();
-            MoveTo(scriptedPawn(pawn).destLoc,None, true);//, GetWalkingPct());
+            MoveTo(scriptedPawn(pawn).destLoc,None, true);//, GetWalkingSpeed());
             scriptedPawn(pawn).CheckDestLoc(scriptedPawn(pawn).destLoc);
 
             bSeatIsPointInCylinder = IsPointInCylinder(pawn, GetDestinationPosition(scriptedPawn(pawn).SeatActor), 16, 16);
@@ -3525,7 +3525,7 @@ MoveToSeat:
             {
                 if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                     scriptedPawn(pawn).PlayWalking();
-                MoveToward(MoveTarget,None,0,false,true);//, GetWalkingPct());
+                MoveToward(MoveTarget,None,0,false,true);//, GetWalkingSpeed());
                 scriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
             }
             else
@@ -3540,7 +3540,7 @@ CircleToFront:
 
     if (scriptedPawn(pawn).ShouldPlayWalk(GetDestinationPosition(scriptedPawn(pawn).SeatActor, 16)))
         scriptedPawn(pawn).PlayWalking();
-    MoveTo(GetDestinationPosition(scriptedPawn(pawn).SeatActor, 16),,true);//, 16));//, GetWalkingPct());
+    MoveTo(GetDestinationPosition(scriptedPawn(pawn).SeatActor, 16),,true);//, 16));//, GetWalkingSpeed());
 
 MoveToPosition:
     if (!IsSeatValid(scriptedPawn(pawn).SeatActor))
@@ -4676,7 +4676,7 @@ MoveToBase:
                 if (scriptedPawn(pawn).ShouldPlayWalk(scriptedPawn(pawn).HomeLoc))
                     scriptedPawn(pawn).PlayWalking();
 
-                MoveTo(scriptedPawn(pawn).HomeLoc,,true);//GetWalkingPct());
+                MoveTo(scriptedPawn(pawn).HomeLoc,,true);//GetWalkingSpeed());
                 scriptedPawn(pawn).CheckDestLoc(scriptedPawn(pawn).HomeLoc);
                 break;
             }
@@ -4687,7 +4687,7 @@ MoveToBase:
                 {
                     if (scriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                         ScriptedPawn(pawn).PlayWalking();
-                    MoveToward(MoveTarget,,0,false, true);// GetWalkingPct());
+                    MoveToward(MoveTarget,,0,false, true);// GetWalkingSpeed());
                     ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
                 }
                 else
@@ -5013,7 +5013,7 @@ MoveHome:
         {
             if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).destLoc))
                   ScriptedPawn(pawn).PlayWalking();
-            MoveTo(ScriptedPawn(pawn).destLoc,,true);//, GetWalkingPct());
+            MoveTo(ScriptedPawn(pawn).destLoc,,true);//, GetWalkingSpeed());
             ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).destLoc);
             break;
         }
@@ -5024,7 +5024,7 @@ MoveHome:
             {
                 if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                     ScriptedPawn(pawn).PlayWalking();
-                MoveToward(MoveTarget,,0,false, true);//, GetWalkingPct());
+                MoveToward(MoveTarget,,0,false, true);//, GetWalkingSpeed());
                 ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
             }
             else
@@ -5045,7 +5045,7 @@ Moving:
     {
         if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
               ScriptedPawn(pawn).PlayWalking();
-        MoveToward(MoveTarget,,0,false, true);// GetWalkingPct());
+        MoveToward(MoveTarget,,0,false, true);// GetWalkingSpeed());
         while ((MoveTarget != None) && (MoveTarget != ScriptedPawn(pawn).destPoint))
         {
             MoveTarget = FindPathToward(ScriptedPawn(pawn).destPoint);
@@ -5053,7 +5053,7 @@ Moving:
             {
                 if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                     ScriptedPawn(pawn).PlayWalking();
-                MoveToward(MoveTarget,,0,false, true);//, GetWalkingPct());
+                MoveToward(MoveTarget,,0,false, true);//, GetWalkingSpeed());
             }
         }
     }
@@ -5061,7 +5061,7 @@ Moving:
     {
         if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).destLoc))
             ScriptedPawn(pawn).PlayWalking();
-        MoveTo(ScriptedPawn(pawn).destLoc,,true);// GetWalkingPct());
+        MoveTo(ScriptedPawn(pawn).destLoc,,true);// GetWalkingSpeed());
     }
     else
         Sleep(0.5);
@@ -5183,7 +5183,7 @@ MoveToBase:
             {
                 if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).HomeLoc))
                     ScriptedPawn(pawn).PlayWalking();
-                MoveTo(ScriptedPawn(pawn).HomeLoc,,true);//, GetWalkingPct());
+                MoveTo(ScriptedPawn(pawn).HomeLoc,,true);//, GetWalkingSpeed());
                 ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).HomeLoc);
                 break;
             }
@@ -5194,7 +5194,7 @@ MoveToBase:
                 {
                     if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                         ScriptedPawn(pawn).PlayWalking();
-                    MoveToward(MoveTarget,,0,false,true);//, GetWalkingPct());
+                    MoveToward(MoveTarget,,0,false,true);//, GetWalkingSpeed());
                     ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
                 }
                 else
@@ -5457,7 +5457,7 @@ Follow:
                 if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).useLoc))
                     ScriptedPawn(pawn).PlayWalking();
 
-            MoveTo(ScriptedPawn(pawn).useLoc, , true); //MoveTo(useLoc, GetWalkingPct());
+            MoveTo(ScriptedPawn(pawn).useLoc, , true); //MoveTo(useLoc, GetWalkingSpeed());
                 ScriptedPawn(pawn).CheckDestLoc(ScriptedPawn(pawn).useLoc);
             }
             else
@@ -5468,7 +5468,7 @@ Follow:
             if (ScriptedPawn(pawn).ShouldPlayWalk(MoveTarget.Location))
                 ScriptedPawn(pawn).PlayWalking();
 
-        MoveToward(MoveTarget,, 0, false, true);            //MoveToward(MoveTarget, GetWalkingPct());
+        MoveToward(MoveTarget,, 0, false, true);            //MoveToward(MoveTarget, GetWalkingSpeed());
             ScriptedPawn(pawn).CheckDestLoc(MoveTarget.Location, true);
         }
         if (IsOverlapping(ScriptedPawn(pawn).orderActor))
@@ -6001,7 +6001,7 @@ State Shadowing
             {
                 ScriptedPawn(pawn).bRunningStealthy = false;
                 ScriptedPawn(pawn).PlayWalking();
-                // ScriptedPawn(pawn).DesiredSpeed = ScriptedPawn(pawn).GetWalkingPct(); // !! Приводит к рассинхронизации шагов и движения.
+                // ScriptedPawn(pawn).DesiredSpeed = ScriptedPawn(pawn).GetWalkingSpeed(); // !! Приводит к рассинхронизации шагов и движения.
             }
         }
 
@@ -6211,7 +6211,7 @@ Moving:
                         ScriptedPawn(pawn).PlayWalking();
 
                     MoveToward(MoveTarget, , , ,true);
-                    //MoveToward(MoveTarget, GetWalkingPct());
+                    //MoveToward(MoveTarget, GetWalkingSpeed());
                 }
             }
         }
@@ -6222,7 +6222,7 @@ Moving:
             ScriptedPawn(pawn).bRunningStealthy = False;
             if (ScriptedPawn(pawn).ShouldPlayWalk(ScriptedPawn(pawn).destLoc))
                 ScriptedPawn(pawn).PlayWalking();
-            MoveTo(ScriptedPawn(pawn).destLoc,,true);// GetWalkingPct());
+            MoveTo(ScriptedPawn(pawn).destLoc,,true);// GetWalkingSpeed());
         }
     }
 

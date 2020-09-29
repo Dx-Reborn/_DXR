@@ -25,7 +25,7 @@ state Wandering
 
         // Handle conversations, if need be
         Global.NotifyBump(bumper);
-        return true; // Когда true, Pawn не получает события Bump()
+        return false; // Когда true, Pawn не получает события Bump()
     }
 
     event bool NotifyHitWall(vector HitNormal, actor Wall)
@@ -36,16 +36,6 @@ state Wandering
         Global.HitWall(HitNormal, Wall);
         CheckOpenDoor(HitNormal, Wall);
         return true;
-    }
-
-    function BeginState() // Убрать?
-    {
-        Super.BeginState();
-    }
-
-    function EndState() // Убрать?
-    {
-        Super.EndState();
     }
 
     function rotator RotationDir(CleanerBot.ECleanDirection cleanDir)
@@ -135,7 +125,7 @@ Moving:
     // Move from pathnode to pathnode until we get where we're going
     CleanerBot(Pawn).PlayWalking();
     MoveTo(CleanerBot(Pawn).destLoc,,true);
-//  MoveTo(destLoc, GetWalkingPct());
+//  MoveTo(destLoc, GetWalkingSpeed());
 
 Pausing:
     if (CleanerBot(Pawn).destLoc == pawn.Location)

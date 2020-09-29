@@ -13,11 +13,6 @@ state Wandering
         return true;
     }
 
-    event Tick(float deltaTime)
-    {
-        Super.Tick(deltatime);
-    }
-
     function vector PickDirection()
     {
         local vector  dirVector;

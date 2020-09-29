@@ -113,8 +113,8 @@ event PostRender(canvas C)
     if (PawnOwner == none || !PawnOwner.IsA('DeusExPlayer'))
         return;
 
-    if (DeusExPlayer(PawnOwner).bExtraDebugInfo)
-        RenderDebugInfo(C);
+    if ((DeusExPlayer(PawnOwner).bExtraDebugInfo) && (!PawnOwner.IsInState('Dying'))) // Если игрок не в стостоянии Dying
+         RenderDebugInfo(C);
 }
 
 simulated function DisplayMessages(Canvas C)
@@ -424,11 +424,6 @@ function SafeRestore()
     SetTimer(0.5,false);
 }
 
-function PlayerPawn GetPlayer()
-{
-   return PlayerPawn(level.GetLocalPlayerController().pawn);
-}
-
 function bool IsValidPos(int pos)
 {
     // Don't allow NanoKeySlot to be used
@@ -441,7 +436,7 @@ function bool IsValidPos(int pos)
 function ClearPosition(int pos)
 {
     if (IsValidPos(pos))
-        GetPlayer().objects[pos] = None;
+        PlayerPawn(PawnOwner).objects[pos] = None;
 }
 
 exec function ClearBelt()
@@ -459,14 +454,14 @@ function RemoveObjectFromBelt(Inventory item)
 
    StartPos = 1;
 
-   if (GetPlayer() == None)
+   if (PlayerPawn(PawnOwner) == None)
    return;
 
     for (i=StartPos; IsValidPos(i); i++)
     {
-        if (GetPlayer().objects[i] == item)
+        if (PlayerPawn(PawnOwner).objects[i] == item)
         {
-            GetPlayer().objects[i] = None;
+            PlayerPawn(PawnOwner).objects[i] = None;
             if (item.IsA('RuntimePickup'))
             {
                 RuntimePickup(item).bInObjectBelt = false;
@@ -501,7 +496,7 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
         if (!IsValidPos(pos))
         {
          for (i=1; IsValidPos(i); i++)
-            if (GetPlayer().objects[i] == None)
+            if (PlayerPawn(PawnOwner).objects[i] == None)
                     break;
 
             if (!IsValidPos(i))
@@ -518,10 +513,10 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
         if (IsValidPos(pos))
         {
             // If there's already an object here, remove it
-            if (GetPlayer().objects[pos] != None)
-                RemoveObjectFromBelt(GetPlayer().objects[pos]);
+            if (PlayerPawn(PawnOwner).objects[pos] != None)
+                RemoveObjectFromBelt(PlayerPawn(PawnOwner).objects[pos]);
 
-            GetPlayer().objects[pos] = newItem;
+            PlayerPawn(PawnOwner).objects[pos] = newItem;
         }
         else
         {
@@ -626,7 +621,7 @@ function bool ActivateObjectInBelt(int pos)
 function Inventory GetObjectFromBelt(int pos)
 {
     if (IsValidPos(pos))
-        return (GetPlayer().objects[pos]);
+        return (PlayerPawn(PawnOwner).objects[pos]);
     else
         return (None);
 }
@@ -671,48 +666,48 @@ function RenderToolBelt(Canvas C)
         C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
         C.SetPos(C.CurX-13,C.CurY);
 
-        if ((GetPlayer().Objects[beltIt] != none) && GetPlayer().Objects[beltIt].bInObjectBelt)
+        if ((PlayerPawn(PawnOwner).Objects[beltIt] != none) && PlayerPawn(PawnOwner).Objects[beltIt].bInObjectBelt)
         {
-            if (GetPlayer().Objects[beltIt].IsA('DeusExWeapon'))
+            if (PlayerPawn(PawnOwner).Objects[beltIt].IsA('DeusExWeapon'))
             {
                c.SetDrawColor(255,255,255);
                C.Style = ERenderStyle.STY_Masked;
                C.SetPos(holdX,holdY+3);
-               C.DrawIcon(DeusExWeapon(GetPlayer().Objects[beltIt]).Icon,1.0);
+               C.DrawIcon(DeusExWeapon(PlayerPawn(PawnOwner).Objects[beltIt]).Icon,1.0);
                c.DrawColor = ToolBeltText;
 
                w = C.CurX;
                h = C.CurY-3;
 
 //                  c.Font=Font'DXFonts.FontTiny';
-               c.DrawTextJustified(DeusExWeapon(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+               c.DrawTextJustified(DeusExWeapon(PlayerPawn(PawnOwner).Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
                C.SetPos(w-13,h);
  //                 c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
-            if (GetPlayer().Objects[beltIt].IsA('SkilledTool'))
+            if (PlayerPawn(PawnOwner).Objects[beltIt].IsA('SkilledTool'))
             {
                 c.SetDrawColor(255,255,255);
                 C.Style = ERenderStyle.STY_Masked;
                 C.SetPos(holdX,holdY+3);
                         //SkilledTool(p.belt[beltIt]).Icon.bMasked=true;
-                C.DrawIconEx(SkilledTool(GetPlayer().Objects[beltIt]).Icon,1.0);
+                C.DrawIconEx(SkilledTool(PlayerPawn(PawnOwner).Objects[beltIt]).Icon,1.0);
                 c.DrawColor = ToolBeltText; //
 
                 w = C.CurX;
                 h = C.CurY-3;
 //                  c.Font=Font'DXFonts.FontTiny';
-                c.DrawTextJustified(SkilledTool(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+                c.DrawTextJustified(SkilledTool(PlayerPawn(PawnOwner).Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
                 C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
             }
-            if (GetPlayer().Objects[beltIt].IsA('DeusExPickup'))
+            if (PlayerPawn(PawnOwner).Objects[beltIt].IsA('DeusExPickup'))
             {
                 c.SetDrawColor(255,255,255);
                 C.Style = ERenderStyle.STY_Masked;
                 C.SetPos(holdX,holdY+3);
                         //DeusExPickup(p.belt[beltIt]).Icon.bMasked=true;
-                C.DrawIconEx(DeusExPickup(GetPlayer().Objects[beltIt]).Icon,1.0);
+                C.DrawIconEx(DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).Icon,1.0);
                 c.DrawColor = ToolBeltText; //
 
                 w = C.CurX;
@@ -720,10 +715,10 @@ function RenderToolBelt(Canvas C)
 
                     //c.Font=Font'DXFonts.FontTiny';
 //                  c.Font=Font'DXFonts.EUX_7';
-                c.DrawTextJustified(DeusExPickup(GetPlayer().Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
+                c.DrawTextJustified(DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
-                if (DeusExPickup(GetPlayer().Objects[beltIt]).CanHaveMultipleCopies())
-                    dxc.DrawTextJustified(strUses $ DeusExPickup(GetPlayer().Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
+                if (DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).CanHaveMultipleCopies())
+                    dxc.DrawTextJustified(strUses $ DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
 
                 C.SetPos(w-13,h);
 //                  c.Font=Font'DXFonts.FontMenuSmall_DS';
@@ -735,7 +730,7 @@ function RenderToolBelt(Canvas C)
          c.Font = font'DPix_7'; //
          dxc.DrawTextJustified(string(beltIt), 2, holdX, holdY+2, holdX+42, holdY+13);
 
-        sitem = SkilledTool(GetPlayer().Objects[beltIt]);
+        sitem = SkilledTool(PlayerPawn(PawnOwner).Objects[beltIt]);
         if((sitem != none) && (!sitem.isA('NanoKeyRing')))
         {
             dxc.DrawTextJustified(strUses $ sitem.NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
@@ -756,17 +751,17 @@ function RenderToolBelt(Canvas C)
     C.DrawIcon(Texture'HUDObjectBeltBackground_Right',1.0);
 //    c.SetPos(holdX, holdY);
 
-    if ((GetPlayer().Objects[0] != none) && (GetPlayer().Objects[0].IsA('NanoKeyRing')))
+    if ((PlayerPawn(PawnOwner).Objects[0] != none) && (PlayerPawn(PawnOwner).Objects[0].IsA('NanoKeyRing')))
     {
         c.SetPos(holdX + 51, holdY);
         C.Style = ERenderStyle.STY_Normal;
         c.DrawColor = ToolBeltText;
-        c.DrawTextJustified(GetPlayer().Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
+        c.DrawTextJustified(PlayerPawn(PawnOwner).Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
 //        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+43,holdY+53);
 
         c.SetPos(holdX + 51, holdY);
         c.SetDrawColor(255,255,255);
-        c.DrawIcon(GetPlayer().Objects[0].GetIcon(), 1);
+        c.DrawIcon(PlayerPawn(PawnOwner).Objects[0].GetIcon(), 1);
         c.DrawColor = ToolBeltText;
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }

@@ -5,7 +5,7 @@
   На мой взгляд это проще и понятнее.
 */
 
-class Barrel1 extends Barrels;
+class Barrel1 extends Barrel1a;
 
 #exec OBJ LOAD FILE=Ambient
 

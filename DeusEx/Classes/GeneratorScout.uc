@@ -10,9 +10,12 @@ auto state StartUpScout
 
 defaultproperties
 {
-     bIgnoreOutOfWorld=true
+//     bIgnoreOutOfWorld=true
 
-     bHidden=True
+//     bHidden=True
+DrawType=DT_Sprite
+Texture=texture'Engine.S_FlyingPath'
+     bHidden=False
      bDetectable=False
      CollisionRadius=52.000000
      CollisionHeight=50.000000

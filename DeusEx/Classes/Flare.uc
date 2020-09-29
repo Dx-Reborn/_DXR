@@ -5,14 +5,6 @@ class Flare extends DeusExPickup;
 
 state Activated
 {
-/*    function PhysicsVolumeChange(PhysicsVolume NewZone)
-    {
-      if (NewZone.bWaterVolume)
-          ExtinguishFlare();
-
-        Super.PhysicsVolumeChange(NewZone);
-    }*/
-
     function Activate()
     {
         // can't turn it off
@@ -38,9 +30,8 @@ function LightFlare(FlareActual pk)
     local Pawn P;
 
     if (pk.gen == None)
-    {   
+    {
         pk.LifeSpan = 30;
-//        pk.bUnlit = true;
         pk.LightType = LT_Steady;
         pk.AmbientSound = Sound'Flare';
 
@@ -61,7 +52,6 @@ function LightFlare(FlareActual pk)
         pk.gen = Spawn(class'EM_FlareSmoke', pk,, pk.Location, rot(16384,0,0));
         if (pk.gen != None)
         {
-            //pk.gen.attachTag = pk.Name;
             pk.gen.SetBase(pk);
         }
     }

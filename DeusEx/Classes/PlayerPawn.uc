@@ -571,12 +571,12 @@ function HeadWoundEffects(float deltaTime)
     }
 }
 
-exec function ListObjects()
+exec function ListStasis()
 {
-   local object wtf;
+   local DeusExPawn wtf;
 
-   foreach AllObjects(class'Object', wtf)
-           log("Object: "$wtf$" and Outer is: "$wtf.Outer);
+   foreach AllActors(class'DeusExPawn', wtf)
+           log("Pawn: "$wtf@"bStasis"@wtf.bStasis@"= and controller.bStasis="$wtf.Controller.bStasis);
 }
 
 

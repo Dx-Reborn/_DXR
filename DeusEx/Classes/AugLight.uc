@@ -78,7 +78,6 @@ state Active
 {
     event Tick(float deltaTime)
     {
-
         SetBeamLocation();
         SetGlowLocation();
         If (AL != none)
