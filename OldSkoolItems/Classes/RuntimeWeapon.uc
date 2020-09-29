@@ -1,10 +1,15 @@
 /*
    Old-style Weapon base class.
+
    Advantages:
       Does not uses WeaponFire objects (these are not travel-friendly anyway).
       Does not uses Pickup, so you place weapons onto your maps directly.
       No more useless InventorySpots.
-   Uses some parts from UE2Runtime.
+
+   Disadvantages:
+      What disadvantages?
+
+   Note: Uses some parts from UE2Runtime.
 */
 
 class RuntimeWeapon extends DeusExWeaponBase
@@ -20,8 +25,9 @@ var() travel editconst Ammunition  AmmoType;   // Inventory Ammo being used.
 var() travel class<projectile> ProjectileClass;
 var() class<projectile> AltProjectileClass;
 var() int projectileSpeed;
-var() travel byte ReloadCount;          // Amount of ammo depletion before reloading. 0 if no reloading is done.
-var()   int     PickupAmmoCount;        // Amount of ammo initially in pick-up item.
+var() int PickupAmmoCount;        // Amount of ammo initially in pick-up item.
+var() travel byte ReloadCount;    // Amount of ammo depletion before reloading. 0 if no reloading is done.
+
 //-----------------------------------------------------------------------------
 // Weapon firing/state information:
 var     bool      bPointing;        // Indicates weapon is being pointed
@@ -53,6 +59,7 @@ var() sound LandSound;
 var() sound CockingSound;
 var() sound ReloadEndSound;
 var() sound DownSound;
+
 var() Vector ProjSpawnOffset; // +x forward, +y right, +z up
 var() float AltRefireRate, RefireRate;
 var() travel bool bInstantHit;
@@ -72,30 +79,29 @@ var                 bool    bMuzzleFlash;       // if !=0 show first-person muzz
 // DEUS_EX AJY - additions (from old DeusExPickup)
 //
 var bool                    bCanUseObjectBelt; // Can this object be placed on the object belt?
-var texture                 Icon;         // Icon for the inventory window
+var texture                 Icon;              // Icon for the inventory window
 var texture                 largeIcon;         // Larger-than-usual icon for the inventory window
 var int                     largeIconWidth;    // Width of graphic in texture
 var int                     largeIconHeight;   // Height of graphic in texture
-var(Inventory) int                      invSlotsX;         // Number of horizontal inv. slots this item takes
-var(Inventory) int                      invSlotsY;         // Number of vertical inv. slots this item takes
-var(Inventory) travel int               invPosX;           // X position on the inventory window
-var(Inventory) travel int               invPosY;           // Y position on the inventory window
-var(ObjectBelt) travel int              beltPos;           // Position on the object belt
+var(Inventory) int          invSlotsX;         // Number of horizontal inv. slots this item takes
+var(Inventory) int          invSlotsY;         // Number of vertical inv. slots this item takes
+var(Inventory) travel int   invPosX;           // X position on the inventory window
+var(Inventory) travel int   invPosY;           // Y position on the inventory window
+var(ObjectBelt) travel int  beltPos;           // Position on the object belt
 var localized String        beltDescription;   // Description used on the object belt
-var localized string PickupMessage;
-
-var   bool bSleepTouch; // Set when item is touched when leaving sleep state.
-var() bool bAmbientGlow;
+var localized string        PickupMessage;
+var transient bool          bPostTravel;       // DXR: Используется в TravelPostAccept().
+var bool                    bSleepTouch;       // Set when item is touched when leaving sleep state.
+var() bool                  bAmbientGlow;
 
 // New from 1.1112fm
-var vector SwingOffset;     // offsets for this weapon swing.
-var float MinWeaponAcc;        // Minimum accuracy for a weapon at all.  Affects only multiplayer.
-var float MinSpreadAcc;        // Minimum accuracy for multiple slug weapons (shotgun).  Affects only multiplayer,
-                               // keeps shots from all going in same place (ruining shotgun effect)
-var float MinProjSpreadAcc;
+var vector                  SwingOffset;       // offsets for this weapon swing.
+var float                   MinWeaponAcc;      // Minimum accuracy for a weapon at all.  Affects only multiplayer.
+var float                   MinSpreadAcc;      // Minimum accuracy for multiple slug weapons (shotgun).  Affects only multiplayer, keeps shots from all going in same place (ruining shotgun effect)
+var float                   MinProjSpreadAcc;
 
-var(WeaponAI) bool    bWarnTarget;       // When firing projectile, warn the target
-var(WeaponAI) bool    bAltWarnTarget;    // When firing alternate projectile, warn the target
+var(WeaponAI) bool          bWarnTarget;       // When firing projectile, warn the target
+var(WeaponAI) bool          bAltWarnTarget;    // When firing alternate projectile, warn the target
 
 /* -----------------------------------------------------------------------------
   Properties to behave like old-style weapons. Third person mesh is not used, 
@@ -116,7 +122,7 @@ var() const vector PickupViewDrawScale3D;
 var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
 
-var transient bool bPostTravel; // Используется в TravelPostAccept().
+
 
 function Sound GetPickupSound()
 {
@@ -125,10 +131,6 @@ function Sound GetPickupSound()
 
 function StopFireSound();
 
-event SetInitialState()
-{
-   Super(Actor).SetInitialState();
-}
 
 event TravelPreAccept()
 {
@@ -781,4 +783,5 @@ defaultproperties
    PickupViewDrawScale=1.00
    PickupViewDrawScale3D=(X=1.00,Y=1.00,Z=1.00)
    bUseCylinderCollision=true
+   ClientState=WS_ReadyToFire
 }

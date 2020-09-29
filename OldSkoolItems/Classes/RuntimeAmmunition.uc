@@ -13,6 +13,7 @@ var localized string PickupMessage;
 event SetInitialState()
 {
    bCollideWorld = true;
+   Super.SetInitialState();
 }
 
 
@@ -35,7 +36,9 @@ function bool HandlePickupQuery(inventory Item)
 
         Pawn(Owner).ClientMessage(PickupMessage @ ItemName, 'Pickup');
 
-        PlaySound(PickupSound);
+        if (RuntimeAmmunition(Item) != None)
+            RuntimeAmmunition(Item).PlaySound(PickupSound);
+
         AddAmmo(Ammunition(item).AmmoAmount);
         item.Destroy();
         return true;                
@@ -49,8 +52,8 @@ function bool HandlePickupQuery(inventory Item)
 
 function Frob(actor Other, inventory FrobWith)
 {
- if (Level.Game.PickupQuery(Pawn(Other), self))
-     SpawnCopy(Pawn(Other));
+   if (Level.Game.PickupQuery(Pawn(Other), self))
+       SpawnCopy(Pawn(Other));
 }
 
 function inventory SpawnCopy(pawn Other)

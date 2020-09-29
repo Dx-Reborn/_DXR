@@ -1,4 +1,6 @@
-/**/
+/*
+   Old-style pickup.
+*/
 
 class RuntimePickup extends powerups abstract
                                      placeable;
@@ -42,11 +44,6 @@ var() array<material> PickupViewSkins; // materials for Pickup version
 var() array<material> FirstPersonViewSkins; // materials for FP version
 
 var transient bool bPostTravel; // Используется в TravelPostAccept().
-
-event SetInitialState()
-{
-   GoToState('Auto');
-}
 
 function Sound GetPickupSound()
 {
@@ -110,7 +107,7 @@ function bool HandlePickupQuery(inventory Item)
         if (bCanHaveMultipleCopies) 
         {   // for items like Artifact
             NumCopies++;
-                Pawn(Owner).ClientMessage(PickupMessage @ itemName, 'Pickup');
+            Pawn(Owner).ClientMessage(PickupMessage @ itemName, 'Pickup');
             Item.Destroy();//SetRespawn();
         }
         else if (bDisplayableInv)
@@ -287,7 +284,7 @@ auto state Pickup
     function Frob(Actor Other, Inventory frobWith)
     {
         local Inventory Copy;
-        if ( ValidTouch(Other) ) 
+        if (ValidTouch(Other))
         {
             Copy = SpawnCopy(Pawn(Other));
 
