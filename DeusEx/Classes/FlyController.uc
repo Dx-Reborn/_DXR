@@ -4,7 +4,7 @@ state Wandering
 {
     event bool NotifyHitWall(vector HitNormal, actor HitWall)
     {
-        local float   elasticity;
+        local float elasticity;
 
         elasticity = 0.3;
         pawn.Velocity = elasticity*((Velocity dot HitNormal) * HitNormal * (-2.0) + pawn.Velocity);

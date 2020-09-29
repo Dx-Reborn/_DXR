@@ -176,6 +176,7 @@ function UnTrigger(Actor Other, Pawn Instigator)
     {
         if (Instigator != None)
             Instigator.ClientMessage(msgDeactivated);
+
         bActive = False;
         AmbientSound = Default.AmbientSound;
         SoundRadius = 16;
@@ -193,7 +194,7 @@ function UnTrigger(Actor Other, Pawn Instigator)
 
 auto state Active
 {
-function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
+    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
     {
         if (DamageType == class'DM_EMP')
         {

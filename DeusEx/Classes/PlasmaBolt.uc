@@ -50,11 +50,9 @@ auto state Flying
     }
 }
 
-//event PostBeginPlay()
 function SpawnCoolEffects()
 {
     local Rotator rot;
-//    Super.PostBeginPlay();
 
     rot = Rotation;
     rot.Yaw -= 32768;
