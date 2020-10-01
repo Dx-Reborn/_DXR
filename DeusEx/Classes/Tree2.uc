@@ -1,20 +1,6 @@
-//=============================================================================
-// Tree2.
-//=============================================================================
-class Tree2 extends Tree;
-
-enum ESkinColor
-{
-	SC_Tree1,
-	SC_Tree2,
-	SC_Tree3
-};
-
-var() ESkinColor SkinColor;
+class Tree2 extends Tree2a;
 
 defaultproperties
 {
-     mesh=mesh'DeusExDeco.Tree2'
-     CollisionRadius=10.000000
-     CollisionHeight=182.369995
+    bObsolete=true
 }

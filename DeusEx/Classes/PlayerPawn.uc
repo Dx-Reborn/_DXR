@@ -10,8 +10,9 @@ const RADAR_DIST = 3000;
 const TRACE_LOS_DIST = 8000;  // Максимальная дистанция для работы аугментаций. CullDistance для ScriptedPawn также 8000.
 const MAX_FIRE_ACTORS = 1;
 const MAX_INVENTORY_CELLS = 30;
+const TOOLBELT_LENGTH = 10;
 
-var() travel inventory objects[10]; // DXR: for toolbelt
+var() travel inventory objects[TOOLBELT_LENGTH]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 

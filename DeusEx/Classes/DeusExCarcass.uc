@@ -857,11 +857,11 @@ function setDeathFlags(Pawn InstigatedBy)
     {
         deathFlag = flagName$"_Dead";
         GetflagBase().SetBool(deathFlag, True);
-        GetflagBase().SetExpiration(deathFlag, FLAG_Bool, 0);
+        GetflagBase().SetExpiration(deathFlag, /*FLAG_Bool,*/ 0);
 
         deathFlag = flagName$"_Unconscious";
         GetflagBase().SetBool(deathFlag, False);
-        GetflagBase().SetExpiration(deathFlag, FLAG_Bool, 0);
+        GetflagBase().SetExpiration(deathFlag, /*FLAG_Bool,*/ 0);
     }
 }
 

@@ -1917,7 +1917,7 @@ function TraceFire(float Accuracy)
         // don't draw tracers if we're zoomed in with a scope - looks stupid
         if (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))
         {
-            if ((AmmoName == class'Ammo10mm') || (AmmoName == class'Ammo3006') || (AmmoName == class'Ammo762mm'))
+            if ((AmmoName == class'Ammo10mm') || (AmmoName == class'Ammo3006a') || (AmmoName == class'Ammo762mm'))
             {
                 if (VSize(HitLocation - StartTrace) > 250)
                 {

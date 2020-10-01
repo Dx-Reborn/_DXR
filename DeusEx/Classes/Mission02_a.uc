@@ -424,7 +424,7 @@ event Timer()
                     bum.Destroy();
 
             flags.SetBool('MS_BumRemoved', True,, 3);
-            flags.DeleteFlag('MS_BumLeaving', FLAG_Bool);
+            flags.DeleteFlag('MS_BumLeaving'/*, FLAG_Bool*/);
         }
 
         // make the bum leave after talking to the doctor

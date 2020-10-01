@@ -6297,7 +6297,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
             GetflagBase().SetBool(flagName, True);
 
             // make sure the flag never expires
-            GetflagBase().SetExpiration(flagName, FLAG_Bool, 0);
+            GetflagBase().SetExpiration(flagName, /*FLAG_Bool,*/ 0);
 
             if (bStunned)
             {
@@ -6305,7 +6305,7 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
                 GetflagBase().SetBool(flagName, True);
 
                 // make sure the flag never expires
-                GetflagBase().SetExpiration(flagName, FLAG_Bool, 0);
+                GetflagBase().SetExpiration(flagName, /*FLAG_Bool,*/ 0);
             }
         }
     }
@@ -7211,7 +7211,7 @@ defaultproperties
      SoundOcclusion=OCCLUSION_Default
      bCanFly=false
      CullDistance=8000 // If DistanceFromPlayer > CullDistance, engine will not render this pawn.
-     bFastTurnWhenAttacking=true
+     bFastTurnWhenAttacking=false
      bDirectHitWall=false
 
      TransientSoundVolume=+0.95

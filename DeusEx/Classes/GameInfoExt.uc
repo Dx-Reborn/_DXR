@@ -7,7 +7,7 @@ class GameInfoExt extends GameInfo;
 
 var int defaultFlagExpiration;
 
-enum EFlagType
+/*enum EFlagType
 {
     FLAG_Bool,
     FLAG_Byte,
@@ -16,7 +16,7 @@ enum EFlagType
     FLAG_Name,
     FLAG_Vector,
     FLAG_Rotator,
-};
+};*/
 
 event InitGame(string Options, out string Error)
 {
@@ -146,7 +146,7 @@ final function bool GetBool(coerce String flagName) {
     return bResult;
 }
 
-final function bool CheckFlag(coerce String flagName, optional EFlagType flagType)
+final function bool CheckFlag(coerce String flagName/*, optional EFlagType flagType*/)
 {
   local GameFlags.Flag Flag;
 
@@ -160,7 +160,7 @@ final function bool CheckFlag(coerce String flagName, optional EFlagType flagTyp
   return false;*/
 }
 
-final function bool DeleteFlag(coerce String flagName, optional EFlagType flagType)
+final function bool DeleteFlag(coerce String flagName/*, optional EFlagType flagType*/)
 {
   local GameFlags.Flag Flag;
 
@@ -172,7 +172,7 @@ final function bool DeleteFlag(coerce String flagName, optional EFlagType flagTy
  else return false;
 }
 
-final function SetExpiration(coerce String flagName, EFlagType flagType, int expiration)
+final function SetExpiration(coerce String flagName, /*EFlagType flagType,*/ int expiration)
 {
   local GameFlags.Flag Flag;
 
@@ -183,7 +183,7 @@ final function SetExpiration(coerce String flagName, EFlagType flagType, int exp
   }
 }
 
-final function int GetExpiration(coerce String flagName, EFlagType flagType)
+final function int GetExpiration(coerce String flagName /*,EFlagType flagType*/)
 {
   local GameFlags.Flag Flag;
 
