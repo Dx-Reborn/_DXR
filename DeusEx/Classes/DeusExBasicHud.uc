@@ -282,7 +282,7 @@ function UpdateHud()
 {
     if (PawnOwner != None)
     {
-       if (Human(Playerowner.pawn)!=none) // && Human(player.pawn).Health > 0)
+       if (Human(Playerowner.pawn)!=none)
        {
            Health=                 Human(Playerowner.pawn).Health;
            HealthHead=         Human(Playerowner.pawn).HealthHead;
@@ -341,13 +341,6 @@ event SetInitialState()
 // Стоит использовать переменные из оригинала.
 event PostRender(canvas u)
 {
-/*    u.font = font'dxFonts.MSS_10';
-    u.SetDrawColor(128,255,128,255); // RGB Alpha
-    u.SetPos(20,200);
-
-    if (PawnOwner == None)
-        u.DrawText("I'm here");*/
-
     super.postrender(u);
     if ((cubemapmode) || (PawnOwner == none) || !pawnOwner.IsA('DeusExPlayer'))
          return;
@@ -384,14 +377,12 @@ event PostRender(canvas u)
       RenderPoisonEffectGreen(u);
       RenderFrobTarget(u);
       RenderSmallHUDHitDisplay(u);
-//      RenderCrosshair(u);
       RenderHitMarker(u);
       DisplayMessages(u);
       RenderCompass(u); // Компас
       RenderToolBelt(u); // Быстрый доступ
       RenderAugsBelt(u); // Задействованные аугментации
       RenderAmmoDisplay(u);
-//      DrawTargetAugmentation(u);
       RenderChargedPickups(u);
 
 // DrawActor( Actor A, bool WireFrame, optional bool ClearZ, optional float DisplayFOV ) 
@@ -400,7 +391,7 @@ event PostRender(canvas u)
 
 function DrawHud(Canvas C)
 {
-    if (PawnOwner != none)
+    if ((PawnOwner != none) && (PawnOwner.IsA('DeusExPlayer')))
     {
         UpdateHud();
     }

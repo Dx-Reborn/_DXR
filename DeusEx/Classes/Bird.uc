@@ -108,5 +108,7 @@ defaultproperties
      controllerClass=class'BirdController'
      orders=Flying
 
+     MinFlySpeed=30.00
+
      bAmbientCreature=true // do not display on Radar
 }

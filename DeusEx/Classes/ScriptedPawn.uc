@@ -7222,4 +7222,7 @@ defaultproperties
      bCanWalkOffLedges=true
      bAvoidLedges=false      // don't get too close to ledges
      bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+
+     PitchDownLimit=0
+     PitchUpLimit=0
 }

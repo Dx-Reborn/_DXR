@@ -435,6 +435,9 @@ function bool IsValidPos(int pos)
 
 function ClearPosition(int pos)
 {
+    if (PlayerPawn(PawnOwner) == None)
+    return;
+
     if (IsValidPos(pos))
         PlayerPawn(PawnOwner).objects[pos] = None;
 }
@@ -442,6 +445,9 @@ function ClearPosition(int pos)
 exec function ClearBelt()
 {
     local int beltPos;
+
+    if (PlayerPawn(PawnOwner) == None)
+    return;
                 //0
     for(beltPos=1; beltPos<10; beltPos++)
         ClearPosition(beltPos);
@@ -481,6 +487,9 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
 {
     local int  i;
     local bool retval;
+
+    if (PlayerPawn(PawnOwner) == None)
+    return false;
 
     retval = true;
 

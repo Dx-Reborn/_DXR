@@ -8,6 +8,7 @@ var int amountOfShots;
 
 const SmokeThreshold = 10;
 
+
 // Spawn an emitter!
 function AddParticles()
 {
