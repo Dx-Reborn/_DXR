@@ -18,13 +18,13 @@ event Tick(float deltaTime)
    if (bScalingUp)
    {
        ScaleUp(deltaTime);
-       log(drawScale3D);
+//       log(drawScale3D);
        return;
    }
    else if (!bScalingUp)
    {
        ScaleDown(deltaTime);
-       log(drawScale3D);
+//       log(drawScale3D);
        return;
    }
 }
