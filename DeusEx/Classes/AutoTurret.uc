@@ -36,7 +36,7 @@ var Pawn savedTarget;
 
 //------------------------------------------------
 
-function AlarmHeard(Name event, eventManager.EAIEventState state) //, XAIParams params)
+function AlarmHeard(Name event, DeusExPawn.EAIEventState state, optional DeusExPawn.XAIParams params)
 {
     if (state == EAISTATE_Begin)
     {

@@ -765,7 +765,8 @@ defaultproperties
      bLOSCheck=True
      TurnPeriod=0.800000
      CoastPeriod=8.000000
-     bHidden=True
+//     bHidden=True
+     bHidden=false
      bDirectional=True
      DrawType=DT_Sprite
 //     Texture=Texture'DeusExUI.Icons.DamageIconGas'  //Texture'Engine.S_Inventory'

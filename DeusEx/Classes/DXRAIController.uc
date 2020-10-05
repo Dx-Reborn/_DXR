@@ -6593,7 +6593,7 @@ defaultproperties
     bAdjustFromWalls=true
     FovAngle=+90.00
 //    MinHitWall=9999999827968.00
-    MinHitWall=999999999827968.00
+    MinHitWall=93372269057156317000.00
 //  RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
     RotationRate=(Pitch=4096,Yaw=90000,Roll=3072)
     Skill=2.00

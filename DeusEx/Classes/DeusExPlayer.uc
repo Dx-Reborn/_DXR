@@ -5129,7 +5129,7 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 
 // Starts an AI Bark conversation, which really isn't a conversation
 // as much as a simple bark.  
-function bool StartAIBarkConversation(Actor conOwner,EventManager.EBarkModes barkMode)
+function bool StartAIBarkConversation(Actor conOwner,DeusExPawn.EBarkModes barkMode)
 {
     if ((conOwner == None) || (conOwner.GetConList().length == 0) || (barkManager == None) || ((conPlay != None) && (conPlay.con.bFirstPerson != true)))
     {

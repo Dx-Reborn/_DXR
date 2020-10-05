@@ -82,7 +82,6 @@ var(DynamicShadow) float ShadowMaxTraceDistance;
 var name NextState;                 // for queueing states
 var name NextLabel;                 // for queueing states
 
-
 // Сдвинуть при нанесении урона
 function DamageForce(int Damage);
 
@@ -179,6 +178,9 @@ function PreBeginPlay()
         flyGen = Spawn(Class'FlyGenerator', , , Location, Rotation);
     else
         flyGen = None;
+
+    RemoteRole = default.RemoteRole;
+    Role = default.Role;
 }
 
 
@@ -382,7 +384,7 @@ singular function BaseChange()
 {
     bBobbing = false;
 
-    if( (base == None) && (bPushable || IsA('Carcass')) && (Physics == PHYS_None) )
+    if((base == None) && (bPushable || IsA('Carcass')) && (Physics == PHYS_None))
         SetPhysics(PHYS_Falling);
 
     // make sure if a decoration is accidentally dropped,
@@ -597,7 +599,7 @@ event Timer()
 //        class'DxUtil'.static.StopSound(self, PushSoundId);
         class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
-        AmbientSound = default.AmbientSound;
+        AmbientSound = None; //default.AmbientSound;
 
         acceleration = vect(0,0,0);
         velocity = vect(0,0,0);
@@ -1231,7 +1233,7 @@ defaultproperties
      bHighlight=True
      ItemName="DEFAULT DECORATION NAME - REPORT THIS AS A BUG"
      bPushable=True
-     PushSound=Sound'DeusExSounds.Generic.PushMetal'
+     PushSound=None // Sound'DeusExSounds.Generic.PushMetal'
      bStatic=False
      Texture=Texture'Engine.S_Pawn'
      bTravel=True

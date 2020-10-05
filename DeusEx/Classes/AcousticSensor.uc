@@ -12,7 +12,7 @@ function HackAction(Actor Hacker, bool bHacked)
         class'EventManager'.static.AIClearEventCallback('WeaponFire');
 }
 
-function NoiseHeard(Name eventName, eventManager.EAIEventState state) //, XAIParams params)
+function NoiseHeard(Name eventName, DeusExPawn.EAIEventState state, DeusExPawn.XAIParams params)
 {
     local Actor A;
 

@@ -74,7 +74,7 @@ var     HomeBase    HomeActor;      // home base
 var     Vector      HomeLoc;        // location of home base
 var     Vector      HomeRot;        // rotation of home base
 var     bool        bUseHome;       // true if home base should be used
-var(Pawn) bool bHasHeels;           // Special case for footstepping
+var(ScriptedPawn) bool bHasHeels;           // Special case for footstepping
 
 var     AlarmUnit   AlarmActor;
 
@@ -106,6 +106,12 @@ var float   SaveRate;           // value for how fast we were playing the frame,
 
 function RobotFiringEffects();
 function PawnFiringEffects();
+
+function float DistanceFromPlayer()
+{
+    return Distance_FromPlayer;
+}
+
 
 function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
@@ -176,13 +182,13 @@ event PostLoadSavedGame()
     if (shadow == none)
         CreateShadow();
 
-  ConBindEvents();
+    ConBindEvents();
 }
 
 event ObstacleTimerIsOver()
 {
   if ((Controller != None) && (controller.MoveTarget != None))
-   Controller.Focus = controller.MoveTarget;
+       Controller.Focus = controller.MoveTarget;
 }
 
 // Заглушка, для того чтобы собиралось.
@@ -293,8 +299,8 @@ function sound GetBulletHitSound()
 function PreBeginPlay()
 {
     // Added angular size computation - DEUS_EX STM
-  MinAngularSize = tan(AngularResolution*0.5*Pi/180.0);
-  MinAngularSize *= MinAngularSize;
+    MinAngularSize = tan(AngularResolution*0.5*Pi/180.0);
+    MinAngularSize *= MinAngularSize;
 
   // TODO:
   //
@@ -306,14 +312,13 @@ function PreBeginPlay()
   //
   // This must be fixed after ECTS.
 
-  Super.PreBeginPlay();
+    Super.PreBeginPlay();
 
-  // Set our alliance
-  SetAlliance(Alliance);
+    // Set our alliance
+    SetAlliance(Alliance);
 
   // Set up callbacks
-//  UpdateReactionCallbacks();
-
+  // UpdateReactionCallbacks();
 }
 
 // ----------------------------------------------------------------------

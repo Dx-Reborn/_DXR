@@ -48,10 +48,10 @@ state Wandering
             bird(pawn).destLoc = bird(pawn).Location;
     }
 
-/*  function HeardNoise(Name eventName, EAIEventState state, XAIParams params)
+    function HeardNoise(Name eventName, DeusExPawn.EAIEventState state, DeusExPawn.XAIParams params)
     {
-        FleeFromPawn(Pawn(params.bestActor));
-    }*/
+        bird(pawn).FleeFromPawn(Pawn(params.bestActor));
+    }
 
     event Tick(float deltaSeconds)
     {

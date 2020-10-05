@@ -10,7 +10,7 @@ struct BarkInfo
     var string       conName;
     var float        barkDuration;
     var float        barkTimer;
-    var eventManager.EBarkModes   barkMode;
+    var DeusExPawn.EBarkModes   barkMode;
     var int          barkPriority;
     var transient sound /*int*/ playingSoundId;
 };
@@ -46,7 +46,7 @@ event Tick(float deltaTime)
 // StartBark()
 // ----------------------------------------------------------------------
 
-function bool StartBark(ScriptedPawn newBarkPawn, eventManager.EBarkModes newBarkMode)
+function bool StartBark(ScriptedPawn newBarkPawn, DeusExPawn.EBarkModes newBarkMode)
 {
     local String       conName;
     local ConDialogue  con;
@@ -175,7 +175,7 @@ function bool IsBarkPlaying(string conName)
 // Checks to see if a bark type has been played recently for
 // the given ScriptedPawn passed in.
 // ----------------------------------------------------------------------
-function bool HasBarkTypePlayedRecently(ScriptedPawn newBarkPawn, eventManager.EBarkModes newBarkMode)
+function bool HasBarkTypePlayedRecently(ScriptedPawn newBarkPawn, DeusExPawn.EBarkModes newBarkMode)
 {
     local int barkIndex;
 
@@ -224,7 +224,7 @@ function bool CheckHeightDifference(ScriptedPawn invokePawn)
 // ----------------------------------------------------------------------
 // SetBarkInfo()
 // ----------------------------------------------------------------------
-function SetBarkInfo(int barkIndex,String conName,ScriptedPawn newBarkPawn,eventManager.EBarkModes newBarkMode,Float barkDuration,sound playingSoundID)
+function SetBarkInfo(int barkIndex,String conName,ScriptedPawn newBarkPawn, DeusExPawn.EBarkModes newBarkMode, float barkDuration,sound playingSoundID)
 {
     RemoveCurrentBark(barkIndex);
 
@@ -245,7 +245,7 @@ function SetBarkInfo(int barkIndex,String conName,ScriptedPawn newBarkPawn,event
 // Loops through the bark slots and checks to see if any are avaialble
 // or if any are in use by this NPC.
 // ----------------------------------------------------------------------
-function int GetAvailableCurrentBarkSlot(ScriptedPawn newBarkPawn,eventManager.EBarkModes newBarkMode)
+function int GetAvailableCurrentBarkSlot(ScriptedPawn newBarkPawn, DeusExPawn.EBarkModes newBarkMode)
 {
     local int barkIndex;
     local int emptyBarkIndex;
@@ -420,7 +420,7 @@ function RemoveRecentBark(int barkIndex)
 // ----------------------------------------------------------------------
 // GetBarkPriority()
 // ----------------------------------------------------------------------
-function int GetBarkPriority(eventManager.EBarkModes barkMode)
+function int GetBarkPriority(DeusExPawn.EBarkModes barkMode)
 {
     local int barkPriority;
 
@@ -509,7 +509,7 @@ function int GetBarkPriority(eventManager.EBarkModes barkMode)
 // ----------------------------------------------------------------------
 // GetBarkTimeout()
 // ----------------------------------------------------------------------
-function Float GetBarkTimeout(eventManager.EBarkModes barkMode)
+function Float GetBarkTimeout(DeusExPawn.EBarkModes barkMode)
 {
     local Float barkTimeout;
 
@@ -530,7 +530,7 @@ function Float GetBarkTimeout(eventManager.EBarkModes barkMode)
 // ----------------------------------------------------------------------
 // BuildBarkName()
 // ----------------------------------------------------------------------
-function string BuildBarkName(ScriptedPawn newBarkPawn, eventManager.EBarkModes newBarkMode)
+function string BuildBarkName(ScriptedPawn newBarkPawn, DeusExPawn.EBarkModes newBarkMode)
 {
     local String conStringName;
 

@@ -62,7 +62,7 @@ event Timer()
     local Containers crate;
     local BobPage Bob;
     local JaimeReyes Jaime;
-    local SecurityBot2 bot;
+    local SecurityBot2a bot;
     local LAM lam;
     local Skill aSkill;
 
@@ -109,7 +109,7 @@ event Timer()
         if (!flags.GetBool('MS_LAMBot1Destroyed'))
         {
             count = 0;
-            foreach AllActors(class'SecurityBot2', bot, 'LAMBot1')
+            foreach AllActors(class'SecurityBot2a', bot, 'LAMBot1')
                 count++;
 
             if (count == 0)
@@ -123,7 +123,7 @@ event Timer()
         if (!flags.GetBool('MS_LAMBot2Destroyed'))
         {
             count = 0;
-            foreach AllActors(class'SecurityBot2', bot, 'LAMBot2')
+            foreach AllActors(class'SecurityBot2a', bot, 'LAMBot2')
                 count++;
 
             if (count == 0)
