@@ -1,103 +1,79 @@
 /*
-    Changes DrawScale.Z of specified StaticMesh.
+
 */
 
-class ScalableRope extends ScaledSprite
-                              placeable;
+class ScalableRope extends DeusExEmitter
+                               placeable;
 
-var() float InitialScaleZ, FinalScaleZ, ChangeTime;
-var float tTime;
-var bool bScalingInProcess;
-var vector finalVector;
-var float finalValue;
-var bool bScalingUp;
 
+var() float MaxDist;
+var Actor HitActor;
+
+function SetRopeLength(int Length)
+{
+      BeamEmitter(Emitters[0]).BeamDistanceRange.Min = Length;
+      BeamEmitter(Emitters[0]).BeamDistanceRange.Max = Length;
+}
 
 event Tick(float deltaTime)
 {
-   if (bScalingUp)
-   {
-       ScaleUp(deltaTime);
-//       log(drawScale3D);
-       return;
-   }
-   else if (!bScalingUp)
-   {
-       ScaleDown(deltaTime);
-//       log(drawScale3D);
-       return;
-   }
+    local vector StartTrace, EndTrace, HitLocation, HitNormal;
+    local actor target;
+    local int texFlags;
+    local name texName, texGroup;
+
+    StartTrace = Location;
+    EndTrace = Location + MaxDist * vector(Rotation);
+    HitActor = None;
+
+      foreach class'ActorManager'.static.TraceTexture(self,class'Actor', target, texName, texGroup, texFlags, HitLocation, HitNormal, EndTrace, StartTrace)
+      {
+            if ((target.DrawType == DT_None) || target.bHidden)
+            {
+                // do nothing - keep on tracing
+            }
+            else if ((target == Level) || target.IsA('Mover') || (target.bWorldGeometry))
+            {
+                break;
+            }
+            else
+            {
+                if (target != none)
+                    HitActor = target;
+                break;
+            }
+
+      }
+      SetRopeLength(Abs(vSize(Location - HitLocation)));
 }
 
-function ScaleUp(float deltaTime)
-{
-   if (!bScalingInProcess)
-       return;
-
-   tTime += deltaTime;
-
-   if (tTime <= ChangeTime)
-   {
-       finalvector.X = DrawScale3D.X;
-       finalvector.Y = DrawScale3D.Y;
-       finalValue = 1 + (ChangeTime * tTime / ChangeTime);
-       finalvector.Z = finalValue;
-
-       SetDrawScale3D(finalVector);
-
-       if (DrawScale3D.Z >= FinalScaleZ)
-           bScalingInProcess = false;
-   }
-}
-
-function ScaleDown(float deltaTime)
-{
-
-//        SetDrawScale(FMax(0.01, DrawScale - Default.DrawScale * DeltaTime));
-
-   if (!bScalingInProcess)
-       return;
-
-   tTime += deltaTime;
-
-   if (tTime <= ChangeTime)
-   {
-       finalvector.X = DrawScale3D.X;
-       finalvector.Y = DrawScale3D.Y;
-       finalValue = fMax(1.0, DrawScale3D.Z - InitialScaleZ * DeltaTime);
-       finalvector.Z = finalValue;
-
-       SetDrawScale3D(finalVector);
-
-       if (DrawScale3D.Z <= InitialScaleZ)
-           bScalingInProcess = false;
-   }
-}
-
-event Trigger(actor Other, pawn EventInstigator)
-{
-    tTime = 0;
-
-    if (DrawScale3D.Z >= FinalScaleZ)
-    {
-        bScalingInProcess = true;
-        bScalingUp = false;
-    }
-    else 
-    if (DrawScale3D.Z <= InitialScaleZ)
-    {
-        bScalingInProcess = true;
-        bScalingUp = true;
-}   }
 
 defaultproperties
 {
-    StaticMesh=StaticMesh'DeusExStaticMeshes0.SecurityCamera_a'
-    DrawType=DT_StaticMesh
-    bScalingInProcess=false
-    ChangeTime=5.00
-    InitialScaleZ=1.00
-    FinalScaleZ=5.00
+    MaxDist=5000
 
-    bStatic=false
+    Begin Object Class=BeamEmitter Name=BeamEmitter1
+        BeamDistanceRange=(Min=512.000000,Max=512.000000)
+        DetermineEndPointBy=PTEP_Distance
+        BeamTextureUScale=8.000000
+        RotatingSheets=3
+        LowFrequencyPoints=2
+        HighFrequencyPoints=2
+        AutomaticInitialSpawning=False
+        ColorScale(0)=(Color=(R=192))
+        ColorScale(1)=(RelativeTime=0.500000,Color=(B=64,G=64,R=255))
+        ColorScale(2)=(RelativeTime=1.000000,Color=(R=192))
+        ColorMultiplierRange=(X=(Min=0.500000,Max=1.000000),Y=(Min=0.500000,Max=1.000000),Z=(Min=0.500000,Max=1.000000))
+        MaxParticles=1
+        UseRotationFrom=PTRS_Actor
+        StartSizeRange=(X=(Min=0.100000,Max=0.100000),Y=(Min=0.100000,Max=0.200000))
+        ScaleSizeByVelocityMax=1000000.000000
+        InitialParticlesPerSecond=5000.000000
+        Texture=FireTexture'Effects.Laser.LaserBeam1'
+        LifetimeRange=(Min=0.020000,Max=0.020000)
+        StartVelocityRange=(X=(Min=1.000000,Max=1.000000))
+    End Object
+    Emitters(0)=BeamEmitter'BeamEmitter1'
+
+    bDirectional=true
 }

@@ -17,11 +17,6 @@ var int alarmTimeout;           // how long before the alarm silences itself
 var vector actorLocation;       // last known location of actor that triggered alarm
 var EM_Laserbeam emitter;
 
-/*event PreBeginPlay()
-{
-    Super.PreBeginPlay();
-} */
-
 singular function Touch(Actor Other)
 {
     // does nothing when touched

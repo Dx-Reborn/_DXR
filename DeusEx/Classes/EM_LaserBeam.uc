@@ -7,7 +7,6 @@ class EM_LaserBeam extends DeusExEmitter;
 var LaserSpot spot[2];          // max of 2 reflections
 var bool bIsOn;
 var actor HitActor;
-//var bool bFrozen;               // are we out of the player's sight?
 var bool bRandomBeam;
 var bool bBlueBeam;             // is this beam blue?
 var bool bHiddenBeam;           // is this beam hidden?
@@ -132,8 +131,6 @@ function SetHiddenBeam(bool bHide)
         BeamEmitter(Emitters[0]).Opacity = 0.0;
     else
         BeamEmitter(Emitters[0]).Opacity = 1.0;
-/*  if (proxy != None)
-        proxy.bHidden = bHide;*/
 }
 
 
