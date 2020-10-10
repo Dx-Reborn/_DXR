@@ -1,7 +1,7 @@
 /*
-   Base class for all grenades 
-  was GrenadeWeaponInv.uc
+   Base class for all grenades (LAM, EMP grenade, etc)
 */
 
 class WeaponGrenade extends DeusExWeapon
-      Abstract;
+                            HideDropdown
+                                Abstract;

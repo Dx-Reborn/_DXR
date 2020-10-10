@@ -1,15 +1,20 @@
-// Боеприпасы для инвентаря
-class DeusExAmmo extends RuntimeAmmunition;
+/*
+   Боеприпасы для инвентаря
+*/
+
+class DeusExAmmo extends RuntimeAmmunition
+                              HideDropdown
+                                  Abstract;
 
 //
 // DEUS_EX AJY - additions (from old DeusExPickup)
 //
 var bool          bCanUseObjectBelt; // Can this object be placed on the object belt?
-var texture         largeIcon;         // Larger-than-usual icon for the inventory window
-var texture         Icon;
+var texture       largeIcon;         // Larger-than-usual icon for the inventory window
+var texture       Icon;
 var int           largeIconWidth;    // Width of graphic in texture
 var int           largeIconHeight;   // Height of graphic in texture
-var() localized String    description;       // Description
+var localized String    description;       // Description
 var localized String    beltDescription;   // Description used on the object belt
 
 var localized String msgInfoRounds;
@@ -27,7 +32,7 @@ function string GetbeltDescription()  // Description used on the object belt
 
 defaultproperties
 {
-  Lifespan=0.0
-  DrawType=dt_mesh
-  Physics=PHYS_FALLING
+   Lifespan=0.0
+   DrawType=DT_Mesh
+   Physics=PHYS_Falling
 }

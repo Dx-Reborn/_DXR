@@ -3,9 +3,10 @@
 ------------------------------------------------------------------------------*/
 
 class WeaponMod extends DeusExPickup
+                        HideDropDown
                         abstract;
 
-var() Float WeaponModifier;
+var() float WeaponModifier;
 var localized String DragToUpgrade;
 
 

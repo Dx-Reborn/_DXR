@@ -6,10 +6,11 @@
 #exec OBJ LOAD FILE=DeusExItemsEx
 
 class SkilledTool extends DeusExPickup
-      abstract;
+                          HideDropDown
+                              abstract;
 
-var() sound     useSound;
-var bool        bBeingUsed;
+var sound   useSound;
+var bool    bBeingUsed;
 
 // DXR: New stuff
 var sound BringUpSound;

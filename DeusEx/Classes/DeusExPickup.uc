@@ -2,7 +2,9 @@
    DeusExPickup : все съедобные и используемые предметы инвентаря.
 */
 
-class DeusExPickup extends RuntimePickup abstract;
+class DeusExPickup extends RuntimePickup
+                            HideDropdown
+                                abstract;
 
 function ActivateHUD();
 

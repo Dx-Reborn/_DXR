@@ -6,7 +6,7 @@ class ScalableRope extends DeusExEmitter
                                placeable;
 
 
-var() float MaxDist;
+var() float MaxDist, MaxDistCorrection;
 var Actor HitActor;
 
 function SetRopeLength(int Length)
@@ -44,13 +44,14 @@ event Tick(float deltaTime)
             }
 
       }
-      SetRopeLength(Abs(vSize(Location - HitLocation)));
+      SetRopeLength(Abs(vSize(Location - HitLocation)) + MaxDistCorrection);
 }
 
 
 defaultproperties
 {
     MaxDist=5000
+    MaxDistCorrection=0.0
 
     Begin Object Class=BeamEmitter Name=BeamEmitter1
         BeamDistanceRange=(Min=512.000000,Max=512.000000)

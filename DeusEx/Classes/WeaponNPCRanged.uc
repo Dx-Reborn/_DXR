@@ -2,7 +2,8 @@
 // WeaponNPCRanged.
 //=============================================================================
 class WeaponNPCRanged extends DeusExWeapon
-    abstract;
+                              HideDropdown
+                                  abstract;
 
 function PlayLandingSound();
 

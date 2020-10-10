@@ -1,1 +1,3 @@
-class GrenadeAmmo extends DeusExAmmo;
+class GrenadeAmmo extends DeusExAmmo
+                            Abstract
+                        HideDropdown;

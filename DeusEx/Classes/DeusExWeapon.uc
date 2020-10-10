@@ -4,7 +4,8 @@
 */
 
 class DeusExWeapon extends RuntimeWeapon
-      Abstract;
+                            HideDropDown
+                                Abstract;
 
 const AcquireTarget_DIST = 10000;
 

@@ -2,7 +2,8 @@
 // WeaponNPCMelee.
 //=============================================================================
 class WeaponNPCMelee extends DeusExWeapon
-    abstract;
+                             HideDropdown
+                                 abstract;
 
 function PlayLandingSound();
 
