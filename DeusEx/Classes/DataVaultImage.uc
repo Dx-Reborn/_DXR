@@ -2,6 +2,7 @@
 // DataVaultImage
 //=============================================================================
 class DataVaultImage extends DeusExPickup
+                             HideDropdown
                                  abstract;
 
 #exec obj load file=DXR_DataVaultImages
