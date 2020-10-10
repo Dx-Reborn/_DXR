@@ -2,8 +2,10 @@
    Old-style pickup.
 */
 
-class RuntimePickup extends powerups abstract
-                                     placeable;
+class RuntimePickup extends powerups 
+                        HideDropdown
+                            abstract
+                           placeable;
 
 
 var() int           MaxCopies; // сколько можно унести с собой

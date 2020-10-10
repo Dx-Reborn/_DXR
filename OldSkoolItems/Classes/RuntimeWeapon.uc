@@ -13,8 +13,9 @@
 */
 
 class RuntimeWeapon extends DeusExWeaponBase
-                            Abstract
-                            placeable;
+                                HideDropdown
+                                    Abstract
+                                   placeable;
 
 #exec obj load file=DeusExItems.ukx
 

@@ -2,8 +2,10 @@
    Old-style ammo class.
 */
 
-class RuntimeAmmunition extends Ammunition abstract
-                                           placeable;
+class RuntimeAmmunition extends Ammunition
+                              HideDropdown
+                                  abstract
+                                 placeable;
 
 var() class<ammunition> ParentAmmo;    // Class of ammo to be represented in inventory
 var() sound PickupSound;
