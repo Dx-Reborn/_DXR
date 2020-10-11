@@ -67,6 +67,8 @@ defaultproperties
      FirstPersonViewMesh=Mesh'DeusExItems.Shuriken'
      Mesh=Mesh'DeusExItems.ShurikenPickup'
 
+//     FireSound=Sound'DeusExSounds.Weapons.CrowbarFire'
+
      largeIcon=Texture'DeusExUI.Icons.LargeIconShuriken'
      largeIconWidth=36
      largeIconHeight=45

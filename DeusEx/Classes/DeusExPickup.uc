@@ -200,8 +200,8 @@ event RenderOverlays(canvas Canvas)
     if ((Instigator == None) || (Instigator.Controller == None))
         return;
 
-    SetLocation( Instigator.Location + Instigator.CalcDrawOffset(self) );
-    SetRotation( Instigator.GetViewRotation() );
+    SetLocation(Instigator.Location + Instigator.CalcDrawOffset(self));
+    SetRotation(Instigator.GetViewRotation());
     bDrawingFirstPerson = true;
     Canvas.DrawActor(self, false, true, class'DeusExWeapon'.default.DisplayFOV);
     bDrawingFirstPerson = false;
