@@ -20,65 +20,65 @@
 
 // Note: This class now useless.
 class Pickup extends Actor
-	abstract
-	//placeable
-	notplaceable
-	native
-	nativereplication;
+    abstract
+    //placeable
+    notplaceable
+    native
+    nativereplication;
 
 //-----------------------------------------------------------------------------
 // AI related info.
 
-var  float		  MaxDesireability;		// Maximum desireability this item will ever have.
-var	  InventorySpot MyMarker;
-var	  NavigationPoint PickupCache;		// used for dropped pickups
+var  float        MaxDesireability;     // Maximum desireability this item will ever have.
+var   InventorySpot MyMarker;
+var   NavigationPoint PickupCache;      // used for dropped pickups
 var() class<Inventory> InventoryType;
-var() bool		bInstantRespawn;	  // Can be tagged so this item respawns instantly.
-var	  bool		bOnlyReplicateHidden;	// only replicate changes in bHidden (optimization for level pickups)
-var(Display) bool bAmbientGlow;		  // Whether to glow or not.
-var		bool	bDropped;
-var		bool	bPredictRespawns;	  // high skill bots may predict respawns for this item
+var() bool      bInstantRespawn;      // Can be tagged so this item respawns instantly.
+var   bool      bOnlyReplicateHidden;   // only replicate changes in bHidden (optimization for level pickups)
+var(Display) bool bAmbientGlow;       // Whether to glow or not.
+var     bool    bDropped;
+var     bool    bPredictRespawns;     // high skill bots may predict respawns for this item
 var() float     RespawnTime;          // Respawn after this time, 0 for instant.
-var	 float RespawnEffectTime;
+var  float RespawnEffectTime;
 
 var() localized string PickupMessage; // Human readable description when picked up.
 var() sound PickupSound;
 var() string PickupForce;  // jdf
 var() xPickUpBase PickUpBase;          // Pick-up base which spawned this pickup.
 
-var Controller TeamOwner[4];		// AI controller currently going after this pickup (for team coordination)
+var Controller TeamOwner[4];        // AI controller currently going after this pickup (for team coordination)
 
-native final function AddToNavigation();			// cache dropped inventory in navigation network
+native final function AddToNavigation();            // cache dropped inventory in navigation network
 native final function RemoveFromNavigation();
 
 static function StaticPrecache(LevelInfo L);
 
 function Destroyed()
 {
-	if (MyMarker != None )
-		MyMarker.markedItem = None;
-	if (Inventory != None )
-		Inventory.Destroy();
+    if (MyMarker != None )
+        MyMarker.markedItem = None;
+    if (Inventory != None )
+        Inventory.Destroy();
 }
 
 simulated function String GetHumanReadableName()
 {
-	if ( InventoryType == None )
-		return GetItemName(string(class));
-	if ( InventoryType.Default.ItemName == "" )
-		return GetItemName(string(InventoryType));
+    if ( InventoryType == None )
+        return GetItemName(string(class));
+    if ( InventoryType.Default.ItemName == "" )
+        return GetItemName(string(InventoryType));
 
-	return InventoryType.Default.ItemName;
+    return InventoryType.Default.ItemName;
 }
 
 function bool IsSuperItem()
 {
-	return (PickupBase != None) && PickupBase.bDelayedSpawn;
+    return (PickupBase != None) && PickupBase.bDelayedSpawn;
 }
 
 simulated static function UpdateHUD(HUD H)
 {
-	H.LastPickupTime = H.Level.TimeSeconds;
+    H.LastPickupTime = H.Level.TimeSeconds;
 }
 
 /* Reset()
@@ -86,16 +86,16 @@ reset actor to initial state - used when restarting level without reloading.
 */
 function Reset()
 {
-	if ( Inventory != None )
-		destroy();
-	else
-	{
-		if (myMarker != None && myMarker.bSuperPickup)
-			GotoState('Sleeping', 'DelayedSpawn');
-		else
-			GotoState('Pickup');
-		Super.Reset();
-	}
+    if ( Inventory != None )
+        destroy();
+    else
+    {
+        if (myMarker != None && myMarker.bSuperPickup)
+            GotoState('Sleeping', 'DelayedSpawn');
+        else
+            GotoState('Pickup');
+        Super.Reset();
+    }
 }
 
 function RespawnEffect();
@@ -103,21 +103,21 @@ function RespawnEffect();
 // Turns the pickup into a different type of pickup - specificly used by the WildcardCharger
 function Pickup Transmogrify(class<Pickup> NewClass) // de
 {
-	local Pickup NewPickup;
+    local Pickup NewPickup;
 
-	NewPickup = Spawn(NewClass);
-	NewPickup.PickupBase = PickupBase;
-	NewPickup.RespawnTime = RespawnTime;
+    NewPickup = Spawn(NewClass);
+    NewPickup.PickupBase = PickupBase;
+    NewPickup.RespawnTime = RespawnTime;
 
-	if (MyMarker != None )
-	{
-		MyMarker.markedItem = NewPickup;
-		NewPickup.MyMarker = MyMarker;
-		MyMarker = None;
-	}
-	Destroy();
+    if (MyMarker != None )
+    {
+        MyMarker.markedItem = NewPickup;
+        NewPickup.MyMarker = MyMarker;
+        MyMarker = None;
+    }
+    Destroy();
 
-	return NewPickup;
+    return NewPickup;
 }
 
 /* DetourWeight()
@@ -125,7 +125,7 @@ value of this path to take a quick detour (usually 0, used when on route to dist
 */
 function float DetourWeight(Pawn Other,float PathWeight)
 {
-	return 0;
+    return 0;
 }
 
 /* Pickups have an AI interface to allow AIControllers, such as bots, to assess the
@@ -136,26 +136,26 @@ function float DetourWeight(Pawn Other,float PathWeight)
 */
 function float BotDesireability( pawn Bot )
 {
-	local Inventory AlreadyHas;
-	local float desire;
+    local Inventory AlreadyHas;
+    local float desire;
 
-	desire = MaxDesireability;
+    desire = MaxDesireability;
 
-	if ( RespawnTime < 10 )
-	{
-		AlreadyHas = Bot.FindInventoryType(InventoryType);
-		if ( AlreadyHas != None )
-		{
-			if ( Inventory != None )
-			{
-				if( Inventory.Charge <= AlreadyHas.Charge )
-					return -1;
-			}
-			else if ( InventoryType.Default.Charge <= AlreadyHas.Charge )
-				return -1;
-		}
-	}
-	return desire;
+    if ( RespawnTime < 10 )
+    {
+        AlreadyHas = Bot.FindInventoryType(InventoryType);
+        if ( AlreadyHas != None )
+        {
+            if ( Inventory != None )
+            {
+                if( Inventory.Charge <= AlreadyHas.Charge )
+                    return -1;
+            }
+            else if ( InventoryType.Default.Charge <= AlreadyHas.Charge )
+                return -1;
+        }
+    }
+    return desire;
 }
 
 // Either give this inventory to player Other, or spawn a copy
@@ -163,19 +163,19 @@ function float BotDesireability( pawn Bot )
 //
 function inventory SpawnCopy( pawn Other );
 /*{
-	local inventory Copy;
+    local inventory Copy;
 
-	if ( Inventory != None )
-	{
-		Copy = Inventory;
-		Inventory = None;
-	}
-	else
-		Copy = spawn(InventoryType,Other,,,rot(0,0,0));
+    if ( Inventory != None )
+    {
+        Copy = Inventory;
+        Inventory = None;
+    }
+    else
+        Copy = spawn(InventoryType,Other,,,rot(0,0,0));
 
-	Copy.GiveTo( Other, self );
+    Copy.GiveTo( Other, self );
 
-	return Copy;
+    return Copy;
 }*/
 
 function StartSleeping()
@@ -183,13 +183,13 @@ function StartSleeping()
     if (bDropped)
         Destroy();
     else
-	    GotoState('Sleeping');
+        GotoState('Sleeping');
 }
 
 function AnnouncePickup( Pawn Receiver )
 {
-	Receiver.HandlePickup(self);
-	PlaySound( PickupSound,SLOT_Interact );
+    Receiver.HandlePickup(self);
+    PlaySound( PickupSound,SLOT_Interact );
 }
 
 //
@@ -197,40 +197,40 @@ function AnnouncePickup( Pawn Receiver )
 //
 function SetRespawn()
 {
-	if( Level.Game.ShouldRespawn(self) )
-		StartSleeping();
-	else
-		Destroy();
+    if( Level.Game.ShouldRespawn(self) )
+        StartSleeping();
+    else
+        Destroy();
 }
 
 // HUD Messages
 
 static function string GetLocalString(
-	optional int Switch,
-	optional PlayerReplicationInfo RelatedPRI_1,
-	optional PlayerReplicationInfo RelatedPRI_2
-	)
+    optional int Switch,
+    optional PlayerReplicationInfo RelatedPRI_1,
+    optional PlayerReplicationInfo RelatedPRI_2
+    )
 {
-	return Default.PickupMessage;
+    return Default.PickupMessage;
 }
 
 function InitDroppedPickupFor(Inventory Inv)
 {
-	SetPhysics(PHYS_Falling);
-	GotoState('FallingPickup');
-	Inventory = Inv;
-	bAlwaysRelevant = false;
-	bOnlyReplicateHidden = false;
-	bUpdateSimulatedPosition = true;
+    SetPhysics(PHYS_Falling);
+    GotoState('FallingPickup');
+    Inventory = Inv;
+    bAlwaysRelevant = false;
+    bOnlyReplicateHidden = false;
+    bUpdateSimulatedPosition = true;
     bDropped = true;
     LifeSpan = 16;
-	bIgnoreEncroachers = false; // handles case of dropping stuff on lifts etc
-	NetUpdateFrequency = 8;
+    bIgnoreEncroachers = false; // handles case of dropping stuff on lifts etc
+    NetUpdateFrequency = 8;
 }
 
 function bool ReadyToPickup(float MaxWait)
 {
-	return false;
+    return false;
 }
 
 event Landed(Vector HitNormal)
@@ -243,208 +243,208 @@ event Landed(Vector HitNormal)
 
 auto state Pickup
 {
-	function bool ReadyToPickup(float MaxWait)
-	{
-		return true;
-	}
+    function bool ReadyToPickup(float MaxWait)
+    {
+        return true;
+    }
 
-	/* ValidTouch()
-	 Validate touch (if valid return true to let other pick me up and trigger event).
-	*/
-	function bool ValidTouch( actor Other )
-	{
-		// make sure its a live player
-		if ( (Pawn(Other) == None) || !Pawn(Other).bCanPickupInventory || (Pawn(Other).DrivenVehicle == None && Pawn(Other).Controller == None) )
-			return false;
+    /* ValidTouch()
+     Validate touch (if valid return true to let other pick me up and trigger event).
+    */
+    function bool ValidTouch( actor Other )
+    {
+        // make sure its a live player
+        if ( (Pawn(Other) == None) || !Pawn(Other).bCanPickupInventory || (Pawn(Other).DrivenVehicle == None && Pawn(Other).Controller == None) )
+            return false;
 
-		// make sure not touching through wall
-		//if ( !FastTrace(Other.Location, Location) )
-			//return false; мер!!!
+        // make sure not touching through wall
+        //if ( !FastTrace(Other.Location, Location) )
+            //return false; мер!!!
 
-		// make sure game will let player pick me up
-/*		if( Level.Game.PickupQuery(Pawn(Other), self) )
-		{
-			TriggerEvent(Event, self, Pawn(Other));
-			return true;
-		}*/
-		return false;
-	}
+        // make sure game will let player pick me up
+/*      if( Level.Game.PickupQuery(Pawn(Other), self) )
+        {
+            TriggerEvent(Event, self, Pawn(Other));
+            return true;
+        }*/
+        return false;
+    }
 
-	// When touched by an actor.
-//	function Touch( actor Other )
-	function Frob(Actor Other, Inventory frobWith)
-	{
-		local Inventory Copy;
+    // When touched by an actor.
+//  function Touch( actor Other )
+    function Frob(Actor Other, Inventory frobWith)
+    {
+        local Inventory Copy;
 
-		// If touched by a player pawn, let him pick this up.
-		if( ValidTouch(Other) )
-		{
-			Copy = SpawnCopy(Pawn(Other));
-			AnnouncePickup(Pawn(Other));
+        // If touched by a player pawn, let him pick this up.
+        if( ValidTouch(Other) )
+        {
+            Copy = SpawnCopy(Pawn(Other));
+            AnnouncePickup(Pawn(Other));
             SetRespawn();
             if ( Copy != None )
-				Copy.PickupFunction(Pawn(Other));
-		}
-	}
-
-	// Make sure no pawn already touching (while touch was disabled in sleep).
-	function CheckTouching()
-	{
-		local Pawn P;
-
-		ForEach TouchingActors(class'Pawn', P)
-			Touch(P);
-	}
-
-	function Timer()
-	{
-		if ( bDropped )
-			GotoState('FadeOut');
-	}
-
-	function BeginState()
-	{
-		UntriggerEvent(Event, self, None);
-		if ( bDropped )
-        {
-			AddToNavigation();
-		    SetTimer(8, false);
+                Copy.PickupFunction(Pawn(Other));
         }
-	}
+    }
 
-	function EndState()
-	{
-		if ( bDropped )
-			RemoveFromNavigation();
-	}
+    // Make sure no pawn already touching (while touch was disabled in sleep).
+    function CheckTouching()
+    {
+        local Pawn P;
+
+        ForEach TouchingActors(class'Pawn', P)
+            Touch(P);
+    }
+
+    function Timer()
+    {
+        if ( bDropped )
+            GotoState('FadeOut');
+    }
+
+/*    function BeginState()
+    {
+        UntriggerEvent(Event, self, None);
+        if ( bDropped )
+        {
+            AddToNavigation();
+            SetTimer(8, false);
+        }
+    }*/
+
+    function EndState()
+    {
+        if ( bDropped )
+            RemoveFromNavigation();
+    }
 
 Begin:
-	CheckTouching();
+    CheckTouching();
 }
 
 state FallingPickup extends Pickup
 {
-	function CheckTouching()
-	{
-	}
+    function CheckTouching()
+    {
+    }
 
-	function Timer()
-	{
-		GotoState('FadeOut');
-	}
+    function Timer()
+    {
+        GotoState('FadeOut');
+    }
 
-	function BeginState()
-	{
-	    SetTimer(8, false);
-	}
+    function BeginState()
+    {
+        SetTimer(8, false);
+    }
 }
 
 State FadeOut extends Pickup
 {
-	function Tick(float DeltaTime)
-	{
-		SetDrawScale(FMax(0.01, DrawScale - Default.DrawScale * DeltaTime));
-	}
+    function Tick(float DeltaTime)
+    {
+        SetDrawScale(FMax(0.01, DrawScale - Default.DrawScale * DeltaTime));
+    }
 
-	function BeginState()
-	{
-		RotationRate.Yaw=60000;
-		SetPhysics(PHYS_Rotating);
-		LifeSpan = 1.0;
-	}
+    function BeginState()
+    {
+        RotationRate.Yaw=60000;
+        SetPhysics(PHYS_Rotating);
+        LifeSpan = 1.0;
+    }
 
-	function EndState()
-	{
-		LifeSpan = 0.0;
-		SetDrawScale(Default.DrawScale);
-		if ( Physics == PHYS_Rotating )
-			SetPhysics(PHYS_None);
-	}
+    function EndState()
+    {
+        LifeSpan = 0.0;
+        SetDrawScale(Default.DrawScale);
+        if ( Physics == PHYS_Rotating )
+            SetPhysics(PHYS_None);
+    }
 }
 
 //=============================================================================
 // Sleeping state: Sitting hidden waiting to respawn.
 function float GetRespawnTime()
 {
-	return RespawnTime;
+    return RespawnTime;
 }
 
 State WaitingForMatch
 {
-	ignores Touch;
+    ignores Touch;
 
-	function MatchStarting()
-	{
-		GotoState( 'Sleeping', 'DelayedSpawn' );
-	}
+    function MatchStarting()
+    {
+        GotoState( 'Sleeping', 'DelayedSpawn' );
+    }
 
-	function BeginState()
-	{
-		NetUpdateTime = Level.TimeSeconds - 1;
-		bHidden = true;
-	}
+    function BeginState()
+    {
+        NetUpdateTime = Level.TimeSeconds - 1;
+        bHidden = true;
+    }
 }
 
 State Sleeping
 {
-	ignores Touch;
+    ignores Touch;
 
-	function bool ReadyToPickup(float MaxWait)
-	{
-		return ( bPredictRespawns && (LatentFloat < MaxWait) );
-	}
+    function bool ReadyToPickup(float MaxWait)
+    {
+        return ( bPredictRespawns && (LatentFloat < MaxWait) );
+    }
 
-	function StartSleeping() {}
+    function StartSleeping() {}
 
-	function BeginState()
-	{
-		local int i;
+    function BeginState()
+    {
+        local int i;
 
-		NetUpdateTime = Level.TimeSeconds - 1;
-		bHidden = true;
-		for ( i=0; i<4; i++ )
-			TeamOwner[i] = None;
-	}
+        NetUpdateTime = Level.TimeSeconds - 1;
+        bHidden = true;
+        for ( i=0; i<4; i++ )
+            TeamOwner[i] = None;
+    }
 
-	function EndState()
-	{
-		NetUpdateTime = Level.TimeSeconds - 1;
-		bHidden = false;
-	}
+    function EndState()
+    {
+        NetUpdateTime = Level.TimeSeconds - 1;
+        bHidden = false;
+    }
 
 DelayedSpawn:
-	if ( Level.NetMode == NM_Standalone )
-		Sleep(FMin(30, Level.Game.GameDifficulty * 8));
-	else
-		Sleep(30);
-	Goto('Respawn');
+    if ( Level.NetMode == NM_Standalone )
+        Sleep(FMin(30, Level.Game.GameDifficulty * 8));
+    else
+        Sleep(30);
+    Goto('Respawn');
 Begin:
-	Sleep( GetReSpawnTime() - RespawnEffectTime );
+    Sleep( GetReSpawnTime() - RespawnEffectTime );
 Respawn:
-	RespawnEffect();
-	Sleep(RespawnEffectTime);
+    RespawnEffect();
+    Sleep(RespawnEffectTime);
     if (PickUpBase != None)
-		PickUpBase.TurnOn();
+        PickUpBase.TurnOn();
     GotoState('Pickup');
 }
 
 State Disabled
 {
-	function bool ReadyToPickup(float MaxWait)
-	{
-		return false;
-	}
+    function bool ReadyToPickup(float MaxWait)
+    {
+        return false;
+    }
 
-	function Reset() {}
-	function StartSleeping() {}
+    function Reset() {}
+    function StartSleeping() {}
 
-	simulated function BeginState()
-	{
-		MaxDesireability = 0;
-		bHidden = true;
-		ResetStaticFilterState();
-		SetCollision(false,false,false);
-	}
+    simulated function BeginState()
+    {
+        MaxDesireability = 0;
+        bHidden = true;
+        ResetStaticFilterState();
+        SetCollision(false,false,false);
+    }
 }
 
 function inventory GetInventoryType();
@@ -454,8 +454,8 @@ function SetPickupAmmoCount(int amount);
 
 defaultproperties
 {
-	RespawnEffectTime=+0.5
-	bOnlyDirtyReplication=true
+    RespawnEffectTime=+0.5
+    bOnlyDirtyReplication=true
     NetUpdateFrequency=0.1
     PickupMessage="Snagged an item."
     bAlwaysRelevant=true
@@ -475,7 +475,7 @@ defaultproperties
     bOrientOnSlope=true
     bUseCylinderCollision=true
     bShouldBaseAtStartup=true
-	bIgnoreEncroachers=true
-	bIgnoreVehicles=true
-	CullDistance=+8000.0
+    bIgnoreEncroachers=true
+    bIgnoreVehicles=true
+    CullDistance=+8000.0
 }

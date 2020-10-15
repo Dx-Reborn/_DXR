@@ -7203,7 +7203,7 @@ defaultproperties
      bCanClimbLadders=true
 
      bSpecialCalcView=true
-     RotationRate=(Pitch=4096,Yaw=90000,Roll=3072)
+     RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
 
      physics=PHYS_Falling
      bPhysicsAnimUpdate=false

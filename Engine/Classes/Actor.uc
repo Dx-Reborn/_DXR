@@ -156,9 +156,9 @@ var(Advanced)       bool    bHighDetail;        // Only show up in high or super
 var(Advanced)       bool    bSuperHighDetail;   // Only show up in super high detail mode.
 var                 bool    bOnlyDrawIfAttached;    // don't draw this actor if not attached (useful for net clients where attached actors and their bases' replication may not be synched)
 var(Advanced)       bool    bStasis;            // In StandAlone games, turn off if not in a recently rendered zone turned off if  bStasis  and physics = PHYS_None or PHYS_Rotating.
-var(Trailer)        bool    bTrailerAllowRotation; // If PHYS_Trailer and want independent rotation control.
-var(Trailer)        bool    bTrailerSameRotation; // If PHYS_Trailer and true, have same rotation as owner.
-var(Trailer)        bool    bTrailerPrePivot;   // If PHYS_Trailer and true, offset from owner by PrePivot.
+var        bool    bTrailerAllowRotation; // If PHYS_Trailer and want independent rotation control.
+var        bool    bTrailerSameRotation; // If PHYS_Trailer and true, have same rotation as owner.
+var        bool    bTrailerPrePivot;   // If PHYS_Trailer and true, offset from owner by PrePivot.
 var(Advanced)       bool    bWorldGeometry;     // Collision and Physics treats this actor as world geometry
 var(Display)        bool    bAcceptsProjectors; // Projectors can project onto this actor
 var(Collision)                  bool    bOrientOnSlope;     // when landing, orient base on slope of floor
@@ -226,9 +226,9 @@ enum ENetRole
 };
 var ENetRole RemoteRole, Role;
 var const transient int     NetTag;
-var(Network) float NetUpdateTime;    // time of last update
-var(Network) float NetUpdateFrequency; // How many net updates per seconds.
-var(Network) float NetPriority; // Higher priorities means update it more frequently.
+var float NetUpdateTime;    // time of last update // DXR: Now these three vars are used for AIVisibility
+var float NetUpdateFrequency; // How many net updates per seconds.
+var float NetPriority; // Higher priorities means update it more frequently.
 var Pawn                  Instigator;    // Pawn responsible for damage caused by this actor.
 var(Sound) sound          AmbientSound;  // Ambient sound effect.
 var const name          AttachmentBone;     // name of bone to which actor is attached (if attached to center of base, =='')
@@ -1392,6 +1392,10 @@ event RenderTexture(ScriptedTexture Tex);
 //
 event PreBeginPlay()
 {
+    // fake shrink to fix faked collision with floor problems - DEUS_EX CNN
+    if ((IsA('Decoration') || IsA('Inventory')) && (CollisionHeight > 0.75))
+        SetCollisionSize(CollisionRadius, CollisionHeight - 0.75);
+
     // Handle autodestruction if desired.
     if(!bGameRelevant && (Level.NetMode != NM_Client) && !Level.Game.BaseMutator.CheckRelevance(Self))
         Destroy();
@@ -2112,9 +2116,15 @@ function sound PlaySoundEx(sound Sound, optional ESoundSlot Slot, optional float
 function float DistanceFromPlayer()
 {
     local PlayerController pl;
+    local pawn pwn;
 
     pl = level.GetLocalPlayerController();
-    return vSize(location - pl.location);
+    pwn = pl.pawn;
+
+    if (pwn != None)
+        return vSize(location - pwn.location);
+    else
+        return vSize(location - pl.location);
 }
 
 // DXR: for new conversations system.

@@ -116,7 +116,7 @@ var     float   MaxDesiredSpeed;
 var/*(AI)*/ name    AIScriptTag;        // tag of AIScript which should be associated with this pawn
 var(AI) float   HearingThreshold;   // max distance at which a makenoise(1.0) loudness sound can be heard
 var/*(AI)*/ float   Alertness;          // -1 to 1 ->Used within specific states for varying reaction to stimuli
-var/*(AI)*/ float   SightRadius;        // Maximum seeing distance.
+var(AI) float   SightRadius;        // Maximum seeing distance.
 var/*(AI)*/ float   PeripheralVision;   // Cosine of limits of peripheral vision.
 var()   float   SkillModifier;          // skill modifier (same scale as game difficulty)
 var const float AvgPhysicsTime;     // Physics updating time monitoring (for AI monitoring reaching destinations)
@@ -154,9 +154,8 @@ var() int PitchDownLimit;
 // Player info.
 var string          OwnerName;      // Name of owning player (for save games, coop)
 var travel Weapon   Weapon;         // The pawn's current weapon.
-var Weapon          PendingWeapon;  // Will become weapon once current weapon is put down
-//var travel inventory  SelectedItem;   // currently selected inventory item
-var travel Powerups SelectedItem;   // currently selected inventory item
+var Weapon          PendingWeapon;  // Will become weapon once current weapon is put down 
+var /*travel*/ Powerups SelectedItem;   // currently selected inventory item
 var float           BaseEyeHeight;  // Base eye height above collision center.
 var float           EyeHeight;      // Current eye height, adjusted for bobbing and stairs.
 var vector          Floor;          // Normal of floor pawn is standing on (only used by PHYS_Spider and PHYS_Walking)
@@ -296,7 +295,7 @@ var name SpineBone1;
 var name SpineBone2;
 
 // xPawn replicated properties - moved here to take advantage of native replication
-var(Shield) transient float ShieldStrength;          // current shielding (having been activated)
+var/*(Shield)*/ transient float ShieldStrength;          // current shielding (having been activated)
 
 struct HitFXData
 {
@@ -361,6 +360,9 @@ simulated event PostRender2D(Canvas C, float ScreenLocX, float ScreenLocY)  // c
 
 native function bool ReachedDestination(Actor Goal);
 native function ForceCrouch();
+
+function float GetMaxiStepHeight();
+
 
 simulated function Weapon GetDemoRecordingWeapon()
 {
@@ -679,7 +681,7 @@ simulated function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 
     Canvas.SetDrawColor(255,255,255);
 
-    Canvas.DrawText("Animation Action "$AnimAction$" Health "$Health);
+    Canvas.DrawText("Animation Action "$AnimAction$"ÿ Health = "$Health);
     YPos += YL;
     Canvas.SetPos(4,YPos);
     Canvas.DrawText("Anchor "$Anchor$" Serpentine Dist "$SerpentineDist$" Time "$SerpentineTime);
@@ -1166,7 +1168,7 @@ simulated event ModifyVelocity(float DeltaTime, vector OldVelocity);
 
 event FellOutOfWorld(eKillZType KillType)
 {
-/*  if ( Level.NetMode == NM_Client )
+    if ( Level.NetMode == NM_Client )
         return;
     if ( (Controller != None) && Controller.AvoidCertainDeath() )
         return;
@@ -1182,8 +1184,7 @@ event FellOutOfWorld(eKillZType KillType)
         if ( Physics != PHYS_Karma )
             SetPhysics(PHYS_None);
         Died( None, class'Fell', Location );
-    }*/
-    return;// DXR: Removed
+    }
 }
 
 /* ShouldCrouch()
@@ -1851,10 +1852,10 @@ event UpdateEyeHeight( float DeltaTime )
         bUpdateEyeHeight = false;
         return;
     }
-    HitActor = trace(HitLocation,HitNormal,Location + (CollisionHeight + MAXSTEPHEIGHT + 14) * vect(0,0,1),
+    HitActor = trace(HitLocation,HitNormal,Location + (CollisionHeight + /*MAXSTEPHEIGHT*/GetMaxiStepHeight() + 14) * vect(0,0,1),
                     Location + CollisionHeight * vect(0,0,1),true);
     if ( HitActor == None )
-        MaxEyeHeight = CollisionHeight + MAXSTEPHEIGHT;
+        MaxEyeHeight = CollisionHeight + /*MAXSTEPHEIGHT*/GetMaxiStepHeight();
     else
         MaxEyeHeight = HitLocation.Z - Location.Z - 14;
 
@@ -2343,7 +2344,7 @@ function bool CheckWaterJump(out vector WallNormal)
     {
         WallNormal = -1 * HitNormal;
         start = Location;
-        start.Z += 1.1 * MAXSTEPHEIGHT;
+        start.Z += 1.1 * /*MAXSTEPHEIGHT*/GetMaxiStepHeight();
         checkPoint = start + 2 * CollisionRadius * checkNorm;
         HitActor = Trace(HitLocation, HitNormal, checkpoint, start, true);
         if ( (HitActor == None) || (HitNormal.Z > 0.7) )
@@ -2795,11 +2796,12 @@ function actor TraceShot(out vector HitLocation, out vector HitNormal, vector En
     local vector realHit;
     local actor Other;
     Other = Trace(HitLocation,HitNormal,EndTrace,StartTrace,True);
-    if ( Pawn(Other) != None )
+
+    if (Pawn(Other) != None)
     {
         realHit = HitLocation;
-        if ( !Pawn(Other).AdjustHitLocation(HitLocation, EndTrace - StartTrace) )
-            Other = Pawn(Other).TraceShot(HitLocation,HitNormal,EndTrace,realHit);
+        if (!Pawn(Other).AdjustHitLocation(HitLocation, EndTrace - StartTrace))
+             Other = Pawn(Other).TraceShot(HitLocation,HitNormal,EndTrace,realHit);
     }
     return Other;
 }
@@ -2895,7 +2897,7 @@ defaultproperties
      DesiredSpeed=+00001.000000
      LandMovementState=PlayerWalking
      WaterMovementState=PlayerSwimming
-     SightRadius=+05000.000000
+     SightRadius=2500.00 //+05000.000000
      bOwnerNoSee=true
      bAcceptsProjectors=True
      BlendChangeTime=0.25

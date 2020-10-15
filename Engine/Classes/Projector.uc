@@ -1,6 +1,7 @@
 class Projector extends Actor
-	placeable
-	native;
+    hidecategories(Force,Karma,LightColor,Lighting,Sound) // DXR: Added to hide some categories
+    placeable
+    native;
 
 #exec Texture Import File=Textures\Proj_Icon.tga Name=Proj_Icon Mips=Off MASKED=true ALPHA=true
 #exec Texture Import file=Textures\GRADIENT_Fade.tga Name=GRADIENT_Fade Mips=Off UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP DXT=3
@@ -11,37 +12,37 @@ class Projector extends Actor
 
 enum EProjectorBlending
 {
-	PB_None,
-	PB_Modulate,
-	PB_AlphaBlend,
-	PB_Add
+    PB_None,
+    PB_Modulate,
+    PB_AlphaBlend,
+    PB_Add
 };
 
-var() EProjectorBlending	MaterialBlendingOp,		// The blending operation between the material being projected onto and ProjTexture.
-							FrameBufferBlendingOp;	// The blending operation between the framebuffer and the result of the base material blend.
+var() EProjectorBlending    MaterialBlendingOp,     // The blending operation between the material being projected onto and ProjTexture.
+                            FrameBufferBlendingOp;  // The blending operation between the framebuffer and the result of the base material blend.
 
 // Projector properties.
 
-var() Material	ProjTexture;
-var() int		FOV;
-var() int		MaxTraceDistance;
-var() bool		bProjectBSP;
-var() bool		bProjectTerrain;
-var() bool		bProjectStaticMesh;
-var() bool		bProjectParticles;
-var() bool		bProjectActor;
-var() bool		bLevelStatic;
-var() bool		bClipBSP;
-var() bool		bClipStaticMesh;
-var() bool		bProjectOnUnlit;
-var() bool		bGradient;
-var() bool		bProjectOnBackfaces;
-var() bool		bProjectOnAlpha;
-var() bool		bProjectOnParallelBSP;
-var() name		ProjectTag;
-var() bool		bDynamicAttach;
-var() bool		bNoProjectOnOwner; // Only for dynamic projectors
-var   float		FadeInTime;
+var() Material  ProjTexture;
+var() int       FOV;
+var() int       MaxTraceDistance;
+var() bool      bProjectBSP;
+var() bool      bProjectTerrain;
+var() bool      bProjectStaticMesh;
+var() bool      bProjectParticles;
+var() bool      bProjectActor;
+var() bool      bLevelStatic;
+var() bool      bClipBSP;
+var() bool      bClipStaticMesh;
+var() bool      bProjectOnUnlit;
+var() bool      bGradient;
+var() bool      bProjectOnBackfaces;
+var() bool      bProjectOnAlpha;
+var() bool      bProjectOnParallelBSP;
+var() name      ProjectTag;
+var() bool      bDynamicAttach;
+var() bool      bNoProjectOnOwner; // Only for dynamic projectors
+var   float     FadeInTime;
 
 // Internal state.
 
@@ -65,67 +66,67 @@ native function DetachActor( Actor A );
 
 simulated event PostBeginPlay()
 {
-	if ( Level.NetMode == NM_DedicatedServer )
-	{
-		GotoState('NoProjection');
-		return;
-	}
-	
-	AttachProjector( FadeInTime );
-	if( bLevelStatic )
-	{
-		AbandonProjector();
-		Destroy();
-	}
-	if( bProjectActor )
-		SetCollision(True, False, False);
+    if ( Level.NetMode == NM_DedicatedServer )
+    {
+        GotoState('NoProjection');
+        return;
+    }
+    
+    AttachProjector( FadeInTime );
+    if( bLevelStatic )
+    {
+        AbandonProjector();
+        Destroy();
+    }
+    if( bProjectActor )
+        SetCollision(True, False, False);
 }
 
 simulated event Touch( Actor Other )
 {
     if( Other==None ) // sjs - rockets into projector
         return;
-	if( Other.bAcceptsProjectors 
-	&& (ProjectTag=='' || Other.Tag==ProjectTag) 
-	&& (bProjectStaticMesh || Other.StaticMesh==None) 
-	&& !(Other.bStatic && bStatic && Other.StaticMesh!=None) 
-	)
-		AttachActor(Other);
+    if( Other.bAcceptsProjectors 
+    && (ProjectTag=='' || Other.Tag==ProjectTag) 
+    && (bProjectStaticMesh || Other.StaticMesh==None) 
+    && !(Other.bStatic && bStatic && Other.StaticMesh!=None) 
+    )
+        AttachActor(Other);
 }
 simulated event Untouch( Actor Other )
 {
-	DetachActor(Other);
+    DetachActor(Other);
 }
 
 state NoProjection
 {
-	function BeginState()
-	{
-		Disable('Tick');
-	}
+    function BeginState()
+    {
+        Disable('Tick');
+    }
 }
 
 defaultproperties
 {
-	MaterialBlendingOp=PB_None
-	FrameBufferBlendingOp=PB_Modulate
-	FOV=0
-	bDirectional=True
-	Texture=Proj_Icon
-	MaxTraceDistance=1000
-	bProjectBSP=True
-	bProjectTerrain=True
-	bProjectStaticMesh=True
-	bProjectParticles=True
-	bProjectActor=True
-	bClipBSP=False
-	bClipStaticMesh=False
-	bLevelStatic=False
-	bProjectOnUnlit=False
-	bHidden=True
+    MaterialBlendingOp=PB_None
+    FrameBufferBlendingOp=PB_Modulate
+    FOV=0
+    bDirectional=True
+    Texture=Proj_Icon
+    MaxTraceDistance=1000
+    bProjectBSP=True
+    bProjectTerrain=True
+    bProjectStaticMesh=True
+    bProjectParticles=True
+    bProjectActor=True
+    bClipBSP=False
+    bClipStaticMesh=False
+    bLevelStatic=False
+    bProjectOnUnlit=False
+    bHidden=True
     bStatic=True
-	GradientTexture=GRADIENT_Fade
-	bProjectOnBackfaces=False
-	bDynamicAttach=False
-	RemoteRole=ROLE_None
+    GradientTexture=GRADIENT_Fade
+    bProjectOnBackfaces=False
+    bDynamicAttach=False
+    RemoteRole=ROLE_None
 }

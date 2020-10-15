@@ -9,74 +9,83 @@
 //
 //=============================================================================
 class Inventory extends Actor
-	abstract
-	native
-	nativereplication;
+    abstract
+    native
+    nativereplication;
 
 #exec Texture Import File=Textures\S_Inventory.tga Name=S_Inventory Mips=Off MASKED=true ALPHA=true
 
 //-----------------------------------------------------------------------------
 
-var	 byte			      InventoryGroup;     // The weapon/inventory set, 0-9.
-var	 byte			      GroupOffset;		// position within inventory group. (used by prevweapon and nextweapon)
-var	 bool	 		      bDisplayableInv;	// Item displayed in HUD.
-var	 bool			      bTossedOut;			// true if weapon/inventory was tossed out (so players can't cheat w/ weaponstay)
-var	 /*cache*/ class<Pickup>  PickupClass;		// what class of pickup is associated with this inventory item
-var() travel int	      Charge;				// Charge (for example, armor remaining if an armor)
+var travel  byte                 InventoryGroup;     // The weapon/inventory set, 0-9. // + travel
+var travel byte                 GroupOffset;      // position within inventory group. (used by prevweapon and nextweapon) // + Travel
+var  bool                 bDisplayableInv;  // Item displayed in HUD.
+var  bool                 bTossedOut;           // true if weapon/inventory was tossed out (so players can't cheat w/ weaponstay)
+// DXR: New vars
+var travel bool           bInObjectBelt;     // Is this object actually in the object belt?
+var travel bool bHeldItem;
+var travel bool bWeaponStay;
+var travel bool bGrenade;
+var travel bool Stuff4;
+var travel bool Stuff5;
+var travel bool Stuff6;
+
+var  /*cache*/ class<Pickup>  PickupClass;      // what class of pickup is associated with this inventory item
+var() travel int          Charge;               // Charge (for example, armor remaining if an armor)
 
 //-----------------------------------------------------------------------------
 // Rendering information.
 
 // Player view rendering info.
-var(FirstPerson)					vector      PlayerViewOffset;   // Offset from view center.// DXR: Переменная сделана видимой
+var(FirstPerson)                    vector      PlayerViewOffset;   // Offset from view center.// DXR: Переменная сделана видимой
 var(FirstPerson)    rotator     PlayerViewPivot;    // additive rotation offset for tweaks
 var() bool bDrawingFirstPerson;
-var() float		 BobDamping;		 // how much to damp view bob
+var() float      BobDamping;         // how much to damp view bob
 
 // 3rd person mesh.
-var actor 	ThirdPersonActor;
+var actor   ThirdPersonActor;
 var /*cache*/ class<InventoryAttachment> AttachmentClass;
 
 // HUD graphics
 
 var() Material IconMaterial;
-var() IntBox IconCoords;
+var travel IntBox IconCoords; // DXR: Travel && will be used for inventory positions.
 var() localized /*cache*/ String ItemName;
 
 // Network replication.
 replication
 {
-	// Things the server should send to the client.
-	reliable if( bNetOwner && bNetDirty && (Role==ROLE_Authority) )
-		Charge,ThirdPersonActor;
+    // Things the server should send to the client.
+    reliable if( bNetOwner && bNetDirty && (Role==ROLE_Authority) )
+        Charge,ThirdPersonActor;
 }
 
 function ChangedWeapon()
 {
-	if(Inventory != None)
-		Inventory.ChangedWeapon();
+    if(Inventory != None)
+        Inventory.ChangedWeapon();
 }
 
 function AttachToPawn(Pawn P)
 {
-	local name BoneName;
+    local name BoneName;
 
-	Instigator = P;
-	if ( ThirdPersonActor == None )
-	{
-		ThirdPersonActor = Spawn(AttachmentClass,Owner);
-		InventoryAttachment(ThirdPersonActor).InitFor(self);
-	}
-	else
-		ThirdPersonActor.NetUpdateTime = Level.TimeSeconds - 1;
-	BoneName = P.GetWeaponBoneFor(self);
-	if ( BoneName == '' )
-	{
-		ThirdPersonActor.SetLocation(P.Location);
-		ThirdPersonActor.SetBase(P);
-	}
-	else
-		P.AttachToBone(ThirdPersonActor,BoneName);
+    Instigator = P;
+    if ( ThirdPersonActor == None )
+    {
+        ThirdPersonActor = Spawn(AttachmentClass,Owner);
+        InventoryAttachment(ThirdPersonActor).InitFor(self);
+    }
+    else
+        ThirdPersonActor.NetUpdateTime = Level.TimeSeconds - 1;
+    BoneName = P.GetWeaponBoneFor(self);
+    if ( BoneName == '' )
+    {
+        ThirdPersonActor.SetLocation(P.Location);
+        ThirdPersonActor.SetBase(P);
+    }
+    else
+        P.AttachToBone(ThirdPersonActor,BoneName);
 }
 
 /* UpdateRelative()
@@ -85,22 +94,22 @@ properties sheet to modify the relativelocation
 */
 exec function updaterelative(int pitch, int yaw, int roll)
 {
-	local rotator NewRot;
+    local rotator NewRot;
 
-	NewRot.Pitch = pitch;
-	NewRot.Yaw = yaw;
-	NewRot.Roll = roll;
-	ThirdPersonActor.SetRelativeLocation(ThirdPersonActor.Default.RelativeLocation);
-	ThirdPersonActor.SetRelativeRotation(NewRot);
+    NewRot.Pitch = pitch;
+    NewRot.Yaw = yaw;
+    NewRot.Roll = roll;
+    ThirdPersonActor.SetRelativeLocation(ThirdPersonActor.Default.RelativeLocation);
+    ThirdPersonActor.SetRelativeRotation(NewRot);
 }
 
 function DetachFromPawn(Pawn P)
 {
-	if ( ThirdPersonActor != None )
-	{
-		ThirdPersonActor.Destroy();
-		ThirdPersonActor = None;
-	}
+    if ( ThirdPersonActor != None )
+    {
+        ThirdPersonActor.Destroy();
+        ThirdPersonActor = None;
+    }
 }
 
 /* RenderOverlays() - Draw first person view of inventory
@@ -110,19 +119,19 @@ using the RenderOverlays() function.
 */
 simulated event RenderOverlays( canvas Canvas )
 {
-	if ( (Instigator == None) || (Instigator.Controller == None))
-		return;
-	SetLocation( Instigator.Location + Instigator.CalcDrawOffset(self) );
-	SetRotation( Instigator.GetViewRotation() );
-	Canvas.DrawActor(self, false);
+    if ( (Instigator == None) || (Instigator.Controller == None))
+        return;
+    SetLocation( Instigator.Location + Instigator.CalcDrawOffset(self) );
+    SetRotation( Instigator.GetViewRotation() );
+    Canvas.DrawActor(self, false);
 }
 
 simulated function String GetHumanReadableName()
 {
-	if ( ItemName == "" )
-		ItemName = GetItemName(string(Class));
+    if ( ItemName == "" )
+        ItemName = GetItemName(string(Class));
 
-	return ItemName;
+    return ItemName;
 }
 
 function PickupFunction(Pawn Other);
@@ -131,13 +140,13 @@ function PickupFunction(Pawn Other);
 // AI inventory functions.
 simulated function Weapon RecommendWeapon( out float rating )
 {
-	if ( inventory != None )
-		return inventory.RecommendWeapon(rating);
-	else
-	{
-		rating = -1;
-		return None;
-	}
+    if ( inventory != None )
+        return inventory.RecommendWeapon(rating);
+    else
+    {
+        rating = -1;
+        return None;
+    }
 }
 
 //=============================================================================
@@ -148,14 +157,14 @@ simulated function Weapon RecommendWeapon( out float rating )
 //
 event TravelPreAccept()
 {
-	Super.TravelPreAccept();
-	GiveTo( Pawn(Owner) );
+    Super.TravelPreAccept();
+    GiveTo( Pawn(Owner) );
 }
 
 function TravelPostAccept()
 {
-	Super.TravelPostAccept();
-	PickupFunction(Pawn(Owner));
+    Super.TravelPostAccept();
+    PickupFunction(Pawn(Owner));
 }
 
 //=============================================================================
@@ -170,24 +179,17 @@ function bool IsActive();
 //
 function Destroyed()
 {
-	// Remove from owner's inventory.
-	if( Pawn(Owner)!=None )
-		Pawn(Owner).DeleteInventory( Self );
-	if ( ThirdPersonActor != None )
-		ThirdPersonActor.Destroy();
+    // Remove from owner's inventory.
+    if( Pawn(Owner)!=None )
+        Pawn(Owner).DeleteInventory( Self );
+    if ( ThirdPersonActor != None )
+        ThirdPersonActor.Destroy();
 }
 
 //
 // Give this inventory item to a pawn.
 //
-function GiveTo(pawn Other);//, optional Pickup Pickup)
-/*{
-	Instigator = Other;
-	if (Other.AddInventory(Self))
-		GotoState('Idle2');
-	else
-		Destroy();
-}*/
+function GiveTo(pawn Other);
 
 //
 // Function which lets existing items in a pawn's inventory
@@ -196,12 +198,12 @@ function GiveTo(pawn Other);//, optional Pickup Pickup)
 //
 function bool HandlePickupQuery(inventory Item)
 {
-	if ( Item.Class == Class )
-		return true;
-	if ( Inventory == None )
-		return false;
+    if ( Item.Class == Class )
+        return true;
+    if ( Inventory == None )
+        return false;
 
-	return Inventory.HandlePickupQuery(Item);
+    return Inventory.HandlePickupQuery(Item);
 }
 
 //
@@ -209,10 +211,10 @@ function bool HandlePickupQuery(inventory Item)
 //
 function Powerups SelectNext()
 {
-	if ( Inventory != None )
-		return Inventory.SelectNext();
-	else
-		return None;
+    if ( Inventory != None )
+        return Inventory.SelectNext();
+    else
+        return None;
 }
 
 //
@@ -220,27 +222,27 @@ function Powerups SelectNext()
 //
 function DropFrom(vector StartLocation)
 {
-	local Pickup P;
+    local Pickup P;
 
-	if ( Instigator != None )
-	{
-		DetachFromPawn(Instigator);
-		Instigator.DeleteInventory(self);
-	}
-	SetDefaultDisplayProperties();
-	Instigator = None;
-	StopAnimating();
-	GotoState('');
+    if ( Instigator != None )
+    {
+        DetachFromPawn(Instigator);
+        Instigator.DeleteInventory(self);
+    }
+    SetDefaultDisplayProperties();
+    Instigator = None;
+    StopAnimating();
+    GotoState('');
 
-	P = spawn(PickupClass,,,StartLocation);
-	if ( P == None )
-	{
-		destroy();
-		return;
-	}
-	P.InitDroppedPickupFor(self);
-	P.Velocity = Velocity;
-	Velocity = vect(0,0,0);
+    P = spawn(PickupClass,,,StartLocation);
+    if ( P == None )
+    {
+        destroy();
+        return;
+    }
+    P.InitDroppedPickupFor(self);
+    P.Velocity = Velocity;
+    Velocity = vect(0,0,0);
 }
 
 //=============================================================================
@@ -255,28 +257,28 @@ function Use( float Value );
 
 simulated function Weapon WeaponChange( byte F, bool bSilent )
 {
-	if( Inventory == None)
-		return None;
-	else
-		return Inventory.WeaponChange( F, bSilent );
+    if( Inventory == None)
+        return None;
+    else
+        return Inventory.WeaponChange( F, bSilent );
 }
 
 // Find the previous weapon (using the Inventory group)
 simulated function Weapon PrevWeapon(Weapon CurrentChoice, Weapon CurrentWeapon)
 {
-	if ( Inventory == None )
-		return CurrentChoice;
-	else
-		return Inventory.PrevWeapon(CurrentChoice,CurrentWeapon);
+    if ( Inventory == None )
+        return CurrentChoice;
+    else
+        return Inventory.PrevWeapon(CurrentChoice,CurrentWeapon);
 }
 
 // Find the next weapon (using the Inventory group)
 simulated function Weapon NextWeapon(Weapon CurrentChoice, Weapon CurrentWeapon)
 {
-	if ( Inventory == None )
-		return CurrentChoice;
-	else
-		return Inventory.NextWeapon(CurrentChoice,CurrentWeapon);
+    if ( Inventory == None )
+        return CurrentChoice;
+    else
+        return Inventory.NextWeapon(CurrentChoice,CurrentWeapon);
 }
 
 //=============================================================================
@@ -287,14 +289,14 @@ simulated function Weapon NextWeapon(Weapon CurrentChoice, Weapon CurrentWeapon)
 //
 function armor PrioritizeArmor( int Damage, class<DamageType> DamageType, vector HitLocation )
 {
-	local Armor FirstArmor;
+    local Armor FirstArmor;
 
-	if ( Inventory != None )
-		FirstArmor = Inventory.PrioritizeArmor(Damage, DamageType, HitLocation);
-	else
-		FirstArmor = None;
+    if ( Inventory != None )
+        FirstArmor = Inventory.PrioritizeArmor(Damage, DamageType, HitLocation);
+    else
+        FirstArmor = None;
 
-	return FirstArmor;
+    return FirstArmor;
 }
 
 //
@@ -302,29 +304,25 @@ function armor PrioritizeArmor( int Damage, class<DamageType> DamageType, vector
 //
 function OwnerEvent(name EventName)
 {
-	if( Inventory != None )
-		Inventory.OwnerEvent(EventName);
+    if( Inventory != None )
+        Inventory.OwnerEvent(EventName);
 }
 
 // used to ask inventory if it needs to affect its owners display properties
 function SetOwnerDisplay()
 {
-	if( Inventory != None )
-		Inventory.SetOwnerDisplay();
+    if( Inventory != None )
+        Inventory.SetOwnerDisplay();
 }
 
 static function string StaticItemName()
 {
-	return Default.ItemName;
+    return Default.ItemName;
 }
 
 // DXR: Added functions to return and modify DX-specific some properties
 function int GetinvSlotsX();         // Number of horizontal inv. slots this item takes
 function int GetinvSlotsY();         // Number of vertical inv. slots this item takes
-
-function bool	GetInObjectBelt();     // Is this object actually in the object belt?
-function SetToObjectBelt(optional int position);     // Is this object actually in the object belt?
-function RemoveFromObjectBelt();
 
 function int GetBeltPos();           // Position on the object belt
 function SetBeltPos(int position);           // Position on the object belt
@@ -347,21 +345,21 @@ function bool CanHaveMultipleCopies();
 
 function inventory SpawnCopy( pawn Other );
 /*{
-	local inventory Copy;
+    local inventory Copy;
 if( Level.Game.ShouldRespawn(self) )
-	{
-		Copy = spawn(Class,Other,,,rot(0,0,0));
-		Copy.Tag           = Tag;
-		Copy.Event         = Event;
-		GotoState('Sleeping');
-	}
-	else
-		Copy = self;
+    {
+        Copy = spawn(Class,Other,,,rot(0,0,0));
+        Copy.Tag           = Tag;
+        Copy.Event         = Event;
+        GotoState('Sleeping');
+    }
+    else
+        Copy = self;
 
-//	Copy.RespawnTime = 0.0;
-//	Copy.bHeldItem = true;
-	Copy.GiveTo(Other);
-	return Copy;
+//  Copy.RespawnTime = 0.0;
+//  Copy.bHeldItem = true;
+    Copy.GiveTo(Other);
+    return Copy;
 }*/
 
 function becomePickup();
@@ -379,21 +377,22 @@ State Idle2
 
 defaultproperties
 {
-	bOnlyDirtyReplication=true
-	bOnlyRelevantToOwner=true
-	 AttachmentClass=class'InventoryAttachment'
+    bOnlyDirtyReplication=true
+    bOnlyRelevantToOwner=true
+     AttachmentClass=class'InventoryAttachment'
      BobDamping=0.960000
      bTravel=True
      DrawType=DT_None
      AmbientGlow=0
      RemoteRole=ROLE_SimulatedProxy
-	 NetPriority=1.4
-	 bOnlyOwnerSee=true
-	 bHidden=true
-	 bClientAnim=true
-	 Physics=PHYS_None
-	 bReplicateMovement=false
-	 bAcceptsProjectors=True
+     NetPriority=1.4
+     bOnlyOwnerSee=true
+     bHidden=true
+     bClientAnim=true
+     Physics=PHYS_None
+     bReplicateMovement=false
+//     bAcceptsProjectors=True
+     bAcceptsProjectors=false
      bDrawingFirstPerson=false
 }
 

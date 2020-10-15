@@ -63,7 +63,7 @@ function PlaySwimming();
 
 defaultproperties
 {
-     bAmbientCreature=true
+     bAmbientCreature=true // Do not display on Radar
      bTransient=true
      BindName="Fly"
      FamiliarName="Fly"
@@ -85,8 +85,7 @@ defaultproperties
      UnderWaterTime=20.000000
      Physics=PHYS_Flying
      AmbientSound=Sound'DeusExSounds.Animal.FlyBuzz'
-//     Mesh=Mesh'DeusExCharacters.Fly'
-     DrawType=DT_Sprite
+     Mesh=VertMesh'UT2k4Extra.Fly'
      DrawScale=1.400000
      SoundRadius=6
      SoundVolume=128
