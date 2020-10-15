@@ -1,0 +1,14 @@
+class ImportModels extends Resource;
+
+//
+// Fly
+//
+#exec MESH IMPORT MESH=Fly ANIVFILE=Models\Fly_a.3d DATAFILE=Models\Fly_d.3d ZEROTEX=1 MLOD=0
+#exec MESH ORIGIN MESH=Fly X=0 Y=0 Z=0 YAW=64
+
+#exec MESH SEQUENCE MESH=Fly SEQ=All        STARTFRAME=0    NUMFRAMES=1
+#exec MESH SEQUENCE MESH=Fly SEQ=Still      STARTFRAME=0    NUMFRAMES=1
+
+#exec MESHMAP SCALE MESHMAP=Fly X=0.125 Y=0.125 Z=0.25
+#exec TEXTURE IMPORT NAME=FlyTex1 FILE=Textures\FlyTex1.pcx GROUP=Skins MASKED=true
+#exec MESHMAP SETTEXTURE MESHMAP=Fly NUM=0 TEXTURE=FlyTex1
