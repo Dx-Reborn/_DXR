@@ -43,12 +43,6 @@ function WaitForMover(Mover M);
 function NotifyTouch(actor toucher);
 function SwitchToBestWeapon();
 
-event Destroyed()
-{
-    Super.Destroyed();
-    log(self@"Has been destroyed! Pawn was"$pawn);
-}
-
 // Приходит из ScriptedPawn, передаем в другую функцию. Нужно для переопределения в состояниях. 
 // Global(NotifyTakeDamage(...)) вызовет именно этот вариант.
 function NotifyTakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
@@ -1167,7 +1161,7 @@ auto state StartUp
 
   event Tick(float deltaSeconds)
   {
-//     Global.Tick(deltaSeconds);
+     Global.Tick(deltaSeconds);
      SetFall();//
      if (pawn.LastRenderTime <= 1.0)
      {
@@ -1182,7 +1176,7 @@ auto state StartUp
 
 Begin:
   scriptedPawn(pawn).InitializePawn();
-  Sleep(FRand()+0.2);
+//  Sleep(FRand()+0.2);
   WaitForLanding();
 
 Start:
@@ -1984,7 +1978,7 @@ State Attacking
         local vector lastLocation;
         local Pawn   lastEnemy;
 
-        //Global.Tick(deltaSeconds);
+        Global.Tick(deltaSeconds);
 
         if (scriptedPawn(pawn).CrouchTimer > 0)
         {
@@ -2832,7 +2826,7 @@ state WaitingFor
         return !ScriptedPawn(pawn).bCrouchToPassObstacles;
     }
 
-    function bool NotiftBump(actor bumper)
+    event bool NotifyBump(actor bumper)
     {
         // If we hit the guy we're going to, end the state
         if (bumper == ScriptedPawn(pawn).OrderActor)
@@ -2842,7 +2836,7 @@ state WaitingFor
         }
 
         // Handle conversations, if need be
-        Global.Bump(bumper);
+        //Global.Bump(bumper);
     }
 
     function NotifyTouch(actor toucher)
@@ -6592,8 +6586,8 @@ defaultproperties
     bStasis=false
     bAdjustFromWalls=true
     FovAngle=+90.00
-//    MinHitWall=9999999827968.00
-    MinHitWall=93372269057156317000.00
+    MinHitWall=9999999827968.00
+//    MinHitWall=93372269057156317000.00
     RotationRate=(Pitch=4096,Yaw=50000,Roll=3072)
     AcquisitionYawRate=150000 // How much fast pawn will turn toward enemy
     Skill=2.00

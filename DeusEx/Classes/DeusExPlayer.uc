@@ -4133,12 +4133,12 @@ function ClimbLadder(LadderVolume L)
 
       if (IsHumanControlled())
       {
-            if (L.IsA('DeusExLadderVolume'))
-                DeusExPlayerController(Controller).bUsingWoodenLadder = DeusExLadderVolume(L).bIsWoodLadder;
-            else
-                DeusExPlayerController(Controller).bUsingWoodenLadder=false;
+          if (L.IsA('DeusExLadderVolume'))
+              DeusExPlayerController(Controller).bUsingWoodenLadder = DeusExLadderVolume(L).bIsWoodLadder;
+          else
+              DeusExPlayerController(Controller).bUsingWoodenLadder=false;
 
-        DeusExPlayerController(Controller).GotoState('PlayerClimbing');
+          DeusExPlayerController(Controller).GotoState('PlayerClimbing');
       }
 }
 

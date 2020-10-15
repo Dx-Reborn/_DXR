@@ -117,7 +117,7 @@ event Timer()
                 gunther.bInvincible = False;
                 gunther.HealthTorso = 0;
                 gunther.Health = 0;
-                gunther.Controller.GotoState('KillswitchActivated');
+                gunther.GotoState('KillswitchActivated');
                 flags.SetBool('GuntherHermann_Dead', True,, 0);
                 flags.SetBool('MS_GuntherKilled', True,, 12);
             }

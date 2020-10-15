@@ -9,6 +9,20 @@ var() editconst LightProjectorNPC fl;
 var() editconst DynamicCoronaLight DCL;
 var() Name LampBone; // Косточка для "фонарика"
 
+event AnimEnd(int Channel)
+{
+    Super.AnimEnd(Channel);
+
+    if (Controller != None)
+    {
+        if (AIVisibility(self) < 0.05) // && (cState == 'Seeking'))
+            fTurnOn();
+            else
+            fTurnOff();
+    }
+}
+
+
 // pawn is killed, destroy the flashlight.
 event Destroyed()
 {
@@ -52,13 +66,10 @@ function fTurnOff()
        fl.MaxTraceDistance = 0;
 }
 
-event Tick(float dt)
+/*event Tick(float dt)
 {
     local Vector loc;
     local Rotator lrt;
-    local Name cState;
-
-    Super.Tick(dt);
 
     loc = Location;
     loc.z = loc.z + EyeHeight;
@@ -77,14 +88,8 @@ event Tick(float dt)
         AttachToBone(DCL, LampBone);
     }
 
-    if (Controller != None)
-        cState = Controller.GetStateName();
-
-    if ((AIVisibility(self) < 0.05) && (cState == 'Seeking'))
-        fTurnOn();
-          else
-        fTurnOff();
-}
+    Super.Tick(dt);
+} */
 
 function bool PlayTurnHead(ELookDirection newLookDir, float rate, float tweentime)
 {

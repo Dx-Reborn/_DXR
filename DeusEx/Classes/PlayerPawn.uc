@@ -580,6 +580,22 @@ exec function ListStasis()
            log("Pawn: "$wtf@"bStasis"@wtf.bStasis@"= and controller.bStasis="$wtf.Controller.bStasis);
 }
 
+exec function TestGunther()
+{
+    local GuntherHermann gh;
+
+    foreach DynamicActors(class'GuntherHermann', gh)  // Find a pawn
+    break;
+
+    if (gh != None)
+    {
+        gh.Health = 0;
+        gh.HealthTorso = 0;
+        gh.bInvincible = false;
+        gh.GoToState('KillSwitchActivated');
+    }
+}
+
 
 defaultproperties
 {

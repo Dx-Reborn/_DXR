@@ -17,7 +17,8 @@ var name AlarmTag;
 
 var bool bJumpOffPawn;
 var() bool bCrouchToPassObstacles; // Использовать в Controller > NotifyHitWall, чтобы Pawn пригибался для обхода ПОД препятствием. По умолчанию False.
-var bool bbCheckEnemy;
+var bool bCheckEnemy;
+var float ConvoCheckTime;
 
 // ----------------------------------------------------------------------
 // Structures
@@ -94,7 +95,7 @@ var      bool     bSeatHackUsed;
 var globalconfig bool bPawnShadows;
 var globalconfig bool bBlobShadow;
 
-var DeusExPlayer myDxPlayer;
+//var DeusExPlayer myDxPlayer;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
@@ -107,10 +108,10 @@ var float   SaveRate;           // value for how fast we were playing the frame,
 function RobotFiringEffects();
 function PawnFiringEffects();
 
-function float DistanceFromPlayer()
+/*function float DistanceFromPlayer()
 {
     return Distance_FromPlayer;
-}
+} */
 
 
 function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
@@ -118,8 +119,14 @@ function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 //    local string T;
     Super.DisplayDebug(Canvas, YL, YPos);
 
-    Canvas.DrawText("я EnemyLastSeen = "$EnemyLastSeen $ 
-    lastPoints[0] @"0 LastPoints 1"@ lastPoints[1]);
+    Canvas.DrawText(
+    "я EnemyLastSeen = "$EnemyLastSeen $ 
+    "LastPoints [1]" @ lastPoints[0] @
+    "LastPoints [1]" @ lastPoints[1] $
+    "Ђяя bDoLowPriority = "$ bDoLowPriority $
+    "яЂ@ bCheckOther = "$ bCheckOther $
+    "Ђяя bCheckPlayer = "$ bCheckPlayer
+    );
 //                    " CycleIndex = "$CycleIndex$
 //                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
 //                    " bbCheckEnemy = " $bbCheckEnemy $
@@ -3978,6 +3985,9 @@ function UpdateFire()
 // ----------------------------------------------------------------------
 function bool CanConverse()
 {
+    if (controller == None)
+        return false;  // DXR: Added controller check
+
     // Return True if this NPC is in a conversable state
     return (bCanConverse && bInterruptState && ((Physics == PHYS_Walking) || (Physics == PHYS_Flying)));
 }
@@ -3991,7 +4001,7 @@ function bool CanConverseWithPlayer(DeusExPlayer dxPlayer)
 
     if (GetPawnAllianceType(dxPlayer) == ALLIANCE_Hostile)
         return false;
-    else if ((Controller.GetStateName() == 'Fleeing') && (Controller.Enemy != dxPlayer) && (IsValidEnemy(DeusExPawn(Controller.Enemy), false)))  // hack // TypeCast to DeusExPawn 
+    else if ((Controller.GetStateName() == 'Fleeing') && (Controller.Enemy != dxPlayer) && (IsValidEnemy(DeusExPawn(Controller.Enemy), false)))  // hack // DXR: TypeCast to DeusExPawn 
         return false;
     else if (GetCarcassData(dxPlayer, alliance1, alliance2, carcname))
         return false;
@@ -4715,8 +4725,8 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
 
 //    log(self@"CheckEnemyPresence(bCheckPlayer? "$bCheckPlayer @ "bCheckOther? "$bCheckOther);
 
-    if (DistanceFromPlayer() >= 1200 /*SKIP_ENEMY_DISTANCE*/)
-        return false;
+//    if (DistanceFromPlayer() >= 1200 /*SKIP_ENEMY_DISTANCE*/)
+//        return false;
 
     bValid  = false;
     bCanSee = false;
@@ -5465,15 +5475,6 @@ function bool IsThrownWeapon(DeusExWeapon testWeapon) //
     return TestWeapon.IsA('WeaponGrenade');
 }
 
-function bool InStasis()
-{
-   if ((DistanceFromPlayer() > 1200.0) && (LastRendered() > 5.0))
-   return true;
-   else return false;
-//   return bStasis;
-}
-
-
 function HandleEnemy()
 {
     Controller.SetState('HandlingEnemy', 'Begin');
@@ -5487,23 +5488,15 @@ function HandleEnemy()
 // ----------------------------------------------------------------------
 // Tick()
 // ----------------------------------------------------------------------
-event Tick(float deltaTime)
+function Tick(float deltaTime)
 {
     local DeusExPlayer player;
-    local name         stateName;
     local vector       loc;
-    local bool         bDoLowPriority;
-    local bool         bCheckOther;
-    local bool         bCheckPlayer;
-
-//    if (DistanceFromPlayer() > 2500)
-//        return;
 
     if (!bInWorld)
-    return;
+        return;
 
     player = DeusExPlayer(GetPlayerPawn());
-    myDxPlayer = player;
 
     Draw_DebugLine();
 
@@ -5511,9 +5504,8 @@ event Tick(float deltaTime)
     animTimer[1] += deltaTime;
     animTimer[2] += deltaTime;
 
-    if (DistanceFromPlayer() > 2500)
-        return;
-
+    ConvoCheckTime += deltaTime;
+  
     bDoLowPriority = true;
     bCheckPlayer   = true;
     bCheckOther    = true;
@@ -5527,7 +5519,7 @@ event Tick(float deltaTime)
             bDoLowPriority = false;
         if (DistanceFromPlayer() > 2500)
             bCheckPlayer = false;
-        if ((DistanceFromPlayer() > 600) && (/*LastRenderTime*/LastRendered() >= 5.0))
+        if ((DistanceFromPlayer() > 600) && (LastRendered()  >= 5.0))
             bCheckOther = false;
     }
 
@@ -5535,7 +5527,6 @@ event Tick(float deltaTime)
     {
         if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
         {
-            //bAdvancedTactics = false;
             DXRAIController(Controller).bUseAlterDest = false;
             if (TurnDirection != TURNING_None)
                 controller.MoveTimer -= 4.0;
@@ -5546,37 +5537,32 @@ event Tick(float deltaTime)
             bClearedObstacle = true;
             ObstacleTimer    = 0;
         }
-    }
+    } // До этого вылета нет...
 
 
     if (bStandInterpolation)
-        UpdateStanding(deltaTime);
+        UpdateStanding(deltaTime); // До этого вылета нет...
 
     // this is UGLY!
     if (bOnFire && (health > 0))
     {
-     if (Controller != none)
-        stateName = controller.GetStateName();
+       //if (Controller != none)
+       //    stateName = controller.GetStateName();
 
-        if ((stateName != 'Burning') && (stateName != 'TakingHit') && (stateName != 'RubbingEyes'))
-           if (Controller != none)
-            controller.GotoState('Burning');
-    }
-    else
+       if ((Controller.GetStateName() != 'Burning') && (Controller.GetStateName() != 'TakingHit') && (Controller.GetStateName() != 'RubbingEyes'))
+               controller.GotoState('Burning');
+    }  // До этого вылета нет...
+    else // ------------
     {
         if (bDoLowPriority)
-        {
+        {   // Эта часть может спровоцировать вылет.
             // Don't allow radius-based convos to interupt other conversations!
-        if (Controller != none)
-            if ((player != None) && (controller.GetStateName() != 'Conversation') && (controller.GetStateName() != 'FirstPersonConversation'))
-               if (ConList.length > 0)
-                   player.StartConversation(Self, IM_Radius);
+            if ((player != None) && (Controller.GetStateName() != 'Conversation') && (Controller.GetStateName() != 'FirstPersonConversation'))
+                 player.StartConversation(Self, IM_Radius);
         }
 
-        bbCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
-//      log(self@"bCheckEnemy = "$bCheckEnemy);
-
-        if (bbCheckEnemy)
+        bCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
+        if (bCheckEnemy)
             HandleEnemy();
         else
         {
@@ -5584,7 +5570,7 @@ event Tick(float deltaTime)
             if (bDoLowPriority || LastRendered() < 5.0)
                 CheckCarcassPresence(deltaTime);  // hacky -- may change state!
         }
-    }
+    }     // ------------
 
     // Randomly spawn an air bubble every 0.2 seconds if we're underwater
     if (HeadVolume.bWaterVolume && bSpawnBubbles && bDoLowPriority)
@@ -5604,7 +5590,7 @@ event Tick(float deltaTime)
 
     // Handle poison damage
     UpdatePoison(deltaTime);
-}
+} 
 
 // ----------------------------------------------------------------------
 // SpurtBlood()
@@ -6317,16 +6303,6 @@ function Died(Controller Killer, class<DamageType> damageType, vector HitLocatio
     GoToState('Dying');
 }
 
-
-event SetInitialState()
-{
-    GoToState('Auto');
-//  Super.SetInitialState();
-
-//  Controller.SetFall();
-  //InitializePawn();
-}
-
 function InitializePawn()
 {
     if (!bInitialized)
@@ -6475,11 +6451,11 @@ function EnterConversationState(bool bFirstPerson, optional bool bAvoidState)
     {
         if (bFirstPerson == true)
         {
-            DXRAIController(Controller).GotoState('FirstPersonConversation','Begin');
+            Controller.GotoState('FirstPersonConversation','Begin');
         }
         else
         {
-            DXRAIController(Controller).GotoState('Conversation','Begin');
+            Controller.GotoState('Conversation','Begin');
         }
     }
 }

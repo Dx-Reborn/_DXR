@@ -4,36 +4,41 @@
 
 class EM_PawnGlowingEmitter extends DeusExEmitter;
 
-var MiB MiB;
-
-event SetInitialState()
-{
-   Super.SetInitialState();
-
-   foreach DynamicActors(class'MiB', MiB)
-           break;
-
-
-   if (MiB != None)
-   {
-       Emitters[0].SkeletalMeshActor = MiB;
-   }
-}
-
-event Tick(float dt)
-{
-    Super.Tick(dt);
-
-    if (MiB != None)
-    {
-        SetLocation(MiB.Location - vect(0, 0, 49));
-        SetRotation(MiB.Rotation + rot(0, 0, 0));
-    }
-}
 
 defaultproperties
 {
-    Begin Object Class=SpriteEmitter Name=SpriteEmitter1
+    Begin Object Class=SpriteEmitter Name=SpriteEmitter0
+        FadeOut=True
+        SpinParticles=True
+        UseSizeScale=True
+        UseRegularSizeScale=False
+        UniformSize=True
+        Acceleration=(Z=-50.000000)
+        ColorScale(0)=(Color=(B=6,G=255,R=6))
+        ColorScale(1)=(RelativeTime=0.696429,Color=(B=190,G=190))
+        ColorScale(2)=(RelativeTime=1.000000,Color=(B=190,G=190))
+        FadeOutStartTime=0.700000
+        MaxParticles=550
+        Name="SpriteEmitter0"
+        StartLocationRange=(X=(Min=-4.000000,Max=4.000000),Y=(Min=-4.000000,Max=4.000000),Z=(Min=-4.000000,Max=4.000000))
+        UseRotationFrom=PTRS_Actor
+        SpinsPerSecondRange=(X=(Min=1.000000,Max=4.000000))
+        StartSpinRange=(X=(Max=1.000000))
+        SizeScale(0)=(RelativeSize=1.700000)
+        SizeScale(1)=(RelativeTime=1.000000)
+        StartSizeRange=(X=(Min=2.000000,Max=3.000000),Y=(Min=2.000000,Max=3.000000))
+        UseSkeletalLocationAs=PTSU_SpawnOffset
+        SkeletalScale=(X=1.200000,Y=1.200000,Z=1.200000)
+        Texture=Texture'DXR_FX.Effects.electric_radial1'
+        TextureUSubdivisions=1
+        TextureVSubdivisions=1
+        SecondsBeforeInactive=0.000000
+        LifetimeRange=(Min=2.000000,Max=2.000000)
+        StartVelocityRange=(X=(Min=-50.000000,Max=50.000000),Y=(Min=-50.000000,Max=50.000000))
+    End Object
+    Emitters(0)=SpriteEmitter'SpriteEmitter0'
+
+/*    Begin Object Class=SpriteEmitter Name=SpriteEmitter1
         FadeOut=True
         SpinParticles=True
         UseSizeScale=True
@@ -59,7 +64,7 @@ defaultproperties
         SecondsBeforeInactive=0.000000
         LifetimeRange=(Min=2.000000,Max=2.000000)
     End Object
-    Emitters(0)=SpriteEmitter'SpriteEmitter1'
+    Emitters(0)=SpriteEmitter'SpriteEmitter1'      */
 
 
 /*    Begin Object Class=SpriteEmitter Name=SpriteEmitter0

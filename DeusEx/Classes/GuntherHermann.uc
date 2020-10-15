@@ -3,6 +3,8 @@
 //=============================================================================
 class GuntherHermann extends HumanMilitary;
 
+var EM_PawnGlowingEmitter KillSwitchEffects;
+
 //
 // Damage type table for Gunther Hermann:
 //
@@ -27,9 +29,9 @@ function float ShieldDamage(class<DamageType> damageType)
 {
     // handle special damage types
     if ((damageType == class'DM_Flamed') || (damageType == class'DM_Burned') || (damageType ==class'DM_Stunned') || (damageType == class'DM_KnockedOut'))
-        return 0.0;
+         return 0.0;
     else if ((damageType == class'DM_TearGas') || (damageType == class'DM_PoisonGas') || (damageType == class'DM_HalonGas') ||
-                 (damageType == class'DM_Radiation') || (damageType == class'DM_Shocked') || (damageType == class'DM_Poison') || (damageType == class'DM_PoisonEffect'))
+             (damageType == class'DM_Radiation') || (damageType == class'DM_Shocked') || (damageType == class'DM_Poison') || (damageType == class'DM_PoisonEffect'))
         return 0.1;
     else
         return Super.ShieldDamage(damageType);
@@ -101,17 +103,86 @@ function Explode()
                 chunk = spawn(class'FleshFragment', None,, loc);
 
         if (chunk != None)
-                {
-          chunk.Velocity.Z = FRand() * 410 + 410;
-                    chunk.bFixedRotationDir = False;
-                    chunk.RotationRate = RotRand();
-                }
+        {
+             chunk.Velocity.Z = FRand() * 410 + 410;
+             chunk.bFixedRotationDir = False;
+             chunk.RotationRate = RotRand();
+        }
   }
-    HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
-
-//    if (PawnShadow != none)
-//        PawnShadow.Destroy(); // Destroy the shadow projector, otherwise bad things will happen.
+  HurtRadius(explosionDamage, explosionRadius, class'DM_Exploded', explosionDamage*100, Location);
 }
+
+function AddExtraEffects()
+{
+    if (KillSwitchEffects == None)
+        KillSwitchEffects = Spawn(class'EM_PawnGlowingEmitter', self,'', Location - vect(0, 0, 54), Rotation);
+    if (KillSwitchEffects != None)
+        KillSwitchEffects.Emitters[0].SkeletalMeshActor = self;
+}
+
+function RemoveExtraEffects()
+{
+    if (KillSwitchEffects != None)
+    {
+        KillSwitchEffects.Emitters[0].SkeletalMeshActor = None;
+        KillSwitchEffects.Kill();
+    }
+}
+
+
+//
+// special Gunther killswitch animation state
+//
+
+state KillswitchActivated
+{
+    ignores All;
+
+    event BeginState()
+    {
+        Controller.GoToState('');
+
+        AddExtraEffects(); // DXR: New effects.
+        StandUp();
+        LastPainTime = Level.TimeSeconds;
+        LastPainAnim = GetAnimSequence();
+        bInterruptState = false;
+        BlockReactions();
+        bCanConverse = False;
+        bStasis = false;
+        SetDistress(true);
+        TakeHitTimer = 2.0;
+        EnemyReadiness = 1.0;
+        ReactionLevel  = 1.0;
+        bInTransientState = true;
+
+        Acceleration = vect(0,0,0); // DXR: Added, so pawn will stop moving.
+        Velocity = vect(0, 0, 0);
+    }
+
+Begin:
+    FinishAnim();
+    PlayAnim('HitTorso', 2.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHead', 2.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitTorsoBack', 2.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHeadBack', 2.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHead', 3.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHeadBack', 3.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHead', 5.0, 0.1);
+    FinishAnim();
+    PlayAnim('HitHeadBack', 5.0, 0.1);
+    FinishAnim();
+    RemoveExtraEffects(); // DXR: Remove extra effects
+    Explode();
+    Destroy();
+}
+
 
 
 defaultproperties
