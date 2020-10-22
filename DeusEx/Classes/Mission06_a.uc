@@ -22,7 +22,7 @@ function FirstFrame()
     local SpiderBot bot;
     local BookOpen book;
     local float rnd;
-    local Keypad3 pad;
+    local Keypad3a pad;
     local AllianceTrigger altrig;
     local MJ12Troop mjtroop;
 //  local Mover thecase;
@@ -81,7 +81,7 @@ function FirstFrame()
                 commando.EnterWorld();
             foreach AllActors(class'SpiderBot', bot)
                 bot.EnterWorld();
-            foreach AllActors(class'Keypad3', pad)
+            foreach AllActors(class'Keypad3a', pad)
             {
                 if (pad.Tag == 'DummyKeypad_02')
                     pad.Destroy();
@@ -379,7 +379,7 @@ event Timer()
     local LowerClassFemale fem;
     local Actor A;
     local PatrolPoint PP;
-    local Keypad1 pad;
+    local Keypad1a pad;
 
     Super.Timer();
 
@@ -569,7 +569,7 @@ event Timer()
         if (flags.GetBool('QuickLetPlayerIn') &&
             !flags.GetBool('MS_KeypadsMoved'))
         {
-            foreach AllActors(class'Keypad1', pad)
+            foreach AllActors(class'Keypad1a', pad)
             {
                 if (pad.Tag == 'DummyKeypad01')
                     pad.Destroy();
@@ -672,7 +672,7 @@ event Timer()
 
         if(flags.GetBool('Deactivate_Keypad'))
         {
-            foreach AllActors(class'Keypad1', pad)
+            foreach AllActors(class'Keypad1a', pad)
             {
                 if(pad.Event == 'Self_Destruct')
                 {

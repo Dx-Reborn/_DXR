@@ -180,7 +180,7 @@ event Timer()
     local TerroristCarcass carc;
     local UNATCOTroop guard;
     local ThugMale thug;
-    local ThugMale2 thug2;
+    local ThugMale2a thug2;
     local BumMale bum;
     local BlackHelicopter chopper;
     local Doctor doc;
@@ -342,7 +342,7 @@ event Timer()
         {
             count = 0;
 
-            foreach AllActors(class'ThugMale2', thug2, 'AlleyThug')
+            foreach AllActors(class'ThugMale2a', thug2, 'AlleyThug')
                 count++;
 
             // set the resuced flag if the bum is still alive

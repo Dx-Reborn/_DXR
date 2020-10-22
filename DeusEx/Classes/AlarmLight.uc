@@ -12,33 +12,31 @@ enum ESkinColor
 };
 
 var() ESkinColor SkinColor;
-var() bool bUpdateAtStartup;
 var() bool bIsOn;
-
-
 
 function SetLightColor(ESkinColor color)
 {
     switch (SkinColor)
     {
-        case SC_Red:        Skins[1] = TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE';
-                                        Skins[2] = Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH';
-// Новые, красивые, светящиеся в темноте!!!                         Texture = Texture'AlarmLightTex3';
+        case SC_Red:        
+                            Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH';
+                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH';
+                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE';
                             LightHue = 0;
                             break;
-        case SC_Green:      Skins[1] = TexEnvMap'DeusExDeco_EX.Shader.AlarmLightGreen_TE';
-                                            Skins[2] = Shader'DeusExDeco_EX.Shader.AlarmLightTex3_SH';
-//                          Texture = Texture'AlarmLightTex5';
+        case SC_Green:      
+                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex3_SH';
+                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightGreen_TE';
                             LightHue = 64;
                             break;
-        case SC_Blue:       Skins[1] = TexEnvMap'DeusExDeco_EX.Shader.AlarmLightBlue_TE';
-                                        Skins[2] = Shader'DeusExDeco_EX.Shader.AlarmLightTex4_SH';
-//                          Texture = Texture'AlarmLightTex7';
+        case SC_Blue:       
+                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex4_SH';
+                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightBlue_TE';
                             LightHue = 160;
                             break;
-        case SC_Amber:      Skins[1] = TexEnvMap'DeusExDeco_EX.Shader.AlarmLightAmber_TE';
-                                            Skins[2] = Shader'DeusExDeco_EX.Shader.AlarmLightTex5_SH';
-//                          Texture = Texture'AlarmLightTex9';
+        case SC_Amber:      
+                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex5_SH';
+                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightAmber_TE';
                             LightHue = 36;
                             break;
     }
@@ -47,9 +45,6 @@ function SetLightColor(ESkinColor color)
 event BeginPlay()
 {
     Super.BeginPlay();
-
-    if (bUpdateAtStartup)
-      bLightChanged = true;
 
     SetLightColor(SkinColor);
 
@@ -112,9 +107,36 @@ defaultproperties
      Buoyancy=15.000000
      RotationRate=(Yaw=98304)
 
-     Skins(0)=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH'
-     Skins[1] = TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE';
-     Skins[2] = Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH';
+     Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH'
+     Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH'
+     Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE'
 
-     bDynamicLight=false 
+     bDynamicLight=true
 }
+
+/*
+Begin Map
+Begin Actor Class=AlarmLight Name=AlarmLight1
+    SkinColor=SC_Blue
+    LightType=LT_Strobe
+    LightRadius=64.000000
+    LightPeriod=32
+    LightPhase=64
+    bLightChanged=True
+    Level=LevelInfo'myLevel.LevelInfo0'
+    Region=(Zone=LevelInfo'myLevel.LevelInfo0',iLeaf=8,ZoneNumber=1)
+    Tag="AlarmLight"
+    PhysicsVolume=DefaultPhysicsVolume'myLevel.DefaultPhysicsVolume4'
+    Location=(X=-768.299438,Y=-257.261505,Z=53.985233)
+    Rotation=(Yaw=24000)
+    Skins(1)=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH'
+    Skins(2)=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE'
+    RotationRate=(Yaw=120000)
+    ColLocation=(X=-768.299438,Y=-257.261505,Z=53.985233)
+    bSelected=True
+End Actor
+Begin Surface
+End Surface
+End Map
+*/
+

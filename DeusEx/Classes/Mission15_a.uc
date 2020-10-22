@@ -78,7 +78,7 @@ function PreTravel()
 event Timer()
 {
     local PhysicsVolume zone;
-    local Fan1 fan;
+    local Fan1a fan;
     local int count, i;
     local Earth earth;
     local MorganEverett Morgan;
@@ -86,7 +86,7 @@ event Timer()
     local BlackHelicopter chopper;
     local MetalFragment frag;
     local /*AnimatedSprite*/ Emitter explo;
-    local Switch2 sw;
+    local Switch2a sw;
     local MJ12Commando comm;
     local Actor A;
     local DeusExMover M;
@@ -186,7 +186,7 @@ event Timer()
         if (!flags.GetBool('MS_FanDestroyed'))
         {
             count = 0;
-            foreach AllActors(class'Fan1', fan, 'Fan_vertical_shaft_1')
+            foreach AllActors(class'Fan1a', fan, 'Fan_vertical_shaft_1')
                 count++;
 
             if (count == 0)
@@ -242,7 +242,7 @@ event Timer()
         // hide some buttons
         if (!flags.GetBool('MS_ButtonsHidden') && flags.GetBool('coolantcut'))
         {
-            foreach AllActors(class'Switch2', sw)
+            foreach AllActors(class'Switch2a', sw)
             {
                 if ((sw.Tag == 'gen_switch1_off') || (sw.Tag == 'gen_switch2_off'))
                     sw.bHidden = True;
@@ -525,8 +525,8 @@ function PageExplosionEffects()
 
 defaultproperties
 {
-     spawnData(0)=(SpawnTag=UC_spawn1,SpawnClass=Class'DeusEx.SpiderBot2',Tag=spbot1,OrderTag=spiderbot1_0,lastKilledTime=-1.000000)
-     spawnData(1)=(SpawnTag=UC_spawn1,SpawnClass=Class'DeusEx.SpiderBot2',Tag=spbot2,OrderTag=spiderbot2_0,lastKilledTime=-1.000000)
+     spawnData(0)=(SpawnTag=UC_spawn1,SpawnClass=Class'DeusEx.SpiderBot2a',Tag=spbot1,OrderTag=spiderbot1_0,lastKilledTime=-1.000000)
+     spawnData(1)=(SpawnTag=UC_spawn1,SpawnClass=Class'DeusEx.SpiderBot2a',Tag=spbot2,OrderTag=spiderbot2_0,lastKilledTime=-1.000000)
      spawnData(2)=(SpawnTag=UC_spawn2,SpawnClass=Class'DeusEx.Gray',Tag=gray_1,OrderTag=gray1_0,lastKilledTime=-1.000000)
      spawnData(3)=(SpawnTag=UC_spawn2,SpawnClass=Class'DeusEx.Gray',Tag=gray_2,OrderTag=gray2_0,lastKilledTime=-1.000000)
      spawnData(4)=(SpawnTag=UC_spawn2,SpawnClass=Class'DeusEx.Gray',Tag=gray_3,OrderTag=gray3_0,lastKilledTime=-1.000000)

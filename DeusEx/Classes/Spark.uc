@@ -64,8 +64,7 @@ function SpawnActorEffect(Actor Actor, vector Loc)
        return;
 
    if (Actor.IsA('BarrelFire') || Actor.IsA('CrateUnbreakableSmall') || Actor.IsA('CrateUnbreakableMed') || Actor.IsA('CrateUnbreakableLarge') ||
-      (Actor.IsA('Barrel1') && Barrel1(Actor).SkinColor != SC_Wood) || Actor.IsA('FirePlug') || Actor.IsA('Trashcan1') || Actor.IsA('Trashcan2') ||
-       Actor.IsA('Trashcan3') || Actor.IsA('Trashcan4') || Actor.IsA('SecurityCamera'))
+      (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
@@ -80,7 +79,7 @@ function SpawnActorEffect(Actor Actor, vector Loc)
       Spawn(class'EM_ConcreteHit_a',,,Loc,);
       PlayActorSound('Ceramic');
    }
-   else if (Actor.IsA('Toilet2') || Actor.IsA('Toilet'))
+   else if (Actor.IsA('Toilet2a') || Actor.IsA('Toilet'))
    {
       //Spawn(class'EM_ConcreteHit',,,Loc,); // looks SCARY!
       PlayActorSound('Ceramic');

@@ -55,7 +55,7 @@ event PostBeginPlay()
     }
 
     // change the sounds for kids
-    if (IsA('ChildMale') || IsA('ChildMale2'))
+    if (IsA('ChildMale') || IsA('ChildMale2a'))
     {
         HitSound1 = Sound'ChildPainMedium';
         HitSound2 = Sound'ChildPainLarge';

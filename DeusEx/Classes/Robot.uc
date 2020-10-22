@@ -332,9 +332,9 @@ function material GetMeshTexture(optional int texnum)
     }
     else // Если нет, то прогнать по списку...
     if (self.isA('SpiderBot'))      return texture'SpiderBotTex1'; else
-    if (self.isA('SpiderBot2'))     return texture'SpiderBotTex1'; else
+    if (self.isA('SpiderBot2a'))     return texture'SpiderBotTex1'; else
     if (self.isA('CleanerBot'))     return texture'CleanerBotTex1'; else
-    if (self.isA('SecurityBot4')) return texture'SecurityBot4Tex1'; else
+    if (self.isA('SecurityBot4a')) return texture'SecurityBot4Tex1'; else
 
     if (self.isA('MedicalBot'))     return texture'MedicalBotTex1'; else
     if (self.isA('RepairBot'))

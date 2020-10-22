@@ -13,7 +13,7 @@ function FirstFrame()
 {
     local Terrorist T;
     local BlackHelicopter chopper;
-    local SecurityBot3 bot;
+    local SecurityBot3a bot;
     local PaulDenton Paul;
     local SecurityCamera cam;
     local AutoTurret turret;
@@ -31,7 +31,7 @@ function FirstFrame()
             foreach AllActors(class'Terrorist', T)
                 T.Destroy();
 
-            foreach AllActors(class'SecurityBot3', bot)
+            foreach AllActors(class'SecurityBot3a', bot)
                 bot.Destroy();
 
             foreach AllActors(class'UNATCOTroop', troop, 'UNATCOTroop')
@@ -48,7 +48,7 @@ function FirstFrame()
             foreach AllActors(class'Terrorist', T)
                 T.Destroy();
 
-            foreach AllActors(class'SecurityBot3', bot)
+            foreach AllActors(class'SecurityBot3a', bot)
                 bot.Destroy();
 
             foreach AllActors(class'UNATCOTroop', troop, 'UNATCOTroop')
@@ -76,7 +76,7 @@ function FirstFrame()
             foreach AllActors(class'Terrorist', T)
                 T.Destroy();
 
-            foreach AllActors(class'SecurityBot3', bot)
+            foreach AllActors(class'SecurityBot3a', bot)
                 bot.Destroy();
 
             foreach AllActors(class'PaulDenton', Paul)
@@ -95,7 +95,7 @@ function FirstFrame()
             foreach AllActors(class'Terrorist', T)
                 T.Destroy();
 
-            foreach AllActors(class'SecurityBot3', bot)
+            foreach AllActors(class'SecurityBot3a', bot)
                 bot.Destroy();
         }
     }
@@ -125,7 +125,7 @@ event Timer()
     local GuntherHermann Gunther;
     local JuanLebedev Juan;
     local JuanLebedevCarcass carc;
-    local ThugMale2 Thug2;
+    local ThugMale2a Thug2;
     local ScriptedPawn pawn;
     local Terrorist T;
     local int count;
@@ -351,7 +351,7 @@ event Timer()
         if (!flags.GetBool('JugHeadGangDefeated'))
         {
             count = 0;
-            foreach AllActors(class'ThugMale2', Thug2, 'ThugMale2')
+            foreach AllActors(class'ThugMale2a', Thug2, 'ThugMale2')
                  count++;
 
              if (count == 0)

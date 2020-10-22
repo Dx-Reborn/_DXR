@@ -140,7 +140,7 @@ event Timer()
                         P.EnterWorld();
                     else if (P.IsA('UNATCOTroop') && (P.BindName == "postmissiontroops"))
                         P.EnterWorld();
-                    else if (P.IsA('ThugMale2') || P.IsA('SecurityBot3'))
+                    else if (P.IsA('ThugMale2a') || P.IsA('SecurityBot3a'))
                         P.Destroy();
                     else if (P.IsA('Terrorist') && (P.BindName != "TerroristCommander"))
                     {

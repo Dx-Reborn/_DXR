@@ -35,7 +35,7 @@ function FirstFrame()
         if (flags.GetBool('TalkedToPaulAfterMessage_Played'))
         {
             foreach AllActors(class'ScriptedPawn', pawn)
-                if (pawn.IsA('UNATCOTroop') || pawn.IsA('SecurityBot2'))
+                if (pawn.IsA('UNATCOTroop') || pawn.IsA('SecurityBot2a'))
                     pawn.EnterWorld();
         }
     }
