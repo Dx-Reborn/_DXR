@@ -13,6 +13,27 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 var() bool bIsOn;
+var() bool bOldStyle; // DXR: только пятно, ближе к оригиналу.
+var LightProjector proj;
+
+function ResetScaleGlow();
+
+event Destroyed()
+{
+    Super.Destroyed();
+
+    if (proj != None)
+        proj.Destroy();
+}
+
+function createProjector()
+{
+    proj = spawn(class'LightProjector', self, '', location + vect(0,0,4), rotation);
+    proj.bProjectOnBackFaces = !bOldStyle;
+    proj.FOV = 30;
+    proj.MaxTraceDistance = 600;
+    proj.SetBase(self);
+}
 
 function SetLightColor(ESkinColor color)
 {
@@ -22,22 +43,26 @@ function SetLightColor(ESkinColor color)
                             Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH';
                             Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH';
                             Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE';
-                            LightHue = 0;
+                            if (proj != None)
+                                proj.ProjTexture = texture'AlarmLightTex2';
                             break;
         case SC_Green:      
                             Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex3_SH';
                             Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightGreen_TE';
-                            LightHue = 64;
+                            if (proj != None)
+                                proj.ProjTexture = texture'AlarmLightTex4';
                             break;
         case SC_Blue:       
                             Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex4_SH';
                             Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightBlue_TE';
-                            LightHue = 160;
+                            if (proj != None)
+                                proj.ProjTexture = texture'AlarmLightTex6';
                             break;
         case SC_Amber:      
                             Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex5_SH';
                             Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightAmber_TE';
-                            LightHue = 36;
+                            if (proj != None)
+                                proj.ProjTexture = texture'AlarmLightTex8';
                             break;
     }
 }
@@ -46,16 +71,15 @@ event BeginPlay()
 {
     Super.BeginPlay();
 
+    createProjector();
     SetLightColor(SkinColor);
 
     if (!bIsOn)
     {
         Skins[1] = Texture'BlackMaskTex';
-        LightType = LT_None;
         bFixedRotationDir = False;
     }
 }
-
 
 // if we are triggered, turn us on
 function Trigger(Actor Other, Pawn EventInstigator)
@@ -64,10 +88,8 @@ function Trigger(Actor Other, Pawn EventInstigator)
     {
         bIsOn = True;
         SetLightColor(SkinColor);
-        LightType = LT_Steady;
         bFixedRotationDir = True;
     }
-
     Super.Trigger(Other, Instigator);
 }
 
@@ -78,16 +100,15 @@ function UnTrigger(Actor Other, Pawn EventInstigator)
     {
         bIsOn = False;
         Skins[1] = Texture'BlackMaskTex';
-        LightType = LT_None;
         bFixedRotationDir = False;
     }
-
     Super.UnTrigger(Other, Instigator);
 }
 
 
 defaultproperties
 {
+     bOldStyle=false
      bIsOn=True
      FragType=Class'DeusEx.PlasticFragment'
      ItemName="Alarm Light"
@@ -97,11 +118,6 @@ defaultproperties
      mesh=mesh'DeusExDeco.AlarmLight'
      CollisionRadius=4.000000
      CollisionHeight=6.140000
-     LightType=LT_Steady
-     LightEffect=LE_Spotlight
-     LightBrightness=255
-     LightRadius=32
-     LightCone=32
      bFixedRotationDir=True
      Mass=20.000000
      Buoyancy=15.000000
@@ -110,33 +126,5 @@ defaultproperties
      Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH'
      Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH'
      Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE'
-
-     bDynamicLight=true
 }
-
-/*
-Begin Map
-Begin Actor Class=AlarmLight Name=AlarmLight1
-    SkinColor=SC_Blue
-    LightType=LT_Strobe
-    LightRadius=64.000000
-    LightPeriod=32
-    LightPhase=64
-    bLightChanged=True
-    Level=LevelInfo'myLevel.LevelInfo0'
-    Region=(Zone=LevelInfo'myLevel.LevelInfo0',iLeaf=8,ZoneNumber=1)
-    Tag="AlarmLight"
-    PhysicsVolume=DefaultPhysicsVolume'myLevel.DefaultPhysicsVolume4'
-    Location=(X=-768.299438,Y=-257.261505,Z=53.985233)
-    Rotation=(Yaw=24000)
-    Skins(1)=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH'
-    Skins(2)=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE'
-    RotationRate=(Yaw=120000)
-    ColLocation=(X=-768.299438,Y=-257.261505,Z=53.985233)
-    bSelected=True
-End Actor
-Begin Surface
-End Surface
-End Map
-*/
 
