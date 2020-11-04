@@ -11,7 +11,10 @@ var() bool bIcon;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-    dxc = DeusExHUD(PlayerOwner().myHUD).dxc; //new(none) class'DxCanvas';  
+    dxc = DeusExHUD(PlayerOwner().myHUD).dxc; //new(none) class'DxCanvas';
+    if (dxc == none)
+        dxc = new(outer) class'DxCanvas';
+
     gl = class'DeusExGlobals'.static.GetGlobals();
     Super.InitComponent(MyController, MyOwner);
 }

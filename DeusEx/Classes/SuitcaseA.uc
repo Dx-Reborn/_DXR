@@ -10,4 +10,5 @@ defaultproperties
     PrePivot=(Z=14.000000)
     CollisionRadius=25.000000
     CollisionHeight=14.000000
+    ItemName="Suitcase"
 }

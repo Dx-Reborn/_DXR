@@ -1,6 +1,10 @@
-//=============================================================================
-// AlarmLight.
-//=============================================================================
+/*
+   AlarmLight.
+   23/10/2020: Now using Projectors to create light spots.
+
+   ToDo: maybe use tracing to limit projector's MaxTraceDistance, so it won't shine through everything when using bProjectOnBackFaces = true?
+*/
+
 class AlarmLight extends DeusExDecoration;
 
 enum ESkinColor
@@ -108,7 +112,7 @@ function UnTrigger(Actor Other, Pawn EventInstigator)
 
 defaultproperties
 {
-     bOldStyle=false
+     bOldStyle=true
      bIsOn=True
      FragType=Class'DeusEx.PlasticFragment'
      ItemName="Alarm Light"
