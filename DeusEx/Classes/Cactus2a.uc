@@ -1,7 +1,7 @@
 //=============================================================================
 // Cactus2.
 //=============================================================================
-class Cactus2a extends OutdoorThings;
+class Cactus2a extends Cactuses;
 
 defaultproperties
 {
