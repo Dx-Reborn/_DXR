@@ -10,6 +10,7 @@ defaultproperties
     StaticMesh=StaticMesh'DXR_Cactuses.CactusB'
     CollisionRadius=40.000000
     CollisionHeight=120.000000
-    bUseCylinderCollision=True
+    Mass=1000.000000
+    Buoyancy=5.000000
 }
 
