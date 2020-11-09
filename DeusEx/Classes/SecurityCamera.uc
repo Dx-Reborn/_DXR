@@ -334,4 +334,5 @@ defaultproperties
      Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'
      Skins[3]=TexEnvMap'Effects_EX.Unlit.Camera_Shine'
      bDynamicLight=true
+     bShouldBeAlwaysUpdated=true
 }

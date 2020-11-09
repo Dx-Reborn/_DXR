@@ -130,5 +130,9 @@ defaultproperties
      Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH'
      Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH'
      Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE'
+
+     bShouldBeAlwaysUpdated=true
+
+//     AmbientSound=Sound'STALKER_Sounds.Ambient.lamp_squeaks_2'
 }
 

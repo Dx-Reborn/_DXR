@@ -416,8 +416,8 @@ event Tick(float deltaTime)
 
 
     // + 3-4 FPS, instead of rendering on HUD.
-   if (self.IsA('AutoTurretGun') || (self.IsA('AutoTurret') || (self.IsA('SecurityCamera') || (self.IsA('AlarmLight')))))
-       LastRenderTime = Level.TimeSeconds;
+    if (bShouldBeAlwaysUpdated)
+        LastRenderTime = Level.TimeSeconds;
 
     if (bFloating)
     {

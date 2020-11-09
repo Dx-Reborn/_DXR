@@ -80,5 +80,5 @@ defaultproperties
      Skins[0]=Texture'DeusExDeco.Skins.AutoTurretGunTex1'
      Skins[1]=Texture'DeusExDeco.Skins.PinkMaskTex'
      Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'
-
+     bShouldBeAlwaysUpdated=true
 }
