@@ -427,7 +427,7 @@ native final function string GetServerNetworkAddress();
 native function string ConsoleCommand( string Command, optional bool bWriteToLog );
 native final function LevelInfo GetEntryLevel();
 native(544) final function ResetKeyboard();
-native final private function ResetInput();
+native final /*private*/ function ResetInput(); // DXR: Зачем Private?
 
 native final function SetViewTarget(Actor NewViewTarget);
 native event ClientTravel( string URL, ETravelType TravelType, bool bItems );
@@ -3026,7 +3026,7 @@ function ClientAdjustGlow( float scale, vector fog )
 
 function DamageShake(int damage) //send type of damage too!
 {
-//    ClientDamageShake(damage);
+//    ClientDamageShake(damage); 
 }
 
 // function ShakeView( float shaketime, float RollMag, vector OffsetMag, float RollRate, vector OffsetRate, float OffsetTime)
@@ -3034,7 +3034,7 @@ function DamageShake(int damage) //send type of damage too!
 private function ClientDamageShake(int damage)
 {
     // todo: add properties!
-    ShakeView( Damage * vect(30,0,0),
+    ShakeView(Damage * vect(30,0,0),
                120000 * vect(1,0,0),
                0.15 + 0.005 * damage,
                damage * vect(0,0,0.03),
