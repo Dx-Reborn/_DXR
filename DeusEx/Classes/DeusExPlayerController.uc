@@ -407,18 +407,29 @@ event object OpenMenuEx(string Menu, optional bool bDisconnect,optional string M
     if (bDisconnect)
     {
         // Use delayed console command, in case the menu that was opened had bDisconnectOnOpen=True -- rjp
-        if ( Player.Console != None )
+        if (Player.Console != None)
             Player.Console.DelayedConsoleCommand("DISCONNECT");
         else ConsoleCommand("Disconnect");
     }
   return wtf;   
 }
 
+singular event UnPressButtons()
+{
+    bFire = 0;
+    bAltFire = 0;
+    //bDuck = 0;
+    bRun = 0;
+    bVoiceTalk = 0;
+//    ResetInput();
+}
+
+
 defaultproperties
 {
-  MidGameMenuClass="DXRMenu.DeusExMidGameMenu"
-  PawnClass=class'DeusEx.JCDentonMale'
-  bCheatsEnabled=true
+    MidGameMenuClass="DXRMenu.DeusExMidGameMenu"
+    PawnClass=class'DeusEx.JCDentonMale'
+    bCheatsEnabled=true
 }
 
 
