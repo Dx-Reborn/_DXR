@@ -5,7 +5,7 @@
 class MenuChoice_GameLanguage extends DXREnumButton;
                                        
 
-var String englishEnumText[3];
+var String englishEnumText[4];
 var int LangChoice;
 
 function LoadSetting()
@@ -72,11 +72,13 @@ defaultproperties
 
     EnumText(0)="Russian"
     EnumText(1)="Default (int, usually English)"
-    EnumText(2)="French"
+    EnumText(2)="French/Français"
+    EnumText(3)="German/Deutsche"
 
     englishEnumText(0)="rut"
     englishEnumText(1)="int"
     englishEnumText(2)="frt"
+    englishEnumText(3)="det"
 }
 
 
