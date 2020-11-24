@@ -57,6 +57,12 @@ function SaveSetting()
            class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[2]);
 
            log("Setting game language to: "$englishEnumText[2]);
+
+      case 3:
+           class'GameManager'.static.SetGameLanguage(englishEnumText[3]);
+           class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[3]);
+
+           log("Setting game language to: "$englishEnumText[3]);
       break;
     }
 
