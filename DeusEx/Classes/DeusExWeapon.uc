@@ -719,7 +719,7 @@ function bool LoadAmmo(int ammoNum)
             if (Ammo20mm(newAmmo) != None)
             {
                 FireSound = Get20mmFireSound(); //Sound'AssaultGunFire20mm';
-//                log(self@FireSound);
+                log(self@FireSound);
             }
             else if (AmmoRocketWP(newAmmo) != None)
                 FireSound = GetGEPFireSound(); //Sound'GEPGunFireWP';

@@ -160,6 +160,8 @@ function Sound GetFireSound()
         else
         return Super.GetFireSound();
     }
+    if (AmmoName != default.AmmoName)
+        return Get20mmFireSound();
     else return Super.GetFireSound();
 }
 
