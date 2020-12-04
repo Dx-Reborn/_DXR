@@ -6,23 +6,21 @@ class WeaponAssaultGun extends DeusExWeapon;
 
 var EM_PistolSmoke extrapuff;
 var int amountOfShots;
+var Name ShootAnim;
 
 const FirstThreshold = 10;
 const SecondThreshold = 20;
 const Threshold3 = 40;
 const Threshold4 = 60;
 
+
 function PlayFiring()
 {
-    local Name anim;
-
-    anim = 'Shoot';
-
     if (bAutomatic)
-        LoopAnim(anim,5.0, 0.01);
+        LoopAnim(ShootAnim,5.0, 0.01);
     else
     {
-        PlayAnim(anim,,0.1);
+        PlayAnim(ShootAnim,,0.1);
     }
 
     if (bHasSilencer)
@@ -55,30 +53,30 @@ function AssaultGunSmoke()
 
   if (amountOfShots > FirstThreshold)
   {
-    AddParticles();
-    extrapuff.Emitters[0].opacity = 0.05;
-    extrapuff.Emitters[0].InitialParticlesPerSecond=50.00;
+     AddParticles();
+     extrapuff.Emitters[0].opacity = 0.05;
+     extrapuff.Emitters[0].InitialParticlesPerSecond=50.00;
   }
   if (amountOfShots > SecondThreshold)
   {
-    AddParticles();
-    extrapuff.Emitters[0].opacity = 0.07;
-    extrapuff.Emitters[0].LifetimeRange.Min = 2.000000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 2.500000;
+     AddParticles();
+     extrapuff.Emitters[0].opacity = 0.07;
+     extrapuff.Emitters[0].LifetimeRange.Min = 2.000000;
+     extrapuff.Emitters[0].LifetimeRange.Max = 2.500000;
   }
   if (amountOfShots > Threshold3)
   {
-    AddParticles();
-    extrapuff.Emitters[0].opacity = 0.08;
-    extrapuff.Emitters[0].LifetimeRange.Min = 3.000000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 3.500000;
+     AddParticles();
+     extrapuff.Emitters[0].opacity = 0.08;
+     extrapuff.Emitters[0].LifetimeRange.Min = 3.000000;
+     extrapuff.Emitters[0].LifetimeRange.Max = 3.500000;
   }
   if (amountOfShots > Threshold4)
   {
-    AddParticles();
-    extrapuff.Emitters[0].opacity = 0.10;
-    extrapuff.Emitters[0].LifetimeRange.Min = 3.500000;
-    extrapuff.Emitters[0].LifetimeRange.Max = 4.000000;
+     AddParticles();
+     extrapuff.Emitters[0].opacity = 0.10;
+     extrapuff.Emitters[0].LifetimeRange.Min = 3.500000;
+     extrapuff.Emitters[0].LifetimeRange.Max = 4.000000;
   }
 
   BoneRefresh();
@@ -222,6 +220,8 @@ function Sound GetDownSound()
 
 defaultproperties
 {
+     ShootAnim="Shoot"
+
      AttachmentClass=class'WeaponAssaultGunAtt'
      PickupViewMesh=Mesh'DeusExItems.AssaultGunPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.AssaultGun'
