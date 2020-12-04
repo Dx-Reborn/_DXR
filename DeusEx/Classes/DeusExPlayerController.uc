@@ -414,7 +414,7 @@ event object OpenMenuEx(string Menu, optional bool bDisconnect,optional string M
   return wtf;   
 }
 
-singular event UnPressButtons()
+/*singular event UnPressButtons()
 {
     bFire = 0;
     bAltFire = 0;
@@ -422,7 +422,7 @@ singular event UnPressButtons()
     bRun = 0;
     bVoiceTalk = 0;
 //    ResetInput();
-}
+} */
 
 
 defaultproperties

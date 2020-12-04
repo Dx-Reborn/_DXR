@@ -23,23 +23,28 @@ var array<String> TheMessages;
 var color textColor;
 var float tsX, tsY;
 var font msgFont;
+var font GermanMsgFont;
 
 function Render(Canvas u)
 {
-  local int i;
+   local int i;
 
-  u.Font = msgFont;
-    u.DrawColor = TextColor;
+   if (class'GameManager'.static.GetGameLanguage() ~= "det")
+      u.font = GermanMsgFont;
+   else
+      u.Font = msgFont;
 
-  split(TheMessage,"|", TheMessages);
+   u.DrawColor = TextColor;
 
-  u.strLen(longest, tsX, tsY);
+   split(TheMessage,"|", TheMessages);
 
-  for(i=0; i<TheMessages.Length; i++)
-  {
-    u.SetPos((u.sizeX / 2)  - tsX / 2,(u.sizeY / 3) - (tsY / 2) + tsY * i);
-    u.DrawText(TheMessages[i]);
-  }
+   u.strLen(longest, tsX, tsY);
+
+   for(i=0; i<TheMessages.Length; i++)
+   {
+      u.SetPos((u.sizeX / 2)  - tsX / 2,(u.sizeY / 3) - (tsY / 2) + tsY * i);
+      u.DrawText(TheMessages[i]);
+   }
 
 /*  u.SetDrawColor(128, 211, 100); 
   u.SetPos(200,300);
@@ -85,7 +90,7 @@ event Tick(float deltaTime)
 
         if (displayTime <= 0)
         {
-        bTickEnabled = false;
+            bTickEnabled = false;
             Destroy(); // Время вышло, уничтожить.
         }
     }
@@ -119,5 +124,6 @@ defaultproperties
    displayTime=5.0
    message="test message"
    msgFont=font'DxFonts.ZR_18' //font'DxFonts.EU_14' //
+   GermanMsgFont=font'DxFonts.FontLocation'
    TextColor=(R=255,G=255,B=255,A=255)
 }

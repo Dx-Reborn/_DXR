@@ -162,9 +162,9 @@ function Render(Canvas C)
         else
             c.Font = SpeechFont;
 
-
         c.DrawColor = InfoLinkText;
-        dxc.DrawText(fpsSpeech); // текст
+        // Render the text
+        dxc.DrawText(fpsSpeech); 
         c.reset();
         c.SetClip(c.SizeX, c.SizeY);
     }
@@ -223,7 +223,7 @@ function DisplayChoice(ConChoice choice);
 defaultproperties
 {
     TitleFont=Font'DxFonts.ZR_14'
-    SpeechFont=font'DxFonts.fontConversation'
+    SpeechFont=font'DxFonts.FontFixedWidthSmall_DS'
     SpeechFontRus=Font'DxFonts.EU_10'
     bIsVisible=false
 }
