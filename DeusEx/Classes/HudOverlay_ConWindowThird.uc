@@ -61,10 +61,10 @@ function SetForcePlay(bool bNewForcePlay)
     bForcePlay = bNewForcePlay;
 }
 
-function RestrictInput(bool bNewRestrictInput)
+/*function RestrictInput(bool bNewRestrictInput)
 {
     bRestrictInput = bNewRestrictInput;
-}
+} */
 
 function DisplayText(string text, Actor speakingActor)
 {
