@@ -63,8 +63,9 @@ function SpawnActorEffect(Actor Actor, vector Loc)
    if (Actor == None)
        return;
 
-   if (Actor.IsA('BarrelFire') || Actor.IsA('CrateUnbreakableSmall') || Actor.IsA('CrateUnbreakableMed') || Actor.IsA('CrateUnbreakableLarge') ||
-      (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera'))
+   if (Actor.IsA('BarrelFire') || Actor.IsA('MetalBoxes') || Actor.IsA('MailBox') ||
+      (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || 
+       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
