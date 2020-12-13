@@ -4,6 +4,8 @@
 
 class HudOverlay_Bark extends DXRHudOverlay;
 
+const LINE_LENGTH = 596;
+
 var() private string Speaker;
 var() private string fpsSpeech;
 
@@ -63,7 +65,7 @@ function Render(Canvas C)
 
         c.StrLen(fpsSpeech, w, h);
         h += 22;
-        w = 595;
+        w = LINE_LENGTH - 1;
 
         c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
         c.SetClip(w, h);
@@ -159,10 +161,10 @@ function Render(Canvas C)
         c.DrawColor = InfoLinkTitles;
         dxc.DrawText(Speaker); // кто
                 
-                //Нарисовать линию с тенью
-          dxc.DrawHorizontal(int(c.CurY)+3,596);
+        //Нарисовать линию с тенью
+        dxc.DrawHorizontal(int(c.CurY)+3,LINE_LENGTH);
         c.SetDrawColor(0,0,0);
-        dxc.DrawHorizontal(int(c.CurY)+4,596);
+        dxc.DrawHorizontal(int(c.CurY)+4,LINE_LENGTH);
         c.SetDrawColor(255,255,255);
 
         c.font=SpeechFont;
@@ -175,7 +177,7 @@ function Render(Canvas C)
     }
 }
 
-defaultProperties
+defaultproperties
 {
     TitleFont = Font'DxFonts.EUX_9B'
     SpeechFont= Font'DxFonts.EU_10'
