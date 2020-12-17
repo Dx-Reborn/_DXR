@@ -81,7 +81,7 @@ defaultproperties
     EnumText(2)="French/Français"
     EnumText(3)="German/Deutsche"
 
-    englishEnumText(0)="rut"
+    englishEnumText(0)="rus"
     englishEnumText(1)="int"
     englishEnumText(2)="frt"
     englishEnumText(3)="det"

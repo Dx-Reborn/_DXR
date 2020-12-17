@@ -160,5 +160,12 @@ defaultproperties
         OnRendered=PaintOnBG
     End Object
     i_FrameBG=FloatingFrameBackground
+
+    Begin Object class=DXRContextMenu Name=cTestMenu
+        ContextItems(0)="Test 0"
+        ContextItems(1)="Test 1"
+        ContextItems(2)="Test 1234"
+    End Object
+    ContextMenu=cTestMenu
 }
 

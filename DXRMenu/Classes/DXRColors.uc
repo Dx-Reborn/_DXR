@@ -159,7 +159,8 @@ function resetToDefaults()
         DXREnumButton(controls[i]).UpdateInfoButton();
      }
   }
-  /*DeusExPlayer(playerOwner().pawn).*/SaveConfig();
+    DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayerController(playerOwner()).SaveConfig();
 }
 
 function SaveSettings()
@@ -172,6 +173,7 @@ function SaveSettings()
         DXREnumButton(controls[i]).SaveSetting();
   }
     DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayerController(playerOwner()).SaveConfig();
     gl.SaveConfig();
 }
 
@@ -185,6 +187,7 @@ function CancelSettings()
         DXREnumButton(controls[i]).CancelSetting();
   }
     DeusExPlayer(playerOwner().pawn).SaveConfig();
+    DeusExPlayerController(playerOwner()).SaveConfig();
     gl.SaveConfig();
 }
 

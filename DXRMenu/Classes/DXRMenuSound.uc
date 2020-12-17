@@ -421,7 +421,7 @@ defaultproperties
         RenderWeight=0.000003
         bBoundToParent=True
         bScaleToParent=True
-                        OnRendered=PaintOnBG
+        OnRendered=PaintOnBG
     End Object
     i_FrameBG=FloatingFrameBackground
 }
