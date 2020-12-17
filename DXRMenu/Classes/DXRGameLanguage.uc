@@ -121,6 +121,12 @@ function bool InternalOnClick(GUIComponent Sender)
   return true;
 }
 
+// For testing!
+function TestOnSelect(GUIContextMenu Sender, int ClickIndex)
+{
+   log("Clicked contextMenu "$sender$", item index = "$ClickIndex);
+}
+
 
 
 defaultproperties
@@ -165,6 +171,7 @@ defaultproperties
         ContextItems(0)="Test 0"
         ContextItems(1)="Test 1"
         ContextItems(2)="Test 1234"
+        OnSelect=TestOnSelect
     End Object
     ContextMenu=cTestMenu
 }
