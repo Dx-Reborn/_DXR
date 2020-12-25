@@ -5,7 +5,7 @@
 class MenuChoice_GameLanguage extends DXREnumButton;
                                        
 
-var String englishEnumText[4];
+var String englishEnumText[5];
 var int LangChoice;
 
 function LoadSetting()
@@ -63,6 +63,12 @@ function SaveSetting()
            class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[3]);
 
            log("Setting game language to: "$englishEnumText[3]);
+
+      case 4:
+           class'GameManager'.static.SetGameLanguage(englishEnumText[4]);
+           class'GameManager'.static.SetGameIniString("Engine.Engine", "Language", englishEnumText[4]);
+
+           log("Setting game language to: "$englishEnumText[4]);
       break;
     }
 
@@ -73,18 +79,20 @@ function SaveSetting()
 // ----------------------------------------------------------------------
 defaultproperties
 {
-    Hint="Changes the game language. You will need to restatr the game for changes to take effect"
+    Hint="Changes the game language. You will need to restart the game for changes to take effect"
     actionText="Game language"
 
     EnumText(0)="Russian"
     EnumText(1)="Default (int, usually English)"
     EnumText(2)="French/Français"
     EnumText(3)="German/Deutsche"
+    EnumText(4)="Spanish/Español"
 
     englishEnumText(0)="rus"
     englishEnumText(1)="int"
     englishEnumText(2)="frt"
     englishEnumText(3)="det"
+    englishEnumText(4)="est"
 }
 
 
