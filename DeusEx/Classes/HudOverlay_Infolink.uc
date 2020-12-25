@@ -81,7 +81,8 @@ function Render(canvas u)
         if (bDrawEffects)
         u.DrawTile(TexPanner'DeusExControls.Controls.scrolling',64,64,0,0,64,64);
 
-  if ((class'GameManager'.static.GetGameLanguage() ~= "frt") || (class'GameManager'.static.GetGameLanguage() ~= "int") || (class'GameManager'.static.GetGameLanguage() ~= "det"))
+  if ((class'GameManager'.static.GetGameLanguage() ~= "frt") || (class'GameManager'.static.GetGameLanguage() ~= "int") || 
+      (class'GameManager'.static.GetGameLanguage() ~= "det") || (class'GameManager'.static.GetGameLanguage() ~= "est"))
       u.Font = font'FontFixedWidthSmall_DS';
    else
       u.Font = font'DxFonts.FR_8'; //Font'DxFonts.Inf_9';//font'FontFixedWidthSmall_DS';
