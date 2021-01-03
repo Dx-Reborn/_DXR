@@ -12,6 +12,7 @@ const BEST_ENEMY_CHECK_RADIUS = 2000;
 const SKIP_ENEMY_DISTANCE = 2500;
 const MAX_CARCASS_DIST = 1200;
 const GIB_HEALTH = -100;
+const FIND_TAGGED_ACTOR_DIST = 1000000;
 
 var name AlarmTag;
 
@@ -908,10 +909,10 @@ function Actor FindTaggedActor(Name actorTag, optional bool bRandom, optional Cl
     local actor tempActor;
 
     bestActor = None;
-    bestDist  = 1000000;
+    bestDist  = FIND_TAGGED_ACTOR_DIST;
 
     if (tagClass == None)
-        tagClass = Class'Actor';
+        tagClass = class'Actor';
 
     // if no tag, then assume the player is the target
     if (actorTag == '')
@@ -941,7 +942,7 @@ function Actor FindTaggedActor(Name actorTag, optional bool bRandom, optional Cl
 // ----------------------------------------------------------------------
 function FollowOrders(optional bool bDefer)
 {
-  DXRAiController(Controller).FollowOrders(bDefer);
+    DXRAiController(Controller).FollowOrders(bDefer);
 }
 
 // ----------------------------------------------------------------------

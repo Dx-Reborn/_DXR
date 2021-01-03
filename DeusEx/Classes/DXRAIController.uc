@@ -503,8 +503,8 @@ function FollowOrders(optional bool bDefer)
         }
         else if ((ScriptedPawn(pawn).Orders == 'WaitingFor') || (ScriptedPawn(pawn).Orders == 'GoingTo') ||
                  (ScriptedPawn(pawn).Orders == 'RunningTo') || (ScriptedPawn(pawn).Orders == 'Following') ||
-                 (ScriptedPawn(pawn).Orders == 'Sitting') || (ScriptedPawn(pawn).Orders == 'Shadowing'))/* ||
-                 (ScriptedPawn(pawn).Orders == 'DebugFollowing') || (ScriptedPawn(pawn).Orders == 'DebugPathfinding'))*/
+                 (ScriptedPawn(pawn).Orders == 'Sitting') || (ScriptedPawn(pawn).Orders == 'Shadowing') ||
+                 (ScriptedPawn(pawn).Orders == 'DebugFollowing') || (ScriptedPawn(pawn).Orders == 'DebugPathfinding'))
         {
             bSetEnemy      = false;
             bUseOrderActor = true;
@@ -566,7 +566,7 @@ function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImm
     else
     {
         ScriptedPawn(pawn).ReactionLevel = 1.0;
-        orderEnemy = DeusExPawn(ScriptedPawn(pawn).FindTaggedActor(newOrderTag, false, Class'Pawn'));
+        orderEnemy = DeusExPawn(ScriptedPawn(pawn).FindTaggedActor(newOrderTag, false, class'Pawn'));
         if (orderEnemy != None)
         {
             ScriptedPawn(pawn).ChangeAlly(orderEnemy.Alliance, -1, true);
