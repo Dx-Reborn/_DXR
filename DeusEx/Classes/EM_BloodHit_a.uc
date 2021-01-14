@@ -26,7 +26,7 @@ defaultproperties
         StartSizeRange=(X=(Min=3.000000,Max=3.000000),Y=(Min=3.000000,Max=3.000000),Z=(Min=3.000000,Max=3.000000))
         InitialParticlesPerSecond=1.000000
         DrawStyle=PTDS_AlphaBlend
-//        Texture=Texture'FlFx.Fx.BloodC'
+        Texture=Texture'DXR_FX.Particles.fl_BloodC'
         SecondsBeforeInactive=0.000000
         LifetimeRange=(Min=0.327723,Max=0.327723)
         RespawnDeadParticles=false
@@ -49,7 +49,7 @@ defaultproperties
         StartSizeRange=(X=(Min=0.500000,Max=1.000000),Y=(Min=0.500000,Max=1.000000),Z=(Min=0.500000,Max=1.000000))
         InitialParticlesPerSecond=50000.000000
         DrawStyle=PTDS_AlphaBlend
-//        Texture=Texture'FlFx.Fx.bloodB'
+        Texture=Texture'DXR_FX.Particles.fl_bloodB'
         SecondsBeforeInactive=0.000000
         InitialTimeRange=(Max=0.250000)
         LifetimeRange=(Min=1.250000,Max=1.250000)
