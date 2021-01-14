@@ -539,7 +539,7 @@ function SetOrders(Name orderName, optional Name newOrderTag, optional bool bImm
     local bool bHostile;
     local DeusExPawn orderEnemy;
 
-    log(pawn@"SetOrders: Name="$orderName$" OrderTag="$newOrderTag$" bImmediate? ="$bImmediate);
+//    log(pawn@"SetOrders: Name="$orderName$" OrderTag="$newOrderTag$" bImmediate? ="$bImmediate);
 
     switch (orderName)
     {
