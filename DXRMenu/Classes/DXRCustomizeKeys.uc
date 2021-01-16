@@ -10,15 +10,17 @@ struct S_KeyDisplayItem
     var() localized String DisplayName;
 };
 
-const AmountOfFunctions = 51;
+const AMOUNT_OF_FUNCTIONS = 51; // AmountOfFunctions = 51;
 const SetupCommand = "SET Input ";
+const MAX_PENDING_COMMANDS = 102;
+const MAX_KEYDISPLAY_NAMES = 71;
 
-var localized string    FunctionText[AmountOfFunctions];
-var string              MenuValues1[AmountOfFunctions];
-var string              MenuValues2[AmountOfFunctions];
-var string              AliasNames[AmountOfFunctions];
-var string              PendingCommands[102]; //100
-var S_KeyDisplayItem    keyDisplayNames[71];
+var localized string    FunctionText[AMOUNT_OF_FUNCTIONS];
+var string              MenuValues1[AMOUNT_OF_FUNCTIONS];
+var string              MenuValues2[AMOUNT_OF_FUNCTIONS];
+var string              AliasNames[AMOUNT_OF_FUNCTIONS];
+var string              PendingCommands[MAX_PENDING_COMMANDS];
+var S_KeyDisplayItem    keyDisplayNames[MAX_KEYDISPLAY_NAMES];
 var localized string              NoneText;
 var int                 Pending;
 var int                 selection;      
