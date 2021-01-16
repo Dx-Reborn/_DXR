@@ -17,8 +17,6 @@ var Int  clickY;
 var Int  dragPosX;
 var Int  dragPosY;
 
-var gui_Inventory winInv;       // Pointer back to the window 
-
 enum FillModes
 {
     FM_WeaponModTrue,

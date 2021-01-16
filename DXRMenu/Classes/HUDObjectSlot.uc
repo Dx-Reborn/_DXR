@@ -25,7 +25,6 @@ var int         borderHeight;
 var String      itemText;
 
 // Drag/Drop Stuff
-var gui_Inventory winInv;       // Pointer back to the inventory window
 var Int  clickX;
 var Int  clickY;
 var bool bDragStart;
@@ -60,7 +59,7 @@ var Color colBackground;
 
 var localized String RoundLabel,RoundsLabel,CountLabel;
 
-var bool bChecked;
+//var bool bChecked;
 var bool bButtonPressed;
 
 
@@ -152,7 +151,7 @@ function SetObjectNumber(int newNumber)
 function SetItem(Inventory newItem)
 {
     item = newItem;
-    if ( newItem != None )
+    if (newItem != None)
     {
         newItem.bInObjectBelt = True;
         newItem.SetbeltPos(objectNum);
@@ -223,8 +222,8 @@ event DrawWindow(canvas u)
   local float x1, x2, y1, y2;
 
     // First draw the background
-  u.Style = EMenuRenderStyle.MSTY_Normal;
-  colBackground=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
+    u.Style = EMenuRenderStyle.MSTY_Normal;
+    colBackground=class'DXR_Menu'.static.GetPlayerInterfaceTabsBackground(gl.MenuThemeIndex);
     u.DrawColor = colBackground;
     u.SetPos(ActualLeft(), ActualTop());
     u.DrawIcon(texBackground,1);
@@ -242,8 +241,8 @@ event DrawWindow(canvas u)
         SetFillColor();
         u.Style = EMenuRenderStyle.MSTY_Translucent;
         u.DrawColor = fillColor;
-    u.SetPos(ActualLeft() + 1, ActualTop() + 3); // +1 && +3 
-    u.DrawTileStretched(texture'solid', slotFillWidth, slotFillHeight);
+        u.SetPos(ActualLeft() + 1, ActualTop() + 3); // +1 && +3 
+        u.DrawTileStretched(texture'solid', slotFillWidth, slotFillHeight);
 //    u.DrawTileStretched(texture'solid', ActualWidth(), ActualHeight());
 //      gc.DrawPattern( slotIconX, slotIconY, slotFillWidth, slotFillHeight, 0, 0, Texture'Solid' );
     }
@@ -292,7 +291,7 @@ event DrawWindow(canvas u)
           u.DrawColor=colSelectionBorder;
 //      u.Style = EMenuRenderStyle.MSTY_Modulated;
           u.SetPos(ActualLeft() + slotIconX - 1, ActualTop() + slotIconY - 1);
-      u. DrawTilePartialStretched(texture'WhiteBorderT', slotFillWidth + 3, slotFillHeight + 15);
+          u. DrawTilePartialStretched(texture'WhiteBorderT', slotFillWidth + 3, slotFillHeight + 15);
         }
     }
     
@@ -514,15 +513,6 @@ function FinishButtonDrag()
 }
 
 // ----------------------------------------------------------------------
-// AssignWinInv()
-// ----------------------------------------------------------------------
-
-function AssignWinInv(gui_Inventory newWinInventory)
-{
-    winInv = newWinInventory;
-}
-
-// ----------------------------------------------------------------------
 // GetIconPos()
 //
 // Returns the location where the icon will be drawn
@@ -557,11 +547,23 @@ function GetIconPos(out int iconPosX, out int iconPosY)
         backgroundDrawStyle = DSTY_Masked;
 }
     */
-// ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
+
+function OnToolBeltMenuSelect(GUIContextMenu Sender, int ClickIndex)
+{
+   log("Clicked contextMenu "$sender$", item index = "$ClickIndex);
+//   if (GetClientObject() != None)
+}
+
+
 
 defaultproperties
 {
+    Begin Object class=DXRContextMenu Name=ToolBeltItemMenu
+        ContextItems(0)="Remove from toolbelt"
+        OnSelect=OnToolBeltMenuSelect
+    End Object
+    ContextMenu=ToolBeltItemMenu
+
     bBoundToParent=true
     colObjectNum=(R=0,G=170,B=255,A=255)
     colDropGood=(R=32,G=128,B=32,A=255)

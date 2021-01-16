@@ -7,12 +7,26 @@ class DXRGameLanguage extends DXRConfigurationDialog;
 var GUIButton btnDefault, btnOK, btnCancel;
 var DXRChoiceInfo iLangInfo;
 var MenuChoice_GameLanguage mGameLang;
+var GUILabel lRestartInformation;
 
 var localized string strAdditionalText;
 
 function CreateMyControls()
 {
   SetSize(150, 548);
+
+  lRestartInformation = new class'GUILabel';
+  lRestartInformation.TextColor = class'Canvas'.static.MakeColor(255, 0, 0);
+  lRestartInformation.TextFont="UT2SmallFont";
+  lRestartInformation.TextAlign = TXTA_Center;
+  lRestartInformation.VertAlign = TXTA_Center;
+  lRestartInformation.Caption = strAdditionalText;
+  lRestartInformation.bMultiLine = true;
+  lRestartInformation.WinHeight = 37;
+  lRestartInformation.WinWidth = 530;
+  lRestartInformation.WinLeft = 12;
+  lRestartInformation.WinTop = 88;
+    AppendComponent(lRestartInformation, true);
 
   iLangInfo = new class'DXRChoiceInfo';
   iLangInfo.WinLeft = 285;
@@ -60,7 +74,7 @@ function CreateMyControls()
   btnCancel.WinHeight = 21;
   btnCancel.WinWidth = 100;
   btnCancel.WinLeft = 344;
-  btnCancel.WinTop = 149;//232; 83
+  btnCancel.WinTop = 149;
     AppendComponent(btnCancel, true);
 }
 
@@ -121,29 +135,22 @@ function bool InternalOnClick(GUIComponent Sender)
   return true;
 }
 
-// For testing!
-function TestOnSelect(GUIContextMenu Sender, int ClickIndex)
-{
-   log("Clicked contextMenu "$sender$", item index = "$ClickIndex);
-}
-
-
 
 defaultproperties
 {
-    strAdditionalText="blah blah"
+    strAdditionalText="Important: You should restart the game for changes to take effect."
     WinTitle="Game language"
 
-        leftEdgeCorrectorX=4
-        leftEdgeCorrectorY=0
-        leftEdgeHeight=168
+    leftEdgeCorrectorX=4
+    leftEdgeCorrectorY=0
+    leftEdgeHeight=168
 
-        RightEdgeCorrectorX=545
-        RightEdgeCorrectorY=20
-        RightEdgeHeight=141
+    RightEdgeCorrectorX=545
+    RightEdgeCorrectorY=20
+    RightEdgeHeight=141
 
-        TopEdgeCorrectorX=462
-        TopEdgeCorrectorY=16
+    TopEdgeCorrectorX=462
+    TopEdgeCorrectorY=16
     TopEdgeLength=80
 
     TopRightCornerX=542
@@ -166,13 +173,5 @@ defaultproperties
         OnRendered=PaintOnBG
     End Object
     i_FrameBG=FloatingFrameBackground
-
-    Begin Object class=DXRContextMenu Name=cTestMenu
-        ContextItems(0)="Test 0"
-        ContextItems(1)="Test 1"
-        ContextItems(2)="Test 1234"
-        OnSelect=TestOnSelect
-    End Object
-    ContextMenu=cTestMenu
 }
 

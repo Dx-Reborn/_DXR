@@ -1,6 +1,7 @@
 /* */
-class InventoryButton extends GUIButton;
+class InventoryButton extends GUICheckBoxButton; //GUIButton;
 
+var gui_Inventory winInv;       // Pointer back to the inventory window
 var() transient editconst Object clientObject;
 var DeusExGlobals gl;
 
@@ -34,10 +35,16 @@ function SetCursorPos(float newX, float newY)
    PlayerOwner().ConsoleCommand("SETMOUSE" @ NewX @ NewY);
 }
 
+function AssignWinInv(gui_Inventory newWinInventory)
+{
+    winInv = newWinInventory;
+}
+
+// Pointless?
 function ConvertCoordinates(GUIComponent fromWin, float fromX, float fromY, GUIComponent toWin, out float toX, out float toY)
 {
- toX = toWin.winLeft; //ActualLeft();// fromX;
- toY = toWin.winTop;//ActualTop();// fromY;
+   toX = toWin.winLeft; //ActualLeft();// fromX;
+   toY = toWin.winTop;//ActualTop();// fromY;
 }
 
 defaultproperties
@@ -45,5 +52,5 @@ defaultproperties
     bMouseOverSound=false
     OnClickSound=CS_None
     bNeverScale=true
-
 }
+

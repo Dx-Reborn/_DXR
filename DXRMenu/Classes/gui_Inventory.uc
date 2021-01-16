@@ -9,13 +9,15 @@ class gui_Inventory extends PlayerInterfacePanel;
 
 #exec obj load file=MoverSFX
 
+const MAX_TOOLBELT_SLOTS = 10;
+
 var GUIImage iInv, iKeys, iAmmo;
 var GUIListBox invList;
 var GUIButton btnEquip, btnUse, btnDrop, btnChangeAmmo;
 var PersonaItemButton selectedItem;         // Currently Selected Inventory item
 
 var HUDObjectSlot selectedSlot;
-var HUDObjectSlot objects[10];
+var HUDObjectSlot objects[MAX_TOOLBELT_SLOTS];
 
 var GUILabel lInventory, lMoney, lMoneyAmount, winStatus; // Инвентарь, деньги, кол-во.
 var GUILabel lCheckKeys, lCheckAmmo, winItemName;
@@ -52,12 +54,12 @@ var(BrightPart) float rFrameXb, rframeYb, rfSizeXb, rfSizeYb;
 
 function ShowPanel(bool bShow)
 {
-  super.ShowPanel(bShow);
+   super.ShowPanel(bShow);
 
-    player.winInv = self;
+   player.winInv = self;
 
-  if (bShow) // как в GMDX )))
-     PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.25);
+   if (bShow) // как в GMDX )))
+       PlayerOwner().pawn.PlaySound(Sound'MetalDrawerOpen',,0.25);
 
   EnableButtons();
 }
@@ -68,226 +70,226 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     player = DeusExPlayer(PlayerOwner().pawn);
 
     CreateMyControls();
-  invListChange(none);
+    invListChange(none);
 }
 
 function CreateMyControls()
 {
-  invList = new(none) class'GUIListBox';
+   invList = new(none) class'GUIListBox';
 //  invList.OnClick=InternalOnClick;
-  invList.SelectedStyleName="STY_DXR_ListSelection";
-  invList.StyleName = "STY_DXR_Listbox";
-  invList.bBoundToParent = true;
-  invList.OnChange=invListChange;
-  invList.WinHeight = 125;
-  invList.WinWidth = 212;
-  invList.WinLeft = 780;//20;
-  invList.WinTop = 82;
-    AppendComponent(invList, true);
+   invList.SelectedStyleName="STY_DXR_ListSelection";
+   invList.StyleName = "STY_DXR_Listbox";
+   invList.bBoundToParent = true;
+   invList.OnChange=invListChange;
+   invList.WinHeight = 125;
+   invList.WinWidth = 212;
+   invList.WinLeft = 780;//20;
+   invList.WinTop = 82;
+   AppendComponent(invList, true);
 /*--------------------------------------------------------------------------------------------------*/
-  btnEquip = new(none) class'GUIButton';
-  btnEquip.FontScale = FNS_Small;
-  btnEquip.Caption = EquipButtonLabel;
-  btnEquip.Hint = "Equip or Unequip selected inventory item";
-  btnEquip.StyleName="STY_DXR_ButtonNavbar";
-  btnEquip.bBoundToParent = true;
-  btnEquip.OnClick = InternalOnClick;
-  btnEquip.WinHeight = 22;
-  btnEquip.WinWidth = 87;
-  btnEquip.WinLeft = 42;
-  btnEquip.WinTop = 445;
-    AppendComponent(btnEquip, true);
+   btnEquip = new(none) class'GUIButton';
+   btnEquip.FontScale = FNS_Small;
+   btnEquip.Caption = EquipButtonLabel;
+   btnEquip.Hint = "Equip or Unequip selected inventory item";
+   btnEquip.StyleName="STY_DXR_ButtonNavbar";
+   btnEquip.bBoundToParent = true;
+   btnEquip.OnClick = InternalOnClick;
+   btnEquip.WinHeight = 22;
+   btnEquip.WinWidth = 87;
+   btnEquip.WinLeft = 42;
+   btnEquip.WinTop = 445;
+   AppendComponent(btnEquip, true);
 
-  btnUse = new(none) class'GUIButton';
-  btnUse.FontScale = FNS_Small;
-  btnUse.Caption = UseButtonLabel;
-  btnUse.Hint = "Use selected inventory item";
-  btnUse.StyleName="STY_DXR_ButtonNavbar";
-  btnUse.bBoundToParent = true;
-  btnUse.OnClick = InternalOnClick;
-  btnUse.WinHeight = 22;
-  btnUse.WinWidth = 76;
-  btnUse.WinLeft = 130;
-  btnUse.WinTop = 445;
-    AppendComponent(btnUse, true);
+   btnUse = new(none) class'GUIButton';
+   btnUse.FontScale = FNS_Small;
+   btnUse.Caption = UseButtonLabel;
+   btnUse.Hint = "Use selected inventory item";
+   btnUse.StyleName="STY_DXR_ButtonNavbar";
+   btnUse.bBoundToParent = true;
+   btnUse.OnClick = InternalOnClick;
+   btnUse.WinHeight = 22;
+   btnUse.WinWidth = 76;
+   btnUse.WinLeft = 130;
+   btnUse.WinTop = 445;
+   AppendComponent(btnUse, true);
 
-  btnDrop = new(none) class'GUIButton';
-  btnDrop.FontScale = FNS_Small;
-  btnDrop.Caption = DropButtonLabel;
-  btnDrop.Hint = "Drop selected inventory item if possible";
-  btnDrop.StyleName="STY_DXR_ButtonNavbar";
-  btnDrop.bBoundToParent = true;
-  btnDrop.OnClick = InternalOnClick;
-  btnDrop.WinHeight = 22;
-  btnDrop.WinWidth = 76;
-  btnDrop.WinLeft = 207;
-  btnDrop.WinTop = 445;
-    AppendComponent(btnDrop, true);
+   btnDrop = new(none) class'GUIButton';
+   btnDrop.FontScale = FNS_Small;
+   btnDrop.Caption = DropButtonLabel;
+   btnDrop.Hint = "Drop selected inventory item if possible";
+   btnDrop.StyleName="STY_DXR_ButtonNavbar";
+   btnDrop.bBoundToParent = true;
+   btnDrop.OnClick = InternalOnClick;
+   btnDrop.WinHeight = 22;
+   btnDrop.WinWidth = 76;
+   btnDrop.WinLeft = 207;
+   btnDrop.WinTop = 445;
+   AppendComponent(btnDrop, true);
 
-  btnChangeAmmo = new(none) class'GUIButton';
-  btnChangeAmmo.FontScale = FNS_Small;
-  btnChangeAmmo.Caption = ChangeAmmoButtonLabel;
-  btnChangeAmmo.Hint = "Change ammo type for selected weapon";
-  btnChangeAmmo.StyleName="STY_DXR_ButtonNavbar";
-  btnChangeAmmo.bBoundToParent = true;
-  btnChangeAmmo.OnClick = InternalOnClick;
-  btnChangeAmmo.WinHeight = 22;
-  btnChangeAmmo.WinWidth = 78;
-  btnChangeAmmo.WinLeft = 284;
-  btnChangeAmmo.WinTop = 445;
+   btnChangeAmmo = new(none) class'GUIButton';
+   btnChangeAmmo.FontScale = FNS_Small;
+   btnChangeAmmo.Caption = ChangeAmmoButtonLabel;
+   btnChangeAmmo.Hint = "Change ammo type for selected weapon";
+   btnChangeAmmo.StyleName="STY_DXR_ButtonNavbar";
+   btnChangeAmmo.bBoundToParent = true;
+   btnChangeAmmo.OnClick = InternalOnClick;
+   btnChangeAmmo.WinHeight = 22;
+   btnChangeAmmo.WinWidth = 78;
+   btnChangeAmmo.WinLeft = 284;
+   btnChangeAmmo.WinTop = 445;
     AppendComponent(btnChangeAmmo, true);
 
 /*--------------------------------------------------------------------------------------------------*/
-  tDesc = new(none) class'GUIScrollTextBox';
-  tDesc.StyleName="STY_DXR_DeusExScrollTextBox";
-  tDesc.bBoundToParent = true;
-  tDesc.FontScale=FNS_Small;
-    tDesc.WinHeight = 270;
-  tDesc.WinWidth = 340;
-  tDesc.WinLeft = 425;
-  tDesc.WinTop = 78;
-  tDesc.bRepeat = false;//true;
-  tDesc.bNoTeletype = gl.bUseCursorEffects;
-  tDesc.EOLDelay = 0.01;//75;
-  tDesc.CharDelay = 0.01;
-  tDesc.RepeatDelay = 3.0;
-    AppendComponent(tDesc, true);
+   tDesc = new(none) class'GUIScrollTextBox';
+   tDesc.StyleName="STY_DXR_DeusExScrollTextBox";
+   tDesc.bBoundToParent = true;
+   tDesc.FontScale=FNS_Small;
+   tDesc.WinHeight = 270;
+   tDesc.WinWidth = 340;
+   tDesc.WinLeft = 425;
+   tDesc.WinTop = 78;
+   tDesc.bRepeat = false;//true;
+   tDesc.bNoTeletype = gl.bUseCursorEffects;
+   tDesc.EOLDelay = 0.01;//75;
+   tDesc.CharDelay = 0.01;
+   tDesc.RepeatDelay = 3.0;
+   AppendComponent(tDesc, true);
 
-  iInv = new(none) class'GUIImage'; 
-  iInv.Image=texture'DXR_Inventory';
-  iInv.bBoundToParent = true;
-    iInv.WinHeight = 600;
-  iInv.WinWidth = 800;
-  iInv.WinLeft = 0;
-  iInv.WinTop = 32;
-  iInv.tag = 75;
-    AppendComponent(iInv, true);
+   iInv = new(none) class'GUIImage'; 
+   iInv.Image=texture'DXR_Inventory';
+   iInv.bBoundToParent = true;
+   iInv.WinHeight = 600;
+   iInv.WinWidth = 800;
+   iInv.WinLeft = 0;
+   iInv.WinTop = 32;
+   iInv.tag = 75;
+   AppendComponent(iInv, true);
 /*--------------------------------------------------------------------------------------------------*/
-  lInventory = new(none) class'GUILabel';
-  lInventory.bBoundToParent = true;
-  lInventory.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
-  lInventory.caption = InventoryTitleText;
-  lInventory.TextFont="UT2HeaderFont";
-  lInventory.FontScale = FNS_Small;
-    lInventory.WinHeight = 21;
-  lInventory.WinWidth = 93;
-  lInventory.WinLeft = 42;
-  lInventory.WinTop = 42;
-    AppendComponent(lInventory, true);
+   lInventory = new(none) class'GUILabel';
+   lInventory.bBoundToParent = true;
+   lInventory.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
+   lInventory.caption = InventoryTitleText;
+   lInventory.TextFont="UT2HeaderFont";
+   lInventory.FontScale = FNS_Small;
+   lInventory.WinHeight = 21;
+   lInventory.WinWidth = 93;
+   lInventory.WinLeft = 42;
+   lInventory.WinTop = 42;
+   AppendComponent(lInventory, true);
 
-  lMoney = new(none) class'GUILabel';
-  lMoney.bBoundToParent = true;
-  lMoney.TextAlign = TXTA_Right;
-  lMoney.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lMoney.caption = strCredits;
-  lMoney.TextFont="UT2HeaderFont";
-  lMoney.FontScale = FNS_Small;
-    lMoney.WinHeight = 21;
-  lMoney.WinWidth = 129;
-  lMoney.WinLeft = 156;
-  lMoney.WinTop = 42;
-    AppendComponent(lMoney, true);
+   lMoney = new(none) class'GUILabel';
+   lMoney.bBoundToParent = true;
+   lMoney.TextAlign = TXTA_Right;
+   lMoney.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   lMoney.caption = strCredits;
+   lMoney.TextFont="UT2HeaderFont";
+   lMoney.FontScale = FNS_Small;
+   lMoney.WinHeight = 21;
+   lMoney.WinWidth = 129;
+   lMoney.WinLeft = 156;
+   lMoney.WinTop = 42;
+   AppendComponent(lMoney, true);
 
-  lMoneyAmount = new(none) class'GUILabel';
-  lMoneyAmount.bBoundToParent = true;
-  lMoneyAmount.TextAlign = TXTA_Center;
-  lMoneyAmount.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lMoneyAmount.caption = "Placeholder";
-  lMoneyAmount.TextFont="UT2HeaderFont";
-  lMoneyAmount.FontScale = FNS_Small;
-    lMoneyAmount.WinHeight = 21;
-  lMoneyAmount.WinWidth = 73;
-  lMoneyAmount.WinLeft = 288;
-  lMoneyAmount.WinTop = 42;
-    AppendComponent(lMoneyAmount, true);
+   lMoneyAmount = new(none) class'GUILabel';
+   lMoneyAmount.bBoundToParent = true;
+   lMoneyAmount.TextAlign = TXTA_Center;
+   lMoneyAmount.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   lMoneyAmount.caption = "Placeholder";
+   lMoneyAmount.TextFont="UT2HeaderFont";
+   lMoneyAmount.FontScale = FNS_Small;
+   lMoneyAmount.WinHeight = 21;
+   lMoneyAmount.WinWidth = 73;
+   lMoneyAmount.WinLeft = 288;
+   lMoneyAmount.WinTop = 42;
+   AppendComponent(lMoneyAmount, true);
 
     // Сообщение
-  winStatus = new class'GUILabel';
-  winStatus.bBoundToParent = true;
-  winStatus.TextAlign = TXTA_Left;
-  winStatus.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  winStatus.caption = "Message";
-  winStatus.TextFont="UT2SmallFont";
-  winStatus.FontScale = FNS_Small;
-    winStatus.WinHeight = 21;
-  winStatus.WinWidth = 344;
-  winStatus.WinLeft = 423;
-  winStatus.WinTop = 354;
-    AppendComponent(winStatus, true);
+   winStatus = new class'GUILabel';
+   winStatus.bBoundToParent = true;
+   winStatus.TextAlign = TXTA_Left;
+   winStatus.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   winStatus.caption = "Message";
+   winStatus.TextFont="UT2SmallFont";
+   winStatus.FontScale = FNS_Small;
+   winStatus.WinHeight = 21;
+   winStatus.WinWidth = 344;
+   winStatus.WinLeft = 423;
+   winStatus.WinTop = 354;
+   AppendComponent(winStatus, true);
 
     // Название выбранного предмета инвентаря
-    winItemName = new class'GUILabel';
-  winItemName.bBoundToParent = true;
-  winItemName.TextAlign = TXTA_Center;
-  winItemName.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  winItemName.caption = "Header";
-  winItemName.TextFont="UT2HeaderFont";
-  winItemName.FontScale = FNS_Small;
-    winItemName.WinHeight = 21;
-  winItemName.WinWidth = 344;
-  winItemName.WinLeft = 423;
-  winItemName.WinTop = 56;
-    AppendComponent(winItemName, true);
+   winItemName = new class'GUILabel';
+   winItemName.bBoundToParent = true;
+   winItemName.TextAlign = TXTA_Center;
+   winItemName.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   winItemName.caption = "Header";
+   winItemName.TextFont="UT2HeaderFont";
+   winItemName.FontScale = FNS_Small;
+   winItemName.WinHeight = 21;
+   winItemName.WinWidth = 344;
+   winItemName.WinLeft = 423;
+   winItemName.WinTop = 56;
+   AppendComponent(winItemName, true);
 /*-- Ключики ---------------------------------------------------------------------------------------*/
-    iKeys = new(none) class'GUIImage';
-    iKeys.image = texture'LargeIconNanoKeyRing';
-    iKeys.bBoundToParent = true;
-  iKeys.bAcceptsInput = true;
-    iKeys.WinLeft = 426;//423;
-    iKeys.WinTop = 407;//431;//423;
-    iKeys.WinHeight = 53;
-  iKeys.WinWidth = 53;
-  iKeys.OnClickSound = CS_Click;
-  iKeys.OnClick = InternalOnClick;
-    AppendComponent(iKeys, true);
+   iKeys = new(none) class'GUIImage';
+   iKeys.image = texture'LargeIconNanoKeyRing';
+   iKeys.bBoundToParent = true;
+   iKeys.bAcceptsInput = true;
+   iKeys.WinLeft = 426;//423;
+   iKeys.WinTop = 407;//431;//423;
+   iKeys.WinHeight = 53;
+   iKeys.WinWidth = 53;
+   iKeys.OnClickSound = CS_Click;
+   iKeys.OnClick = InternalOnClick;
+   AppendComponent(iKeys, true);
 
-  lCheckKeys = new(none) class'GUILabel';
-  lCheckKeys.bBoundToParent = true;
-  lCheckKeys.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lCheckKeys.caption = NanoKeyRingInfoText;
-  lCheckKeys.TextFont="UT2SmallFont";
-  lCheckKeys.bMultiLine = true;
-  lCheckKeys.TextAlign = TXTA_Center;
-  lCheckKeys.VertAlign = TXTA_Center;
-  lCheckKeys.FontScale = FNS_Small;
-    lCheckKeys.WinHeight = 51;
-  lCheckKeys.WinWidth = 100;
-  lCheckKeys.WinLeft = 480;
-  lCheckKeys.WinTop = 400;//424;
-    AppendComponent(lCheckKeys, true);
+   lCheckKeys = new(none) class'GUILabel';
+   lCheckKeys.bBoundToParent = true;
+   lCheckKeys.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   lCheckKeys.caption = NanoKeyRingInfoText;
+   lCheckKeys.TextFont="UT2SmallFont";
+   lCheckKeys.bMultiLine = true;
+   lCheckKeys.TextAlign = TXTA_Center;
+   lCheckKeys.VertAlign = TXTA_Center;
+   lCheckKeys.FontScale = FNS_Small;
+   lCheckKeys.WinHeight = 51;
+   lCheckKeys.WinWidth = 100;
+   lCheckKeys.WinLeft = 480;
+   lCheckKeys.WinTop = 400;//424;
+   AppendComponent(lCheckKeys, true);
 /*-- Боеприпасы ------------------------------------------------------------------------------------*/
-  lCheckAmmo = new(none) class'GUILabel';
-  lCheckAmmo.bBoundToParent = true;
-  lCheckAmmo.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
-  lCheckAmmo.caption = AmmoInfoText;
-  lCheckAmmo.TextFont="UT2SmallFont";
-  lCheckAmmo.bMultiLine = true;
-  lCheckAmmo.TextAlign = TXTA_Center;
-  lCheckAmmo.VertAlign = TXTA_Center;
-  lCheckAmmo.FontScale = FNS_Small;
-    lCheckAmmo.WinHeight = 51;
-  lCheckAmmo.WinWidth = 100;
-  lCheckAmmo.WinLeft = 609;
-  lCheckAmmo.WinTop = 400;//424;
-    AppendComponent(lCheckAmmo, true);
+   lCheckAmmo = new(none) class'GUILabel';
+   lCheckAmmo.bBoundToParent = true;
+   lCheckAmmo.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceTextLabels(gl.MenuThemeIndex);
+   lCheckAmmo.caption = AmmoInfoText;
+   lCheckAmmo.TextFont="UT2SmallFont";
+   lCheckAmmo.bMultiLine = true;
+   lCheckAmmo.TextAlign = TXTA_Center;
+   lCheckAmmo.VertAlign = TXTA_Center;
+   lCheckAmmo.FontScale = FNS_Small;
+   lCheckAmmo.WinHeight = 51;
+   lCheckAmmo.WinWidth = 100;
+   lCheckAmmo.WinLeft = 609;
+   lCheckAmmo.WinTop = 400;//424;
+   AppendComponent(lCheckAmmo, true);
 
-    iAmmo = new(none) class'GUIImage';
-    iAmmo.image = texture'LargeIconAmmoShells';
-    iAmmo.bBoundToParent = true;
-  iAmmo.bAcceptsInput = true;
-    iAmmo.WinLeft = 725;//715;
-    iAmmo.WinTop = 407;//431;//423;
-    iAmmo.WinHeight = 53;
-  iAmmo.WinWidth = 53;
-  iAmmo.OnClickSound = CS_Click;
-  iAmmo.OnClick = InternalOnClick;
-    AppendComponent(iAmmo, true);
+   iAmmo = new(none) class'GUIImage';
+   iAmmo.image = texture'LargeIconAmmoShells';
+   iAmmo.bBoundToParent = true;
+   iAmmo.bAcceptsInput = true;
+   iAmmo.WinLeft = 725;//715;
+   iAmmo.WinTop = 407;//431;//423;
+   iAmmo.WinHeight = 53;
+   iAmmo.WinWidth = 53;
+   iAmmo.OnClickSound = CS_Click;
+   iAmmo.OnClick = InternalOnClick;
+   AppendComponent(iAmmo, true);
 
-  ApplyTheme();
-    fillList();
-  SetMoney();
-  CreateInventoryButtons();
-  CreateToolBeltSlots();
+   ApplyTheme();
+   fillList();
+   SetMoney();
+   CreateInventoryButtons();
+   CreateToolBeltSlots();
 }
 
 // ----------------------------------------------------------------------
@@ -299,9 +301,9 @@ function CreateToolBeltSlots()
 {
     local int i, p;
 
-    for (i=0; i<10; i++)
+    for (i=0; i<MAX_TOOLBELT_SLOTS; i++)
     {
-      p = 51 * i;
+        p = 51 * i;
         objects[i] = new class'HUDObjectSlot';
         objects[i].WinTop = 486;
         objects[i].WinLeft = 56 + p;
@@ -320,17 +322,29 @@ function CreateToolBeltSlots()
             objects[i].bAllowDragging = false;
         }
         // Заполнить...
-//      if (DeusExHUD(PlayerOwner().myHUD).objects[i] != None)
-      if (DeusExPlayer(PlayerOwner().pawn).objects[i] != none)
-          Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).objects[i]);
-          //Objects[i].SetItem(DeusExHUD(PlayerOwner().myHUD).objects[i]);
+        if (DeusExPlayer(PlayerOwner().pawn).objects[i] != none)
+            Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).objects[i]);
+//          UpdateBeltSlots();
+    }
+}
+
+function UpdateBeltSlots()
+{
+    local int i;
+
+    for (i=1; i<MAX_TOOLBELT_SLOTS; i++)
+    {
+   //     if (DeusExPlayer(PlayerOwner().pawn).objects[i] != none)
+        Objects[i].ResetFill();
+        Objects[i].SetItem(None);
+        Objects[i].SetItem(DeusExPlayer(PlayerOwner().pawn).objects[i]);
     }
 }
 
 
 function SetMoney()
 {
-  lMoneyAmount.caption = string(DeusExPlayer(PlayerOwner().pawn).credits);
+   lMoneyAmount.caption = string(DeusExPlayer(PlayerOwner().pawn).credits);
 }
 
 function ListNanoKeys()
@@ -359,13 +373,13 @@ function fillList()
 {
     local Inventory inv;
 
-  invList.List.Clear();
+    invList.List.Clear();
 
     inv = PlayerOwner().Pawn.Inventory;
     while (inv != None)
     {
 //    log("Adding inventory to list...");
-    invList.List.Add(inv.ItemName, inv, inv.GetDescription());
+        invList.List.Add(inv.ItemName, inv, inv.GetDescription());
         inv = inv.inventory;
     }
 }
@@ -395,7 +409,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
   if (Sender==btnUse)
   {
-    UseSelectedItem();
+     UseSelectedItem();
   }
 
   if (Sender==btnDrop)
@@ -403,7 +417,7 @@ function bool InternalOnClick(GUIComponent Sender)
      DropSelectedItem();
   }
 
-    return true;
+  return true;
 }
 
 function PaintFrames(canvas u)
@@ -606,6 +620,7 @@ function CreateInventoryButtons()
         {
             // Create another button
             newButton = new class'PersonaInventoryItemButton';
+            newbutton.winInv = self;
             newButton.OnClick = InventoryClick;
             AppendComponent(newButton, true);
             newButton.SetClientObject(anItem);
@@ -869,7 +884,7 @@ function DropSelectedItem()
                 winStatus.Caption = class'Actor'.static.Sprintf(DroppedLabel, anItem.itemName);
 
                 // Update the object belt
-        for (i=1;i<10;i++)
+        for (i=1;i<MAX_TOOLBELT_SLOTS;i++)
              Objects[i].UpdateItemText();
             //  invBelt.UpdateBeltText(anItem);
             }
@@ -950,7 +965,7 @@ function UseSelectedItem()
 
         // Refresh the info!
         if (numCopies > 0)
-          for (i=1;i<10;i++)
+          for (i=1;i<MAX_TOOLBELT_SLOTS;i++)
         Objects[i].UpdateItemText();
     //      UpdateWinInfo(inv);
     }
@@ -1184,7 +1199,7 @@ function SelectObjectBeltItem(Inventory item, bool bNewToggle)
 //  invBelt.SelectObject(item, bNewToggle);
     local int objectIndex;
 
-    for (objectIndex=0;objectIndex<10;objectIndex++)
+    for (objectIndex=0;objectIndex<MAX_TOOLBELT_SLOTS;objectIndex++)
     {
         if (objects[objectIndex].item == item)
         {
@@ -1204,7 +1219,7 @@ function RemoveObjectFromBelt(Inventory item)
 {
     local int i;
 
-    for (i=0;i<9;i++)
+    for (i=0;i<MAX_TOOLBELT_SLOTS -1;i++)
     {
         if (objects[i].GetItem() == item)
         {
