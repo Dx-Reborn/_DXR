@@ -9,6 +9,7 @@ class Faucet extends DeusExDecoration;
 
 var() bool              bOpen;
 var EM_WaterFaucet waterGen;
+var() float WaterSpawnOffsetX;
 
 event Destroyed()
 {
@@ -61,7 +62,7 @@ event PostBeginPlay()
     // spawn a particle generator
     // rotate the spray offsets into object coordinate space
     loc = vect(0,0,0);
-    loc.X += CollisionRadius * 0.65; // 0.9
+    loc.X += CollisionRadius * WaterSpawnOffsetX; //0.65; // 0.9
     loc = loc >> Rotation;
     loc += Location;
 
@@ -85,7 +86,8 @@ event PostBeginPlay()
 
 defaultproperties
 {
-     bInvincible=True
+     WaterSpawnOffsetX=0.65
+     bInvincible=true
      ItemName="Faucet"
      bPushable=False
      Physics=PHYS_None
