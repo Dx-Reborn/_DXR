@@ -9,7 +9,7 @@ class Faucet extends DeusExDecoration;
 
 var() bool              bOpen;
 var EM_WaterFaucet waterGen;
-var() float WaterSpawnOffsetX;
+var() float WaterSpawnOffsetX, WaterSpawnOffsetZ;
 
 event Destroyed()
 {
@@ -63,6 +63,7 @@ event PostBeginPlay()
     // rotate the spray offsets into object coordinate space
     loc = vect(0,0,0);
     loc.X += CollisionRadius * WaterSpawnOffsetX; //0.65; // 0.9
+    loc.Z += WaterSpawnOffsetZ; //
     loc = loc >> Rotation;
     loc += Location;
 
