@@ -4,7 +4,8 @@ defaultproperties
 {
      DrawType=DT_StaticMesh
      StaticMesh=StaticMesh'DXR_Decals.Shell_Straight'
-     DrawScale=0.2
+     //DrawScale=0.2
+     DrawScale=0.12
 
      numFragmentTypes=0
      elasticity=0.400000
