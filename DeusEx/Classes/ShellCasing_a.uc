@@ -26,4 +26,6 @@ defaultproperties
 
      CollisionRadius=2.570000
      CollisionHeight=0.620000
+
+     bUnlit=false
 }

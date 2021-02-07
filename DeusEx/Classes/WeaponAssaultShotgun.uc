@@ -88,6 +88,7 @@ function EjectShell()
      s = Spawn(class'ShellCasing_a',, '', K.Origin);
      if (S != None)
      {
+         s.SetRotation(RotRand(false));
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }

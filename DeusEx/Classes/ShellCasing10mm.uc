@@ -4,7 +4,6 @@ defaultproperties
 {
      DrawType=DT_StaticMesh
      StaticMesh=StaticMesh'DXR_Decals.Shell_Straight'
-     //DrawScale=0.2
      DrawScale=0.12
 
      numFragmentTypes=0
@@ -15,4 +14,6 @@ defaultproperties
 
      CollisionRadius=2.570000
      CollisionHeight=0.620000
+
+     bUnlit=false
 }

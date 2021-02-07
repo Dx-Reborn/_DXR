@@ -53,7 +53,8 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
      s = Spawn(class'ShellCasing10mm',, '', K.Origin);
      if (S != None)
      {
-         s.SetDrawScale(0.1);
+         s.SetRotation(RotRand(false));
+         s.SetDrawScale(ShellCasingDrawScale);
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }
@@ -138,6 +139,8 @@ function Sound GetDownSound()
 
 defaultproperties
 {
+     ShellCasingDrawScale=0.09
+
      AttachmentClass=class'WeaponStealthPistolAtt'
      PickupViewMesh=Mesh'DeusExItems.StealthPistolPickup'
      FirstPersonViewMesh=Mesh'DeusExItems.StealthPistol'

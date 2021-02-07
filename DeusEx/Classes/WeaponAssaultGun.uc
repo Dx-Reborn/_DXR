@@ -116,7 +116,8 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
      s = Spawn(class'ShellCasing',, '', K.Origin);
      if (S != None)
      {
-         s.SetDrawScale(0.1);
+         s.SetRotation(RotRand(false));
+         s.SetDrawScale(ShellCasingDrawScale);
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }
@@ -222,6 +223,7 @@ function Sound GetDownSound()
 
 defaultproperties
 {
+     ShellCasingDrawScale=0.8
      ShootAnim="Shoot"
 
      AttachmentClass=class'WeaponAssaultGunAtt'

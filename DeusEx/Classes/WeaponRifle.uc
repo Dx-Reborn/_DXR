@@ -16,7 +16,7 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
      if (S != None)
      {
          s.SetRotation(rot(0,0,32768));
-         s.SetDrawScale3D(vect(1, 2, 1));
+         s.SetDrawScale3D(vect(2.0, 2.0, 2.0));
          s.Velocity = (FRand()*20+75) * Y + (10-FRand()*20) * X;
          s.Velocity.Z += 200;
      }

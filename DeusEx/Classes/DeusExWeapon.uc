@@ -54,6 +54,8 @@ enum ELockMode
     LOCK_Locked
 };
 
+var() float ShellCasingDrawScale;
+
 var bool                bReadyToFire;           // true if our bullets are loaded, etc.
 var() int               LowAmmoWaterMark;       // critical low ammo count
 var travel int          ClipCount;              // number of bullets remaining in current clip
@@ -2584,5 +2586,6 @@ defaultproperties
     ShakeOffsetTime=2.000000
 
     TransientSoundVolume=1.00
+    ShellCasingDrawScale=0.2
 }
 
