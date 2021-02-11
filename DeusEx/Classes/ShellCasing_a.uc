@@ -3,7 +3,7 @@
 // Для дробовиков
 // Примечание: класс переименован (было ShellCasing2)
 //=============================================================================
-class ShellCasing_a extends DeusExFragment;
+class ShellCasing_a extends ShellCasings;
 
 var EM_ShellTrail trail;
 

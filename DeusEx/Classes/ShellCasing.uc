@@ -1,7 +1,7 @@
 //=============================================================================
 // ShellCasing.
 //=============================================================================
-class ShellCasing extends DeusExFragment;
+class ShellCasing extends ShellCasings;
 
 var EM_SmallShellTrail trail;
 

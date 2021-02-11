@@ -1,4 +1,8 @@
-class ShellCasing10mm extends DeusExFragment;
+/*
+
+*/
+
+class ShellCasing10mm extends ShellCasings;
 
 defaultproperties
 {
