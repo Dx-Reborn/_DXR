@@ -15,8 +15,11 @@ defaultproperties
      MaxAmmo=96
      ItemName="12 Gauge Sabot Shells"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoSabot'
-     Skins[0]=Texture'DeusExItems.Skins.AmmoShellTex2'
-     Mesh=Mesh'DeusExItems.AmmoShell'
+//     Skins[0]=Texture'DeusExItems.Skins.AmmoShellTex2'
+     Skins[0]=Shader'DXR_Ammo.Skins.AmmoSabot_HD_SH'
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoShell_HD'
+     DrawType=DT_StaticMesh
+//     Mesh=Mesh'DeusExItems.AmmoShell'
      CollisionRadius=9.300000
      CollisionHeight=10.210000
      bCollideActors=True
