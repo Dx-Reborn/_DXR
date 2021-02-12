@@ -15,9 +15,12 @@ defaultproperties
      MaxAmmo=32
      ItemName="20mm HE Ammo"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmo20mm'
-     Mesh=Mesh'DeusExItems.Ammo20mm'
+//     Mesh=Mesh'DeusExItems.Ammo20mm'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.Ammo20mm_HD'
      CollisionRadius=9.500000
      CollisionHeight=4.750000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.MetalHit1'
 }
+
