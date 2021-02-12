@@ -15,7 +15,9 @@ defaultproperties
      MaxAmmo=96
      ItemName="12 Gauge Buckshot Shells"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoShells'
-     Mesh=Mesh'DeusExItems.AmmoShell'
+//     Mesh=Mesh'DeusExItems.AmmoShell'
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoShell_HD'
+     DrawType=DT_StaticMesh
      CollisionRadius=9.300000
      CollisionHeight=10.210000
      bCollideActors=True
