@@ -14,9 +14,13 @@ defaultproperties
      MaxAmmo=84
      ItemName="Plasma Clip"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoPlasma'
-     Mesh=Mesh'DeusExItems.AmmoPlasma'
+//     Mesh=Mesh'DeusExItems.AmmoPlasma'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoPlasma_HD'
      CollisionRadius=4.300000
      CollisionHeight=8.440000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
 }
+
+

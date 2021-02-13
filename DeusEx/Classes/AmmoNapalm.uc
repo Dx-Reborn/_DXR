@@ -15,9 +15,13 @@ defaultproperties
      MaxAmmo=400
      ItemName="Napalm Canister"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoNapalm'
-     Mesh=Mesh'DeusExItems.AmmoNapalm'
+//     Mesh=Mesh'DeusExItems.AmmoNapalm'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoNapalm_HD'
      CollisionRadius=3.130000
      CollisionHeight=11.480000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.GlassDrop'
 }
+
+

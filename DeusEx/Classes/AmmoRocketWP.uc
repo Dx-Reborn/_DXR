@@ -12,5 +12,6 @@ defaultproperties
      beltDescription="WP ROCKET"
      ItemName="WP Rockets"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoWPRockets'
-     Skins[0]=Texture'DeusExItems.Skins.GEPAmmoTex2'
+     Skins[0]=Texture'DXR_Ammo.Skins.AmmoRocket_WP_HD_Tex'
+//     Skins[0]=Texture'DeusExItems.Skins.GEPAmmoTex2'
 }

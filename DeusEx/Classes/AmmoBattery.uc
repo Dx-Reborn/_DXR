@@ -15,9 +15,13 @@ defaultproperties
      MaxAmmo=40
      ItemName="Prod Charger"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoProd'
-     Mesh=Mesh'DeusExItems.AmmoProd'
+//     Mesh=Mesh'DeusExItems.AmmoProd'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoBattery_HD'
      CollisionRadius=2.100000
      CollisionHeight=5.600000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
 }
+
+

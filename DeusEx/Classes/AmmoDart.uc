@@ -15,9 +15,12 @@ defaultproperties
      MaxAmmo=60
      ItemName="Darts"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoDartsNormal'
-     Mesh=Mesh'DeusExItems.AmmoDart'
+//     Mesh=Mesh'DeusExItems.AmmoDart'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoDartSteel_HD'
      CollisionRadius=8.500000
      CollisionHeight=2.000000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.PaperHit2'
 }
+

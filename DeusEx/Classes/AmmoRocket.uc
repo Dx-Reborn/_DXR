@@ -15,7 +15,9 @@ defaultproperties
      MaxAmmo=20
      ItemName="Rockets"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoRockets'
-     Mesh=Mesh'DeusExItems.GEPAmmo'
+//     Mesh=Mesh'DeusExItems.GEPAmmo'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoRocket_HD'
      CollisionRadius=18.000000
      CollisionHeight=7.800000
      bCollideActors=True
