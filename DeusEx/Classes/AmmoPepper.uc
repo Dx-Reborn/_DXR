@@ -14,9 +14,14 @@ defaultproperties
      MaxAmmo=400
      ItemName="Pepper Cartridge"
      Icon=Texture'DeusExUI.Icons.BeltIconAmmoPepper'
-     Mesh=Mesh'DeusExItems.AmmoPepper'
+//     Mesh=Mesh'DeusExItems.AmmoPepper'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Ammo.AmmoPepper_HD'
      CollisionRadius=1.440000
      CollisionHeight=3.260000
      bCollideActors=True
      LandSound=Sound'DeusExSounds.Generic.GlassHit1'
 }
+
+
+
