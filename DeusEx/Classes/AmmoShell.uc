@@ -19,6 +19,8 @@ defaultproperties
      StaticMesh=StaticMesh'DXR_Ammo.AmmoShell_HD'
      DrawType=DT_StaticMesh
      CollisionRadius=9.300000
-     CollisionHeight=10.210000
+//     CollisionHeight=10.210000
+     CollisionHeight=6.50
      bCollideActors=True
+     DrawScale=0.66
 }

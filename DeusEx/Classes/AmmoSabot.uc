@@ -21,6 +21,8 @@ defaultproperties
      DrawType=DT_StaticMesh
 //     Mesh=Mesh'DeusExItems.AmmoShell'
      CollisionRadius=9.300000
-     CollisionHeight=10.210000
+//     CollisionHeight=10.210000
+     CollisionHeight=6.50
      bCollideActors=True
+     DrawScale=0.66
 }
