@@ -31,8 +31,11 @@ defaultproperties
      FragType=Class'DeusEx.WoodFragment'
      ItemName="Combat Supply Crate"
      contents=Class'DeusEx.Ammo10mm'
-     skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex3'
-     mesh=mesh'DeusExDeco.CrateBreakableMed'
+//     skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex3'
+//     mesh=mesh'DeusExDeco.CrateBreakableMed'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_Crates.Scripted.CrateBreakableMed_HD'
+     Skins[0]=Shader'DXR_Crates.Wood.BreakableMedCombat_SH'
      CollisionRadius=34.000000
      CollisionHeight=24.000000
      Mass=50.000000
