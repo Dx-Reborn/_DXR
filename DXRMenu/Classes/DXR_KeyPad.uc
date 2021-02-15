@@ -1,10 +1,14 @@
-/* Адаптация из оригинала */
+/* 
+   Keypad interface
+*/
 
 class DXR_KeyPad extends DxWindowTemplate;
 
 var bool bFirstFrameDone;
 
-var HUDKeypadButton btnKeys[12];
+const AMOUNT_OF_KEYPAD_KEYS = 12;
+
+var HUDKeypadButton btnKeys[AMOUNT_OF_KEYPAD_KEYS];
 var GUIEditBox winText;
 var GUIImage keyPadFrame;
 var string inputCode;
@@ -42,30 +46,30 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
 function CreateKControls()
 {
-  winText = new(none) class'GUIEditBox';
-  winText.FontScale = FNS_Small;
-  winText.bBoundToParent = true;
-  winText.bReadOnly = true;
-  winText.winHeight = 15;
-  winText.winWidth = 75;
-  winText.winLeft = 17;
-  winText.winTop = 19;
-  winText.StyleName = "STY_DXR_EditBox_NoBG";
-  AppendComponent(winText, true);
+    winText = new(none) class'GUIEditBox';
+    winText.FontScale = FNS_Small;
+    winText.bBoundToParent = true;
+    winText.bReadOnly = true;
+    winText.winHeight = 15;
+    winText.winWidth = 75;
+    winText.winLeft = 17;
+    winText.winTop = 19;
+    winText.StyleName = "STY_DXR_EditBox_NoBG";
+    AppendComponent(winText, true);
 
-  keyPadFrame = new(none) class'GUIImage';
-  keyPadFrame.bBoundToParent = true;
-  keyPadFrame.image = Texture'DeusExUI.UserInterface.HUDKeypadBorder';
-  keyPadFrame.ImageRenderStyle = MSTY_Translucent;
-  keyPadFrame.WinHeight = 166;
-  keyPadFrame.WinWidth = 109;
-  keyPadFrame.WinLeft = 0;
-  keyPadFrame.WinTop = 0;
-  AppendComponent(keyPadFrame, true);
+    keyPadFrame = new(none) class'GUIImage';
+    keyPadFrame.bBoundToParent = true;
+    keyPadFrame.image = Texture'DeusExUI.UserInterface.HUDKeypadBorder';
+    keyPadFrame.ImageRenderStyle = MSTY_Translucent;
+    keyPadFrame.WinHeight = 166;
+    keyPadFrame.WinWidth = 109;
+    keyPadFrame.WinLeft = 0;
+    keyPadFrame.WinTop = 0;
+    AppendComponent(keyPadFrame, true);
 
-  inputCode="";
+    inputCode="";
 
-  CreateKeypadButtons();
+    CreateKeypadButtons();
 }
 
 function CreateKeypadButtons()
@@ -114,8 +118,8 @@ event free()
 
 function bool AlignFrame(Canvas C)
 {
-  if (bVisible)
-  winleft = (controller.resX/2) - (MaxPageWidth/2);
+    if (bVisible)
+        winleft = (controller.resX/2) - (MaxPageWidth/2);
 
   winTop = 0.400;
 
@@ -144,30 +148,33 @@ function ApplyTheme()
   {
      if ((controls[i].IsA('GUIImage')) && (controls[i].tag == 75))
      {
-       if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+         if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 0) // STY_Normal
+         {
+             GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Normal;
+             GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+             GUIImage(controls[i]).ImageColor.A = 255;
+         }
+       else
+         if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
+         {
+             GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Translucent;
+             GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+             GUIImage(controls[i]).ImageColor.A = 255;
+         }
+       else 
+          if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
           {
-           GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Normal;
-           GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
-           GUIImage(controls[i]).ImageColor.A = 255;
+              GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Additive;
+              GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+              GUIImage(controls[i]).ImageColor.A = 255;
           }
-          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 1)
-               {
-                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Translucent;
-                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
-                GUIImage(controls[i]).ImageColor.A = 255;
-               }
-          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 2)
-               {
-                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Additive;
-                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
-                GUIImage(controls[i]).ImageColor.A = 255;
-               }
-          else if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
-               {
-                GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Alpha;
-                GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
-                GUIImage(controls[i]).ImageColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
-               }
+       else 
+          if (class'DXR_Menu'.static.GetBackgoundMode(gl.MenuThemeIndex) == 3)
+          {
+              GUIImage(controls[i]).ImageRenderStyle = eMenuRenderStyle.MSTY_Alpha;
+              GUIImage(controls[i]).ImageColor = class'DXR_Menu'.static.GetPlayerInterfaceBG(gl.MenuThemeIndex);
+              GUIImage(controls[i]).ImageColor.A = class'DXR_Menu'.static.GetAlpha(gl.MenuThemeIndex);
+          }
      }
   }
 }
@@ -180,7 +187,7 @@ function bool InternalOnClick(GUIComponent Sender)
 
     bHandled = false;
 
-    for (i=0; i<12; i++)
+    for (i=0; i<AMOUNT_OF_KEYPAD_KEYS; i++)
     {
         if (Sender==btnKeys[i])
         {
@@ -474,7 +481,7 @@ function Timer()
 
     // if we entered a valid code, get out
     if (inputCode == keypadOwner.validCode)
-      Controller.CloseMenu();
+        Controller.CloseMenu();
     else
     {
         inputCode = "";
