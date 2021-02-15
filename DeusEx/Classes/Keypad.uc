@@ -4,12 +4,16 @@
 class Keypad extends HackableDevices
     abstract;
 
+const MAX_STATE_MATERIALS = 4;
+const LIGHTING_THRESHOLD = 0.1;
+
 var() string validCode;
 var() sound successSound;
 var() sound failureSound;
 var() name FailEvent;
 var() bool bToggleLock;     // if True, toggle the lock state instead of triggering
-var material StateLamps[4]; // Лампочки -- серый при бездействии, желтый во время ввода, красный при ошибке, зеленый если верный код.
+var material StateLamps[MAX_STATE_MATERIALS]; // Лампочки -- серый при бездействии, желтый во время ввода, красный при ошибке, зеленый если верный код.
+
 
 event PostBeginPlay()
 {
@@ -38,6 +42,23 @@ function HackAction(Actor Hacker, bool bHacked)
         SetLampColor(1);
     }
 }
+
+event Tick(float dt)
+{
+   Super.Tick(dt);
+
+   if ((DrawType == DT_StaticMesh) && (StaticMesh != None))
+   {
+       if ((Skins.Length > 0) && (Skins[0].IsA('Shader')))
+       {
+          if (class'DeusExPawn'.static.AiVisibility(self, false) < LIGHTING_THRESHOLD)
+              Shader(Skins[0]).Specular = None;
+          else
+              Shader(Skins[0]).Specular = TexEnvMap'DXR_CubeMaps.Shaders.BlurryTexEnvMap4';
+       }
+   }
+}
+
 
 
 defaultproperties
