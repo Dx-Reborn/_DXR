@@ -11,6 +11,11 @@ var() name FailEvent;
 var() bool bToggleLock;     // if True, toggle the lock state instead of triggering
 var material StateLamps[4]; // Лампочки -- серый при бездействии, желтый во время ввода, красный при ошибке, зеленый если верный код.
 
+event PostBeginPlay()
+{
+   Super.PostBeginPlay();
+   SetLampColor(0);
+}
 
 function SetLampColor(int aColor)
 {
@@ -30,6 +35,7 @@ function HackAction(Actor Hacker, bool bHacked)
     {
         //DeusExPlayerController(Level.GetLocalPlayerController()).ClientOpenMenu("DXRMenu.DXR_KeyPad");
         DeusExPlayerController(Player.Controller).ClientOpenMenu("DXRMenu.DXR_KeyPad");
+        SetLampColor(1);
     }
 }
 
