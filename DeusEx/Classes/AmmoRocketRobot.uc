@@ -1,8 +1,8 @@
 //=============================================================================
 // AmmoRocketRobot.
 //=============================================================================
-class AmmoRocketRobot extends DeusExAmmo;
-
+class AmmoRocketRobot extends DeusExAmmo
+                              NotPlaceable;
 defaultproperties
 {
      AmmoAmount=20

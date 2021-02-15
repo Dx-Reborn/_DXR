@@ -1,7 +1,8 @@
 //=============================================================================
 // AmmoNone.
 //=============================================================================
-class AmmoNone extends DeusExAmmo;
+class AmmoNone extends DeusExAmmo
+                       NotPlaceable;
 
 // special ammo type for hand to hand weapons
 

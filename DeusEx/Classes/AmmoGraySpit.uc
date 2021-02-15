@@ -1,7 +1,8 @@
 //=============================================================================
 // AmmoGraySpit.
 //=============================================================================
-class AmmoGraySpit extends DeusExAmmo;
+class AmmoGraySpit extends DeusExAmmo
+                           NotPlaceable;
 
 defaultproperties
 {

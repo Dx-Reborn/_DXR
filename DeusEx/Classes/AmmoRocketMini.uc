@@ -1,7 +1,8 @@
 //=============================================================================
 // AmmoRocketMini.
 //=============================================================================
-class AmmoRocketMini extends DeusExAmmo;
+class AmmoRocketMini extends DeusExAmmo
+                           NotPlaceable;
 
 defaultproperties
 {
