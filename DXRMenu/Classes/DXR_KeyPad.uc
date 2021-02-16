@@ -106,14 +106,17 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 {
     super.Closed(Sender, bCancelled);
     DeusExHud(PlayerOwner().myHUD).bDrawFrobBox = true;
+    KeyPadOwner.bStateResetTimerEnabled = true;
     KeyPadOwner = none;
 }
 
 event free()
 {
-    super.free();
     DeusExHud(PlayerOwner().myHUD).bDrawFrobBox = true;
+    KeyPadOwner.bStateResetTimerEnabled = true;
     KeyPadOwner = none;
+
+    super.free();
 }
 
 function bool AlignFrame(Canvas C)
@@ -463,7 +466,7 @@ function ValidateCode()
     {
         // Trigger failure event
         if (keypadOwner.FailEvent != '')
-            foreach player.AllActors(class 'Actor', A, keypadOwner.FailEvent)
+            foreach player.AllActors(class'Actor', A, keypadOwner.FailEvent)
                 A.Trigger(keypadOwner, player);
 
         SetRedColor(); // Неудачный ввод, красная лампочка

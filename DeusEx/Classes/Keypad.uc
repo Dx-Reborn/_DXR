@@ -6,6 +6,7 @@ class Keypad extends HackableDevices
 
 const MAX_STATE_MATERIALS = 4;
 const LIGHTING_THRESHOLD = 0.1;
+const RESET_LAMP_DELAY = 2.0;
 
 var() string validCode;
 var() sound successSound;
@@ -13,6 +14,9 @@ var() sound failureSound;
 var() name FailEvent;
 var() bool bToggleLock;     // if True, toggle the lock state instead of triggering
 var material StateLamps[MAX_STATE_MATERIALS]; // Лампочки -- серый при бездействии, желтый во время ввода, красный при ошибке, зеленый если верный код.
+
+var float StateResetTimer;
+var bool bStateResetTimerEnabled;
 
 
 event PostBeginPlay()
@@ -39,6 +43,7 @@ function HackAction(Actor Hacker, bool bHacked)
     {
         //DeusExPlayerController(Level.GetLocalPlayerController()).ClientOpenMenu("DXRMenu.DXR_KeyPad");
         DeusExPlayerController(Player.Controller).ClientOpenMenu("DXRMenu.DXR_KeyPad");
+        bStateResetTimerEnabled = false;
         SetLampColor(1);
     }
 }
@@ -55,6 +60,16 @@ event Tick(float dt)
               Shader(Skins[0]).Specular = None;
           else
               Shader(Skins[0]).Specular = TexEnvMap'DXR_CubeMaps.Shaders.BlurryTexEnvMap4';
+       }
+
+       if (bStateResetTimerEnabled == true)
+       {
+           StateResetTimer += dt;
+           if (StateResetTimer > RESET_LAMP_DELAY)
+           {
+               StateResetTimer  = 0;
+               SetLampColor(0);
+           }
        }
    }
 }
