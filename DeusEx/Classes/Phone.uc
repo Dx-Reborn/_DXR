@@ -122,9 +122,12 @@ defaultproperties
      AnswerSound=AS_Random
      ringFreq=0.010000
      ItemName="Telephone"
-     Mesh=LodMesh'DeusExDeco.Phone'
+//     Mesh=LodMesh'DeusExDeco.Phone'
      CollisionRadius=11.870000
      CollisionHeight=3.780000
      Mass=20.000000
      Buoyancy=15.000000
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.Phone_HD'
 }
+
