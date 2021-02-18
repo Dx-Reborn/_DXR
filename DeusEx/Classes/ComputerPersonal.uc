@@ -10,8 +10,10 @@ defaultproperties
      UserList(0)=(userName="USER",Password="USER")
      BindName="ComputerPersonal"
      ItemName="Personal Computer Terminal"
-     mesh=mesh'DeusExDeco.ComputerPersonal'
+//     mesh=mesh'DeusExDeco.ComputerPersonal'
      CollisionRadius=36.000000
      CollisionHeight=7.400000
-     Skins(0)=Shader'DeusExDeco_EX.Shader.ComputerPersonal_SH'
+//     Skins(0)=Shader'DeusExDeco_EX.Shader.ComputerPersonal_SH'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.PC_Personal_HD'
 }
