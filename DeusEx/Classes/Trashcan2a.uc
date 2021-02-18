@@ -12,5 +12,8 @@ defaultproperties
      CollisionHeight=24.049999
      Mass=40.000000
      Buoyancy=50.000000
-     Skins[0]=Texture'DeusExDeco.Skins.Trashcan2Tex1'
+//     Skins[0]=Texture'DeusExDeco.Skins.Trashcan2Tex1'
+     Skins[0]=Shader'DXR_TrashCans.Metal.Trashcan2a_HD_SH'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DXR_TrashCans.Trashcan2a_HD'
 }
