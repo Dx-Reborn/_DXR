@@ -3,6 +3,8 @@
 //=============================================================================
 class SecurityCamera extends HackableDevices;
 
+#exec obj load file=DeusExStaticMeshes0.usx
+
 var() bool bSwing;
 var() int swingAngle;
 var() float swingPeriod;
@@ -28,9 +30,7 @@ var vector playerLocation;      // last seen position of player
 var localized string msgActivated;
 var localized string msgDeactivated;
 
-// ------------------------------------------------------------------------------------
-// Network replication
-// ------------------------------------------------------------------------------------
+var int LightSkinNum; // DXR: Instead of hardcoded Skins[value]
 
 function Trigger(Actor Other, Pawn Instigator)
 {
@@ -46,7 +46,7 @@ function Trigger(Actor Other, Pawn Instigator)
         bActive = True;
         LightType = LT_Steady;
         LightHue = 80;
-        Skins[2] = Texture'GreenLightTex';
+        Skins[LightSkinNum] = Texture'GreenLightTex';
         AmbientSound = sound'CameraHum';
     }
 }
@@ -93,7 +93,7 @@ function TriggerEventX(bool bTrigger)
         SoundVolume = 128;
         SoundRadius = 64;
         LightHue = 0;
-        Skins[2] = Texture'RedLightTex';
+        Skins[LightSkinNum] = Texture'RedLightTex';
         class'EventManager'.static.AIStartEvent(self, 'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 
         // make sure we can't go into stasis while we're alarming
@@ -105,11 +105,11 @@ function TriggerEventX(bool bTrigger)
         SoundRadius = 48;
         SoundVolume = 192;
         LightHue = 80;
-        Skins[2] = Texture'GreenLightTex';
+        Skins[LightSkinNum] = Texture'GreenLightTex';
         class'EventManager'.static.AIEndEvent(self, 'Alarm', EAITYPE_Audio);
 
         // reset our stasis info
-        bStasis = Default.bStasis;
+        bStasis = default.bStasis;
     }
 }
 
@@ -123,7 +123,7 @@ event Tick(float deltaTime)
     // if this camera is not active, get out
     if (!bActive)
     {
-        Skins[2] = Texture'BlackMaskTex';
+        Skins[LightSkinNum] = ConstantColor'DeusExStaticMeshes0.Plastic.KP_Gray';  //Texture'BlackMaskTex'; 
         //Fuck you, light type -DDL
         LightType = LT_None;
         return;
@@ -147,7 +147,7 @@ event Tick(float deltaTime)
             confusionTimer = 0;
             confusionDuration = Default.confusionDuration;
             LightHue = 80;
-            Skins[2] = Texture'GreenLightTex';
+            Skins[LightSkinNum] = Texture'GreenLightTex';
             SoundPitch = 64;
             DesiredRotation = origRot;
         }
@@ -179,13 +179,13 @@ event Tick(float deltaTime)
             if (triggerTimer % 0.5 > 0.4)
             {
                 LightHue = 0;
-                Skins[2] = Texture'RedLightTex';
+                Skins[LightSkinNum] = Texture'RedLightTex';
                 PlaySound(Sound'Beep6',,,, 1280);
             }
             else
             {
                 LightHue = 80;
-                Skins[2] = Texture'GreenLightTex';
+                Skins[LightSkinNum] = Texture'GreenLightTex';
             }
         }
 
@@ -204,7 +204,7 @@ event Tick(float deltaTime)
     }
 
     swingTimer += deltaTime;
-    Skins[2] = Texture'GreenLightTex';
+    Skins[LightSkinNum] = Texture'GreenLightTex';
 
     // swing back and forth if all is well
     if (bSwing && !bTrackPlayer)
@@ -315,7 +315,9 @@ defaultproperties
      ItemName="Surveillance Camera"
      Physics=PHYS_Rotating
      AmbientSound=Sound'DeusExSounds.Generic.CameraHum'
-     mesh=mesh'DeusExDeco.SecurityCamera'
+//     mesh=mesh'DeusExDeco.SecurityCamera'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.SecurityCamera_HD'
      SoundRadius=48
      SoundVolume=192
      CollisionRadius=10.720000
@@ -329,10 +331,17 @@ defaultproperties
      Mass=20.000000
      Buoyancy=5.000000
      RotationRate=(Pitch=65535,Yaw=65535)
-     Skins[0]=Texture'DeusExDeco.Skins.SecurityCameraTex1'
-     Skins[1]=Texture'DeusExDeco.Skins.SecurityCameraTex1'
-     Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'
-     Skins[3]=TexEnvMap'Effects_EX.Unlit.Camera_Shine'
+//     Skins[0]=Texture'DeusExDeco.Skins.SecurityCameraTex1'
+//     Skins[1]=Texture'DeusExDeco.Skins.SecurityCameraTex1'
+//     Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'
+//     Skins[3]=TexEnvMap'Effects_EX.Unlit.Camera_Shine'
+     LightSkinNum=1
+     Skins[0]=Shader'DeusExStaticMeshes0.Metal.SecurityCamera_HD_SH'
+     Skins[1]=Shader'DeusExStaticMeshes0.Plastic.KP_Green_SH'
+     Skins[2]=Shader'DXR_CubeMaps.Shaders.ShinyDarkSurface3'
+
      bDynamicLight=true
      bShouldBeAlwaysUpdated=true
 }
+
+
