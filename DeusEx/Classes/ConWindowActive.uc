@@ -7,7 +7,6 @@ class ConWindowActive extends floatingwindow
                               transient;
 
 const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
-const SINGLE_ITEM_DELAY = 1.0f;
 const AMOUNT_OF_CHOICES = 10;
 
 enum EMoveModes
@@ -23,14 +22,13 @@ struct sReceivedItems
    var() Inventory anItem;
    var() int anItemCount;
 };
-
 var array<sReceivedItems> ReceivedItems;
 
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 
 var int numChoices;                     // Number of choice buttons
 var() transient ConChoiceWindow conChoices[AMOUNT_OF_CHOICES];   // Maximum of ten buttons // DXR: Transient for safety
-var transient ConPlay conplay; // DXR: Same 
+var transient ConPlay conplay; // DXR: Transient for safety
 var DeusExPlayer player;
 var bool bRestrictInput;
 var bool bTickEnabled;
@@ -48,7 +46,7 @@ var float aTime;
 var localized string ChoiceBeginningChar, strPlayerCredits;
 
 var() automated GUILabel SpeakerName;
-var() automated floatingimage i_FrameBG2;
+var() floatingimage i_FrameBG2;
 var() automated GUIScrollTextBox winSpeech;
 
 function DisplayName(string text)
@@ -116,6 +114,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
         i_FrameBG2.bBoundToParent = true;
         i_FrameBG2.DropShadow = none;
         i_FrameBG2.ImageColor.A=255;
+        i_FrameBG2.bFocusOnWatch = true;
         AppendComponent(i_FrameBG2, true);
 }
 
@@ -154,7 +153,6 @@ function InternalOnClose(optional bool bCanceled)
 {
     RemoveChoices();
     Super.OnClose(bCanceled);
-//    RemoveChoices();
 }
 
 
@@ -203,7 +201,7 @@ event Opened(GUIComponent Sender)                   // Called when the Menu Owne
 {
    Super.Opened(Sender);
 
-   conStartTime = DeusExPlayer(playerOwner().pawn).level.TimeSeconds;
+   conStartTime = playerOwner().level.TimeSeconds;
    DeusExHud((PlayerOwner()).myHUD).cubemapmode = true;
 
    i_FrameBG.ImageColor.A = 0;
@@ -244,6 +242,10 @@ function AddButton(ConChoiceWindow newButton)
     conChoices[numChoices++] = newButton;
 
     alignChoices();
+
+    PlayerOwner().ConsoleCommand("SETMOUSE "$ConChoices[0].ActualLeft() + (ConChoices[0].ActualWidth() / 2)
+                                                                                @ ConChoices[0].ActualTop());
+
 }
 
 function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus)
@@ -258,13 +260,14 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     newButton.WinTop = 0.0;
     newButton.WinLeft = 0.0;
     newButton.Hint = "";
-    newButton.RenderWeight = 0.4;
+    newButton.RenderWeight = 0.99;
     newButton.TabOrder = Controls.length + 1;
     newButton.bBoundToParent = true;
     newButton.OnClick = InternalOnClick;
     AppendComponent(newButton, true);
 
     newButton.SetTextColors(colTextNormal, colTextFocus, colTextFocus, colTextFocus);
+    newButton.SetFocus(None);
 
     return newButton;
 }
@@ -435,8 +438,13 @@ function RenderExtraStuff(canvas u)
 
     if ((DeusExPlayer(playerOwner().pawn) != None) && (bRenderPlayerCredits))
     {
+        u.Style = eMenuRenderStyle.MSTY_Alpha;
+        u.SetDrawColor(1,1,1,128); // RGB Alpha
+        u.SetPos(i_FrameBG2.ActualLeft(),i_FrameBG2.ActualTop() + i_FrameBG2.ActualHeight());
+        u.DrawTileStretched(texture'Engine.BlackTexture', 200, 20);
+
         u.SetDrawColor(128,255,128,255); // RGB Alpha
-        u.SetPos(ActualWidth() - 200,ActualHeight() - 200);
+        u.SetPos(4 + i_FrameBG2.ActualLeft(),i_FrameBG2.ActualTop() + i_FrameBG2.ActualHeight());
         u.DrawText(strPlayerCredits$DeusExPlayer(playerOwner().pawn).Credits);
     }
 }
@@ -461,7 +469,7 @@ function bool InternalOnClick(GUIComponent Sender)
         return true;
 
     // Restrict input again until we've finished processing this choice
-    bRestrictInput = True;
+    bRestrictInput = true;
 
     // Take a look to make sure it's one of our buttons before continuing.
     for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++)
