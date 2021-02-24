@@ -9,6 +9,7 @@ class DeusExDecoration extends DeusExDecorationBase;
 #exec OBJ LOAD FILE=Effects_EX // шейдеры
 #exec OBJ LOAD FILE=DeusExSounds
 #exec obj load file=DeusExStaticMeshes.usx
+#exec obj load file=DeusExStaticMeshes0.usx
 #exec obj load file=DeusExDeco_EX.utx // двухсторонние шейдеры
 
 

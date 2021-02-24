@@ -3,8 +3,6 @@
 //=============================================================================
 class SecurityCamera extends HackableDevices;
 
-#exec obj load file=DeusExStaticMeshes0.usx
-
 var() bool bSwing;
 var() int swingAngle;
 var() float swingPeriod;

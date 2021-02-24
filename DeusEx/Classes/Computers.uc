@@ -159,8 +159,11 @@ Begin:
     if (!bOn)
     {
         bAnimating = True;
-        PlayAnim('Activate',3.0);
-        FinishAnim();
+        if (DrawType==DT_Mesh && HasAnim('Activate')) // DXR: Case for alternative models, since these models are StaticMeshes and cannot have any animations.
+        {
+            PlayAnim('Activate',3.0);
+            FinishAnim();
+        }
         bOn = True;
         bAnimating = False;
         ChangePlayerVisibility(False);
@@ -180,8 +183,11 @@ Begin:
     {
         ChangePlayerVisibility(True);
         bAnimating = True;
-        PlayAnim('Deactivate');
-        FinishAnim();
+        if (DrawType==DT_Mesh && HasAnim('Deactivate')) // DXR: Case for alternative models, since these models are StaticMeshes and cannot have any animations.
+        {
+            PlayAnim('Deactivate');
+            FinishAnim();
+        }
         bOn = False;
         bAnimating = False;
         if (bLockedOut)
