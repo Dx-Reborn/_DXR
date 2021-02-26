@@ -250,10 +250,11 @@ exec function TestID(int zapros)
 
 exec function debugcon()
 {
-/*    local HudOverlay_ConWindowThird conwin;
+    local ConWindowActive conWinThird;
 
-    conwin = Spawn(class'HudOverlay_ConWindowThird',self);
-    DeusExHUD(level.GetLocalPlayerController().myHUD).AddHudOverlay(conwin);*/
+    conWinThird = ConWindowActive(DeusExPlayerController(Controller).OpenMenuEx("DeusEx.ConWindowActive"));
+    log(conWinThird);
+    ConsoleCommand("EditObj "$conWinThird);
 }
 
 exec function invokeCon()

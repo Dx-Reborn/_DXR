@@ -832,13 +832,14 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         {
             DeusExPlayer(event.toActor).AddImage(DataVaultImage(invItemTo));
                 
-//          if (conWinThird != None)
-//          {
+          if (conWinThird != None)
+          {
+               conWinThird.ShowReceivedItem(invItemTo, 1);
 //         conWinThird.recentItemTime = 3.0;
 //         temp = conWinThird.recentItems.Length;
 //         conWinThird.recentItems.Length = temp + 1;
 //         conWinThird.recentItems[temp] = inventory[x].class;
-//          }
+          }
 //              conWinThird.ShowReceivedItem(invItemTo, 1);
 //          else
 //              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, 1);
@@ -850,8 +851,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         // Special case for Credit Chits also
         else if ((invItemTo.IsA('Credits')) && (event.toActor.IsA('DeusExPlayer')))
         {
-//          if (conWinThird != None)
-//              conWinThird.ShowReceivedItem(invItemTo, Credits(invItemTo).numCredits);
+          if (conWinThird != None)
+              conWinThird.ShowReceivedItem(invItemTo, Credits(invItemTo).numCredits);
 //          else
 //              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, Credits(invItemTo).numCredits);
 
@@ -888,8 +889,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     // Show the player that he/she/it just received something!
     if ((DeusExPlayer(event.toActor) != None) && (conWinThird != None) && (invItemTo != None))
     {
-//      if (conWinThird != None)
-//          conWinThird.ShowReceivedItem(invItemTo, itemsTransferred);
+      if (conWinThird != None)
+          conWinThird.ShowReceivedItem(invItemTo, itemsTransferred);
 //      else
 //          DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, itemsTransferred);
     }

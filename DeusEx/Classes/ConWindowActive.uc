@@ -1,5 +1,5 @@
 //
-// Окно для вариантов ответа (и интерактивных диалогов)
+// Окно для интерактивных (и не только) диалогов и вариантов ответа.
 // ConWinThird
 //
 
@@ -22,9 +22,10 @@ struct sReceivedItems
    var() Inventory anItem;
    var() int anItemCount;
 };
-var array<sReceivedItems> ReceivedItems;
+var() array<sReceivedItems> ReceivedItems; // DXR: For easier testing
 
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
+var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 var int numChoices;                     // Number of choice buttons
 var() transient ConChoiceWindow conChoices[AMOUNT_OF_CHOICES];   // Maximum of ten buttons // DXR: Transient for safety
@@ -36,6 +37,7 @@ var float fadealpha;
 
 var bool bCanBeClosed;
 var bool bRenderPlayerCredits;
+var bool bRenderReceivedItems;
 
 var string speech;
 var bool bForcePlay;
@@ -48,6 +50,54 @@ var localized string ChoiceBeginningChar, strPlayerCredits;
 var() automated GUILabel SpeakerName;
 var() floatingimage i_FrameBG2;
 var() automated GUIScrollTextBox winSpeech;
+
+var transient DxCanvas dxc;
+
+function InitComponent(GUIController MyController, GUIComponent MyOwner)
+{
+    local DeusExHUD h;
+
+    Super.InitComponent(MyController, MyOwner);
+
+    dxc = DeusExHUD(PlayerOwner().myHUD).dxc;
+    if (dxc == None)
+        dxc = new(outer) class'DxCanvas';
+
+    // DXR: Get colors...
+    h = DeusExHUD(PlayerOwner().myHUD);
+    InfoLinkBG = h.InfoLinkBG;
+    InfoLinkText = h.InfoLinkText;
+    InfoLinkTitles = h.InfoLinkTitles;
+    InfoLinkFrame = h.InfoLinkFrame;
+
+    DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
+
+    t_WindowTitle.DockAlign = PGA_Top;
+    t_WindowTitle.winWidth = 0.0;
+
+    i_FrameBG.Image = texture'Engine.BlackTexture';
+    i_FrameBG.ImageRenderStyle=MSTY_Alpha;
+    i_FrameBG.WinTop=0.8;
+    i_FrameBG.bStandardized=true;
+    i_FrameBG.StandardHeight=0.2;
+    i_FrameBG.ImageColor.A=255;
+
+    if (i_FrameBG2 == none)
+        i_FrameBG2 = new(none) class'floatingimage';
+        i_FrameBG2.Image = texture'Engine.BlackTexture';
+        i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
+        i_FrameBG2.WinTop = 0.0;
+        i_FrameBG2.WinLeft = 0.0;
+        i_FrameBG2.WinWidth = 1.0;
+        i_FrameBG2.bStandardized=true;
+        i_FrameBG2.StandardHeight = 0.2;
+        i_FrameBG2.bBoundToParent = true;
+        i_FrameBG2.DropShadow = none;
+        i_FrameBG2.ImageColor.A=255;
+        i_FrameBG2.bFocusOnWatch = true;
+        AppendComponent(i_FrameBG2, true);
+}
+
 
 function DisplayName(string text)
 {
@@ -82,40 +132,6 @@ function ShowChoiceAsSpeech(string Text)
 {
    SpeakerName.Caption = DeusExPlayer(PlayerOwner().pawn).GetTruePlayerName();
    winSpeech.SetContent(Text);
-}
-
-
-function InitComponent(GUIController MyController, GUIComponent MyOwner)
-{
-    Super.InitComponent(MyController, MyOwner);
-
-    // Ia?aaaou oeacaoaeu ia naay.
-    DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
-
-    t_WindowTitle.DockAlign = PGA_Top;
-    t_WindowTitle.winWidth = 0.0;
-
-    i_FrameBG.Image = texture'Engine.BlackTexture';
-    i_FrameBG.ImageRenderStyle=MSTY_Alpha;
-    i_FrameBG.WinTop=0.8;
-    i_FrameBG.bStandardized=true;
-    i_FrameBG.StandardHeight=0.2;
-    i_FrameBG.ImageColor.A=255;
-
-    if (i_FrameBG2 == none)
-        i_FrameBG2 = new(none) class'floatingimage';
-        i_FrameBG2.Image = texture'Engine.BlackTexture';
-        i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
-        i_FrameBG2.WinTop = 0.0;
-        i_FrameBG2.WinLeft = 0.0;
-        i_FrameBG2.WinWidth = 1.0;
-        i_FrameBG2.bStandardized=true;
-        i_FrameBG2.StandardHeight = 0.2;
-        i_FrameBG2.bBoundToParent = true;
-        i_FrameBG2.DropShadow = none;
-        i_FrameBG2.ImageColor.A=255;
-        i_FrameBG2.bFocusOnWatch = true;
-        AppendComponent(i_FrameBG2, true);
 }
 
 function AbortCinematicConvo()
@@ -242,7 +258,7 @@ function AddButton(ConChoiceWindow newButton)
     conChoices[numChoices++] = newButton;
 
     alignChoices();
-
+    // DXR: Move mouse cursor to choices
     PlayerOwner().ConsoleCommand("SETMOUSE "$ConChoices[0].ActualLeft() + (ConChoices[0].ActualWidth() / 2)
                                                                                 @ ConChoices[0].ActualTop());
 
@@ -346,6 +362,11 @@ function FloatingRendered(Canvas u)
         Tick(controller.renderDelta); // Как таковой Tick() не предусмотрен, но можно использовать RenderDelta.
 
     RenderExtraStuff(u);
+
+//    if (bRenderReceivedItems)
+    if (ReceivedItems.Length > 0)
+        RenderReceivedItems(u);
+
 }
 
 function AddSystemMenu()
@@ -393,7 +414,7 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
     {
         if (NumChoices < 1)
         {
-           if (aTime > WHEEL_SCROLL_DELAY) // so conversations history will be recorded completely, without skipping last event.
+           if (aTime > WHEEL_SCROLL_DELAY) // DXR: so conversations history will be recorded completely, without skipping last event.
                conPlay.PlayNextEvent();
            aTime = 0;
         }
@@ -428,6 +449,171 @@ function InternalOnMouseRelease(GUIComponent Sender)
 function bool CanCloseWindow(optional bool bCancelled)
 {
     return bCanBeClosed;
+}
+
+
+function RenderReceivedItems(canvas u)
+{
+    local float w,h;
+    local int x;
+    local texture border;
+    local material ico;
+//    local int ItemCounter;
+    local string infoBuffer;
+
+    dxc.SetCanvas(u);
+
+        u.SetDrawColor(255,255,255);
+        u.Font = font'DXFonts.DPix_7';//'DxFonts.FontMenuSmall_DS';
+        u.Style=1;
+
+        //w = 50+40*ReceivedItems.Length;
+        w = 50+80*ReceivedItems.Length;
+        h = 64;
+        infoBuffer = class'HudOverlay_received'.default.StrReceived;
+
+        //u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+        u.SetOrigin(i_FrameBG.ActualLeft() + 20,i_FrameBG.ActualTop() - 80);
+        u.SetClip(w, h);
+
+        u.DrawColor = InfoLinkBG;
+        if (DeusExPlayerController(PlayerOwner()).bHUDBackgroundTranslucent)
+            u.Style = eMenuRenderStyle.MSTY_Translucent;
+               else
+            u.Style = eMenuRenderStyle.MSTY_Normal;
+
+        //TL
+        u.SetPos(-13,-16);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_TL',63,16, 1,0,63,16);
+        //L
+        u.SetPos(-13,0);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_Left',63,h, 1,0,63,8);
+        //BL
+        u.SetPos(-13, u.ClipY);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_BL',63,16, 1,0,63,16);
+
+        //T
+        u.SetPos(50,-16);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_Top',w-51,16, 0,0,8,16);
+        //M
+        u.SetPos(50,0);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_Center',w-51,h, 0,0,8,8);
+        //B
+        u.SetPos(50,u.ClipY);
+        u.DrawTile(texture'DeusExUI.HUDWindowBackground_Bottom',w-51,16, 0,0,8,16);
+
+        u.SetOrigin(u.OrgX+u.ClipX-1,u.OrgY-16);
+        u.SetClip(32,h+32);
+        //TR
+        u.SetPos(0,0);
+        u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_TR',30,16, 1,0,31,16);
+        //R
+        u.SetPos(0,16);
+        u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
+        //BR
+        u.SetPos(0, u.ClipY-16);
+        u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
+
+        //u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+        u.SetOrigin(i_FrameBG.ActualLeft() + 20,i_FrameBG.ActualTop() - 80);
+        u.SetClip(w, h);
+
+   if (DeusExPlayerController(PlayerOwner()).bHUDBordersVisible)
+   {
+     if (DeusExPlayerController(PlayerOwner()).bHUDBordersTranslucent)
+        u.Style = eMenuRenderStyle.MSTY_Translucent;
+        else
+        u.Style = eMenuRenderStyle.MSTY_Alpha;
+
+        u.DrawColor = InfoLinkFrame;
+
+        u.SetPos(-14,-16);
+        border = texture'DeusExUI.HUDWindowBorder_TL';
+        u.DrawTile(border,64,16, 0,0,64,16);
+
+        u.SetPos(-14,0);
+        border = texture'DeusExUI.HUDWindowBorder_Left';
+        u.DrawTile(border,64,h, 0,0,64,8);
+
+        u.SetPos(-14, u.ClipY);
+        border = texture'DeusExUI.HUDWindowBorder_BL';
+        u.DrawIcon(border,1.0);
+
+        u.SetPos(50,-16);
+        border = texture'DeusExUI.HUDWindowBorder_Top';
+        u.DrawTile(border,w-52,16, 0,0,8,16);
+
+
+        u.SetPos(50,u.ClipY);
+        border = texture'DeusExUI.HUDWindowBorder_Bottom';
+        u.DrawTile(border,w-52,16, 0,0,8,16);
+
+        u.SetPos(u.ClipX-3,-16);
+        border = texture'DeusExUI.HUDWindowBorder_TR';
+        u.DrawIcon(border,1.0);
+
+        u.SetPos(u.OrgX+u.ClipX-3,u.OrgY);
+        border = texture'DeusExUI.HUDWindowBorder_Right';
+        u.DrawTileStretched(border,32,h);
+
+        u.SetPos(u.ClipX-3, u.ClipY);
+        border = texture'DeusExUI.HUDWindowBorder_BR';
+        u.DrawIcon(border,1.0);
+   }
+
+        u.Style=1;
+        u.DrawColor = InfoLinkTitles;
+        //u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+        u.SetOrigin(i_FrameBG.ActualLeft() + 20,i_FrameBG.ActualTop() - 80);
+        u.SetClip(w, h);
+        u.SetPos(0,0);
+
+        dxc.DrawTextJustified(infoBuffer,0,0,0,u.ClipX,u.ClipY);
+
+        u.SetOrigin(u.OrgX, u.OrgY+8);
+
+        for(x=0; x<ReceivedItems.length; x++)
+        {
+          if (ReceivedItems[x].anItem != None)
+          {
+            u.Style = 2;
+            //u.SetPos(60+40*x, 0);
+            u.SetPos(60+80*x, 0);
+            if (ReceivedItems[x].anItem.isA('DeusExPickup'))
+            {
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExPickup(ReceivedItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExPickup(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExPickup(ReceivedItems[x].anItem).default.beltDescription $"["$ ReceivedItems[x].anItemCount $"]",1,60+80*x,48,100+80*x,58);
+            }
+            if (ReceivedItems[x].anItem.isA('DeusExWeapon'))
+            {
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExWeapon(ReceivedItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription $"["$ ReceivedItems[x].anItemCount $"]",1,60+80*x,48,100+80*x,58);
+            }
+            if (ReceivedItems[x].anItem.isA('DeusExAmmo'))
+            {
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExAmmo(ReceivedItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExAmmo(ReceivedItems[x].anItem).default.beltDescription $"["$
+                                                 ReceivedItems[x].anItemCount * DeusExAmmo(ReceivedItems[x].anItem).default.AmmoAmount $"]",1,60+80*x,48,100+80*x,58);
+            }
+          }
+        }
+    u.reset();
+    u.SetClip(u.sizeX,u.sizeY);
 }
 
 function RenderExtraStuff(canvas u)

@@ -68,7 +68,7 @@ function Render(Canvas C)
 
     local string infoBuffer;
 
-   dxc.SetCanvas(C);
+    dxc.SetCanvas(C);
 
         c.SetDrawColor(255,255,255);
         c.Font = Font'DXFonts.DPix_7';//'DxFonts.FontMenuSmall_DS';
@@ -210,5 +210,5 @@ function Render(Canvas C)
 
 defaultproperties
 {
-    strReceived="ITEMS: "
+    strReceived="RECEIVED:"
 }
