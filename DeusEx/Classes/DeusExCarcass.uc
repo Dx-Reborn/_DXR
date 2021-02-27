@@ -701,13 +701,13 @@ function AddReceivedItem(DeusExPlayer player, Inventory item, int count)
     if (WinReceived == none)
     {
        WinReceived = spawn(class'HudOverlay_received'); // Create HUD overlay...
-       WinReceived.AddItem(item); // When overlay just created, add first item.
+       WinReceived.AddItem(item, count); // When overlay just created, add first item.
        DeusExPlayerController(player.controller).myHUD.AddHudOverlay(WinReceived);// Add it to our HUD...
     }
     else if (WinReceived != none)
     {
-       WinReceived.AddItem(item);  //... and others too
-       WinReceived.TimerRate += 0.9;
+       WinReceived.AddItem(item, count);  //... and others too
+       //WinReceived.TimerRate += 0.9;
     }
 
     if (!bSearchMsgPrinted)
