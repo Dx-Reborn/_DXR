@@ -28,7 +28,7 @@ var Color           colNoteBackground;
 /*-- ”правление массивом -----------------------------------------*/
 function AddImgNote(string id, int newPosX, int newPosY)
 {
- local int x;
+   local int x;
 
    if (newPosX < 2.1)
        newPosX = 2.1;
@@ -44,21 +44,32 @@ function AddImgNote(string id, int newPosX, int newPosY)
 
 function DeleteImgNote(string id)
 {
- local int x;
+   local int x;
 
- for (x=0; x<imgNotes.Length; x++)
- { 
-    if (imgNotes[x].TheNote ~= id)
-        imgNotes.Remove(x,1);
- }
+   for (x=0; x<imgNotes.Length; x++)
+   { 
+      if (imgNotes[x].TheNote ~= id)
+          imgNotes.Remove(x,1);
+   }
 }
 /*----------------------------------------------------------------*/
 
-
+auto state Pickup
+{
+    function Frob(Actor Other, Inventory frobWith)
+    {
+        if (DeusExPlayer(Other) != None)
+        {
+            bHidden = true;
+            DeusExPlayer(Other).AddImage(Self);
+        }
+        Super.Frob(Other, frobWith);
+    }
+}
 
 function string GetDescription()
 {
-  return imageDescription;
+    return imageDescription;
 }
 
 defaultproperties
