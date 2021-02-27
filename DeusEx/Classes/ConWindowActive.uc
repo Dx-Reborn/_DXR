@@ -22,7 +22,7 @@ struct sReceivedItems
    var() Inventory anItem;
    var() int anItemCount;
 };
-var() array<sReceivedItems> ReceivedItems; // DXR: For easier testing
+var() array<sReceivedItems> ReceivedItems; // DXR: Array of items for the player.
 
 var Color colConTextFocus, colConTextChoice, colConTextSkill;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
@@ -288,16 +288,6 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     return newButton;
 }
 
-function bool FloatingPreDraw(Canvas u)
-{
-    return Super.FloatingPreDraw(u);
-}
-
-function bool AlignFrame(Canvas C)
-{
-    return bInit;
-}
-
 function alignChoices()
 {
     local int amount;
@@ -349,31 +339,11 @@ function Tick(float deltaTime)
     }
 }
 
-
-function FloatingRendered(Canvas u)
-{
-    if (bMoving)
-    { 
-        u.SetPos(FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()), FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
-        u.SetDrawColor(255,255,255,255);
-        u.DrawTileStretched(Controller.WhiteBorder, ActualWidth(), ActualHeight());
-    }
-    if (bTickEnabled)
-        Tick(controller.renderDelta); // Как таковой Tick() не предусмотрен, но можно использовать RenderDelta.
-
-    RenderExtraStuff(u);
-
-//    if (bRenderReceivedItems)
-    if (ReceivedItems.Length > 0)
-        RenderReceivedItems(u);
-
-}
-
 function AddSystemMenu()
 {
     local eFontScale tFontScale;
 
-    b_ExitButton = GUIButton(t_WindowTitle.AddComponent( "XInterface.GUIButton" ));
+    b_ExitButton = GUIButton(t_WindowTitle.AddComponent("XInterface.GUIButton"));
     b_ExitButton.Style = Controller.GetStyle("CloseButton",tFontScale);
     b_ExitButton.OnClick = XButtonClicked;
     b_ExitButton.bNeverFocus = true;
@@ -451,6 +421,34 @@ function bool CanCloseWindow(optional bool bCancelled)
     return bCanBeClosed;
 }
 
+function bool FloatingPreDraw(Canvas u)
+{
+    return Super.FloatingPreDraw(u);
+}
+
+function bool AlignFrame(Canvas C)
+{
+    return bInit;
+}
+
+function FloatingRendered(Canvas u)
+{
+    if (bMoving)
+    { 
+        u.SetPos(FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()), FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
+        u.SetDrawColor(255,255,255,255);
+        u.DrawTileStretched(Controller.WhiteBorder, ActualWidth(), ActualHeight());
+    }
+    if (bTickEnabled)
+        Tick(controller.renderDelta); // Как таковой Tick() не предусмотрен, но можно использовать RenderDelta.
+
+    RenderExtraStuff(u);
+
+//    if (bRenderReceivedItems)
+    if (ReceivedItems.Length > 0)
+        RenderReceivedItems(u);
+
+}
 
 function RenderReceivedItems(canvas u)
 {
@@ -470,7 +468,7 @@ function RenderReceivedItems(canvas u)
         //w = 50+40*ReceivedItems.Length;
         w = 50+80*ReceivedItems.Length;
         h = 64;
-        infoBuffer = class'HudOverlay_received'.default.StrReceived;
+        infoBuffer = class'HudOverlay_received'.default.StrReceived; // DXR: Use string from HUD overlay
 
         //u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
         u.SetOrigin(i_FrameBG.ActualLeft() + 20,i_FrameBG.ActualTop() - 80);
@@ -635,6 +633,16 @@ function RenderExtraStuff(canvas u)
     }
 }
 
+function SetSpeechTextColor(color NewColor)
+{
+    local int x;
+
+    if ((WinSpeech != None) && (WinSpeech.Style != None))
+    {
+        for(x=0; x<5; x++)
+            WinSpeech.Style.FontColors[x] = NewColor;
+    }
+}
 
 function ShowReceivedItem(Inventory invItem, int count)
 {
@@ -687,6 +695,7 @@ function Destroy()
 
 function close()
 {
+    ReceivedItems.Length = 0; // DXR: Hide "Received:" overlay first.
     SetTimer(movePeriod, false);
     moveMode     = MM_Exit;
     bTickEnabled = true;
