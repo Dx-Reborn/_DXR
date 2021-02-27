@@ -396,7 +396,7 @@ exec function DateTimeAmerican()
 
 event object OpenMenuEx(string Menu, optional bool bDisconnect,optional string Msg1, optional string Msg2)
 {
-  local object wtf;
+    local object wtf;
 
     // GUIController calls UnpressButtons() after it's been activated...once active, it swallows
     // all input events, preventing GameEngine from parsing script execs commands -- rjp
