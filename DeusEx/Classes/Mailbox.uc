@@ -19,7 +19,7 @@ event Destroyed()
 
        for (i=0;i<rnd;i++)
        {
-           L = spawn(class'MailLetter', , , Location,RotRand(false));
+           L = spawn(class'MailLetter', , , Location,);
            if (L != None)
            {
               L.Velocity = vRand() * 15;

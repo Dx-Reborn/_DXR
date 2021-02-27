@@ -774,6 +774,25 @@ static function array<string> GetScreenResolutions(int bits)
     }
 }
 
+// ----------------------------------------------------------------------------
+// TPDFShape()
+//
+// Generates triangular-distributed random variates out of uniform distributed
+// random variates in the interval [0,1].
+//
+// https://en.wikipedia.org/wiki/Triangular_distribution
+// #Generating_triangular-distributed_random_variates
+// ----------------------------------------------------------------------------
+final static function float TPDFShape(float Random, float Left, float Mid, float Right)
+{
+    local float F;
+
+    F = (Mid-Left)/(Right-Left);
+    if (Random<F)
+        return Left+Sqrt(Random*(Right-Left)*(Mid-Left));
+    else
+        return Right-Sqrt((1.0-Random)*(Right-Left)*(Right-Mid));
+}
 
 
 defaultproperties
