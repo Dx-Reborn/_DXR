@@ -49,6 +49,7 @@ var config bool bAmmoDisplayVisible;          // ToDo: Implement this.
 var config bool bAugDisplayVisible;           // ToDo: Implement this.
 var config bool bCompassVisible;              // ToDo: Implement this.
 var config bool bCrosshairVisible;            // ToDo: Implement this.
+var bool bSkipCrosshair; // DXR: Ќе отображать перекрестие дл€ некоторых случаев
 
 var config bool bAutoReload;
 var config bool bDisplayAllGoals;             // ToDo: Implement this.

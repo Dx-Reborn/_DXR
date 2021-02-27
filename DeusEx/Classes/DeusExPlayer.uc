@@ -592,11 +592,9 @@ function addImage(DataVaultImage image)
    }
 }
 
-
 // ----------------------------------------------------------------------
 // UsingChargedPickup
 // ----------------------------------------------------------------------
-
 function bool UsingChargedPickup(class<ChargedPickup> itemclass)
 {
    local inventory CurrentItem;
@@ -6372,7 +6370,8 @@ function RenderCrosshair(Canvas C)
     {
         C.SetPos(X,Y);
         c.DrawColor = crossColor;
-        C.DrawIcon(class'DeusExHUD'.default.CrosshairTex, 1);
+        if (!bSkipCrosshair)
+            C.DrawIcon(class'DeusExHUD'.default.CrosshairTex, 1);
     }
 
     if (DeusExWeapon(weapon) != none)
@@ -6394,7 +6393,6 @@ function RenderCrosshair(Canvas C)
       }
   }
 }
-
 
 
 
