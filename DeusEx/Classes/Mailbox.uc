@@ -19,7 +19,7 @@ event Destroyed()
 
        for (i=0;i<rnd;i++)
        {
-           L = spawn(class'MailLetter', , , Location, );
+           L = spawn(class'MailLetter', , , Location,RotRand(false));
            if (L != None)
            {
               L.Velocity = vRand() * 15;
@@ -36,7 +36,9 @@ defaultproperties
      ItemName="Mailbox"
      bPushable=False
      Physics=PHYS_None
-     mesh=mesh'DeusExDeco.Mailbox'
+//     mesh=mesh'DeusExDeco.Mailbox'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.MailBox_HD'
      CollisionHeight=36.500000
      Mass=400.000000
      Buoyancy=200.000000
