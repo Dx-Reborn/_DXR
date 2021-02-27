@@ -22,7 +22,7 @@ var enum EDisplayMode
 
 enum EEventAction
 {
-  EA_NextEvent,
+    EA_NextEvent,
     EA_JumpToLabel,
     EA_JumpToConversation,
     EA_WaitForInput,
@@ -120,9 +120,8 @@ var bool         bForcePlay;
 
 var int x;
 
-// Все диалоги теперь выводятся на оверлеи ГДИ
-//var HudOverlay_Cinematic conWinThird;     // Интерактивные
-var transient ConWindowActive conWinThird;      // 
+// Неинтерактивные диалоги вывоятся на оверлей ГДИ, интерактивные в окне ConWindowActive
+var transient ConWindowActive conWinThird;
 
 var DeusExPlayerController PC;
 var float SpeechVolume;
@@ -134,10 +133,22 @@ var() editconst Actor ConActors[10];
 // in the event an actor is destroyed before the conversation is over,
 // we abort the conversation to prevent references to destroyed objects
 var() editconst Actor ConActorsBound[10];
-
 var() editconst int conActorCount;
 
+var transient HudOverlay_received ovrReceived;
 var transient DelayedMessage dMsg;
+
+function CreateReceivedOverlay(inventory anItem, int count)
+{
+   if (ovrReceived == None)
+       ovrReceived = spawn(class'HudOverlay_received'); // Create HUD overlay...
+
+   if (ovrReceived != None)
+   {
+       level.GetLocalPlayerController().myHUD.AddHudOverlay(ovrReceived);// Add it to our HUD...
+       ovrReceived.AddItem(anItem, count);
+   }
+}
 
 /*
   Использовать DelayedMessage только если есть события типа AddGoal или AddNote (возможно какие-то еще?).
@@ -660,8 +671,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
 
     invItemTo   = Pawn(event.toActor).FindInventoryType(event.giveObject);
 
-    log("  invItemFrom = " $ invItemFrom);
-    log("  invItemTo   = " $ invItemTo);
+//    log("  invItemFrom = " $ invItemFrom);
+//    log("  invItemTo   = " $ invItemTo);
 
     // If the player is doing the giving, make sure we remove it from 
     // the object belt.
@@ -721,7 +732,6 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         // player any ammo from the weapon
         else if ((invItemTo.IsA('DeusExWeapon')) && (DeusExPlayer(event.ToActor) != None))
         {
-
             AmmoType = ammunition(DeusExPlayer(event.ToActor).FindInventoryType(DeusExWeapon(invItemTo).AmmoName));
 
             if (AmmoType != None)
@@ -742,7 +752,6 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
                         invItemFrom.Destroy();
                         return nextAction;
                     }
-
                     event.TransferCount = DeusExWeapon(invItemTo).PickUpAmmoCount;
                     itemsTransferred = event.TransferCount;
                 }
@@ -805,8 +814,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
             invItemTo = Spawn(event.giveObject);
             invItemTo.GiveTo(Pawn(event.toActor));
             DeusExPickup(invItemFrom).NumCopies -= event.transferCount;
-            bSplitItem   = True;
-            bSpawnedItem = True;
+            bSplitItem   = true;
+            bSpawnedItem = true;
         }
         else
         {
@@ -815,8 +824,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
             invItemTo = invItemFrom.SpawnCopy(Pawn(event.toActor));
         }
 
-        log("  invItemFrom = "$  invItemFrom);
-        log("  invItemTo   = " $ invItemTo);
+//        log("  invItemFrom = "$  invItemFrom);
+//        log("  invItemTo   = " $ invItemTo);
 
         if (DeusExPlayer(event.toActor) != None)
             DeusExPlayer(event.toActor).FindInventorySlot(invItemTo);
@@ -832,17 +841,13 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         {
             DeusExPlayer(event.toActor).AddImage(DataVaultImage(invItemTo));
                 
-          if (conWinThird != None)
-          {
-               conWinThird.ShowReceivedItem(invItemTo, 1);
-//         conWinThird.recentItemTime = 3.0;
-//         temp = conWinThird.recentItems.Length;
-//         conWinThird.recentItems.Length = temp + 1;
-//         conWinThird.recentItems[temp] = inventory[x].class;
-          }
-//              conWinThird.ShowReceivedItem(invItemTo, 1);
-//          else
-//              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, 1);
+            if (conWinThird != None)
+            {
+                conWinThird.ShowReceivedItem(invItemTo, 1);
+            }
+            else
+                CreateReceivedOverlay(invItemTo, 1);
+//                DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, 1);
 
             invItemFrom = None;
             invItemTo   = None;
@@ -853,8 +858,10 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         {
           if (conWinThird != None)
               conWinThird.ShowReceivedItem(invItemTo, Credits(invItemTo).numCredits);
-//          else
-//              DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, Credits(invItemTo).numCredits);
+          else
+              CreateReceivedOverlay(invItemTo, 1);
+              //ovrReceived.AddItem(item); // When overlay just created, add first item.
+              //DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, Credits(invItemTo).numCredits);
 
             player.Credits += Credits(invItemTo).numCredits;
             
@@ -879,7 +886,7 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
             }
 
             // Update the belt text
-            if (invItemTo.IsA('ammunition'))
+            if (invItemTo.IsA('Ammunition'))
                 player.UpdateAmmoBeltText(Ammunition(invItemTo));
             else
                 player.UpdateBeltText(invItemTo);
@@ -891,7 +898,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     {
       if (conWinThird != None)
           conWinThird.ShowReceivedItem(invItemTo, itemsTransferred);
-//      else
+      else
+          CreateReceivedOverlay(invItemTo, 1);
 //          DeusExRootWindow(player.rootWindow).hud.receivedItems.AddItem(invItemTo, itemsTransferred);
     }
 
