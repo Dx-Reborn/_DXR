@@ -1,29 +1,37 @@
 //
-//
+// "Received:" HUD overlay.
 //
 
 class HudOverlay_received extends DXRHudOverlay;
 
-var() array<Inventory> recentItems;
+
+struct sReceivedItems
+{
+   var() Inventory anItem;
+   var() int anItemCount;
+};
+var() array<sReceivedItems> recentItems; // DXR: Array of items for the player.
+
 var localized string strReceived;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 const MIN_OVERLAY_DELAY = 0.9;
 
-function addItem(inventory newItem)
+function AddItem(Inventory invItem, int count)
 {
-  local int x;
+    local int x;
 
-  x = recentItems.Length;
-  recentItems.Length = x + 1; // добавить 1 к длине массива
-  recentItems[x] = newItem; // присвоить данные к элементу массива
+    x = RecentItems.length;
+    RecentItems.length = x + 1; // добавить 1 к длине массива
+    RecentItems[x].anItem = invItem; // присвоить данные к элементу массива
+    RecentItems[x].anItemCount = count;
 
-  log("Added item: "$newItem);
+    TimerRate += MIN_OVERLAY_DELAY;
 }
 
 event SetInitialState()
 {
-  local DeusExHUD h;
+    local DeusExHUD h;
 
     SetTimer(FMax(MIN_OVERLAY_DELAY,recentItems.Length), false);
 
@@ -46,11 +54,15 @@ event Destroyed()
     local int x;
 
     Super.Destroyed();
+
+    if (DeusExPlayer(level.GetLocalPlayerController().Pawn) != None)
+        DeusExPlayer(level.GetLocalPlayerController().Pawn).bSkipCrosshair = false;
+
     for(x=0; x<recentItems.length; x++)
     {
-        if (recentItems[x] != None)
-            if (recentItems[x].IsA('Credits') || recentItems[x].IsA('NanoKey'))
-                recentItems[x].Destroy();
+        if (recentItems[x].anItem != None)
+            if (recentItems[x].anItem.IsA('Credits') || recentItems[x].anItem.IsA('NanoKey'))
+                recentItems[x].anItem.Destroy();
     }
 }
 
@@ -59,7 +71,7 @@ event Destroyed()
 // На основе кода из Reborn.
 // 27/12/2017 : переделано в оверлей.
 //
-function Render(Canvas C)
+function Render(Canvas u)
 {
     local float w,h;
     local int x;
@@ -68,141 +80,154 @@ function Render(Canvas C)
 
     local string infoBuffer;
 
-    dxc.SetCanvas(C);
+    dxc.SetCanvas(u);
 
-        c.SetDrawColor(255,255,255);
-        c.Font = Font'DXFonts.DPix_7';//'DxFonts.FontMenuSmall_DS';
-        c.Style=1;
+    if (DeusExPlayer(level.GetLocalPlayerController().Pawn) != None)
+        DeusExPlayer(level.GetLocalPlayerController().Pawn).bSkipCrosshair = true;
 
-        w = 50+40*recentItems.Length;
-        h = 64;
-        infoBuffer = StrReceived;
+    u.SetDrawColor(255,255,255);
+    u.Font = Font'DXFonts.DPix_7';//'DxFonts.FontMenuSmall_DS';
+    u.Style=1;
 
-        c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
-        c.SetClip(w, h);
+//    w = 50+80 * RecentItems.Length;
+    w = 30+80 * RecentItems.Length;
+    h = 64;
+    infoBuffer = StrReceived;
 
-        c.DrawColor=InfoLinkBG;
-        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
-            c.Style = ERenderStyle.STY_Translucent;
-               else
-            c.Style = ERenderStyle.STY_Normal;
+    u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+    u.SetClip(w, h);
 
-        //TL
-        c.SetPos(-13,-16);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_TL',63,16, 1,0,63,16);
-        //L
-        c.SetPos(-13,0);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Left',63,h, 1,0,63,8);
-        //BL
-        c.SetPos(-13, c.ClipY);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_BL',63,16, 1,0,63,16);
+    u.DrawColor = InfoLinkBG;
+    if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
+        u.Style = ERenderStyle.STY_Translucent;
+            else
+        u.Style = ERenderStyle.STY_Normal;
 
-        //T
-        c.SetPos(50,-16);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Top',w-51,16, 0,0,8,16);
-        //M
-        c.SetPos(50,0);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Center',w-51,h, 0,0,8,8);
-        //B
-        c.SetPos(50,c.ClipY);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Bottom',w-51,16, 0,0,8,16);
+    //TL
+    u.SetPos(-13,-16);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_TL',63,16, 1,0,63,16);
+    //L
+    u.SetPos(-13,0);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_Left',63,h, 1,0,63,8);
+    //BL
+    u.SetPos(-13, u.ClipY);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_BL',63,16, 1,0,63,16);
 
-        c.SetOrigin(c.OrgX+c.ClipX-1,c.OrgY-16);
-        c.SetClip(32,h+32);
-        //TR
-        c.SetPos(0,0);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_TR',30,16, 1,0,31,16);
-        //R
-        c.SetPos(0,16);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
-        //BR
-        c.SetPos(0, c.ClipY-16);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
+    //T
+    u.SetPos(50,-16);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_Top',w-51,16, 0,0,8,16);
+    //M
+    u.SetPos(50,0);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_Center',w-51,h, 0,0,8,8);
+     //B
+    u.SetPos(50,u.ClipY);
+    u.DrawTile(texture'DeusExUI.HUDWindowBackground_Bottom',w-51,16, 0,0,8,16);
+    u.SetOrigin(u.OrgX+u.ClipX-1,u.OrgY-16);
+    u.SetClip(32,h+32);
+    //TR
+    u.SetPos(0,0);
+    u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_TR',30,16, 1,0,31,16);
+    //R
+    u.SetPos(0,16);
+    u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
+    //BR
+    u.SetPos(0, u.ClipY-16);
+    u.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
 
-        c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
-        c.SetClip(w, h);
+    u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+    u.SetClip(w, h);
 
-   if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
-   {
-     if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
-        c.Style = ERenderStyle.STY_Translucent;
-        else
-        c.Style = ERenderStyle.STY_Alpha;
+    if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
+    {
+        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersTranslucent)
+            u.Style = ERenderStyle.STY_Translucent;
+                else
+            u.Style = ERenderStyle.STY_Alpha;
 
-        c.DrawColor = InfoLinkFrame;
+        u.DrawColor = InfoLinkFrame;
 
-        c.SetPos(-14,-16);
+        u.SetPos(-14,-16);
         border = texture'DeusExUI.HUDWindowBorder_TL';
-        c.DrawTile(border,64,16, 0,0,64,16);
+        u.DrawTile(border,64,16, 0,0,64,16);
 
-        c.SetPos(-14,0);
+        u.SetPos(-14,0);
         border = texture'DeusExUI.HUDWindowBorder_Left';
-        c.DrawTile(border,64,h, 0,0,64,8);
+        u.DrawTile(border,64,h, 0,0,64,8);
 
-        c.SetPos(-14, c.ClipY);
+        u.SetPos(-14, u.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BL';
-        c.DrawIcon(border,1.0);
+        u.DrawIcon(border,1.0);
 
-        c.SetPos(50,-16);
+        u.SetPos(50,-16);
         border = texture'DeusExUI.HUDWindowBorder_Top';
-        c.DrawTile(border,w-52,16, 0,0,8,16);
+        u.DrawTile(border,w-52,16, 0,0,8,16);
 
 
-        c.SetPos(50,c.ClipY);
+        u.SetPos(50,u.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_Bottom';
-        c.DrawTile(border,w-52,16, 0,0,8,16);
+        u.DrawTile(border,w-52,16, 0,0,8,16);
 
-        c.SetPos(c.ClipX-3,-16);
+        u.SetPos(u.ClipX-3,-16);
         border = texture'DeusExUI.HUDWindowBorder_TR';
-        c.DrawIcon(border,1.0);
+        u.DrawIcon(border,1.0);
 
-        c.SetPos(C.OrgX+c.ClipX-3,C.OrgY);
+        u.SetPos(u.OrgX+u.ClipX-3,u.OrgY);
         border = texture'DeusExUI.HUDWindowBorder_Right';
-        c.DrawTileStretched(border,32,h);
+        u.DrawTileStretched(border,32,h);
 
-        c.SetPos(c.ClipX-3, c.ClipY);
+        u.SetPos(u.ClipX-3, u.ClipY);
         border = texture'DeusExUI.HUDWindowBorder_BR';
-        c.DrawIcon(border,1.0);
-   }
+        u.DrawIcon(border,1.0);
+    }
 
-        c.Style=1;
-        c.DrawColor = InfoLinkTitles;
-        c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-h)/2));
-        c.SetClip(w, h);
-        c.SetPos(0,0);
+        u.Style=1;
+        u.DrawColor = InfoLinkTitles;
+        u.SetOrigin(int((u.SizeX-w)/2), int((u.SizeY-h)/2));
+        u.SetClip(w, h);
+        u.SetPos(0,0);
 
-        dxc.DrawTextJustified(infoBuffer,0,0,0,c.ClipX,c.ClipY);
-
-        c.SetOrigin(c.OrgX, c.OrgY+8);
+        dxc.DrawTextJustified(infoBuffer,0,0,0,u.ClipX,u.ClipY);
+        u.SetOrigin(u.OrgX, u.OrgY+8);
 
         for(x=0; x<recentItems.length; x++)
         {
-          if (recentItems[x] != none)
-          {
-            c.Style=2;
-            c.SetPos(60+40*x, 0);
-            if (recentItems[x].isA('DeusExPickup'))
+            u.Style = 2;
+            //u.SetPos(60+40*x, 0);
+            u.SetPos(60+80*x, 0);
+            if (recentItems[x].anItem.isA('DeusExPickup'))
             {
-                c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
-                ico = DeusExPickup(recentItems[x]).default.Icon;
-                c.DrawIconEx(ico,1.0);
-                c.Style=1;
-                c.DrawColor = InfoLinkText;
-                dxc.DrawTextJustified(DeusExPickup(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExPickup(recentItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExPickup(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExPickup(recentItems[x].anItem).default.beltDescription $"["$ recentItems[x].anItemCount $"]",1,60+80*x,48,100+80*x,58);
             }
-            if (recentItems[x].isA('DeusExWeapon'))
+            if (recentItems[x].anItem.isA('DeusExWeapon'))
             {
-                c.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
-                ico = DeusExWeapon(recentItems[x]).Icon;
-                c.DrawIconEx(ico,1.0);
-                c.Style=1;
-                c.DrawColor = InfoLinkText;
-                dxc.DrawTextJustified(DeusExWeapon(recentItems[x]).default.beltDescription,1,60+40*x,48,100+40*x,58);
-              }
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExWeapon(recentItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExWeapon(recentItems[x].anItem).default.beltDescription $"["$ recentItems[x].anItemCount $"]",1,60+80*x,48,100+80*x,58);
+            }
+            if (recentItems[x].anItem.isA('DeusExAmmo'))
+            {
+                u.SetDrawColor(255,255,255); // Исправлено, иконки были залиты текущим цветом.
+                ico = DeusExAmmo(recentItems[x].anItem).default.Icon;
+                u.DrawIconEx(ico,1.0);
+                u.Style=1;
+                u.DrawColor = InfoLinkText;
+                //dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
+                dxc.DrawTextJustified(DeusExAmmo(recentItems[x].anItem).default.beltDescription $"["$
+                                                 recentItems[x].anItemCount * DeusExAmmo(recentItems[x].anItem).default.AmmoAmount $"]",1,60+80*x,48,100+80*x,58);
             }
         }
-    c.reset();
-    c.SetClip(c.sizeX,c.sizeY);
+    u.reset();
+    u.SetClip(u.sizeX,u.sizeY);
 }
 
 
