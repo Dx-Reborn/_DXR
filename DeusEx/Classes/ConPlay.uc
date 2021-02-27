@@ -67,7 +67,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
     // conversation mode is non-interactive and only allows speech, for
     // the most part.
 
-    if ( con.bFirstPerson )
+    if (con.bFirstPerson)
     {
         displayMode = DM_FirstPerson;
         conWinFirst = spawn(class'HudOverlay_FPSpeech',pc); //  DeusExHud(DeusExPlayerController(Level.GetLocalPlayerController()).myHUD); 
