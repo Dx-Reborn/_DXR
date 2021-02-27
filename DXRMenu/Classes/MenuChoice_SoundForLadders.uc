@@ -12,6 +12,7 @@ function LoadSetting()
 function SaveSetting()
 {
     DeusExPlayer(PlayerOwner().pawn).bSoundsForLadderVolumes = bool(GetValue());
+    DeusExPlayer(PlayerOwner().pawn).SaveConfig();
 }
 
 function ResetToDefault()
