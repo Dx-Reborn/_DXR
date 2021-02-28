@@ -21,17 +21,17 @@ var Localized String MedBotYouAreHealed, SecondsPluralLabel, SecondsSingularLabe
 // ----------------------------------------------------------------------
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-	Super.Initcomponent(MyController, MyOwner);
+    Super.Initcomponent(MyController, MyOwner);
 
-  MedBot = gl.lastMedBot;
-	createSomeControls(); // Don't call createMyControls!
-	bTickEnabled = True;
+    MedBot = gl.lastMedBot;
+    createSomeControls(); // Don't call createMyControls!
+    bTickEnabled = True;
 }
 
 function ShowPanel(bool bShow)
 {
-	EnableButtons();
-  super.ShowPanel(bShow);
+    EnableButtons();
+    super.ShowPanel(bShow);
 }
 
 // ----------------------------------------------------------------------
@@ -40,8 +40,8 @@ function ShowPanel(bool bShow)
 
 function Tick(float deltaTime)
 {
-  if (bTickEnabled)
-	UpdateMedBotDisplay();
+    if (bTickEnabled)
+        UpdateMedBotDisplay();
 }
 
 // ----------------------------------------------------------------------
@@ -50,58 +50,58 @@ function Tick(float deltaTime)
 
 function CreateSomeControls()
 {
-	winHealthBar = new class'GUIProgressBar';
-  winHealthBar.FontName="UT2HeaderFont";
- 	winHealthBar.WinHeight = 20;
-  winHealthBar.WinWidth = 181;
-  winHealthBar.WinLeft = 520;
-  winHealthBar.WinTop = 431;//380;
-  winHealthBar.High = 100;
-  winHealthBar.NumDecimals = 1;
-	winHealthBar.CaptionWidth = 0.0; //0.45;
-  winHealthBar.bBoundToParent = true;
-  winHealthBar.bShowLow = true;
-  winHealthBar.bShowHigh = true;
-  winHealthBar.ValueRightWidth = 0.0;
-  winHealthBar.Caption = "";
-  winHealthBar.BarBack = Material'MenuTitleBubble_Center'; // The unselected portion of the bar
-  winHealthBar.BarTop = Material'Solid'; // The selected portion of the bar
-  winHealthBar.OnRendered = pr_OnRendered;
-	AppendComponent(winHealthBar, true);
+    winHealthBar = new class'GUIProgressBar';
+    winHealthBar.FontName="UT2HeaderFont";
+    winHealthBar.WinHeight = 20;
+    winHealthBar.WinWidth = 181;
+    winHealthBar.WinLeft = 520;
+    winHealthBar.WinTop = 431;//380;
+    winHealthBar.High = 100;
+    winHealthBar.NumDecimals = 1;
+    winHealthBar.CaptionWidth = 0.0; //0.45;
+    winHealthBar.bBoundToParent = true;
+    winHealthBar.bShowLow = true;
+    winHealthBar.bShowHigh = true;
+    winHealthBar.ValueRightWidth = 0.0;
+    winHealthBar.Caption = "";
+    winHealthBar.BarBack = Material'MenuTitleBubble_Center'; // The unselected portion of the bar
+    winHealthBar.BarTop = Material'Solid'; // The selected portion of the bar
+    winHealthBar.OnRendered = pr_OnRendered;
+    AppendComponent(winHealthBar, true);
 
-	winHealthInfoText = new class'GUILabel';
-  winHealthInfoText.bBoundToParent = true;
-  winHealthInfoText.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
-  winHealthInfoText.caption = "Health";
-  winHealthInfoText.TextFont="UT2SmallFont";
-  winHealthInfoText.bMultiLine = true;
-  winHealthInfoText.TextAlign = TXTA_Left;
-  winHealthInfoText.VertAlign = TXTA_Center;
-  winHealthInfoText.FontScale = FNS_Small;
- 	winHealthInfoText.WinHeight = 87;
-  winHealthInfoText.WinWidth = 278;
-  winHealthInfoText.WinLeft = 423;
-  winHealthInfoText.WinTop = 338;//288;
-	AppendComponent(winHealthInfoText, true);
+    winHealthInfoText = new class'GUILabel';
+    winHealthInfoText.bBoundToParent = true;
+    winHealthInfoText.TextColor = class'DXR_Menu'.static.GetPlayerInterfaceHDR(gl.MenuThemeIndex);
+    winHealthInfoText.caption = "Health";
+    winHealthInfoText.TextFont="UT2SmallFont";
+    winHealthInfoText.bMultiLine = true;
+    winHealthInfoText.TextAlign = TXTA_Left;
+    winHealthInfoText.VertAlign = TXTA_Center;
+    winHealthInfoText.FontScale = FNS_Small;
+    winHealthInfoText.WinHeight = 87;
+    winHealthInfoText.WinWidth = 278;
+    winHealthInfoText.WinLeft = 423;
+    winHealthInfoText.WinTop = 338;//288;
+    AppendComponent(winHealthInfoText, true);
 
-  btnHealAll = new class'GUIButton';
-  btnHealAll.FontScale = FNS_Small;
-  btnHealAll.Caption = HealAllButtonLabel;
-  btnHealAll.Hint = "Restore all health when possible";
-  btnHealAll.StyleName="STY_DXR_ButtonNavbar";
-  btnHealAll.bBoundToParent = true;
-  btnHealAll.OnClick = ButtonActivated;
-  btnHealAll.WinLeft = 420;
-  btnHealAll.WinTop = 428; //377;
-  btnHealAll.WinWidth = 96;
-  btnHealAll.WinHeight = 26;
-	AppendComponent(btnHealAll, true);
+    btnHealAll = new class'GUIButton';
+    btnHealAll.FontScale = FNS_Small;
+    btnHealAll.Caption = HealAllButtonLabel;
+    btnHealAll.Hint = "Restore all health when possible";
+    btnHealAll.StyleName="STY_DXR_ButtonNavbar";
+    btnHealAll.bBoundToParent = true;
+    btnHealAll.OnClick = ButtonActivated;
+    btnHealAll.WinLeft = 420;
+    btnHealAll.WinTop = 428; //377;
+    btnHealAll.WinWidth = 96;
+    btnHealAll.WinHeight = 26;
+    AppendComponent(btnHealAll, true);
 
-	if (iHealthBG != none)
-  iHealthBG.Image=texture'DXR_MedbotHealthBackground';
+    if (iHealthBG != none)
+        iHealthBG.Image=texture'DXR_MedbotHealthBackground';
 
-  if (iHealthOverlays != none)
-  iHealthOverlays.Image=texture'DXR_MedBotOverlays';
+    if (iHealthOverlays != none)
+        iHealthOverlays.Image=texture'DXR_MedBotOverlays';
 
 }
 
@@ -111,6 +111,9 @@ function pr_OnRendered(canvas u)
    u.SetPos(winHealthBar.ActualLeft(),winHealthBar.ActualTop());
    u.SetDrawColor(255,255,255,255);
    u.DrawTextJustified(winHealthBar.Caption, 1, winHealthBar.ActualLeft(),winHealthBar.ActualTop(), winHealthBar.ActualLeft() + winHealthBar.ActualWidth(), winHealthBar.ActualTop() + winHealthBar.ActualHeight());
+
+   Super.pr_OnRendered(u);
+
    u.ReSet();
 }
 
@@ -152,47 +155,47 @@ function PaintFrames(canvas u)
 
 function UpdateMedBotDisplay()
 {
-	local float barPercent;
-	local String infoText;
-	local float secondsRemaining;
+    local float barPercent;
+    local String infoText;
+    local float secondsRemaining;
 
-	if (medBot != None)
-	{
-		infoText = class'Actor'.static.Sprintf(HealthInfoTextLabel, medBot.healAmount);
-    winHealthBar.BarColor = class'Actor'.static.GetColorScaled(winHealthBar.value * 0.01);
+    if (medBot != None)
+    {
+        infoText = class'Actor'.static.Sprintf(HealthInfoTextLabel, medBot.healAmount);
+        winHealthBar.BarColor = class'Actor'.static.GetColorScaled(winHealthBar.value * 0.01);
 
-		// Update the bar
-		if (medBot.CanHeal())
-		{
-			winHealthBar.value = 100; //SetCurrentValue(100);
-			winHealthBar.Caption = ReadyLabel; //SetText(ReadyLabel);
+        // Update the bar
+        if (medBot.CanHeal())
+        {
+            winHealthBar.value = 100; //SetCurrentValue(100);
+            winHealthBar.Caption = ReadyLabel; //SetText(ReadyLabel);
 
-			if (IsPlayerDamaged())
-				infoText = infoText $ MedBotReadyLabel;
-			else
-				infoText = infoText $ MedBotYouAreHealed;
-		}
-		else
-		{
-			secondsRemaining = medBot.GetRefreshTimeRemaining();
+            if (IsPlayerDamaged())
+                infoText = infoText $ MedBotReadyLabel;
+            else
+                infoText = infoText $ MedBotYouAreHealed;
+        }
+        else
+        {
+            secondsRemaining = medBot.GetRefreshTimeRemaining();
 
-			barPercent = 100 * (1.0 - (secondsRemaining / Float(medBot.healRefreshTime)));
+            barPercent = 100 * (1.0 - (secondsRemaining / Float(medBot.healRefreshTime)));
 
-			winHealthBar.value = barPercent; //SetCurrentValue(barPercent);
+            winHealthBar.value = barPercent; //SetCurrentValue(barPercent);
 
-			if (secondsRemaining == 1)
-				winHealthBar.Caption = class'Actor'.static.Sprintf(SecondsSingularLabel, Int(secondsRemaining));
-			else
-				winHealthBar.Caption = class'Actor'.static.Sprintf(SecondsPluralLabel, Int(secondsRemaining));
+            if (secondsRemaining == 1)
+                winHealthBar.Caption = class'Actor'.static.Sprintf(SecondsSingularLabel, Int(secondsRemaining));
+            else
+                winHealthBar.Caption = class'Actor'.static.Sprintf(SecondsPluralLabel, Int(secondsRemaining));
 
-			if (IsPlayerDamaged())
-				infoText = infoText $ MedBotRechargingLabel;
-			else
-				infoText = infoText $ MedBotYouAreHealed;
-		}
-		winHealthInfoText.Caption = infoText;
-	}
-	EnableButtons();
+            if (IsPlayerDamaged())
+                infoText = infoText $ MedBotRechargingLabel;
+            else
+                infoText = infoText $ MedBotYouAreHealed;
+        }
+        winHealthInfoText.Caption = infoText;
+    }
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -201,24 +204,24 @@ function UpdateMedBotDisplay()
 
 function bool ButtonActivated(GUIComponent Sender)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled = True;
+    bHandled = True;
 
-	switch(Sender)
-	{
-		case btnHealAll:
-			MedBotHealPlayer();
-			fillvalues(); // Обновить индикаторы.
-			break;
+    switch(Sender)
+    {
+        case btnHealAll:
+            MedBotHealPlayer();
+            fillvalues(); // Обновить индикаторы.
+            break;
 
-		default:
-			bHandled = False;
-			break;
-	}
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return True;
+    if (bHandled)
+        return True;
 }
 
 // ----------------------------------------------------------------------
@@ -227,9 +230,9 @@ function bool ButtonActivated(GUIComponent Sender)
 
 function MedBotHealPlayer()
 {
-	medBot.HealPlayer(player);
-	UpdateMedBotDisplay();
-//	UpdateRegionWindows();
+    medBot.HealPlayer(player);
+    UpdateMedBotDisplay();
+//  UpdateRegionWindows();
 }
 
 // ----------------------------------------------------------------------
@@ -238,13 +241,13 @@ function MedBotHealPlayer()
 
 function EnableButtons()
 {
-	if (medBot != None)
-	{
-	 if (medBot.CanHeal() && IsPlayerDamaged())
-		btnHealAll.EnableMe(); //EnableWindow(medBot.CanHeal() && IsPlayerDamaged());
-	else
-		btnHealAll.DisableMe();// EnableWindow(False);
-	}	
+    if (medBot != None)
+    {
+        if (medBot.CanHeal() && IsPlayerDamaged())
+            btnHealAll.EnableMe(); //EnableWindow(medBot.CanHeal() && IsPlayerDamaged());
+        else
+            btnHealAll.DisableMe();// EnableWindow(False);
+    }   
 }
 
 // ----------------------------------------------------------------------
@@ -253,18 +256,18 @@ function EnableButtons()
 
 function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 {
-	medBot = newBot;
+    medBot = newBot;
 
-	if (medBot != None)
-	{
-		medBot.StandStill();
+    if (medBot != None)
+    {
+        medBot.StandStill();
 
-		if (bPlayAnim)
-		{
-			medBot.PlayAnim('Start');
-			medBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
-		}
-	}
+        if (bPlayAnim)
+        {
+            medBot.PlayAnim('Start');
+            medBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -273,44 +276,43 @@ function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 
 function SkipAnimation(bool bNewSkipAnimation)
 {
-	bSkipAnimation = bNewSkipAnimation;
+    bSkipAnimation = bNewSkipAnimation;
 }
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 defaultproperties
 {
- lFrameX=48
- lframeY=26
- lfSizeX=257
- lfSizeY=257
+    lFrameX=48
+    lframeY=26
+    lfSizeX=257
+    lfSizeY=257
 
- mFrameX=305
- mframeY=26
- mfSizeX=362
- mfSizeY=256
+    mFrameX=305
+    mframeY=26
+    mfSizeX=362
+    mfSizeY=256
 
- rFrameX=667
- rframeY=26
- rfSizeX=64
- rfSizeY=256//
+    rFrameX=667
+    rframeY=26
+    rfSizeX=64
+    rfSizeY=256//
 /////////////////
 
- lFrameXb=48
- lframeYb=283
- lfSizeXb=257
- lfSizeYb=255
+    lFrameXb=48
+    lframeYb=283
+    lfSizeXb=257
+    lfSizeYb=255
 
- mFrameXb=305
- mframeYb=282
- mfSizeXb=362
- mfSizeYb=256
+    mFrameXb=305
+    mframeYb=282
+    mfSizeXb=362
+    mfSizeYb=256
 
- rFrameXb=667 //
- rframeYb=282
- rfSizeXb=64
- rfSizeYb=256
-
+    rFrameXb=667 //
+    rframeYb=282
+    rfSizeXb=64
+    rfSizeYb=256
 
     MedbotInterfaceText="MEDBOT INTERFACE"
     HealthInfoTextLabel="The MedBot will heal up to %d units, which are distributed evenly among your damaged body regions."
