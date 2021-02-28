@@ -17,6 +17,8 @@ enum EMoveModes
     MM_None
 };
 var EMoveModes moveMode;
+var bool bExpandEffect; // DXR: Использовать эффект как в оригинальной игре
+var bool bChoicesAtTop; // Варианты ответа сверху.
 
 struct sReceivedItems
 {
@@ -329,40 +331,51 @@ function alignChoices()
 
 function Tick(float deltaTime)
 {
-  local int a;
+    local int a;
 
-  a += deltaTime;
-  aTime += deltaTime;
+    a += deltaTime;
+    aTime += deltaTime;
 
     switch(moveMode)
     {
        case MM_Enter:
-       if (a <= 0.1)
-           fadeAlpha += 1;
-
-       if (i_FrameBG.ImageColor.A < 255)
+       if (!bExpandEffect)
        {
-           i_FrameBG.ImageColor.A = FadeAlpha;
-           i_FrameBG2.ImageColor.A = FadeAlpha;
+           if (a <= 0.1)
+               fadeAlpha += 1;
+
+           if (i_FrameBG.ImageColor.A < 255)
+           {
+               i_FrameBG.ImageColor.A = FadeAlpha;
+               i_FrameBG2.ImageColor.A = FadeAlpha;
+           }
+       }
+       else
+       {
+            //
        }
        break;
 
        case MM_Exit:
-       if (a <= 0.1)
-           fadeAlpha -= 1;
-
-       if (i_FrameBG.ImageColor.A > 254)
+       if (!bExpandEffect)
        {
-         i_FrameBG.ImageColor.A = FadeAlpha;
-         i_FrameBG.StandardHeight -= deltaTime;
+           i_FrameBG.ImageColor.A -=1;
+           i_FrameBG2.ImageColor.A -=1;
 
-         i_FrameBG2.ImageColor.A = FadeAlpha;
-         i_FrameBG2.StandardHeight -= deltaTime;
+           i_FrameBG2.WinTop -=0.002;
+           i_FrameBG.WinTop  +=0.002;
+
+           if ((i_FrameBG2.ImageColor.A < 1) || (i_FrameBG.ImageColor.A < 1))
+                bTickEnabled = false;
+       }
+       else
+       {
+            // Сама не знаю!
        }
        break;
 
-        default:
-        bTickEnabled = False;
+       default:
+       bTickEnabled = false;
     }
 }
 
