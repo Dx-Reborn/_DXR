@@ -8,6 +8,7 @@ class ConWindowActive extends floatingwindow
 
 const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
 const AMOUNT_OF_CHOICES = 10;
+const CHOICE_HEIGHT = 16;
 
 enum EMoveModes
 {
@@ -46,6 +47,8 @@ var float conStartTime;
 var float movePeriod;
 var float aTime;
 var localized string ChoiceBeginningChar, strPlayerCredits;
+
+var float SpeakerStrLen;
 
 var() automated GUILabel SpeakerName;
 var() floatingimage i_FrameBG2;
@@ -261,7 +264,29 @@ function AddButton(ConChoiceWindow newButton)
     // DXR: Move mouse cursor to choices
     PlayerOwner().ConsoleCommand("SETMOUSE "$ConChoices[0].ActualLeft() + (ConChoices[0].ActualWidth() / 2)
                                                                                 @ ConChoices[0].ActualTop());
+}
 
+function HideControls()
+{
+    SpeakerName.SetVisibility(false);
+    winSpeech.SetVisibility(false);
+}
+
+function UnhideControls()
+{
+    SpeakerName.SetVisibility(true);
+    winSpeech.SetVisibility(true);
+}
+
+function RealignControls()
+{
+    if (bForcePlay == false)
+    {
+        SpeakerName.WinWidth = SpeakerStrLen + 14;
+
+        winSpeech.WinLeft = SpeakerStrLen + 20;
+        winSpeech.WinWidth = ActualWidth() - (SpeakerStrLen + 30);
+    }
 }
 
 function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus)
@@ -293,11 +318,13 @@ function alignChoices()
     local int amount;
     local float aY;
 
-    aY = -16.0;
-
+//    aY = -16.0;
+//   for(i=p.logMessages.length-1; i>=0; i--)
+    aY = ActualHeight() - i_FrameBG.ActualHeight() + 16.00;  // + -16.0;
     if (numChoices > 0)
         for (amount=0; amount<numChoices; amount++)
              conChoices[amount].wintop = aY +=16;
+//             conChoices[amount].wintop = aY +=16;
 }
 
 function Tick(float deltaTime)
@@ -433,6 +460,12 @@ function bool AlignFrame(Canvas C)
 
 function FloatingRendered(Canvas u)
 {
+    local float yl;
+
+    //u.StrLen(SpeakerName.Caption, SpeakerStrLen, yl);
+    SpeakerName.Style.TextSize(u, SpeakerName.MenuState, SpeakerName.Caption, SpeakerStrLen, yl, SpeakerName.FontScale);
+    RealignControls();//
+
     if (bMoving)
     { 
         u.SetPos(FClamp(Controller.MouseX - MouseOffset[0], 0.0, Controller.ResX - ActualWidth()), FClamp(Controller.MouseY - MouseOffset[1], 0.0, Controller.ResY - ActualHeight()));
@@ -456,7 +489,6 @@ function RenderReceivedItems(canvas u)
     local int x;
     local texture border;
     local material ico;
-//    local int ItemCounter;
     local string infoBuffer;
 
     dxc.SetCanvas(u);
@@ -673,6 +705,8 @@ function bool InternalOnClick(GUIComponent Sender)
             conPlay.PlayChoice(ConChoice(conChoices[buttonIndex].GetUserObject()));
             ShowChoiceAsSpeech(ConChoice(conChoices[buttonIndex].GetUserObject()).ChoiceText);
 
+//            UnhideControls(); //
+
             // Clear the screen
             RemoveChoices();
             break;
@@ -744,7 +778,7 @@ defaultproperties
         WinWidth=0.98
         WinHeight=0.18
         WinLeft=0.01
-        WinTop=0.825
+        WinTop=0.806667
         TabOrder=2
         bVisibleWhenEmpty=false
         bNoTeletype=false
@@ -758,15 +792,16 @@ defaultproperties
     winSpeech=MySubtitles
 
     Begin Object Class=GUILabel Name=MySpeaker
-        Caption=""
-        TextAlign=TXTA_Left
+        Caption="Test Caption Text"
+        bMultiLine=true
+        TextAlign=TXTA_Right
         TextColor=(B=255,G=255,R=255)
         FontScale=FNS_Small
         StyleName="STY_DXR_ConLabel"
-        WinLeft=0.01
-        WinTop=0.800000
-        WinWidth=0.200000
-        WinHeight=0.030000
+        WinLeft=2.00
+        WinTop=0.806667
+        WinWidth=20.00 //0.200000
+        WinHeight=0.18
         RenderWeight=0.900000
         bBoundToParent=True
         bScaleToParent=True

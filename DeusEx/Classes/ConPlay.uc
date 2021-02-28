@@ -1111,21 +1111,21 @@ function EEventAction SetupEventSpeechPost(ConEventSpeech theevent, out String n
 
     if ((player.bSubtitles) || (!bHaveSpeechAudio))
     {           
-        if ( displayMode == DM_FirstPerson )
+        if (displayMode == DM_FirstPerson)
             conWinFirst.Show();
 
         // If we're continuing from the last speech, then we want to Append 
         // and not Display the first chunk.
-        if ( theevent.bContinued == True )
+        if (theevent.bContinued == true)
         {
-            if ( displayMode == DM_FirstPerson )
+            if (displayMode == DM_FirstPerson)
                 conWinFirst.AppendText(speech);
             else
                 conWinThird.AppendText(speech);
         }
         else
         {
-            if ( displayMode == DM_FirstPerson )
+            if (displayMode == DM_FirstPerson)
             {   
                 // Clear the window
                 conWinFirst.Clear();
@@ -1138,7 +1138,7 @@ function EEventAction SetupEventSpeechPost(ConEventSpeech theevent, out String n
                 // Clear the window
                 conWinThird.Clear();
 
-                conWinThird.DisplayName(player.GetDisplayName(theevent.speaker));
+                conWinThird.DisplayName(player.GetDisplayName(theevent.speaker) $":");
                 conWinThird.DisplayText(speech, currentSpeaker);
             }
         }
@@ -1162,7 +1162,7 @@ function EEventAction SetupEventSpeechPost(ConEventSpeech theevent, out String n
         // means the text will continue on its own, or in ACTIVE mode, in which case
         // we'll wait for a keypress before continuing.
 
-        if (( playMode == PM_PASSIVE ) || ( displayMode == DM_FirstPerson ))
+        if ((playMode == PM_PASSIVE) || (displayMode == DM_FirstPerson))
         {
             nextAction = EA_WaitForText;
         }
