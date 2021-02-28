@@ -342,9 +342,9 @@ function Tick(float deltaTime)
        if (!bExpandEffect)
        {
            if (a <= 0.1)
-               fadeAlpha += 1;
+               fadeAlpha += 1; //1
 
-           if (i_FrameBG.ImageColor.A < 255)
+           if (i_FrameBG.ImageColor.A < 255) //255
            {
                i_FrameBG.ImageColor.A = FadeAlpha;
                i_FrameBG2.ImageColor.A = FadeAlpha;
@@ -364,6 +364,10 @@ function Tick(float deltaTime)
 
            i_FrameBG2.WinTop -=0.002;
            i_FrameBG.WinTop  +=0.002;
+
+           winSpeech.WinTop  += 0.002;
+           SpeakerName.WinTop+= 0.002;
+
 
            if ((i_FrameBG2.ImageColor.A < 1) || (i_FrameBG.ImageColor.A < 1))
                 bTickEnabled = false;
