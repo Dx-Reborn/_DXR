@@ -7,8 +7,9 @@ defaultproperties
 {
      FragType=Class'DeusEx.WoodFragment'
      ItemName="Birdcage"
-     mesh=mesh'DeusExDeco.HKBirdcage'
-// Fixed the model offset, not required anymore     PrePivot=(Z=27.000000)
+//     mesh=mesh'DeusExDeco.HKBirdcage'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.HKBirdCage_HD'
      CollisionRadius=10.000000
      CollisionHeight=27.000000
      Mass=50.000000
