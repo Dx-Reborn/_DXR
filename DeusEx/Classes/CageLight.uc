@@ -42,12 +42,12 @@ event BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_1:  Skins[0] = Texture'CageLightTex1'; break;
-        case SC_2:  Skins[0] = Texture'CageLightTex2'; break;
-        case SC_3:  Skins[0] = Texture'CageLightTex3'; break;
-        case SC_4:  Skins[0] = Texture'CageLightTex4'; break;
-        case SC_5:  Skins[0] = Texture'CageLightTex5'; break;
-        case SC_6:  Skins[0] = Texture'CageLightTex6'; break;
+        case SC_1:  Skins[1] = Texture'CageLightTex1'; break; // Белый
+        case SC_2:  Skins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // Жёлтый
+        case SC_3:  Skins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // Красный
+        case SC_4:  Skins[1] = Texture'CageLightTex4'; break; // Синий
+        case SC_5:  Skins[1] = Texture'CageLightTex5'; break; // o5 жёлтый?
+        case SC_6:  Skins[1] = Texture'CageLightTex6'; break; // o5 красный?
     }
 }
 
@@ -72,7 +72,7 @@ defaultproperties
      ItemName="Light Fixture"
      bPushable=False
      Physics=PHYS_None
-     mesh=mesh'DeusExDeco.CageLight'
+//     mesh=mesh'DeusExDeco.CageLight'
      ScaleGlow=2.000000
      CollisionRadius=17.139999
      CollisionHeight=17.139999
@@ -83,4 +83,15 @@ defaultproperties
      LightRadius=8
      Mass=20.000000
      Buoyancy=10.000000
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.CageLight_HD'
 }
+
+
+/*  Original version      case SC_1:  Skins[0] = Texture'CageLightTex1'; break; // Белый
+        case SC_2:  Skins[0] = Texture'CageLightTex2'; break; // Жёлтый
+        case SC_3:  Skins[0] = Texture'CageLightTex3'; break; // Красный
+        case SC_4:  Skins[0] = Texture'CageLightTex4'; break; // Синий
+        case SC_5:  Skins[0] = Texture'CageLightTex5'; break; // o5 жёлтый?
+        case SC_6:  Skins[0] = Texture'CageLightTex6'; break; // o5 красный?*/
+

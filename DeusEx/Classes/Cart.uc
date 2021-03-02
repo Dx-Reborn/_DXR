@@ -82,7 +82,6 @@ function DamageForce(int Damage)
           if (!Act.IsA('PlayerPawn'))
               StartRolling(0.25*Velocity*(Damage*0.1));
        }
-
 }
 
 
@@ -92,12 +91,15 @@ defaultproperties
      bCanBePushedByDamage=true
      bCanBeBase=True
      ItemName="Utility Push-Cart"
-     mesh=mesh'DeusExDeco.Cart'
+//     mesh=mesh'DeusExDeco.Cart'
+     DrawType=DT_StaticMesh
+     StaticMesh=StaticMesh'DeusExStaticMeshes0.UtilityCart_HD'
      SoundRadius=16
      CollisionRadius=28.000000
      CollisionHeight=26.780001
      Mass=40.000000
      Buoyancy=45.000000
-     Skins[0]=Texture'DeusExDeco.Skins.CartTex1'
+//     Skins[0]=Texture'DeusExDeco.Skins.CartTex1'
+     Skins[0]=Shader'DeusExStaticMeshes0.Plastic.UtilityCart_HD_SH'
      HitPoints=60 // So you can have enough HitPoints to push it
 }
