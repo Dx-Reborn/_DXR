@@ -1,5 +1,7 @@
 /*
    ConChoiceWindow
+
+   DXR: Ну и бардак здесь! Тут половину вообще выкинуть можно...
 */
 
 class ConChoiceWindow extends GUIButton 
@@ -95,7 +97,7 @@ function bool InternalOnDraw(canvas u)
     }
     else if (MenuState == MSAT_Blurry) // Component has no focus at all
     {
-        TextColor = class'ConWindowActive'.default.colConTextChoice;
+        TextColor = class'ConWindowActive'.default.colConTextChoiceUnhighlighted; //colConTextChoice;
         u.DrawColor = colNormal;
         u.DrawTileStretched(texture'Solid', w, h);
     }

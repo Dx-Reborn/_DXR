@@ -8,7 +8,7 @@ class ConWindowActive extends floatingwindow
 
 const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
 const AMOUNT_OF_CHOICES = 10;
-const CHOICE_HEIGHT = 16;
+const CHOICE_HEIGHT = 20.00; //16.00;
 
 enum EMoveModes
 {
@@ -27,7 +27,7 @@ struct sReceivedItems
 };
 var() array<sReceivedItems> ReceivedItems; // DXR: Array of items for the player.
 
-var Color colConTextFocus, colConTextChoice, colConTextSkill;
+var Color colConTextFocus, colConTextChoice, colConTextSkill, colConTextChoiceUnhighlighted; // DXR: New color (colConTextChoiceUnhighlighted)
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
 var int numChoices;                     // Number of choice buttons
@@ -298,7 +298,7 @@ function ConChoiceWindow CreateConButton(Color colTextNormal, Color colTextFocus
     newButton = new class'ConChoiceWindow';
     newButton.bFocusOnWatch = true;
     newButton.CaptionAlign = TXTA_Left;
-    newButton.WinHeight = 15;
+    newButton.WinHeight = CHOICE_HEIGHT;
     newButton.WinWidth = 1.0;
     newButton.WinTop = 0.0;
     newButton.WinLeft = 0.0;
@@ -322,10 +322,10 @@ function alignChoices()
 
 //    aY = -16.0;
 //   for(i=p.logMessages.length-1; i>=0; i--)
-    aY = ActualHeight() - i_FrameBG.ActualHeight() + 16.00;  // + -16.0;
+    aY = ActualHeight() - i_FrameBG.ActualHeight() + CHOICE_HEIGHT;  // + -16.0;
     if (numChoices > 0)
         for (amount=0; amount<numChoices; amount++)
-             conChoices[amount].wintop = aY +=16;
+             conChoices[amount].wintop = aY +=CHOICE_HEIGHT;
 //             conChoices[amount].wintop = aY +=16;
 }
 
@@ -767,8 +767,11 @@ defaultproperties
     OnKeyEvent=ConWindowActive.InternalOnKeyEvent
     OnMouseRelease=ConWindowActive.InternalOnMouseRelease
 
-    colConTextFocus=(R=255,G=255,B=0,A=255)
-    colConTextChoice=(R=0,G=0,B=255,A=255)
+//    colConTextFocus=(R=255,G=255,B=0,A=255)
+//    colConTextChoice=(R=0,G=0,B=255,A=255)
+    colConTextFocus=(R=255,G=255,B=255,A=255)
+    colConTextChoice=(R=14,G=52,B=88,A=255)
+    colConTextChoiceUnhighlighted=(R=0,G=152,B=188,A=255)
     colConTextSkill=(R=255,G=0,B=0,A=255)
 
     DefaultWidth=1.0 //0.2
