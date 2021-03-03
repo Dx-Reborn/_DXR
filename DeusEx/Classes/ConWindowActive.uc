@@ -4,7 +4,8 @@
 //
 
 class ConWindowActive extends floatingwindow
-                              transient;
+                              transient
+                              config(User);
 
 const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
 const AMOUNT_OF_CHOICES = 10;
@@ -18,7 +19,7 @@ enum EMoveModes
 };
 var EMoveModes moveMode;
 var bool bExpandEffect; // DXR: Использовать эффект как в оригинальной игре
-var bool bChoicesAtTop; // Варианты ответа сверху.
+var config bool bChoicesAtTop; // Варианты ответа сверху.
 
 struct sReceivedItems
 {
@@ -320,13 +321,21 @@ function alignChoices()
     local int amount;
     local float aY;
 
-//    aY = -16.0;
-//   for(i=p.logMessages.length-1; i>=0; i--)
-    aY = ActualHeight() - i_FrameBG.ActualHeight() + CHOICE_HEIGHT;  // + -16.0;
-    if (numChoices > 0)
-        for (amount=0; amount<numChoices; amount++)
-             conChoices[amount].wintop = aY +=CHOICE_HEIGHT;
-//             conChoices[amount].wintop = aY +=16;
+    if (!bChoicesAtTop)
+    {
+        aY = ActualHeight() - i_FrameBG.ActualHeight() + CHOICE_HEIGHT;
+        if (numChoices > 0)
+            for (amount=0; amount<numChoices; amount++)
+                 conChoices[amount].wintop = aY +=CHOICE_HEIGHT;
+    }
+    else
+    {
+        aY = -CHOICE_HEIGHT;
+
+        if (numChoices > 0)
+            for (amount=0; amount<numChoices; amount++)
+                 conChoices[amount].wintop = aY +=CHOICE_HEIGHT;
+    }
 }
 
 function Tick(float deltaTime)
@@ -339,43 +348,28 @@ function Tick(float deltaTime)
     switch(moveMode)
     {
        case MM_Enter:
-       if (!bExpandEffect)
-       {
-           if (a <= 0.1)
-               fadeAlpha += 1; //1
+       if (a <= 0.1)
+           fadeAlpha += 1; //1
 
-           if (i_FrameBG.ImageColor.A < 255) //255
-           {
-               i_FrameBG.ImageColor.A = FadeAlpha;
-               i_FrameBG2.ImageColor.A = FadeAlpha;
-           }
-       }
-       else
+       if (i_FrameBG.ImageColor.A < 255) //255
        {
-            //
+           i_FrameBG.ImageColor.A = FadeAlpha;
+           i_FrameBG2.ImageColor.A = FadeAlpha;
        }
        break;
 
        case MM_Exit:
-       if (!bExpandEffect)
-       {
-           i_FrameBG.ImageColor.A -=1;
-           i_FrameBG2.ImageColor.A -=1;
+       i_FrameBG.ImageColor.A -=1;
+       i_FrameBG2.ImageColor.A -=1;
 
-           i_FrameBG2.WinTop -=0.002;
-           i_FrameBG.WinTop  +=0.002;
+       i_FrameBG2.WinTop -=0.002;
+       i_FrameBG.WinTop  +=0.002;
 
-           winSpeech.WinTop  += 0.002;
-           SpeakerName.WinTop+= 0.002;
+       winSpeech.WinTop  += 0.002;
+       SpeakerName.WinTop+= 0.002;
 
-
-           if ((i_FrameBG2.ImageColor.A < 1) || (i_FrameBG.ImageColor.A < 1))
-                bTickEnabled = false;
-       }
-       else
-       {
-            // Сама не знаю!
-       }
+       if ((i_FrameBG2.ImageColor.A < 1) || (i_FrameBG.ImageColor.A < 1))
+            bTickEnabled = false;
        break;
 
        default:
