@@ -15,7 +15,8 @@ state Activated
         local Pawn P;
         local vector loc;
         local rotator rot;
-        local SmokeTrail puff;
+        local EM_CigSmoke puff;
+        //local SmokeTrail puff;
         
         Super.BeginState();
 
@@ -25,14 +26,16 @@ state Activated
             P.TakeDamage(5, P, P.Location, vect(0,0,0), class'DM_PoisonGas');
             loc = Owner.Location;
             rot = Owner.Rotation;
-            loc += 2.0 * Owner.CollisionRadius * vector(P.GetViewRotation());
+            //loc += 2.0 * Owner.CollisionRadius * vector(P.GetViewRotation());
+            loc += Owner.CollisionRadius * vector(P.GetViewRotation());
             loc.Z += Owner.CollisionHeight * 0.9;
-            puff = Spawn(class'SmokeTrail', Owner,, loc, rot);
-            if (puff != None)
+            puff = Spawn(class'EM_CigSmoke', Owner,, loc, rot);
+            //puff = Spawn(class'SmokeTrail', Owner,, loc, rot);
+            /*if (puff != None)
             {
                 puff.SetDrawScale(1.0);
                 puff.origScale = puff.DrawScale;
-            }
+            } */
             PlaySound(sound'MaleCough');
         }
 
