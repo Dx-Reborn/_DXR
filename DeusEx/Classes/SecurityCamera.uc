@@ -296,9 +296,9 @@ function DeusExPlayer GetPlayerPawn2()
 
 defaultproperties
 {
-     RedLight=Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'
-     GreenLight=Shader'DeusExStaticMeshes0.Plastic.KP_Green_SH'
-     YellowLight=Texture'YellowLightTex'
+     RedLight=Shader'DeusExStaticMeshes0.CameraLights.SC_Red_SH'
+     GreenLight=Shader'DeusExStaticMeshes0.CameraLights.SC_Green_SH'
+     YellowLight=Shader'DeusExStaticMeshes0.CameraLights.SC_Yellow_SH'
      NeutralLight=ConstantColor'DeusExStaticMeshes0.Plastic.KP_Gray'
 
      swingAngle=8192
@@ -326,11 +326,12 @@ defaultproperties
      SoundVolume=192
      CollisionRadius=10.720000
      CollisionHeight=11.000000
-     LightType=LT_Steady
+//     LightType=LT_Steady
+     LightType=LT_None
      LightBrightness=120
      LightHue=80
      LightSaturation=100
-     LightRadius=1
+     LightRadius=0//1
      bRotateToDesired=True
      Mass=20.000000
      Buoyancy=5.000000
@@ -342,9 +343,9 @@ defaultproperties
      LightSkinNum=1
      Skins[0]=Shader'DeusExStaticMeshes0.Metal.SecurityCamera_HD_SH'
      Skins[1]=Shader'DeusExStaticMeshes0.Plastic.KP_Green_SH'
-     Skins[2]=Shader'DXR_CubeMaps.Shaders.ShinyDarkSurface3'
 
-     bDynamicLight=true
+     //bDynamicLight=true
+     bDynamicLight=false
      bShouldBeAlwaysUpdated=true
 }
 

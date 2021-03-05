@@ -3,6 +3,7 @@
 //=============================================================================
 class ScorchMark extends DeusExDecal;
 
+
 defaultproperties
 {
     ProjTexture=Texture'DeusExItems.Skins.FlatFXTex39'

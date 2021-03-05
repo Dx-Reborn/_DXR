@@ -13,6 +13,9 @@ var localized string strMeters;
 var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
 
+var(ConCam) transient vector debug_CamLoc;
+var(ConCam) transient rotator debug_CamRot;
+
 var bool bRenderMover;
 var float vis;
 
@@ -115,6 +118,8 @@ event PostRender(canvas C)
 
     if ((DeusExPlayer(PawnOwner).bExtraDebugInfo) && (!PawnOwner.IsInState('Dying'))) // Если игрок не в стостоянии Dying
          RenderDebugInfo(C);
+
+         RenderConCamDebugInfo(c);
 }
 
 simulated function DisplayMessages(Canvas C)
@@ -326,7 +331,6 @@ function RenderDebugInfo(Canvas c)
     c.Font = font'DXFonts.EU_9';
     c.DrawColor = GoldColor; 
 
-
     StartTrace = PlayerOwner.pawn.Location;
     EndTrace = PlayerOwner.pawn.Location + (Vector(PlayerOwner.pawn.GetViewRotation()) * DebugTraceDist);
     StartTrace.Z += PlayerOwner.pawn.BaseEyeHeight - 5;
@@ -412,6 +416,17 @@ function RenderDebugInfo(Canvas c)
         c.SetPos(c.SizeX/3, c.CurY);
         c.DrawText(DeusExPlayer(PawnOwner).conPlay.currentEvent);
       }
+}
+
+function RenderConCamDebugInfo(canvas u)
+{
+    u.Font = font'DXFonts.EU_9';
+    u.DrawColor = GoldColor; 
+    u.SetPos(20, 400);
+    u.DrawText("PlayerCalcView(): CameraLocation = "$debug_CamLoc);
+    u.SetPos(20, 420);
+    u.DrawText(" CameraRotation = "$debug_CamRot);
+    u.reset();
 }
 
 event Timer()
@@ -588,6 +603,9 @@ exec function PopulateBelt()
 
     // Get a pointer to the player
     myPlayer = DeusExPlayer(PlayerOwner.Pawn);
+
+    if (myPlayer == None)
+    return;
 
     for (anItem=myPlayer.Inventory; anItem!=None; anItem=anItem.Inventory)
     {

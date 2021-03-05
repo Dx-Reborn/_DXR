@@ -6,6 +6,21 @@ class JCDentonMale extends Human config;
 var travel class TravelClass;
 var bool bMouseMode;
 
+var rotator lastCamRot;
+
+exec function SaveCamRot()
+{
+   lastCamRot = DeusExHud(Level.GetLocalPlayerController().myHUD).debug_CamRot;
+   log("saved: "$lastCamRot);
+}
+
+
+exec function RestoreCamRot()
+{
+   conplay.cameraInfo.rotation = lastCamRot;
+}
+
+
 event TravelPostAccept()
 {
     Super.TravelPostAccept();
@@ -254,7 +269,9 @@ exec function debugcon()
 
     conWinThird = ConWindowActive(DeusExPlayerController(Controller).OpenMenuEx("DeusEx.ConWindowActive"));
     log(conWinThird);
-    ConsoleCommand("EditObj "$conWinThird);
+    conWinThird.DisplayText("https://github.com/Dx-Reborn/_DXR/blob/1f942e6bc7c4fe8a9b56d38b1c4f7eb8c517f32a/DeusEx/Classes/TrashCan4a.uc Точнее у меня был набор моделей посуды, но я кажется пока добавила только тёрку и кружки.", self);
+    conWinThird.AppendText("https://github.com/Dx-Reborn/_DXR/blob/1f942e6bc7c4fe8a9b56d38b1c4f7eb8c517f32a/DeusEx/Classes/Trashcan2a.uc");
+//    ConsoleCommand("EditObj "$conWinThird);
 }
 
 exec function invokeCon()
@@ -476,6 +493,7 @@ exec function aWholeBunch()
 //     log(rt.Yaw,'Yaw');
   }
 }
+
 
 
 // ----------------------------------------------------------------------

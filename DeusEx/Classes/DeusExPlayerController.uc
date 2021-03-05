@@ -9,51 +9,55 @@ class DeusExPlayerController extends DXRSaveSystem;
 
 event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator CameraRotation)
 {
- Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
+   Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
 
- if (pawn != none)
- {
-  // check for spy drone and freeze player's view
-  if (Human(pawn).bSpyDroneActive)
-  {
-    if (Human(pawn).aDrone != None)
-    {
-      // First-person view.
-      CameraLocation = Human(pawn).Location;
-      CameraLocation.Z += Human(pawn).EyeHeight;
-      CameraLocation += Human(pawn).WalkBob;
-      return;
-    }
-  }
+   if (pawn != none)
+   {
+      // check for spy drone and freeze player's view
+      if (Human(pawn).bSpyDroneActive)
+      {
+         if (Human(pawn).aDrone != None)
+         {
+            // First-person view.
+            CameraLocation = Human(pawn).Location;
+            CameraLocation.Z += Human(pawn).EyeHeight;
+            CameraLocation += Human(pawn).WalkBob;
+            return;
+         }
+      }
 
-  // Check if we're in first-person view or third-person.  If we're in first-person then
-  // we'll just render the normal camera view.  Otherwise we want to place the camera
-  // as directed by the conPlay.cameraInfo object.
+      // Check if we're in first-person view or third-person.  If we're in first-person then
+      // we'll just render the normal camera view.  Otherwise we want to place the camera
+      // as directed by the conPlay.cameraInfo object.
+      if (bBehindView && (!Human(pawn).InConversation()) && (pawn != none))
+      {
+          Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
+          return;
+      }
 
-  if (bBehindView && (!Human(pawn).InConversation()) && (pawn != none))
-  {
-    Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
-    return;
-  }
+      if ((!Human(pawn).InConversation()) || (Human(pawn).conPlay.GetDisplayMode() == DM_FirstPerson))
+      {
+         // First-person view.
+         ViewActor = Human(pawn);
+         CameraRotation = GetViewRotation();
+         CameraLocation = Human(pawn).Location;
+         CameraLocation.Z += Human(pawn).EyeHeight;
+         CameraLocation += Human(pawn).WalkBob;
+         return;
+      }
 
-  if ((!Human(pawn).InConversation()) || (Human(pawn).conPlay.GetDisplayMode() == DM_FirstPerson ))
-  {
-    // First-person view.
-    ViewActor = Human(pawn);
-    CameraRotation = GetViewRotation();
-    CameraLocation = Human(pawn).Location;
-    CameraLocation.Z += Human(pawn).EyeHeight;
-    CameraLocation += Human(pawn).WalkBob;
-    return;
-  }
+      // Allow the ConCamera object to calculate the camera position and 
+      // rotation for us (in other words, take this sloppy routine and 
+      // hide it elsewhere).
+      if (Human(pawn).conPlay.cameraInfo.CalculateCameraPosition(ViewActor, CameraLocation, CameraRotation) == false)
+          Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
+   }
 
-  // Allow the ConCamera object to calculate the camera position and 
-  // rotation for us (in other words, take this sloppy routine and 
-  // hide it elsewhere).
- 
-  if (Human(pawn).conPlay.cameraInfo.CalculateCameraPosition(ViewActor, CameraLocation, CameraRotation) == false)
-    Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
- }
+/*      if (DeusExHUD(myHUD) != None)
+      {
+          DeusExHUD(myHUD).debug_CamLoc = CameraLocation;
+          DeusExHUD(myHUD).debug_CamRot = CameraRotation;
+      }*/
 }
 
 //------------------------------------------------

@@ -12,7 +12,6 @@ class DeusExDecoration extends DeusExDecorationBase;
 #exec obj load file=DeusExStaticMeshes0.usx
 #exec obj load file=DeusExDeco_EX.utx // двухсторонние шейдеры
 
-
 var(Decoration) class<inventory> content2;
 var(Decoration) class<inventory> content3;
 var int AmountOfFire;
@@ -739,11 +738,13 @@ function Explode(vector HitLocation)
         ring.size = explosionRadius / 32.0;
 
     // spawn a mark
-    s = spawn(class'ScorchMark', Base,, Location, rot(-16384,0,0));
-/*    if (s != None)
-    {
-       s.SetDrawScale(FClamp(explosionDamage/30, 0.1, 3.0)); // Похоже это ничего не дает
-    }*/
+    s = spawn(class'ScorchMark', /*Base*/,, Location, rot(-16384,0,0));
+//    if (s != None)
+//    {
+       log(s);
+       s.SetDrawScale(10.00); //(FClamp(explosionDamage/30, 0.1, 3.0)); // Похоже это ничего не дает
+       s.AbandonProjector(10.00);
+//    }
 
     // spawn some rocks
     for (i=0; i<explosionDamage/30+1; i++)
@@ -1020,7 +1021,7 @@ function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFra
 {
     local int i;
     local actor A, Toucher;
-    local DeusExFragment s;
+    local DeusExFragment fr;
 
     if (bOnlyTriggerable)
         return;
@@ -1037,15 +1038,15 @@ function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFra
 
     for (i=0 ; i<NumFrags + 5; i++) 
     {
-        s = DeusExFragment(Spawn(FragType, Owner));
-        if (s != None)
+        fr = DeusExFragment(Spawn(FragType, Owner));
+        if (fr != None)
         {
-            s.Instigator = Instigator;
-            s.CalcVelocity(Momentum,0);
-            s.SetDrawScale(DSize*0.5+0.7*DSize*FRand());
-            s.Skins[0] = GetMeshTexture();
+            fr.Instigator = Instigator;
+            fr.CalcVelocity(Momentum,0);
+            fr.SetDrawScale(DSize*0.5+0.7*DSize*FRand());
+            fr.Skins[0] = GetMeshTexture();
             if (bExplosive)
-                s.bSmoking = True;
+                fr.bSmoking = True;
         }
     }
 
