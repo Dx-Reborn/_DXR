@@ -17,6 +17,7 @@ var   sound    MiscSound;
 // DXR: New vars
 var finalBlend TransMat;
 var EM_ThinTrail smokegen;
+var StaticMesh SFragments[11]; // DXR: To use StaticMeshes for fragments.
 
 // Создать прозрачный вариант текстуры
 function material CreateTranslucentMaterial()
@@ -84,6 +85,29 @@ event HitWall(vector HitNormal, actor HitWall)
 
     lastHitLoc = Location;
 }
+
+// DXR: Overridden to use new SFragments
+auto state Flying
+{
+    function BeginState()
+    {
+        RandSpin(125000);
+        if (abs(RotationRate.Pitch)<10000) 
+            RotationRate.Pitch=10000;
+        if (abs(RotationRate.Roll)<10000) 
+            RotationRate.Roll=10000;
+
+        if (DrawType==DT_Mesh)
+            LinkMesh(Fragments[int(FRand()*numFragmentTypes)]);
+        else if (DrawType==DT_StaticMesh)
+            SetStaticMesh(SFragments[int(FRand()*numFragmentTypes)]);
+
+        if (Level.NetMode == NM_Standalone)
+            LifeSpan = 20 + 40 * FRand();
+        SetTimer(5.0,True);         
+    }
+}
+
 
 state Dying
 {
