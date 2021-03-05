@@ -54,12 +54,22 @@ defaultproperties
     largeIconWidth=29
     largeIconHeight=43
 
-    Mesh=Mesh'DeusExItems.Cigarettes'
+/*    Mesh=Mesh'DeusExItems.Cigarettes'
     PickupViewMesh=Mesh'DeusExItems.Cigarettes'
     FirstPersonViewMesh=Mesh'DeusExItems.Cigarettes'
+*/
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.Stogie_HD_Pickup'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.Stogie_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Stogie_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
 
     CollisionRadius=5.200000
     CollisionHeight=1.320000
     Mass=2.000000
     Buoyancy=3.000000
 }
+
+
+
