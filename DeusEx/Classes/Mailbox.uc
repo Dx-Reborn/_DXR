@@ -7,26 +7,18 @@ var() bool bSpawnLetters;
 
 event Destroyed()
 {
-    local MailLetter L;
-    local int i;
-    local int rnd;
+    local int i, rnd;
+    local EM_FlyingLetters Letters;
 
     Super.Destroyed();
 
     if (bSpawnLetters)
     {
-       rnd = 5 + rand(10);
+       rnd = 1 + rand(2);
 
        for (i=0;i<rnd;i++)
        {
-           L = spawn(class'MailLetter', , , Location,);
-           if (L != None)
-           {
-              L.Velocity = vRand() * 15;
-              L.velocity.Z = -200 * fRand();
-              L.Lifespan = 10.0 + Rand(30);
-              L.SetPhysics(PHYS_Flying);
-           }
+           Letters = spawn(class'EM_FlyingLetters', , , Location + VRand(),);
        }
     }
 }
