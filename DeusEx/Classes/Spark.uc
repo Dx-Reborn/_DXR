@@ -58,17 +58,21 @@ function SpawnDecal(Name DecalName, vector HitLoc, vector HitNormal)
 
 // Создать эффект попадания по Actor (DeusExDecoration?)
 // Примечание: лучше всего это будет работать с цилиндрическими декорациями!
-function SpawnActorEffect(Actor Actor, vector Loc)
+function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
 {
    if (Actor == None)
        return;
 
    if (Actor.IsA('BarrelFire') || Actor.IsA('MetalBoxes') || Actor.IsA('MailBox') ||
       (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || 
-       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera'))
+       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera') ||
+       Actor.IsA('FireExtinguisher'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
+
+      if (Actor.IsA('FireExtinguisher'))
+          FireExtinguisher(Actor).aHitNormal = HitNormal;
    }
    else if (Actor.IsA('RoadBlock'))
    {
@@ -90,7 +94,7 @@ function SpawnActorEffect(Actor Actor, vector Loc)
       Spawn(class'EM_WoodHit',,,Loc,);
       PlayActorSound('Wood');      
    }
-   else if (Actor.IsA('Trashbag') || Actor.IsA('Trashbag2'))
+   else if (Actor.IsA('Trashbags'))
    {
       Spawn(class'EM_NeutralHit',,,Loc,);
       PlayActorSound('Plastic');      
@@ -287,7 +291,7 @@ function name GetImpactMaterial()
             }
         }
         if (!target.bWorldGeometry)
-            SpawnActorEffect(Target, HitLocation);
+            SpawnActorEffect(Target, HitLocation, HitNormal);
     }
     return texGroup;
 }

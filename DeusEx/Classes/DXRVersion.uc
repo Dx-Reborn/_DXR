@@ -1,7 +1,7 @@
 // Generated automatically, don't modify this class!                       
 class DXRVersion extends Resource;                                         
                                                                            
-const VER="9970";                                                  
+const VER="10022";                                                  
                                                                            
 static function string GetDXRVersion()                                     
 {                                                                          

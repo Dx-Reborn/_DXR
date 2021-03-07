@@ -3,9 +3,39 @@
 //=============================================================================
 class FireExtinguisher extends DeusExPickup;
 
+var bool bBeenDamaged;
+var EM_FireExtExplosion FireExtEffect;
+var vector aHitNormal;
+var FireExtinguisher_DMG replacement; // ѕри повреждении заменить на использованный.
+
+function BecomePickup()
+{
+    Super.BecomePickup();
+    SetCollision(true, true);
+}
+
 event Timer()
 {
     Destroy();
+}
+
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
+{
+    if (bBeenDamaged) // DXR: Ётого не должно произойти!
+        return;
+    if (damageType == class'DM_Shot')
+        FireExtEffect = Spawn(class'EM_FireExtExplosion',,,hitlocation, Rotator(-aHitNormal) + rot(0, -16384, 0)); // ¬ычесть Yaw 16384
+    if (FireExtEffect != None)
+    {
+        bBeenDamaged = true;
+        SetCollision(false, false); // 
+        replacement = spawn(class'FireExtinguisher_DMG',,,Location, Rotation);
+        if (replacement != None)
+        {
+            replacement.PlaySound(Sound'STALKER_Sounds.Hit.Steam01',SLOT_None, 1.5,,, 0.5);
+            Destroy();
+        }
+    }
 }
 
 state Activated
@@ -73,14 +103,18 @@ defaultproperties
     largeIcon=Texture'DeusExUI.Icons.LargeIconFireExtinguisher'
     largeIconWidth=25
     largeIconHeight=49
-
     LandSound=Sound'DeusExSounds.Generic.GlassDrop'
-
-    Mesh=Mesh'DeusExItems.FireExtinguisher'
-    PickupViewMesh=Mesh'DeusExItems.FireExtinguisher'
-    FirstPersonViewMesh=Mesh'DeusExItems.FireExtinguisher'
-
-    CollisionRadius=8.000000
+//    Mesh=Mesh'DeusExItems.FireExtinguisher'
+//    PickupViewMesh=Mesh'DeusExItems.FireExtinguisher'
+//    FirstPersonViewMesh=Mesh'DeusExItems.FireExtinguisher'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.FireExtinguisher_HD'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.FireExt_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.FireExtinguisher_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
+//    CollisionRadius=8.000000
+    CollisionRadius=3.10
     CollisionHeight=10.27
     Mass=10.000000
     Buoyancy=8.000000

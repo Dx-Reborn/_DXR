@@ -25,8 +25,8 @@ function material CreateTranslucentMaterial()
    TransMat = FinalBlend(Level.ObjectPool.AllocateObject(class'FinalBlend'));
    if (TransMat != none)
    {
-      TransMat.Material = class'ObjectManager'.static.GetActorMeshTexture(self, 0);
-      TransMat.FrameBufferBlending = FB_Brighten;
+      TransMat.Material = class'ObjectManager'.static.GetActorMeshTexture(self);
+      TransMat.FrameBufferBlending = FB_Translucent;
       TransMat.ZWrite = true;
       TransMat.ZTest = true;
       TransMat.AlphaTest = true;
@@ -99,8 +99,8 @@ auto state Flying
 
         if (DrawType==DT_Mesh)
             LinkMesh(Fragments[int(FRand()*numFragmentTypes)]);
-        else if (DrawType==DT_StaticMesh)
-            SetStaticMesh(SFragments[int(FRand()*numFragmentTypes)]);
+        if (DrawType==DT_StaticMesh)
+            SetStaticMesh(SFragments[Rand(numFragmentTypes)]);
 
         if (Level.NetMode == NM_Standalone)
             LifeSpan = 20 + 40 * FRand();
