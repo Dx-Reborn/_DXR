@@ -15,10 +15,8 @@ enum ESkinColor
 };
 
 var() travel ESkinColor SkinColor;
+var material flagSkins[7];
 
-// ----------------------------------------------------------------------
-// BeginPlay()
-// ----------------------------------------------------------------------
 
 event BeginPlay()
 {
@@ -31,34 +29,43 @@ event BeginPlay()
 // TravelPostAccept()
 // ToDo: запомнить и считать из DeusExGlobals
 // ----------------------------------------------------------------------
-function TravelPostAccept()
+event TravelPostAccept()
 {
     Super.TravelPostAccept();
 
     SetSkin();
 }
 
-// ----------------------------------------------------------------------
-// SetSkin()
-// ----------------------------------------------------------------------
+function ResetScaleGlow()
+{
+    SetSkin();
+}
 
 function SetSkin()
 {
     switch (SkinColor)
     {
-        case SC_China:      Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_China_HD'; break;
-        case SC_France:     Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_France_HD'; break;
-        case SC_President:  Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_Eagle_HD'; break;
-        case SC_UNATCO:     Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_Unatco_HD'; break;
-        case SC_USA:        Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_USA_HD'; break;
-        case SC_Russia:     Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_Russia_HD'; break;
-        case SC_Ukraine:    Skins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_Ukraine_HD'; break;
+        case SC_China:      Skins[0] = flagSkins[0]; break;
+        case SC_France:     Skins[0] = flagSkins[1]; break;
+        case SC_President:  Skins[0] = flagSkins[2]; break;
+        case SC_UNATCO:     Skins[0] = flagSkins[3]; break;
+        case SC_USA:        Skins[0] = flagSkins[4]; break;
+        case SC_Russia:     Skins[0] = flagSkins[5]; break;
+        case SC_Ukraine:    Skins[0] = flagSkins[6]; break;
     }
 }
 
 
 defaultproperties
 {
+     flagSkins[0] = Shader'DeusExStaticMeshes0.Flags.Flag_China_HD'; break;
+     flagSkins[1] = Shader'DeusExStaticMeshes0.Flags.Flag_France_HD'; break;
+     flagSkins[2] = Shader'DeusExStaticMeshes0.Flags.Flag_Eagle_HD'; break;
+     flagSkins[3] = Shader'DeusExStaticMeshes0.Flags.Flag_Unatco_HD'; break;
+     flagSkins[4] = Shader'DeusExStaticMeshes0.Flags.Flag_USA_HD'; break;
+     flagSkins[5] = Shader'DeusExStaticMeshes0.Flags.Flag_Russia_HD'; break;
+     flagSkins[6] = Shader'DeusExStaticMeshes0.Flags.Flag_Ukraine_HD'; break;
+
      FragType=Class'DeusEx.WoodFragment'
      ItemName="Flag Pole"
 //     mesh=mesh'DeusExDeco.FlagPole'

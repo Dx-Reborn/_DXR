@@ -238,10 +238,18 @@ event PostBeginPlay()
 function DropThings()
 {
     local actor A;
+    local int i;
 
-    // drop everything that is on us
-    foreach BasedActors(class'Actor', A)
-        A.SetPhysics(PHYS_Falling);
+    // DXR: WTF?
+    for (i=0; i<100; i++)
+    {   // drop everything that is on us
+        foreach BasedActors(class'Actor', A)
+        {
+            A.SetBase(None);
+            A.SetPhysics(PHYS_Falling);
+//        log(A @ string(GetEnum(enum'EPhysics', A.Physics)));
+        }
+    }
 }
 
 //
