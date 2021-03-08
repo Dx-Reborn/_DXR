@@ -26,7 +26,7 @@ event Tick(float deltaTime)
     local ScriptedPawn P;
     local DeusExPlayer Player;
     local Vector dist;
-    local float blinkRate;//, mult;
+    local float blinkRate;
     local float proxRelevance;
 
     Super.Tick(deltaTime);
@@ -268,7 +268,6 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
 
             if (damageType == class'DM_Exploded')
             {
-                //puff = spawn(class'SmokeTrail',,, loc);
                 puff = Spawn(class'EM_SteamRegular', Self,, loc, rot(16384,0,0));
                 if (puff != None)
                 {
@@ -276,11 +275,6 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
                     puff.Emitters[0].LifeTimeRange.Min = puff.Emitters[0].LifeTimeRange.Max;
                     puff.Emitters[0].RespawnDeadParticles=false;
                     puff.lifespan = puff.Emitters[0].LifeTimeRange.Max + 0.5;
-                    /*puff.RiseRate = FRand() + 1;
-                    puff.SetDrawScale(FRand() + 3.0);
-                    puff.OrigScale = puff.DrawScale;
-                    puff.LifeSpan = FRand() * 10 + 10;
-                    puff.OrigLifeSpan = puff.LifeSpan;*/
                 }
 
                 light = Spawn(class'ExplosionLight',,, HitLocation);

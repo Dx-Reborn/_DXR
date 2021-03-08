@@ -741,9 +741,7 @@ function Explode(vector HitLocation)
     s = spawn(class'ScorchMark', /*Base*/,, Location, rot(-16384,0,0));
 //    if (s != None)
 //    {
-       log(s);
-       s.SetDrawScale(10.00); //(FClamp(explosionDamage/30, 0.1, 3.0)); // Похоже это ничего не дает
-       s.AbandonProjector(10.00);
+       s.SetDrawScale(FClamp(explosionDamage/30, 0.1, 3.0)); // Похоже это ничего не дает
 //    }
 
     // spawn some rocks

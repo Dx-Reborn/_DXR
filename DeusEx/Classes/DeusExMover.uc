@@ -14,6 +14,8 @@ struct sDestroyedStuff
 };
 var() array<sDestroyedStuff> PostDestroyedStuff;
 
+const DROP_THINGS_MAX_TRIES = 50;
+
 
 
 // DEUS_EX AMSD Added to make vision aug run faster.  If true, the vision aug needs to check this object more closely.
@@ -241,7 +243,7 @@ function DropThings()
     local int i;
 
     // DXR: WTF?
-    for (i=0; i<100; i++)
+    for (i=0; i<DROP_THINGS_MAX_TRIES; i++)
     {   // drop everything that is on us
         foreach BasedActors(class'Actor', A)
         {

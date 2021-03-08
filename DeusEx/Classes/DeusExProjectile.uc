@@ -2,8 +2,8 @@
 // DeusExProjectile.
 //=============================================================================
 class DeusExProjectile extends Projectile
-    abstract
-    placeable;
+                                 abstract
+                                placeable;
 
 #exec OBJ LOAD FILE=Effects_EX
 
@@ -103,7 +103,7 @@ function GrabProjectile(DeusExPlayer player)
             player.FrobTarget = None;
         }
     }
-  log(self $ " -- GrabProjectile() ="@item);
+//  log(self $ " -- GrabProjectile() ="@item);
 }
 
 //
@@ -182,15 +182,12 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
     if (ExplosionDecal != None)
     {
         mark = DeusExDecal(Spawn(ExplosionDecal, Self,, HitLocation, Rotator(-HitNormal)));
-//      Spawn(ExplosionDecal, Self,, HitLocation, Rotator(-HitNormal));
-//                  Spawn(ExplosionDecal,self,,Location, rotator(-HitNormal));
         if (mark != None)
         {
         //  mark.SetDrawScale(FClamp(damage/30, 0.5, 3.0));
             mark.SetDrawScale(FClamp(damage*10, 2.5, 5.0));
         }
-
-    //  ExplosionDecal = None;
+    ExplosionDecal = None;
     }
 
     if (bDebris)
@@ -286,7 +283,7 @@ Begin:
 
 auto state Flying
 {
-    function ProcessTouch (Actor Other, Vector HitLocation)
+    function ProcessTouch(Actor Other, Vector HitLocation)
     {
         if (bStuck)
             return;
@@ -301,7 +298,7 @@ auto state Flying
         }
     }
 
-    function HitWall(vector HitNormal, actor Wall)
+    event HitWall(vector HitNormal, actor Wall)
     {
         if (bStickToWall)
         {
@@ -320,7 +317,6 @@ auto state Flying
             bDebris = False;
 
         SpawnEffects(Location, HitNormal, Wall);
-
         Super.HitWall(HitNormal, Wall);
     }
 
@@ -358,14 +354,12 @@ auto state Flying
             Destroy();
     }
 
-    function BeginState()
+    event BeginState()
     {
-
         initLoc = Location;
         initDir = vector(Rotation); 
 
         Velocity = speed*initDir;
-
         PlaySound(SpawnSound, SLOT_None);
     }
 }
