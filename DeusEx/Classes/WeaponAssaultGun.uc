@@ -8,6 +8,8 @@ var EM_PistolSmoke extrapuff;
 var int amountOfShots;
 var Name ShootAnim;
 
+var Sound FireSounds[5];
+
 const FirstThreshold = 10;
 const SecondThreshold = 20;
 const Threshold3 = 40;
@@ -157,14 +159,27 @@ function Sound GetFireSound()
         else
         sound = class'DXRWeaponSoundManager'.static.GetAssaultGunFire(gl.WS_Preset);
         if (sound != None)
-        return sound;
+            return sound;
         else
-        return Super.GetFireSound();
+            return FireSounds[Rand(4)]; //Super.GetFireSound();
     }
     if (AmmoName != default.AmmoName)
         return Get20mmFireSound();
-    else return Super.GetFireSound();
+    else 
+        return FireSounds[Rand(4)];//Super.GetFireSound();
 }
+
+
+function PlayFireSound()
+{
+    if (bHasSilencer)
+        Owner.PlaySound(GetSilencedSound(), SLOT_Misc,,, 2048);
+    else
+        Owner.PlaySound(GetFireSound(), SLOT_None,,false, 2048, 1.0, true);
+}                                                //bNoOverride
+// DXR: Я о5 всё забыла!
+// function PlaySound(sound Sound,optional ESoundSlot Slot,optional float Volume,optional bool bNoOverride,optional float Radius,optional float Pitch,optional bool Attenuate);
+
 
 
 function Sound GetReloadBeginSound()
@@ -223,6 +238,12 @@ function Sound GetDownSound()
 
 defaultproperties
 {
+     FireSounds[0]=Sound'STALKER_Sounds.Weapons.AssaultGunFire1'
+     FireSounds[1]=Sound'STALKER_Sounds.Weapons.AssaultGunFire2'
+     FireSounds[2]=Sound'STALKER_Sounds.Weapons.AssaultGunFire3'
+     FireSounds[3]=Sound'STALKER_Sounds.Weapons.AssaultGunFire4'
+     FireSounds[4]=Sound'STALKER_Sounds.Weapons.AssaultGunFire5'
+
      ShellCasingDrawScale=0.8
      ShootAnim="Shoot"
 

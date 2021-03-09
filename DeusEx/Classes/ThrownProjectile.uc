@@ -2,7 +2,7 @@
 // ThrownProjectile.
 //=============================================================================
 class ThrownProjectile extends DeusExProjectile
-    abstract;
+                                       abstract;
 
 var() float             Elasticity;
 var() float             fuseLength;
@@ -357,12 +357,12 @@ auto state Flying
         local Rotator rot;
         local float   volume;
 
-        Velocity = Elasticity*(( Velocity dot HitNormal ) * HitNormal * (-2.0) + Velocity);   // Reflect off Wall w/damping
+        Velocity = Elasticity*((Velocity dot HitNormal) * HitNormal * (-2.0) + Velocity);   // Reflect off Wall w/damping
         speed = VSize(Velocity);    
         if (bFirstHit && speed<400) 
             bFirstHit=False;
         RotationRate = RotRand(True);
-        if ( (speed < 60) && (HitNormal.Z > 0.7) )
+        if ((speed < 60) && (HitNormal.Z > 0.7))
         {
             volume = 0.5+FRand()*0.5;
             PlaySound(MiscSound, SLOT_None, volume,, 512, 0.85+FRand()*0.3);

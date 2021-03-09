@@ -1528,7 +1528,12 @@ function PlayFiring()
     }
 
     IncrementFlashCount(0); // DXR: Для эффектов в 3drPersonActor
+    PlayFireSound();
+}
 
+
+function PlayFireSound()
+{
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else

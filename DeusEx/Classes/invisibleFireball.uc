@@ -10,7 +10,7 @@ function SpawnEffects(vector HitLocation, vector HitNormal, Actor Other)
 
    if (class'DeusExGlobals'.static.GetGlobals().bBurnStaticObjects)
    {
-       if (Other.bWorldGeometry || Other == Level)
+       if (Other.bWorldGeometry || Other == Level || Other.IsA('BreakableGlass') || Other.IsA('BreakableWall'))
            spawn(class'EM_StickyFire',,,HitLocation);
    }
 }
