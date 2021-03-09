@@ -18,6 +18,11 @@ var localized string ErrorMessages[5];
 
 var transient bool bIsQuickLoading; // transient для того чтобы значение переменной никогда не сохранялось.
 
+event RightBeforeSaveGame()
+{
+   log("Executed after PreSaveGame()");
+}
+
 /*--- Создать каталог Save\Current\ ---*/
 event SetInitialState()
 {

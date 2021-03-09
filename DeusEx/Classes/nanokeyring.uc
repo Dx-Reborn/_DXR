@@ -119,13 +119,23 @@ function bool HasKey(Name KeyToLookFor)
 
     bHasKey = False;
 
-  for(x=0; x<NanoKeys.Length; x++)
-  {
-      if(NanoKeys[x].KeyID == KeyToLookFor)
-      {
-          bHasKey=true;
-      }
-  }
+    GetKeysFromPockets(); // Сначала считать массив ключей
+
+    for(x=0; x<NanoKeys.Length; x++)
+    {
+        if(NanoKeys[x].KeyID == KeyToLookFor)
+        {
+            bHasKey=true;
+        }
+    }
+
+    for(x=0; x<GetPlayer().NanoKeys.Length; x++)
+    {
+        if(GetPlayer().NanoKeys[x].KeyID == KeyToLookFor)
+        {
+            bHasKey=true;
+        }
+    }
     return bHasKey;
 }
 

@@ -1229,7 +1229,7 @@ function PickupNanoKey(NanoKey newKey)
 {
     KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
     KeyRing.GiveKey(newKey.KeyID, newKey.Description);
-    ClientMessage(Sprintf(AddedNanoKey, newKey.Description));
+    ClientMessage(Sprintf(AddedNanoKey, newKey.Description, "Id="$newKey.KeyID));
 }
 
 function bool IsLeaning()
@@ -6490,7 +6490,7 @@ defaultproperties
     PrimaryGoalCompleted="Primary Goal Completed"
     SecondaryGoalCompleted="Secondary Goal Completed"
     EnergyDepleted="Bio-electric energy reserves depleted"
-    AddedNanoKey="%s added to Nano Key Ring"
+    AddedNanoKey="%s added to Nano Key Ring %s"
     HealedPointsLabel="Healed %d points"
     HealedPointLabel="Healed %d point"
     SkillPointsAward="%d skill points awarded"

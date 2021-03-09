@@ -22,11 +22,11 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
     pmTabs = new(none) class'DXRTabControl';
     pmTabs.WinWidth = 800;
-		pmTabs.WinLeft = controller.ResX/2 - 400;
-		pmTabs.WinTop = controller.ResY/2 - 320;
-		pmTabs.WinHeight=2.1;
-		pmTabs.bAcceptsInput=true;
-		pmTabs.bDockPanels=true;
+        pmTabs.WinLeft = controller.ResX/2 - 400;
+        pmTabs.WinTop = controller.ResY/2 - 320;
+        pmTabs.WinHeight=2.1;
+        pmTabs.bAcceptsInput=true;
+        pmTabs.bDockPanels=true;
     AppendComponent(pmTabs, true);
 
     GUIHeader(Controls[0]).DockedTabs = pmTabs;
@@ -51,7 +51,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
   bExit.WinWidth = 68;
   bExit.WinLeft = 726;
   bExit.WinTop = 0;//-11;
-	AppendComponent(bExit, true);
+    AppendComponent(bExit, true);
 }
 
 event HandleParameters(string Param1, string Param2)
@@ -61,7 +61,6 @@ event HandleParameters(string Param1, string Param2)
 
   else if (Param1 =="HEALTH")
   pmTabs.ActivateTabByName(strHealth, true);
-
 }
 
 function IWantToDrawSomething(canvas u)
@@ -127,15 +126,15 @@ function InternalOnClose(bool bCancelled)
 {
   DeusExHUD(PlayerOwner().myHUD).cubemapmode = false;
 
-	if (gl.lastMedBot != None)
-	{
-//		if (!bSkipAnimation)
-//		{
-			gl.lastMedBot.PlayAnim('Stop');
-			gl.lastMedBot.PlaySound(sound'MedicalBotLowerArm', SLOT_None);
-			gl.lastMedBot.FollowOrders();
-//		}
-	}
+    if (gl.lastMedBot != None)
+    {
+//      if (!bSkipAnimation)
+//      {
+            gl.lastMedBot.PlayAnim('Stop');
+            gl.lastMedBot.PlaySound(sound'MedicalBotLowerArm', SLOT_None);
+            gl.lastMedBot.FollowOrders();
+//      }
+    }
 }
 
 event Free() // This control is no longer needed
@@ -146,16 +145,16 @@ event Free() // This control is no longer needed
 
 function SetMedicalBot(MedicalBot newBot, optional bool bPlayAnim)
 {
-	if (newBot != None)
-	{
-		newBot.StandStill();
+    if (newBot != None)
+    {
+        newBot.StandStill();
 
-		if (bPlayAnim)
-		{
-			newBot.PlayAnim('Start');
-			newBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
-		}
-	}
+        if (bPlayAnim)
+        {
+            newBot.PlayAnim('Start');
+            newBot.PlaySound(sound'MedicalBotRaiseArm', SLOT_None);
+        }
+    }
 }
 
 
@@ -191,16 +190,16 @@ defaultproperties
  miCorrectorY=6
 
   Begin Object class=GUIHeader name=dxHeader
-		Caption=""
-		StyleName=""
-		WinWidth=810
-		WinHeight=32.0
-		WinLeft=-6.00
-		WinTop=-5.00
-		bBoundToParent=true
-		DockAlign=PGA_None
-	End Object
-	Controls(0)=dxHeader
+        Caption=""
+        StyleName=""
+        WinWidth=810
+        WinHeight=32.0
+        WinLeft=-6.00
+        WinTop=-5.00
+        bBoundToParent=true
+        DockAlign=PGA_None
+    End Object
+    Controls(0)=dxHeader
 
   OnOpen=InternalOnOpen
   OnClose=InternalOnClose
@@ -208,8 +207,8 @@ defaultproperties
   OnRender=IWantToDrawSomething
 
   Background=none
-	WinWidth=800
-	WinHeight=600
-	WinTop=0.0
-	WinLeft=0.0
+    WinWidth=800
+    WinHeight=600
+    WinTop=0.0
+    WinLeft=0.0
 }

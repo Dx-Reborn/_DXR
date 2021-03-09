@@ -7,8 +7,10 @@ class DeusExHUD extends MouseHUD;
 
 const DebugTraceDist = 512;
 var localized string TestUkr_String; // Для проверки Украинского языка
-
 var localized string strMeters;
+
+var array<String> FlagsArray; // DXR: For flags list
+var bool bRenderQFlags;
 
 var transient bool bConversationInvokeRadius;
 var transient string DebugConString, DebugConString2;
@@ -120,6 +122,9 @@ event PostRender(canvas C)
          RenderDebugInfo(C);
 
          RenderConCamDebugInfo(c);
+
+         if (bRenderQFlags)
+             RenderQuickFlags(c);
 }
 
 simulated function DisplayMessages(Canvas C)
@@ -906,6 +911,49 @@ simulated function LinkActors()
         PawnOwnerPRI = PlayerOwner.PlayerReplicationInfo;
 }
 
+exec function ToggleQFlags()
+{
+    bRenderQFlags =!bRenderQFlags;
+}
+
+function RenderQuickFlags(canvas u)
+{
+   local int x;
+   local gameflags.flag Flag;
+   local string valueStr;
+
+   u.Font = font'DXFonts.EU_8';
+   u.SetDrawColor(255,255,255,255);
+
+   u.SetPos(5,0);
+   u.DrawTileStretched(Texture'Engine.BlackTexture', 500, 12 * flagsArray.Length);
+
+   flagsArray = class'GameFlags'.static.GetAllFlagIds(true);
+
+   if (flagsArray.Length > 0)
+   {
+       for(x=0; x<FlagsArray.Length; x++)
+       {
+           class'GameFlags'.static.GetFlag(FlagsArray[x], Flag);
+
+           if (Flag.value == 0)
+               valueStr = "яFALSE";
+           else 
+           if (Flag.value == 1)
+               valueStr = "я@TRUE";
+
+//           u.SetPos(5,12 * x);
+  //         u.DrawTileStretched(Texture'Engine.BlackTexture', 500, 12 * x);
+           u.SetPos(5, 12 * x);
+           u.DrawText(FlagsArray[x]$"| = "$valueStr$", expires at "$flag.ExpireLevel);
+       }
+   }
+   else
+   {
+       u.SetPos(5, 100);
+       u.DrawText("Game flags list is empty");
+   }
+}
 
 
 defaultproperties
