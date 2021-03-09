@@ -20,5 +20,5 @@ defaultproperties
      RandomTexArray[8]=texture'DXR_Decals.Decals.WoodCrack8'
 
      ProjTexture=texture'DXR_Decals.Decals.WoodCrack0'
-     DrawScale=0.2
+     DrawScale=0.1 //0.2
 }

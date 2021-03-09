@@ -693,7 +693,7 @@ function RenderToolBelt(Canvas C)
         C.DrawIcon(Texture'HUDObjectBeltBackground_Cell',1.0);
         C.SetPos(C.CurX-13,C.CurY);
 
-        if ((PlayerPawn(PawnOwner).Objects[beltIt] != none) && PlayerPawn(PawnOwner).Objects[beltIt].bInObjectBelt)
+        if ((PlayerPawn(PawnOwner).Objects[beltIt] != none) && (PlayerPawn(PawnOwner).Objects[beltIt].bInObjectBelt) && (PlayerPawn(PawnOwner).Objects[beltIt].Owner.isA('PlayerPawn')))
         {
             if (PlayerPawn(PawnOwner).Objects[beltIt].IsA('DeusExWeapon'))
             {

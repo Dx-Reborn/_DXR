@@ -20,5 +20,5 @@ defaultproperties
      RandomTexArray[8]=texture'DXR_Decals.Decals.MetalDent8'
 
      ProjTexture=texture'DXR_Decals.Decals.MetalDent0'
-     DrawScale=0.2
+     DrawScale=0.1 // 0.2
 }

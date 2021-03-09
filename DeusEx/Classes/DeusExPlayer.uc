@@ -263,7 +263,9 @@ function DeleteInventory(inventory item)
     // Remove the item from the object belt
     hud = DeusExHUD(level.GetLocalPlayerController().myHUD);
     if (hud != None)
-        hud.RemoveObjectFromBelt(item);
+        hud.DeleteInventory(item);
+
+        log("DeleteInventory? "$item);
 
     Super.DeleteInventory(item);
 }

@@ -23,7 +23,7 @@ const STATE_SHADOWING_DIST = 900;
 const HIDEPOINT_CHECK_RADIUS = 10000;
 
 const FALLBACK_IF_STUCK_VALUE = -10.00;
-const CHAIR_IS_CLOSE_DIST = 70;
+const CHAIR_IS_CLOSE_DIST = 0.1; // 70
 
 // Из Unreal, для постановки состояния в очередь.
 var name NextState;

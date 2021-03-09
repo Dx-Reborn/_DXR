@@ -789,8 +789,7 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
             // item still has any copies left first
 
             if (((invItemFrom.IsA('DeusExPickup')) && (DeusExPickup(invItemFrom).bCanHaveMultipleCopies) && (DeusExPickup(invItemFrom).NumCopies <= 0)) ||
-               ((invItemFrom.IsA('DeusExPickup')) && (!DeusExPickup(invItemFrom).bCanHaveMultipleCopies)) ||
-               (!invItemFrom.IsA('DeusExPickup')))
+               ((invItemFrom.IsA('DeusExPickup')) && (!DeusExPickup(invItemFrom).bCanHaveMultipleCopies)) || (!invItemFrom.IsA('DeusExPickup')))
             {
                 invItemFrom.Destroy();
                 invItemFrom = None;

@@ -85,7 +85,6 @@ defaultproperties
    CollisionHeight=0.860000
    Mass=20.000000
    Buoyancy=10.000000
-   inventorygroup=10
 
    FirstPersonViewSkins[0]=Texture'DeusExItems.Skins.MultitoolPOVTex1'
    FirstPersonViewSkins[1]=Texture'DeusExItems.Skins.WeaponHandsTex'

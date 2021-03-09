@@ -3049,7 +3049,7 @@ function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
 
     // DXR: Added bulletHitSounds
     if (damageType == class'DM_Shot' || damageType == class'DM_AutoShot')
-        PlaySound(GetBulletHitSound(), SLOT_Misc,volume * 2,,1024.00,);
+        PlaySound(GetBulletHitSound(), SLOT_Misc,volume * 1.2,,256.00,);
 
     if ((hitSound != None) && bEmitDistress)
         class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio, volume);
