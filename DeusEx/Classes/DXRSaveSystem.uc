@@ -208,28 +208,34 @@ exec function QuickSave()
 
 //  ClientTravel("?loadgame=" $ saveIndex, TRAVEL_Absolute, False);
 /* Быстрая загрузка */
+
+function ReallyQuickLoad()
+{
+   local string path, whatMap, sd;
+   local object dxs, ds;
+
+   sd = ConsoleCommand("get System savepath");
+   path = sd$"\\QuickSave\\SaveInfo.dxs";
+
+   dxs = class'PackageManager'.static.LoadUnrealPackage(path, 0x1000); // надо посмотреть что за флаг ))
+   if (dxs != none)
+   {
+      ds = dxs.DynamicLoadObject("SaveInfo.MyDeusExSaveInfo", class'DeusExSaveInfo');
+      whatMap = DeusExSaveInfo(ds).mapName;
+
+      CopyToCurrent(sd$"\\QuickSave\\*.dxs", sd$"\\QuickSave\\", true);
+
+      bIsQuickLoading = true;
+      ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load?", TRAVEL_Absolute, false);
+      return;
+   }
+   else
+   ClientMessage(path$" not found!");
+}
+
 exec function QuickLoad()
 {
-  local string path, whatMap, sd;
-  local object dxs, ds;
-
-  sd = ConsoleCommand("get System savepath");
-  path = sd$"\\QuickSave\\SaveInfo.dxs";
-
-  dxs = class'PackageManager'.static.LoadUnrealPackage(path, 0x1000); // надо посмотреть что за флаг ))
-  if (dxs != none)
-  {
-    ds = dxs.DynamicLoadObject("SaveInfo.MyDeusExSaveInfo", class'DeusExSaveInfo');
-    whatMap = DeusExSaveInfo(ds).mapName;
-
-    CopyToCurrent(sd$"\\QuickSave\\*.dxs", sd$"\\QuickSave\\", true);
-
-    bIsQuickLoading = true;
-    ClientTravel(sd$"\\QuickSave\\"$whatMap$".dxs?load?", TRAVEL_Absolute, false);
-    return;
-  }
-  else
-  ClientMessage(path$" not found!");
+   ClientOpenMenu("DXRMenu.DXRQuickLoadPrompt");
 }
 
 
