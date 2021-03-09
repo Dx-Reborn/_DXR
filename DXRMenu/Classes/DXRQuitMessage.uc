@@ -63,6 +63,18 @@ function bool InternalOnClick(GUIComponent Sender)
     return false;
 }
 
+function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
+{
+    local Interactions.EInputKey iKey;
+
+    iKey = EInputKey(Key);
+
+    if (iKey == IK_ENTER)
+        InternalOnClick(bOk);
+
+    return false;
+}
+
 defaultproperties
 {
     stMessage="Are you sure you want to exit Deus Ex: Reborn ?"
@@ -70,24 +82,26 @@ defaultproperties
     stOk="Ok"
     stCancel="Cancel"
 
-        DefaultHeight=200
-        DefaultWidth=405
+    OnKeyEvent=InternalOnKeyEvent
 
-        MaxPageHeight=200
-        MaxPageWidth=405
-        MinPageHeight=200
-        MinPageWidth=405
+    DefaultHeight=200
+    DefaultWidth=405
 
-        leftEdgeCorrectorX=4
-        leftEdgeCorrectorY=0
-        leftEdgeHeight=168
+    MaxPageHeight=200
+    MaxPageWidth=405
+    MinPageHeight=200
+    MinPageWidth=405
 
-        RightEdgeCorrectorX=405
-        RightEdgeCorrectorY=20
-        RightEdgeHeight=140
+    leftEdgeCorrectorX=4
+    leftEdgeCorrectorY=0
+    leftEdgeHeight=168
 
-        TopEdgeCorrectorX=304
-        TopEdgeCorrectorY=16
+    RightEdgeCorrectorX=405
+    RightEdgeCorrectorY=20
+    RightEdgeHeight=140
+
+    TopEdgeCorrectorX=304
+    TopEdgeCorrectorY=16
     TopEdgeLength=100
 
     TopRightCornerX=402
