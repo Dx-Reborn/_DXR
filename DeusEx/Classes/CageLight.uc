@@ -15,6 +15,7 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 var() bool bOn;
+var material LightSkins[6];
 
 function Trigger(Actor Other, Pawn Instigator)
 {
@@ -23,16 +24,14 @@ function Trigger(Actor Other, Pawn Instigator)
     if (!bOn)
     {
         bOn = True;
-        LightType = LT_Steady;
+        //LightType = LT_Steady;
         bUnlit = True;
-        ScaleGlow = 2.0;
     }
     else
     {
         bOn = False;
-        LightType = LT_None;
+        //LightType = LT_None;
         bUnlit = False;
-        ScaleGlow = 1.0;
     }
 }
 
@@ -42,12 +41,12 @@ event BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_1:  Skins[1] = Texture'CageLightTex1'; break; // Белый
-        case SC_2:  Skins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // Жёлтый
-        case SC_3:  Skins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // Красный
-        case SC_4:  Skins[1] = Texture'CageLightTex4'; break; // Синий
-        case SC_5:  Skins[1] = Texture'CageLightTex5'; break; // o5 жёлтый?
-        case SC_6:  Skins[1] = Texture'CageLightTex6'; break; // o5 красный?
+        case SC_1:  Skins[1] = LightSkins[0];
+        case SC_2:  Skins[1] = LightSkins[1];
+        case SC_3:  Skins[1] = LightSkins[2];
+        case SC_4:  Skins[1] = LightSkins[3];
+        case SC_5:  Skins[1] = LightSkins[4];
+        case SC_6:  Skins[1] = LightSkins[5];
     }
 }
 
@@ -63,6 +62,13 @@ event PostBeginPlay()
 
 defaultproperties
 {
+     LightSkins[0] = Shader'DeusExStaticMeshes0.Plastic.KP_White_SH'; break; // Белый
+     LightSkins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // Жёлтый
+     LightSkins[2] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // Красный
+     LightSkins[3] = Shader'DeusExStaticMeshes0.Plastic.KP_Blue_SH'; break; // Синий
+     LightSkins[4] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // o5 жёлтый?
+     LightSkins[5] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // o5 красный?
+
      bOn=True
      HitPoints=5
      bInvincible=True
@@ -80,7 +86,8 @@ defaultproperties
      LightBrightness=255
      LightHue=32
      LightSaturation=224
-     LightRadius=8
+//     LightRadius=8
+     LightRadius=0
      Mass=20.000000
      Buoyancy=10.000000
      DrawType=DT_StaticMesh

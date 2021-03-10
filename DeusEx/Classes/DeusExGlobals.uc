@@ -14,7 +14,6 @@ var bool CurrentSaveDirectoryCleared;
 var int Flags;
 var transient texture lastScreenShot; // последний сделанный скриншот (дл€ фона)
 var medicalBot lastMedBot; // указатель на медбота, которым воспользовалс€ игрок. — ремонтным было проще )))
-//var HudOverlay_ConWindowThird conWindow;
 
 var config int MenuThemeIndex; // Store menu theme index here, so i can read it at any time, from any object.
 var config int HUDThemeIndex; // Store HUD theme index here, so i can read it at any time, from any object.
@@ -111,7 +110,7 @@ var ConHistory conHistory;           // Conversation History linked list
 // ‘лаги теперь здесь, поскольку в TravelInfo они уже умещаютс€.
 var() array<byte> RawByteFlags;
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
+/*
 final function ConHistory CreateHistoryObject()
 {
     local ConHistory ch;
@@ -126,7 +125,7 @@ final function ConHistoryEvent CreateHistoryEvent()
     ce = new(Outer) class'ConHistoryEvent';
 
     return ce;
-}
+}*/
 
 function SaveInventoryItem(inventory anItem, int posX, int posY, int beltPos)
 {
@@ -183,13 +182,14 @@ function RemoveInventoryItem(class<inventory> anItem)
 
 function resetAll()
 {
- mySavedAugs.length = 0;
+   mySavedAugs.length = 0;
 // myConHistory.length = 0;
- Notes.length = 0;
- Goals.length = 0;
+   Notes.length = 0;
+   Goals.length = 0;
 
- TravelDeco = "";
- lastMedBot = none;
+   TravelDeco = "";
+   lastMedBot = None;
+   DxLevelInfo = None;
 }
 
 function SaveAug(augmentation aug)
