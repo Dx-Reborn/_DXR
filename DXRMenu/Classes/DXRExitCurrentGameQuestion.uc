@@ -4,17 +4,17 @@ class DXRExitCurrentGameQuestion extends DXRQuitMessage;
 
 function bool InternalOnClick(GUIComponent Sender)
 {
-	if(Sender==bOk)
-	{
-	  PrepareToDxOnly(); 
-		PlayerOwner().ConsoleCommand("OPEN DxOnly");
-	}
+    if(Sender==bOk)
+    {
+        PrepareToDxOnly(); 
+        PlayerOwner().ConsoleCommand("OPEN DxOnly");
+    }
 
-  if(Sender==bCancel)
-	{
-		Controller.CloseMenu();
-	}
-	return false;
+    if(Sender==bCancel)
+    {
+        Controller.CloseMenu();
+    }
+    return false;
 }
 
 function PrepareToDxOnly()

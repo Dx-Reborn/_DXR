@@ -1,9 +1,9 @@
-/* ---------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
   Список содержимого карманов моего любимого JC )))
 
   Проблема: кнопка вкладки упорно не хочет никуда сдвигаться.
   Решение: сдвинуть сам фон относительно кнопок ))
---------------------------------------------------------------------- */
+-----------------------------------------------------------------------------*/
 
 class gui_Inventory extends PlayerInterfacePanel;
 
@@ -75,6 +75,15 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
 function CreateMyControls()
 {
+   local HUDObjectBelt HUDObjectBelt;
+
+   // Для проверки!
+   HUDObjectBelt = new class'HUDObjectBelt';
+   HUDObjectBelt.bBoundToParent = true;
+   HUDObjectBelt.WinLeft = 10;
+   HUDObjectBelt.WinTop = 10;
+   AppendComponent(HUDObjectBelt, true);
+
    invList = new(none) class'GUIListBox';
 //  invList.OnClick=InternalOnClick;
    invList.SelectedStyleName="STY_DXR_ListSelection";
@@ -290,6 +299,8 @@ function CreateMyControls()
    SetMoney();
    CreateInventoryButtons();
    CreateToolBeltSlots();
+
+
 }
 
 // ----------------------------------------------------------------------

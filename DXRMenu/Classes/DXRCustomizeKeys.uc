@@ -43,121 +43,121 @@ var GUIStyles SelStyle;
 
 function CreateMyControls()
 {
-  SetSize(512, 520);
+   SetSize(512, 520);
 
-  SelStyle = Controller.GetStyle("STY_DXR_ListSelection",FontScale); // Get style to draw listbox selection
+   SelStyle = Controller.GetStyle("STY_DXR_ListSelection",FontScale); // Get style to draw listbox selection
 
-  lstKeys = new class'GUIListBox';
-  lstKeys.WinWidth = 500;
-  lstKeys.WinHeight = 390;
-  lstKeys.WinLeft = 17;
-  lstKeys.WinTop = 41;
-  lstKeys.StyleName = "STY_DXR_Listbox";
-  lstKeys.bScaleToParent = true;
-  lstKeys.bBoundToParent = true;
-    AppendComponent(lstKeys, true);
-  lstKeys.list.OnDrawItem = CustomDrawing;
-  lstKeys.list.OnDblClick = ListDoubleClick;
-  lstKeys.list.OnChange = ListChanged;
-  lstKeys.OnKeyEvent = lstKeyEvent;
+   lstKeys = new class'GUIListBox';
+   lstKeys.WinWidth = 500;
+   lstKeys.WinHeight = 390;
+   lstKeys.WinLeft = 17;
+   lstKeys.WinTop = 41;
+   lstKeys.StyleName = "STY_DXR_Listbox";
+   lstKeys.bScaleToParent = true;
+   lstKeys.bBoundToParent = true;
+   AppendComponent(lstKeys, true);
+   lstKeys.list.OnDrawItem = CustomDrawing;
+   lstKeys.list.OnDblClick = ListDoubleClick;
+   lstKeys.list.OnChange = ListChanged;
+   lstKeys.OnKeyEvent = lstKeyEvent;
 
   /*----------------------------------------*/
-  winHelp = new class'GUILabel';
-  winHelp.Caption = "";
-  winHelp.WinHeight = 51;
-  winHelp.WinWidth = 500;
-  winHelp.WinLeft = 17;
-  winHelp.WinTop = 451;
-  winHelp.bMultiLine = true;
-  winHelp.VertAlign = TXTA_Center;
-  winHelp.TextAlign = TXTA_Center;
-  winHelp.TextFont = "UT2SmallFont";
-  winHelp.TextColor = class'Canvas'.static.MakeColor(255,255,255,255);
-    AppendComponent(winHelp, true);
+   winHelp = new class'GUILabel';
+   winHelp.Caption = "";
+   winHelp.WinHeight = 51;
+   winHelp.WinWidth = 500;
+   winHelp.WinLeft = 17;
+   winHelp.WinTop = 451;
+   winHelp.bMultiLine = true;
+   winHelp.VertAlign = TXTA_Center;
+   winHelp.TextAlign = TXTA_Center;
+   winHelp.TextFont = "UT2SmallFont";
+   winHelp.TextColor = class'Canvas'.static.MakeColor(255,255,255,255);
+   AppendComponent(winHelp, true);
 
-  btnDefault = new class'GUIButton';
-  btnDefault.OnClick = InternalOnClick;
-  btnDefault.fontScale = FNS_Small;
-  btnDefault.StyleName="STY_DXR_MediumButton";
-  btnDefault.Caption = strDefault;
-  btnDefault.WinHeight = 21;
-  btnDefault.WinWidth = 180;
-  btnDefault.WinLeft = 9;
-  btnDefault.WinTop = 529;
-    AppendComponent(btnDefault, true);
+   btnDefault = new class'GUIButton';
+   btnDefault.OnClick = InternalOnClick;
+   btnDefault.fontScale = FNS_Small;
+   btnDefault.StyleName="STY_DXR_MediumButton";
+   btnDefault.Caption = strDefault;
+   btnDefault.WinHeight = 21;
+   btnDefault.WinWidth = 180;
+   btnDefault.WinLeft = 9;
+   btnDefault.WinTop = 529;
+   AppendComponent(btnDefault, true);
 
-  btnOK = new class'GUIButton';
-  btnOK.OnClick=InternalOnClick;
-  btnOK.fontScale = FNS_Small;
-  btnOK.StyleName="STY_DXR_MediumButton";
-  btnOK.Caption = strOK;
-  btnOK.WinHeight = 21;
-  btnOK.WinWidth = 100;
-  btnOK.WinLeft = 418;
-  btnOK.WinTop = 529;
-    AppendComponent(btnOK, true);
+   btnOK = new class'GUIButton';
+   btnOK.OnClick=InternalOnClick;
+   btnOK.fontScale = FNS_Small;
+   btnOK.StyleName="STY_DXR_MediumButton";
+   btnOK.Caption = strOK;
+   btnOK.WinHeight = 21;
+   btnOK.WinWidth = 100;
+   btnOK.WinLeft = 418;
+   btnOK.WinTop = 529;
+   AppendComponent(btnOK, true);
 
-  btnCancel = new class'GUIButton';
-  btnCancel.OnClick=InternalOnClick;
-  btnCancel.fontScale = FNS_Small;
-  btnCancel.StyleName="STY_DXR_MediumButton";
-  btnCancel.Caption = strCancel;
-  btnCancel.WinHeight = 21;
-  btnCancel.WinWidth = 100;
-  btnCancel.WinLeft = 316;
-  btnCancel.WinTop = 529;
-    AppendComponent(btnCancel, true);
+   btnCancel = new class'GUIButton';
+   btnCancel.OnClick=InternalOnClick;
+   btnCancel.fontScale = FNS_Small;
+   btnCancel.StyleName="STY_DXR_MediumButton";
+   btnCancel.Caption = strCancel;
+   btnCancel.WinHeight = 21;
+   btnCancel.WinWidth = 100;
+   btnCancel.WinLeft = 316;
+   btnCancel.WinTop = 529;
+   AppendComponent(btnCancel, true);
 
-    btnSpecial = new class'GUIButton';
-  btnSpecial.OnClick=InternalOnClick;
-  btnSpecial.fontScale = FNS_Small;
-  btnSpecial.StyleName="STY_DXR_MediumButton";
-  btnSpecial.Caption = strSpecial;
-  btnSpecial.Hint = "Does nothing for now";
-  btnSpecial.WinHeight = 21;
-  btnSpecial.WinWidth = 100;
-  btnSpecial.WinLeft = 216;
-  btnSpecial.WinTop = 529;
-    AppendComponent(btnSpecial, true);
+   btnSpecial = new class'GUIButton';
+   btnSpecial.OnClick=InternalOnClick;
+   btnSpecial.fontScale = FNS_Small;
+   btnSpecial.StyleName="STY_DXR_MediumButton";
+   btnSpecial.Caption = strSpecial;
+   btnSpecial.Hint = "Does nothing for now";
+   btnSpecial.WinHeight = 21;
+   btnSpecial.WinWidth = 100;
+   btnSpecial.WinLeft = 216;
+   btnSpecial.WinTop = 529;
+   AppendComponent(btnSpecial, true);
 
 // «аголовки списка (список обычный, не multiColumn)
 
-    hdrKey = new(none) class'GUIButton';
-  hdrKey.FontScale = FNS_Small;
-  hdrKey.Caption = strHeaderActionLabel;
-  hdrKey.Hint = "";
-  hdrKey.StyleName="STY_DXR_Personal";
-  hdrKey.bBoundToParent = true;
-  hdrKey.WinHeight = 18;
-  hdrKey.WinWidth = 216;
-  hdrKey.WinLeft = 16;
-  hdrKey.WinTop = 21;
-    AppendComponent(hdrKey, true);
+   hdrKey = new(none) class'GUIButton';
+   hdrKey.FontScale = FNS_Small;
+   hdrKey.Caption = strHeaderActionLabel;
+   hdrKey.Hint = "";
+   hdrKey.StyleName="STY_DXR_Personal";
+   hdrKey.bBoundToParent = true;
+   hdrKey.WinHeight = 18;
+   hdrKey.WinWidth = 216;
+   hdrKey.WinLeft = 16;
+   hdrKey.WinTop = 21;
+   AppendComponent(hdrKey, true);
 
-    hdrAction = new(none) class'GUIButton';
-  hdrAction.FontScale = FNS_Small;
-  hdrAction.Caption = strHeaderAssignedLabel;
-  hdrAction.Hint = "";
-  hdrAction.StyleName="STY_DXR_Personal";
-  hdrAction.bBoundToParent = true;
-  hdrAction.WinHeight = 18;
-  hdrAction.WinWidth = 238;
-  hdrAction.WinLeft = 231;
-  hdrAction.WinTop = 21;
-    AppendComponent(hdrAction, true);
+   hdrAction = new(none) class'GUIButton';
+   hdrAction.FontScale = FNS_Small;
+   hdrAction.Caption = strHeaderAssignedLabel;
+   hdrAction.Hint = "";
+   hdrAction.StyleName="STY_DXR_Personal";
+   hdrAction.bBoundToParent = true;
+   hdrAction.WinHeight = 18;
+   hdrAction.WinWidth = 238;
+   hdrAction.WinLeft = 231;
+   hdrAction.WinTop = 21;
+   AppendComponent(hdrAction, true);
 
-    FillValues();
+   FillValues();
 }
 
 function FillValues()
 {
-    Pending = 0;
-    Selection = -1;
-    bWaitingForInput = false;
-    BuildKeyBindings();
+   Pending = 0;
+   Selection = -1;
+   bWaitingForInput = false;
+   BuildKeyBindings();
 
-    PopulateKeyList();
-    ShowHelp(WaitingHelpText);
+   PopulateKeyList();
+   ShowHelp(WaitingHelpText);
 }
 
 function BuildKeyBindings()
@@ -178,7 +178,7 @@ function BuildKeyBindings()
     // Now loop through all the keynames and generate
     // human-readable versions of keys that are mapped.
 
-    for ( i=0; i<255; i++ )
+    for (i=0; i<255; i++)
     {
         KeyName = playerOwner().ConsoleCommand ("KEYNAME "$i);
         if ( KeyName != "" )
@@ -208,57 +208,57 @@ function BuildKeyBindings()
 
 function String GetKeyFromDisplayName(String displayName)
 {
-    local int keyIndex;
+   local int keyIndex;
 
-    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-    {
-        if (displayName == keyDisplayNames[keyIndex].displayName)
-        {
-            return mid(String(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3);
-            break;
-        }
-    }
-    return displayName;
+   for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+   {
+       if (displayName == keyDisplayNames[keyIndex].displayName)
+       {
+           return mid(String(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3);
+           break;
+       }
+   }
+   return displayName;
 }
 
 function ClearFunction()
 {
-    local int rowID;
-    local int rowIndex;
+   local int rowID;
+   local int rowIndex;
 
-    rowID = lstKeys.list.Index; //GetSelectedRow();
+   rowID = lstKeys.list.Index; //GetSelectedRow();
 
-    if (rowID != -1) // 0
-    {
-        rowIndex = lstKeys.list.Index; //lstKeys.RowIdToIndex(rowID);
+   if (rowID != -1) // 0
+   {
+       rowIndex = lstKeys.list.Index; //lstKeys.RowIdToIndex(rowID);
 
-        if (MenuValues2[rowIndex] != "")
-        {
-            if (CanRemapKey(MenuValues2[rowIndex]))
-            {
-                AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[rowIndex]));
-                MenuValues2[rowIndex] = "";
-            }
-        }
+       if (MenuValues2[rowIndex] != "")
+       {
+           if (CanRemapKey(MenuValues2[rowIndex]))
+           {
+               AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[rowIndex]));
+               MenuValues2[rowIndex] = "";
+           }
+       }
 
-        if (MenuValues1[rowIndex] != "")
-        {
-            if (CanRemapKey(MenuValues1[rowIndex]))
-            {
-                AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[rowIndex]));
-                MenuValues1[rowIndex] = MenuValues2[rowIndex];
-                MenuValues2[rowIndex] = "";
-            }
-        }
+       if (MenuValues1[rowIndex] != "")
+       {
+           if (CanRemapKey(MenuValues1[rowIndex]))
+           {
+               AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[rowIndex]));
+               MenuValues1[rowIndex] = MenuValues2[rowIndex];
+               MenuValues2[rowIndex] = "";
+           }
+       }
 
-        // Update the buttons
-        RefreshKeyBindings();
-    }
+    // Update the buttons
+    RefreshKeyBindings();
+   }
 }
 
 function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 {
-    local int i;
+   local int i;
 
     /* Some keys CANNOT be assigned:
     
@@ -271,169 +271,166 @@ function ProcessKeySelection(int KeyNo, string KeyName, string keyDisplayName)
 
      Make sure the user enters a valid key (Escape and function
      keys can't be assigned)*/
-    if ( (KeyName == "") || (KeyName == "Escape") ||        // Escape
-         ((KeyNo >= 0x70 ) && (KeyNo <= 0x81)) ||           // Function keys
-         ((KeyNo >= 48) && (KeyNo <= 57)) ||                // 0 - 9
-         (KeyName == "Tilde") ||                            // Tilde
-         (KeyName == "PrintScrn") ||                        // Print Screen
-         (KeyName == "Pause"))                              // Pause
-    {
-        return;
-    }
+   if ((KeyName == "") || (KeyName == "Escape") ||        // Escape
+        ((KeyNo >= 0x70 ) && (KeyNo <= 0x81)) ||           // Function keys
+        ((KeyNo >= 48) && (KeyNo <= 57)) ||                // 0 - 9
+        (KeyName == "Tilde") ||                            // Tilde
+        (KeyName == "PrintScrn") ||                        // Print Screen
+        (KeyName == "Pause"))                              // Pause
+   {
+       PlayerOwner().ClientPlaySound(sound'DeusExSounds.Generic.Buzz1');
+       return;
+   }
 
-    // Don't waste our time if this key is already assigned here
-    if (( MenuValues1[Selection] == keyDisplayName ) ||
-       ( MenuValues2[Selection] == keyDisplayName ))
+   // Don't waste our time if this key is already assigned here
+   if ((MenuValues1[Selection] == keyDisplayName) ||
+      (MenuValues2[Selection] == keyDisplayName))
        return;
 
     // Now check to make sure there are no overlapping 
     // assignments.  
 
-    for (i=0; i<arrayCount(AliasNames); i++)
-    {
-        if (MenuValues2[i] == keyDisplayName)
-        {
-            ShowHelp(class'Actor'.static.Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-            AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[i]));
-            MenuValues2[i] = "";
-        }
+   for (i=0; i<arrayCount(AliasNames); i++)
+   {
+       if (MenuValues2[i] == keyDisplayName)
+       {
+           ShowHelp(class'Actor'.static.Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
+           AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[i]));
+           MenuValues2[i] = "";
+       }
 
-        if (MenuValues1[i] == keyDisplayName)
-        {
-            ShowHelp(class'Actor'.static.Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
-            AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[i]));
-            MenuValues1[i] = MenuValues2[i];
-            MenuValues2[i] = "";
-        }
-    }
+       if (MenuValues1[i] == keyDisplayName)
+       {
+           ShowHelp(class'Actor'.static.Sprintf(ReassignedFromLabel, keyDisplayName, FunctionText[i]));
+           AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[i]));
+           MenuValues1[i] = MenuValues2[i];
+           MenuValues2[i] = "";
+       }
+   }
 
-    // Now assign the key, trying the first space if it's empty,
-    // but using the second space if necessary.  If both slots
-    // are filled, then move the second entry into the first 
-    // and put the new assignment in the second slot.
+   // Now assign the key, trying the first space if it's empty,
+   // but using the second space if necessary.  If both slots
+   // are filled, then move the second entry into the first 
+   // and put the new assignment in the second slot.
 
-    if ( MenuValues1[Selection] == "" ) 
-    {
-        MenuValues1[Selection] = keyDisplayName;
-    }
-    else if ( MenuValues2[Selection] == "" )
-    {
-        MenuValues2[Selection] = keyDisplayName;
-    }
-    else
-    {
-        if (CanRemapKey(MenuValues1[Selection]))
-        {
-            // Undo first key assignment
-            AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[Selection]));
+   if ( MenuValues1[Selection] == "" ) 
+   {
+       MenuValues1[Selection] = keyDisplayName;
+   }
+   else if ( MenuValues2[Selection] == "" )
+   {
+       MenuValues2[Selection] = keyDisplayName;
+   }
+   else
+   {
+       if (CanRemapKey(MenuValues1[Selection]))
+       {
+           // Undo first key assignment
+           AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues1[Selection]));
+           MenuValues1[Selection] = MenuValues2[Selection];
+           MenuValues2[Selection] = keyDisplayName;
+       }
+       else if (CanRemapKey(MenuValues2[Selection]))
+       {
+           // Undo second key assignment
+           AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[Selection]));
 
-            MenuValues1[Selection] = MenuValues2[Selection];
-            MenuValues2[Selection] = keyDisplayName;
-        }
-        else if (CanRemapKey(MenuValues2[Selection]))
-        {
-            // Undo second key assignment
-            AddPending("SET Input " $ GetKeyFromDisplayName(MenuValues2[Selection]));
+           MenuValues2[Selection] = keyDisplayName;
+       }
+   }
+   AddPending("SET Input "$KeyName$" "$AliasNames[Selection]);
 
-            MenuValues2[Selection] = keyDisplayName;
-        }
-    }
-
-    AddPending("SET Input "$KeyName$" "$AliasNames[Selection]);
-
-    // Update the buttons
-    RefreshKeyBindings();
+   // Update the buttons
+   RefreshKeyBindings();
 }
 
 
 function RefreshKeyBindings()
 {
-    local int keyIndex;
+   local int keyIndex;
 //  local int rowId;
 
-    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
-    {
+   for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++ )
+   {
 //      rowId = lstKeys.list.Index;
 
 //      log ("gonna replace at "$rowId$" to "$GetInputDisplayText(keyIndex));
 // ¬ременно заменить текст, чтобы не обновл€ть список.
-        lstKeys.list.Replace(selection, FunctionText[selection]$";"$GetInputDisplayText(selection),,, true);
-    }
+       lstKeys.list.Replace(selection, FunctionText[selection]$";"$GetInputDisplayText(selection),,, true);
+   }
 }
 
 
 function String GetKeyDisplayName(Interactions.EInputKey inputKey)
 {
-    local int keyIndex;
+   local int keyIndex;
 
-    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-    {
-        if (inputKey == keyDisplayNames[keyIndex].inputKey)
-        {
-            return keyDisplayNames[keyIndex].DisplayName;
-            break;
-        }
-    }
-
-    return mid(string(GetEnum(enum'EInputKey',inputKey)),3);
+   for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+   {
+       if (inputKey == keyDisplayNames[keyIndex].inputKey)
+       {
+           return keyDisplayNames[keyIndex].DisplayName;
+           break;
+       }
+   }
+   return mid(string(GetEnum(enum'EInputKey',inputKey)),3);
 }
 
 function String GetKeyDisplayNameFromKeyName(string keyName)
 {
-    local int keyIndex;
+   local int keyIndex;
 
-    for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
-    {
-        if (mid(string(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3) == keyName)
-        {
-            return keyDisplayNames[keyIndex].DisplayName;
-            break;
-        }
-    }
-
+   for(keyIndex=0; keyIndex<arrayCount(keyDisplayNames); keyIndex++)
+   {
+       if (mid(string(GetEnum(enum'EInputKey', keyDisplayNames[keyIndex].inputKey)), 3) == keyName)
+       {
+           return keyDisplayNames[keyIndex].DisplayName;
+           break;
+       }
+   }
     return keyName;
 }
 
 function ProcessPending()
 {
-    local int i;
+   local int i;
 
-    for (i=0; i<Pending; i++)
+   for (i=0; i<Pending; i++)
         playerOwner().ConsoleCommand(PendingCommands[i]);
         
-    Pending = 0;
+   Pending = 0;
 }
 
 function AddPending(string newCommand)
 {
 //  log("AddPending = "$newCommand);
 
-    PendingCommands[Pending] = newCommand;
-    Pending++;
-    if (Pending == 100)
-        ProcessPending();
+   PendingCommands[Pending] = newCommand;
+   Pending++;
+   if (Pending == 100)
+       ProcessPending();
 }
 
 
 function PopulateKeyList()
 {
-    local int keyIndex;
+   local int keyIndex;
 
-    // First erase the old list
-    lstKeys.list.Clear();
+   // First erase the old list
+   lstKeys.list.Clear();
 
-    for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++)
-        lstKeys.list.Add(FunctionText[keyIndex] $ ";" $ GetInputDisplayText(keyIndex));
+   for(keyIndex=0; keyIndex<arrayCount(AliasNames); keyIndex++)
+       lstKeys.list.Add(FunctionText[keyIndex] $ ";" $ GetInputDisplayText(keyIndex));
 }
 
 function String GetInputDisplayText(int keyIndex)
 {
-    if ( MenuValues1[keyIndex] == "" )
-        return NoneText;
-    else if ( MenuValues2[keyIndex] != "" )
-        return MenuValues1[keyIndex] $ "," @ MenuValues2[keyIndex];
-    else
-        return MenuValues1[keyIndex];
+   if (MenuValues1[keyIndex] == "")
+       return NoneText;
+   else if ( MenuValues2[keyIndex] != "" )
+       return MenuValues1[keyIndex] $ "," @ MenuValues2[keyIndex];
+   else
+       return MenuValues1[keyIndex];
 }
 
 function ShowHelp(string HelpText)
@@ -443,46 +440,46 @@ function ShowHelp(string HelpText)
 
 function CustomDrawing(Canvas u, int Item, float X, float Y, float W, float H, bool bSelected, bool bPending)
 {
-  local string func, key, myStr;
+   local string func, key, myStr;
 
-  myStr = lstKeys.list.GetItemAtIndex(Item);
-  Divide(myStr, ";", func, key);
+   myStr = lstKeys.list.GetItemAtIndex(Item);
+   Divide(myStr, ";", func, key);
 
-  if (bSelected) // Draw selection border
-      SelStyle.Draw(u,MSAT_Pressed, X, Y-2, W, H+2);
+   if (bSelected) // Draw selection border
+       SelStyle.Draw(u,MSAT_Pressed, X, Y-2, W, H+2);
 
-      lstKeys.Style.DrawText(u,MenuState, lstKeys.ActualLeft() + 2, Y, lstKeys.ActualWidth(), H, TXTA_Left, func, lstKeys.FontScale);
-      lstKeys.Style.DrawText(u,MenuState, lstKeys.ActualLeft() + 218, Y, lstKeys.ActualWidth(), H, TXTA_Left, key, lstKeys.FontScale);
+       lstKeys.Style.DrawText(u,MenuState, lstKeys.ActualLeft() + 2, Y, lstKeys.ActualWidth(), H, TXTA_Left, func, lstKeys.FontScale);
+       lstKeys.Style.DrawText(u,MenuState, lstKeys.ActualLeft() + 218, Y, lstKeys.ActualWidth(), H, TXTA_Left, key, lstKeys.FontScale);
 }
 
 function bool CanRemapKey(string KeyName)
 {
-    if ((KeyName == "F1") || (KeyName == "F2"))  // hack - DEUS_EX STM
-        return false;
-    else
-        return true;
+   if ((KeyName == "F1") || (KeyName == "F2"))  // hack - DEUS_EX STM
+       return false;
+   else
+       return true;
 }
 
 function WaitingForInput(bool bWaiting)
 {
-    if (bWaiting)
-    {
-        ShowHelp(InputHelpText);
+   if (bWaiting)
+   {
+       ShowHelp(InputHelpText);
 
-    Controller.OnNeedRawKeyPress = RawKey;
-    Controller.Master.bRequireRawJoystick=true;
+       Controller.OnNeedRawKeyPress = RawKey;
+       Controller.Master.bRequireRawJoystick=true;
 
-    PlayerOwner().ClientPlaySound(Controller.EditSound);
-    PlayerOwner().ConsoleCommand("toggleime 0");
-    }
-    else
-    {
-    Controller.OnNeedRawKeyPress = none;
-    Controller.Master.bRequireRawJoystick=false;
+       PlayerOwner().ClientPlaySound(Controller.EditSound);
+       PlayerOwner().ConsoleCommand("toggleime 0");
+   }
+   else
+   {
+       Controller.OnNeedRawKeyPress = none;
+       Controller.Master.bRequireRawJoystick=false;
 
-    PlayerOwner().ClientPlaySound(Controller.ClickSound);
-    }
-    bWaitingForInput = bWaiting;
+       PlayerOwner().ClientPlaySound(Controller.ClickSound);
+   }
+   bWaitingForInput = bWaiting;
 }
 
 function bool ListDoubleClick(GUIComponent Sender)
@@ -493,51 +490,52 @@ function bool ListDoubleClick(GUIComponent Sender)
 
 function ResetToDefaults()
 {
-    Pending = 0;
-    Selection = -1;
-    bWaitingForInput = false;
-    BuildKeyBindings();
-    PopulateKeyList();
-    ShowHelp(WaitingHelpText);
+   Pending = 0;
+   Selection = -1;
+   bWaitingForInput = false;
+   BuildKeyBindings();
+   PopulateKeyList();
+   ShowHelp(WaitingHelpText);
 }
 
 function ListChanged(GUIComponent Sender)
 {
-  Selection = lstKeys.list.index;
+   Selection = lstKeys.list.index;
 }
 
 function bool lstKeyEvent(out byte NewKey, out byte State, float delta)
 {
-    local Interactions.EInputKey iKey;
+   local Interactions.EInputKey iKey;
 
-    iKey = EInputKey(NewKey);
+   iKey = EInputKey(NewKey);
 
-    if (!bWaitingForInput) 
-    {
-        // If the user presses [Delete] or [Backspace], then 
-        // clear this setting
-        if ((ikey == IK_Delete) || (ikey == IK_Backspace))
-        {
-            ClearFunction();
-            return true;
-        }
-    }
-    else return false;
+   if (!bWaitingForInput) 
+   {
+       // If the user presses [Delete] or [Backspace], then 
+       // clear this setting
+       if ((ikey == IK_Delete) || (ikey == IK_Backspace))
+       {
+           ClearFunction();
+           return true;
+       }
+   }
+   else 
+   return false;
 }
 
 function bool RawKey(byte NewKey)
 {
-    local Interactions.EInputKey iKey;
+   local Interactions.EInputKey iKey;
 
-    iKey = EInputKey(NewKey);
+   iKey = EInputKey(NewKey);
 
-    // First check to see if we're waiting for the user to select a 
-    // keyboard or mouse/joystick button to override. 
-    WaitingForInput(false);
+   // First check to see if we're waiting for the user to select a 
+   // keyboard or mouse/joystick button to override. 
+   WaitingForInput(false);
                                                                                 
-    ProcessKeySelection(ikey, mid(string(GetEnum(enum'EInputKey',ikey)),3), GetKeyDisplayName(ikey));
+   ProcessKeySelection(ikey, mid(string(GetEnum(enum'EInputKey',ikey)),3), GetKeyDisplayName(ikey));
 
-    return true;
+   return true;
 }
 
 function bool InternalOnClick(GUIComponent sender)

@@ -70,8 +70,14 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
     iKey = EInputKey(Key);
 
     if (iKey == IK_ENTER)
+    {
         InternalOnClick(bOk);
-
+        bOk.MenuState = MSAT_Pressed;
+    }
+    if (iKey == IK_ESCAPE)
+    {
+        bCancel.MenuState = MSAT_Pressed;
+    }
     return false;
 }
 

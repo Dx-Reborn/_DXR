@@ -1,0 +1,7 @@
+/*
+                
+*/
+
+class PersonaScreenInventory extends PlayerInterfacePanel;
+
+
