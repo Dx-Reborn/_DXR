@@ -1,7 +1,18 @@
 class EM_WaterPipeHit extends DeusExEmitter;
 
+event SetInitialState()
+{
+   SetTimer(9.0, false);
+}
+
+event Timer()
+{
+   AmbientSound = None;
+}
+
 defaultproperties
 {
+    AutoDestroy=True
     Begin Object Class=Engine.SpriteEmitter Name=SpriteEmitter135
         UseDirectionAs=PTDU_Up
         Acceleration=(Z=-600.000000)

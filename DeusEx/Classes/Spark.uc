@@ -26,6 +26,20 @@ var sound Plastic[4];
 var sound FallBack[4];
 
 
+function SpawnSpecialCase(Actor Target, vector HitLocation, vector HitNormal)
+{
+    local EM_WaterPipeHit water;
+
+    if (Target.SurfaceType == EST_Water)
+        water = spawn(class'EM_WaterPipeHit',,,HitLocation, Rotator(HitNormal));
+        if (water != None)
+        {
+            water.AmbientSound = sound'Ambient.Ambient.WaterTrickle2';
+            water.SoundPitch = 135;
+        }
+}
+
+
 function SpawnDecal(Name DecalName, vector HitLoc, vector HitNormal)
 {
    local BulletHole hole;
@@ -66,7 +80,7 @@ function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
    if (Actor.IsA('BarrelFire') || Actor.IsA('MetalBoxes') || Actor.IsA('MailBox') ||
       (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || 
        Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera') ||
-       Actor.IsA('FireExtinguisher'))
+       Actor.IsA('FireExtinguisher') || Actor.IsA('CageLight'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
@@ -86,18 +100,22 @@ function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
    }
    else if (Actor.IsA('Toilet2a') || Actor.IsA('Toilet'))
    {
-      //Spawn(class'EM_ConcreteHit',,,Loc,); // looks SCARY!
       PlayActorSound('Ceramic');
    }
    else if (Actor.IsA('CrateBreakableMedMedical') || Actor.IsA('CrateBreakableMedGeneral') || Actor.IsA('CrateBreakableMedCombat'))
    {
       Spawn(class'EM_WoodHit',,,Loc,);
-      PlayActorSound('Wood');      
+      PlayActorSound('Wood');
    }
    else if (Actor.IsA('Trashbags'))
    {
       Spawn(class'EM_NeutralHit',,,Loc,);
-      PlayActorSound('Plastic');      
+      PlayActorSound('Plastic');
+   }
+   else if (Actor.IsA('WaterCooler'))
+   {
+      Spawn(class'EM_WaterCoolerHit',,,Loc,);
+      PlayActorSound('Plastic');
    }
 }
 
@@ -287,6 +305,7 @@ function name GetImpactMaterial()
                texGroup = class'DxUtil'.static.GetMaterialGroup(mat);
                SpawnCoolEffect(texGroup, HitLocation);
                SpawnDecal(texGroup, HitLocation, HitNormal);
+               SpawnSpecialCase(Target, HitLocation, HitNormal);
                break;
             }
         }

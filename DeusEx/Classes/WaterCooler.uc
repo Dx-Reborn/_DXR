@@ -50,13 +50,12 @@ event Destroyed()
     // trace down about 20 feet if we're not in water
     if (!PhysicsVolume.bWaterVolume)
     {
-        EndTrace = Location - vect(0,0,320);
+        EndTrace = Location - vect(0,0,300); //320
         hit = Trace(HitLocation, HitNormal, EndTrace, Location, False);
         pool = spawn(class'WaterPool',,, HitLocation+HitNormal, Rotator(-HitNormal));
         if (pool != None)
             pool.maxDrawScale = CollisionRadius / 20.0;
     }
-
     Super.Destroyed();
 }
 
