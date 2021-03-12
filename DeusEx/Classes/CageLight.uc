@@ -41,12 +41,12 @@ event BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_1:  Skins[1] = LightSkins[0];
-        case SC_2:  Skins[1] = LightSkins[1];
-        case SC_3:  Skins[1] = LightSkins[2];
-        case SC_4:  Skins[1] = LightSkins[3];
-        case SC_5:  Skins[1] = LightSkins[4];
-        case SC_6:  Skins[1] = LightSkins[5];
+        case SC_1:  Skins[1] = LightSkins[0]; break;
+        case SC_2:  Skins[1] = LightSkins[1]; break;
+        case SC_3:  Skins[1] = LightSkins[2]; break;
+        case SC_4:  Skins[1] = LightSkins[3]; break;
+        case SC_5:  Skins[1] = LightSkins[4]; break;
+        case SC_6:  Skins[1] = LightSkins[5]; break;
     }
 }
 
