@@ -91,6 +91,7 @@ SetTimer(lifeTime, false);
 
 defaultproperties
 {
+     bHidden=true
 //   messages(0)=(Message="Test message",MsgSound=sound'LogNoteAdded')
 //   messages(1)=(Message="Test message Two",MsgSound=sound'LogGoalAdded')
 }
