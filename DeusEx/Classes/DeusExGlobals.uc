@@ -271,28 +271,27 @@ function name GetNote(Name textTag)
 // ----------------------------------------------------------------------
 function name AddGoal(Name goalName, bool bPrimaryGoal, optional string goalText)
 {
-  local int x;
-  local name newGoal;
+   local int x;
+   local name newGoal;
 
-  newGoal = FindGoal(goalName);
-  if (newGoal == 'none')
-  {
-   x = Goals.Length;
-   Goals.Length = x + 1; // добавить 1 к длине массива
-   Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
-   Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
-   Goals[x].text = goalText;
-
-   if (player.ConPlay.dMsg != none) // DXR: Show these messages later.
-       player.ConPlay.dMsg.AddMessage(player.GoalAdded, sound'DeusExSounds.UserInterface.LogGoalAdded');
-   else
+   newGoal = FindGoal(goalName);
+   if (newGoal == 'None')
    {
-   player.ClientMessage(player.GoalAdded);
-   player.PlaySound(Sound'LogGoalAdded');
-   }
+       x = Goals.Length;
+       Goals.Length = x + 1; // добавить 1 к длине массива
+       Goals[x].goalName = goalName;            // Goal name, "GOAL_somestring"
+       Goals[x].bPrimaryGoal = bPrimaryGoal;        // True if Primary Goal
+       Goals[x].text = goalText;
 
+       if ((Player.ConPlay != None) && (player.ConPlay.dMsg != none)) // DXR: Show these messages later.
+           player.ConPlay.dMsg.AddMessage(player.GoalAdded, sound'DeusExSounds.UserInterface.LogGoalAdded');
+       else
+       {
+           player.ClientMessage(player.GoalAdded);
+           player.PlaySound(Sound'LogGoalAdded');
+       }
    return goalName;
-  }
+   }
  return 'none';
 }
 
