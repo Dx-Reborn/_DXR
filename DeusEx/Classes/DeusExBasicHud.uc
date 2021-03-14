@@ -351,11 +351,7 @@ event PostRender(canvas u)
        u.style = ERenderStyle.STY_Normal;
        u.SetDrawColor(1,1,1,255);
        u.DrawTileStretched(texture'solid', u.SizeX, u.SizeY);
-/*     c.setPos(0,0);
-       c.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
-       c.DrawTileStretched(texture'ConWindowBackground', c.SizeX, c.SizeY);*/
-
-      return;
+       return;
     }
 
     if (midMenuMode)
@@ -364,11 +360,9 @@ event PostRender(canvas u)
     //  if (s != none)
 //    {
         u.setPos(0,0);
-        u.style = ERenderStyle.STY_Modulated; //ERenderStyle.STY_Normal;
+        u.style = ERenderStyle.STY_Modulated;
+        u.SetDrawColor(200,200,200,255);
         u.DrawTileStretched(texture'ConWindowBackground', u.SizeX, u.SizeY);
-//      c.SetDrawColor(64,64,64,255);
-//      c.DrawTile(s, c.SizeX, c.SizeY, 0, 256, 512, 256);
-//      c.DrawTile(texture'ConWindowBackground', c.SizeX, c.SizeY, 0, 256, 512, 256);
 //    }
       return;
     }

@@ -83,6 +83,9 @@ function bool InternalOnKeyEvent(out byte Key, out byte State, float delta)
 
 defaultproperties
 {
+    bNoBorders=true
+    bUseShadow=true
+
     stMessage="Are you sure you want to exit Deus Ex: Reborn ?"
     WinTitle="Please confirm"
     stOk="Ok"

@@ -97,7 +97,7 @@ class ImportTextures extends Resource;
 #exec Texture Import File=Textures\DXR_ScreenResolution.bmp Name=DXR_ScreenResolution Mips=Off Masked=true DXT=5
 
 // Physics
-#exec Texture Import File=Textures\DXR_Physics.bmp Name=DXR_Physics Mips=Off Masked=true DXT=5
+#exec Texture Import File=Textures\DXR_Physics.bmp Name=DXR_Physics Mips=Off Masked=true DXT=1//5
 
 
 #exec Texture Import File=Textures\DXR_DisplayBackground.bmp Name=DXR_DisplayBackground Mips=Off Masked=true DXT=5
@@ -115,7 +115,7 @@ class ImportTextures extends Resource;
 #exec Texture Import File=Textures\DXR_MenuLeftBorder.bmp Name=DXR_MenuLeftBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP DXT=5
 
 
-#exec Texture Import File=Textures\DXR_MessageBox.tga Name=DXR_MessageBox Mips=Off Masked=true DXT=5
+#exec Texture Import File=Textures\DXR_MessageBox.tga Name=DXR_MessageBox Mips=Off Masked=true DXT=1//5
 
 #exec Texture Import File=Textures\DXR_HUDItemsBorder.bmp Name=DXR_HUDItemsBorder Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP DXT=5
 
@@ -132,4 +132,8 @@ class ImportTextures extends Resource;
 
 
 #exec Texture Import File=Textures\DXR_GameOptions_Ext.bmp Name=DXR_GameOptions_Ext Mips=Off Masked=true LODSET=LODSET_Interface DXT=5
+
+#exec Texture Import File=Textures\YesNoMessageShadow_1.bmp Name=YesNoMessageShadow_1 Mips=Off Masked=false LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+
 
