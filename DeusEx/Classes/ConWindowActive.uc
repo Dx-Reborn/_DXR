@@ -10,7 +10,7 @@ class ConWindowActive extends floatingwindow
 const WHEEL_SCROLL_DELAY = 0.05; // Задержка при "проматывании" диалогов.
 const AMOUNT_OF_CHOICES = 10;
 const CHOICE_HEIGHT = 20.00; //16.00;
-const DISAPPEAR_STEP = 0.004; // 0.002
+const DISAPPEAR_STEP = 0.005; // 0.002
 
 
 enum EMoveModes
@@ -369,13 +369,6 @@ function Tick(float deltaTime)
 
        winSpeech.WinTop  += DISAPPEAR_STEP;
        SpeakerName.WinTop+= DISAPPEAR_STEP;
-
-
-//       i_FrameBG2.WinTop -=0.002;
-//       i_FrameBG.WinTop  +=0.002;
-
-//       winSpeech.WinTop  += 0.002;
-//       SpeakerName.WinTop+= 0.002;
 
        if ((i_FrameBG2.ImageColor.A < 1) || (i_FrameBG.ImageColor.A < 1))
             bTickEnabled = false;

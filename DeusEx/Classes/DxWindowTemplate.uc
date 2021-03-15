@@ -15,11 +15,11 @@ class DxWindowTemplate extends floatingwindow;
 
 #exec OBJ LOAD FILE=DeusExUI.u
 
-var(Left) int leftEdgeCorrectorX, leftEdgeCorrectorY, leftEdgeHeight;
-var(Right) int RightEdgeCorrectorX, RightEdgeCorrectorY, RightEdgeHeight;
-var(Top) int TopEdgeCorrectorX, TopEdgeCorrectorY, TopEdgeLength;
-var(TopCorner) int TopRightCornerX, TopRightCornerY;
-var(Bubble) int bubbleCorrectorX, bubbleCorrectorY, bubbleWidthCorrector;
+var(Left) float leftEdgeCorrectorX, leftEdgeCorrectorY, leftEdgeHeight;
+var(Right) float RightEdgeCorrectorX, RightEdgeCorrectorY, RightEdgeHeight;
+var(Top) float TopEdgeCorrectorX, TopEdgeCorrectorY, TopEdgeLength;
+var(TopCorner) float TopRightCornerX, TopRightCornerY;
+var(Bubble) float bubbleCorrectorX, bubbleCorrectorY, bubbleWidthCorrector;
 var texture LeftEdgeTexture, RightEdgeTexture, TopEdgeTexture, cornerTexture;
 var(Shadow) float ShadowPosX, ShadowPosY, ShadowSizeX, ShadowSizeY;
 var() localized string WinTitle;

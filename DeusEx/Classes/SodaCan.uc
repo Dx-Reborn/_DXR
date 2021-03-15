@@ -43,9 +43,17 @@ defaultproperties
     largeIconWidth=24
     largeIconHeight=45
 
-    Mesh=Mesh'DeusExItems.Sodacan'
-    PickupViewMesh=Mesh'DeusExItems.Sodacan'
-    FirstPersonViewMesh=Mesh'DeusExItems.Sodacan'
+//    Mesh=Mesh'DeusExItems.Sodacan'
+//    PickupViewMesh=Mesh'DeusExItems.Sodacan'
+//    FirstPersonViewMesh=Mesh'DeusExItems.Sodacan'
+
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.SodaCan_HD_Pickup'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.SodaCan_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.SodaCan_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
+
 
     PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00)
     CollisionRadius=3.000000
