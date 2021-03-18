@@ -531,8 +531,8 @@ function Frob(Actor Frobber, Inventory frobWith)
                     {
                         if (player != None)
                         {
-                            AddReceivedItem(player, item, 1);
                             player.PickupNanoKey(NanoKey(item));
+                            AddReceivedItem(player, item, 1);
                             DeleteInventory(item);
                             //item.Destroy(); // Чтобы оверлей смог нарисовать значок, предмет должен существовать.
                             item = None;      // Destroy() будет выполнено из оверлея, когда тот самоуничтожится по таймеру.

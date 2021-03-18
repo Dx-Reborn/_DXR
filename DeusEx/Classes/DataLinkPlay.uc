@@ -543,14 +543,13 @@ function PlaySpeech(string soundID)
 {
     local sound speech;
 
-    log("playspeech "$SoundId,'Infolink');
+//    log("playspeech "$SoundId,'Infolink');
 
     speech = GetSound(SoundId);//con.GetSpeechAudio(soundID);
-
     if (speech != none)
     {
-        playingSoundID = player.PlaySoundEx(speech,SLOT_Talk,SpeechVolume,true);
-    }
+        playingSoundID = player.PlaySoundEx(speech,SLOT_Talk,SpeechVolume,false);
+    }                                                                     //true
 }
 
 // ----------------------------------------------------------------------

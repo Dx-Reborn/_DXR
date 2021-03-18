@@ -104,6 +104,9 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
         i_FrameBG2.ImageColor.A=255;
         i_FrameBG2.bFocusOnWatch = true;
         AppendComponent(i_FrameBG2, true);
+
+    if (PlayerPawn(PlayerOwner().pawn).bSubtitles == false)
+        DisplayName("");
 }
 
 

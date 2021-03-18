@@ -425,13 +425,13 @@ function RenderDebugInfo(Canvas c)
 
 function RenderConCamDebugInfo(canvas u)
 {
-    u.Font = font'DXFonts.EU_9';
+/*    u.Font = font'DXFonts.EU_9';
     u.DrawColor = GoldColor; 
     u.SetPos(20, 400);
     u.DrawText("PlayerCalcView(): CameraLocation = "$debug_CamLoc);
     u.SetPos(20, 420);
     u.DrawText(" CameraRotation = "$debug_CamRot);
-    u.reset();
+    u.reset();*/
 }
 
 event Timer()

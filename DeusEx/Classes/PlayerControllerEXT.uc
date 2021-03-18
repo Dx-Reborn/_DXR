@@ -1641,8 +1641,6 @@ Begin:
 
 exec function QuickSave();
 
-
-
 function ShowMidGameMenu(bool bPause)
 {
   if ((GetLevelInfo().missionNumber == -2) || (GetLevelInfo().missionNumber == -1) ||

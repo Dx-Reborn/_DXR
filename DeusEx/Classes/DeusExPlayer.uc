@@ -1227,7 +1227,7 @@ function DoFrob(Actor Frobber, Inventory frobWith)
 // ----------------------------------------------------------------------
 function PickupNanoKey(NanoKey newKey)
 {
-    KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
+//    KeyRing = NanoKeyRing(FindInventoryType(class'NanoKeyRing'));
     KeyRing.GiveKey(newKey.KeyID, newKey.Description);
     ClientMessage(Sprintf(AddedNanoKey, newKey.Description, "Id="$newKey.KeyID));
 }
@@ -3727,24 +3727,12 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
    return bDropped;
 }
 
-
-event Attach(Actor Other)
-{
-  SupportActor(Other);
-}
-
-event Detach(Actor Other)
-{
-  SupportActor(Other);
-}
-
-
-/* ----------------------------------------------------------------------
-  Called when something lands on us
-  Пока точно как в оригинале не работает (декорация, свалившаяся на
-  игрока должна сама убегать, но теперь хотя-бы не цепляется к нему,
-  что уже очень хорошо.
- ----------------------------------------------------------------------*/
+// ----------------------------------------------------------------------
+// SupportActor()
+//
+// Copied directly from ScriptedPawn.uc
+// Called when something lands on us
+// ----------------------------------------------------------------------
 function SupportActor(Actor standingActor)
 {
     local vector newVelocity;
@@ -3755,13 +3743,7 @@ function SupportActor(Actor standingActor)
     local vector damagePoint;
     local float  damage;
 
-  standingActor.SetBase(self);                                         
-
-  if ((standingactor.IsA('Inventory')) || (standingactor.IsA('Pickup')) || (standingactor.IsA('InventoryAttachment')) || (standingactor == carriedDecoration))
-    return;
-
-//  if (standingactor == carriedDecoration)
-//  return;
+    log(self@"SupportActor()?"@standingActor);
 
     zVelocity    = standingActor.Velocity.Z;
     standingMass = FMax(1, standingActor.Mass);
@@ -3771,7 +3753,7 @@ function SupportActor(Actor standingActor)
 
     // Have we been stomped?
     if ((zVelocity*standingMass < -7500) && (damage > 0))
-        TakeDamage(damage, standingActor.Instigator, damagePoint, 0.2*standingActor.Velocity, class'DM_stomped');
+        TakeDamage(damage, standingActor.Instigator, damagePoint, 0.2*standingActor.Velocity, class'dm_stomped');
 
     // Bounce the actor off the player
     angle = FRand()*Pi*2;
@@ -3783,7 +3765,9 @@ function SupportActor(Actor standingActor)
     newVelocity.Z = 50;
     standingActor.Velocity = newVelocity;
     standingActor.SetPhysics(PHYS_Falling);
+    log("standingActor velocity = "$standingActor.Velocity$" standingActor Physics ="@GetEnum(enum'EPhysics', standingActor.Physics));
 }
+
 
 simulated function vector CalcDrawOffset(inventory Inv)
 {

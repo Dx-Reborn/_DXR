@@ -220,35 +220,35 @@ final function SetDefaultExpiration(int expiration)
 
 final function DeleteAllFlags()
 {
-  local array<string> myFlags;
-    local int i;
+   local array<string> myFlags;
+   local int i;
 
-    myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
+   myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
 
-    for (i=0; i<myFlags.Length; i++)
-    {
-      class'GameFlags'.static.DeleteFlag(myFlags[i]);
-    }
-    log("All flags removed",'FlagSystem');
+   for (i=0; i<myFlags.Length; i++)
+   {
+       class'GameFlags'.static.DeleteFlag(myFlags[i]);
+   }
+   log("All flags removed",'FlagSystem');
 }
 
 // Delete Almost All flags!
 final function DeleteAlmostAllFlags()
 {
-  local array<string> myFlags;
-    local int i;
+   local array<string> myFlags;
+   local int i;
 
-    myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
-    for (i=0; i<myFlags.Length; i++)
-    {
-      if (myFlags[i] ~= "SKTemp_SkillPointsAvail")
-      continue;
-      if (myFlags[i] ~= "SKTemp_SkillPointsTotal")
-      continue;
+   myFlags = class'GameFlags'.static.GetAllFlagIds(false); // True -- вернуть в регистре "как есть"
+   for (i=0; i<myFlags.Length; i++)
+   {
+       if (myFlags[i] ~= "SKTemp_SkillPointsAvail")
+           continue;
+       if (myFlags[i] ~= "SKTemp_SkillPointsTotal")
+           continue;
 
-   class'GameFlags'.static.DeleteFlag(myFlags[i]);
-    }
-    log("Almost all flags removed !",'FlagSystem');
+       class'GameFlags'.static.DeleteFlag(myFlags[i]);
+   }
+   log("Almost all flags removed !",'FlagSystem');
 }
 
 function ResetFlags()
@@ -282,9 +282,9 @@ function SetGameSpeed(Float T)
     else
     {
         OldSpeed = GameSpeed;
-        GameSpeed = FMax(T, 0.1);
+        GameSpeed = FMax(T, 0.0); /// 0.1 // 0.0001
         Level.TimeDilation = 1.0 * GameSpeed;
-        if ( GameSpeed != OldSpeed )
+        if (GameSpeed != OldSpeed)
         {
             Default.GameSpeed = GameSpeed;
             class'GameInfo'.static.StaticSaveConfig();

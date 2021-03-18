@@ -1319,5 +1319,5 @@ defaultproperties
     ConversationSpeechFonts(1)=Font'DxFonts.FontConversationLarge'
     ConversationNameFonts(0)=Font'DxFonts.FontConversationBold'
     ConversationNameFonts(1)=Font'DxFonts.FontConversationLargeBold'
-    bHidden=true
+    bHidden=True
 }

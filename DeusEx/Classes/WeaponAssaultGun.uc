@@ -19,7 +19,12 @@ const Threshold4 = 60;
 function PlayFiring()
 {
     if (bAutomatic)
-        LoopAnim(ShootAnim,5.0, 0.01);
+    {
+        if (Owner.IsA('PlayerPawn'))
+           LoopAnim(ShootAnim,5.0, 0.01);
+        else
+           LoopAnim(ShootAnim,1.0, 0.1);
+    }
     else
     {
         PlayAnim(ShootAnim,,0.1);
@@ -103,7 +108,10 @@ function AssaultGunFireEnd()
 event WeaponTick(float dt)
 {
   if (GetAnimSequence() != 'Shoot')
+  {
       class'SoundManager'.static.StopSound(owner,GetFireSound());
+      AssaultGunFireEnd();
+  }
 }
 
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)

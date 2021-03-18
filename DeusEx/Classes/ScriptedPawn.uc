@@ -823,10 +823,10 @@ function bool IsPointInCylinder(Actor cylinder, Vector point, optional float ext
 }
 
 
-event Attach(Actor other)
+/*event Attach(Actor other)
 {
    SupportActor(other);
-}
+} */
 
 // ----------------------------------------------------------------------
 // SupportActor()

@@ -32,7 +32,6 @@ struct sToolBeltSelectedItem
 };
 var(toolbelt) sToolBeltSelectedItem toolbeltSelPos[10];
 
-
 var(ThemeColors) color MessageBG;   // Фон сообщений
 var(ThemeColors) color MessageText; // Текст сообщений
 var(ThemeColors) color MessageFrame;
@@ -135,9 +134,7 @@ var localized String AmmoLabel;
 var localized String ClipsLabel;
 var localized string strUses;
 
-
 var(ChargedPickups) float HI_BorderX, HI_BorderY, HI_IconX, HI_IconY, HI_Back_X, HI_Back_Y;
-
 
 var Color colHeaderText;
 var Color colText;
@@ -156,8 +153,6 @@ var int ItemNameFrameOffsetV, ItemNameFrameOffSetH;
 var(FrobColoredBars) float TopBarOffset, LowerBarOffSet;
 var float Health, HealthHead, HealthTorso, HealthLegLeft, HealthLegRight, HealthArmLeft, HealthArmRight;
 
-
-
 var int bePosX,bePosY, o2PosX, o2PosY;
 var int beBarPosX,beBarPosY, o2BarPosX,o2BarPosY;
 
@@ -174,7 +169,6 @@ var bool cubemapmode, menuMode, midMenuMode;  // cubemapmode и menuMode отключаю
 
 var bool bDrawInfo;
 var bool bDrawCrossHair, bDrawHealth, bDrawFrobBox;
-
 
 // Указатель на Север (Задается в DeusExLevelInfo (TrueNorth))
 var Int mapNorth;
@@ -525,7 +519,7 @@ function RenderFrobTarget(Canvas C)
    local string   strInfo;
 
    local vector sp1, sp2;
-   local Vector            centerLoc, v1, v2, v3;
+   local Vector            centerLoc, v1, v2;//, v3;
    local float             boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
    local float             fcorner;
    local int               i, j, k, offset;
@@ -555,19 +549,19 @@ function RenderFrobTarget(Canvas C)
                 centerLoc = v1 + (v2 - v1) * 0.5;
 
                 // Если большой DeusExMover то соотвествуюющий размер.
-                fMover.GetBoundingBoxSize(v3);
-                if (vSize(v3) > 100) // Для стандартных дверей 128x64x4
-                {
+                //fMover.GetBoundingBoxSize(v3);
+                //if (vSize(v3) > 100) // Для стандартных дверей 128x64x4
+                //{
                   v1.X = 16;
                   v1.Y = 16;
                   v1.Z = 16;
-                }
-                else // Для маленьких. 
-                {
-                  v1.X = 8;
-                  v1.Y = 8;
-                  v1.Z = 8;
-                }
+                //}
+                //else // Для маленьких. 
+                //{
+                //  v1.X = 8;
+                //  v1.Y = 8;
+                //  v1.Z = 8;
+                //}
 
             }
             else

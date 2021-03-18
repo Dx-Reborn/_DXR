@@ -212,7 +212,7 @@ function Render(Canvas u)
                 u.Style=1;
                 u.DrawColor = InfoLinkText;
                 //dxc.DrawTextJustified(DeusExWeapon(ReceivedItems[x].anItem).default.beltDescription,1,60+40*x,48,100+40*x,58);
-                dxc.DrawTextJustified(DeusExWeapon(recentItems[x].anItem).default.beltDescription $"["$ recentItems[x].anItemCount $"]",1,60+80*x,48,100+80*x,58);
+                dxc.DrawTextJustified(DeusExWeapon(recentItems[x].anItem).default.beltDescription $"["$ recentItems[x].anItemCount $ "]",1,60+80*x,48,100+80*x,58);
             }
             if (recentItems[x].anItem.isA('DeusExAmmo'))
             {

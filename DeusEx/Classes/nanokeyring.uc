@@ -15,10 +15,9 @@ var localized string KeysAvailableLabel;
 
 struct SNanoKeyStruct
 {
-    var() name             KeyID;
-    var() localized String Description;
+    var() travel name             KeyID;
+    var() travel localized String Description;
 };
-
 var() travel array<SNanoKeyStruct> NanoKeys; // ключи в динамическом массиве
 
 event TravelPreAccept()
@@ -28,20 +27,20 @@ event TravelPreAccept()
 
 event TravelPostAccept()
 {
-    local inventory Item;
+   local inventory Item;
 
-    item = Pawn(Owner).FindInventoryType(class);
-    if (Item != None)
-    {
+   item = Pawn(Owner).FindInventoryType(class);
+   if (Item != None)
+   {
        Pawn(Owner).DeleteInventory(Item);
        Item.Destroy();
        GiveTo(Pawn(Owner));
-    }
-    else
+   }
+   else
        GiveTo(Pawn(Owner));
 
-    bPostTravel = true;
-    PutBackInHand(); // “ебе особое приглашение нужно?!
+   bPostTravel = true;
+   PutBackInHand(); // “ебе особое приглашение нужно?!
 }
 
 function Sound GetBringUpSound()
@@ -146,24 +145,24 @@ function bool HasKey(Name KeyToLookFor)
 // ----------------------------------------------------------------------
 function GiveKey(Name newKeyID, String newDescription)
 {
-    local int x, a;
+    local int x;//, a;
 
-    if (GetPlayer() != None)
-    {
+   if (GetPlayer() != None)
+   {
         // First check to see if the player already has this key
-        if (HasKey(newKeyID))
-            return;
+       if (HasKey(newKeyID))
+           return;
 
-    x = NanoKeys.Length;
-    NanoKeys.Length = x + 1; // добавить 1 к длине массива
-    NanoKeys[x].KeyID = newKeyID; // присвоить данные к элементу массива
-    NanoKeys[x].Description = newDescription;
+       x = NanoKeys.Length;
+       NanoKeys.Length = x + 1; // добавить 1 к длине массива
+       NanoKeys[x].KeyID = newKeyID; // присвоить данные к элементу массива
+       NanoKeys[x].Description = newDescription;
 
-    a = GetPlayer().NanoKeys.Length;
+/*    a = GetPlayer().NanoKeys.Length;
     GetPlayer().NanoKeys.Length = a + 1; // добавить 1 к длине массива
     GetPlayer().NanoKeys[a].KeyID = newKeyID; // присвоить данные к элементу массива
-    GetPlayer().NanoKeys[a].Description = newDescription;
-    }
+    GetPlayer().NanoKeys[a].Description = newDescription;*/
+   }
 }
 
 
@@ -233,7 +232,7 @@ Begin:
 
 function GetKeysFromPockets()
 {
-  local int x;
+/*  local int x;
 
   NanoKeys.Length = 0;
   NanoKeys.Length = DeusExPlayer(Owner).NanoKeys.Length;
@@ -242,7 +241,7 @@ function GetKeysFromPockets()
    {
       NanoKeys[x].KeyID = DeusExPlayer(Owner).NanoKeys[x].KeyID; // присвоить данные к элементу массива
       NanoKeys[x].Description = DeusExPlayer(Owner).NanoKeys[x].Description;
-   }
+   }*/
 }
 
 function BringUp()

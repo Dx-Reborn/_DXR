@@ -187,6 +187,8 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
        ParentPage.bVisible=true;
 
    Super.Closed(Sender, bCancelled);
+
+//   PlayerOwner().Level.Game.SetGameSpeed(1.0);
 }
 
 function bool OnCanClose(optional bool bCancelled)
@@ -198,6 +200,8 @@ function bool OnCanClose(optional bool bCancelled)
 }
 
 function SetMouseCursorIndex(int index);
+
+
 
 
 

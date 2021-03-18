@@ -317,16 +317,18 @@ singular function SupportActor(Actor standingActor)
     local float  baseMass;
     local float  standingMass;
 
+    log(self@"SupportActor()?"@standingActor);
+
 //    standingActor.SetBase(self);
 
     /* Исправлена жуткая ошибка: турели отваливались от основания и проваливались сквозь уровень ((( 
      возможно нужно будет добавить еще исключения */
-  if ((standingActor.IsA('EmptyClass')) || 
+/*  if ((standingActor.IsA('EmptyClass')) || 
      (standingActor.IsA('AutoTurretGun')) || (standingActor.IsA('AutoTurretGunSmall')) ||
      (standingActor.IsA('AutoTurret')) || (standingActor.IsA('AutoTurretSmall')) || (standingActor.IsA('Emitter')) ||
      (standingActor.IsA('xEmitter')) || (standingActor.IsA('Light')) || (standingActor.IsA('ScaledSprite')) || // Добавлены исключения для ходовых огней.
      (standingActor.GetStateName() == 'Sitting'));
-  return;                   
+  return;                   */
 
     zVelocity = standingActor.Velocity.Z;
     // We've been stomped!
@@ -1252,6 +1254,8 @@ defaultproperties
      bActorShadows=false
      bCanBePushedByDamage=false
      bUseCylinderCollision=true // DXR: Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
+
+     bOrientOnSlope=false // Important for this case! // for now
 
      ShadowLightDistance=1200
      ShadowMaxTraceDistance=1050
