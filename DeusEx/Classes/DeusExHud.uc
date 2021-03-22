@@ -592,7 +592,7 @@ function AddInventory(inventory item)
 
 function DeleteInventory(inventory item)
 {
-    if (item != None)
+//    if (item != None)
         RemoveObjectFromBelt(item);
 }
 
@@ -614,13 +614,15 @@ exec function PopulateBelt()
 
     for (anItem=myPlayer.Inventory; anItem!=None; anItem=anItem.Inventory)
     {
-        if (anItem.IsA('RuntimePickup'))
+        if (anItem.bInObjectBelt)
+            AddObjectToBelt(anItem, anItem.GetbeltPos(), true);
+/*        if (anItem.IsA('RuntimePickup'))
           if (RuntimePickup(anItem).bInObjectBelt)
             AddObjectToBelt(anItem, RuntimePickup(anItem).beltPos, True);
 
         if (anItem.IsA('RuntimeWeapon'))
           if (RuntimeWeapon(anItem).bInObjectBelt)
-            AddObjectToBelt(anItem, RuntimeWeapon(anItem).beltPos, True);
+            AddObjectToBelt(anItem, RuntimeWeapon(anItem).beltPos, True);*/
     }
 }
 
