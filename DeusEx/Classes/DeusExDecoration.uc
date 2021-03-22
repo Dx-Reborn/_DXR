@@ -317,7 +317,7 @@ singular function SupportActor(Actor standingActor)
     local float  baseMass;
     local float  standingMass;
 
-    log(self@"SupportActor()?"@standingActor);
+//    log(self@"SupportActor()?"@standingActor);
 
 //    standingActor.SetBase(self);
 
@@ -348,7 +348,7 @@ singular function SupportActor(Actor standingActor)
         newVelocity.Z = 0;
         newVelocity *= FRand()*25 + 25;
         newVelocity += standingActor.Velocity;
-        newVelocity.Z = 50;
+        newVelocity.Z = 50; //50
         standingActor.Velocity = newVelocity;
         standingActor.SetPhysics(PHYS_Falling);
     }
@@ -391,9 +391,9 @@ singular function BaseChange()
 
     // make sure if a decoration is accidentally dropped,
     // we reset it's parameters correctly
-    SetCollision(Default.bCollideActors, Default.bBlockActors, Default.bBlockPlayers);
-    Style = Default.Style;
-    bUnlit = Default.bUnlit;
+    SetCollision(default.bCollideActors, default.bBlockActors, default.bBlockPlayers);
+    Style = default.Style;
+    bUnlit = default.bUnlit;
 }
 
 

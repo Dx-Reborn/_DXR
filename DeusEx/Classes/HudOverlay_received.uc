@@ -90,7 +90,7 @@ function Render(Canvas u)
     u.Style=1;
 
 //    w = 50+80 * RecentItems.Length;
-    w = 30+80 * RecentItems.Length;
+    w = 40+80 * RecentItems.Length;
     h = 64;
     infoBuffer = StrReceived;
 

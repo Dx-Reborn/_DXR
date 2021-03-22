@@ -11,7 +11,7 @@ var bool bJustPushed;
 function StartRolling(vector vel)
 {
     // Transfer momentum
-    SetPhysics(PHYS_Walking);//Projectile);
+    SetPhysics(PHYS_Walking);
     pushVel = vel / 2;
     pushVel.Z = 0;
     Velocity = pushVel;

@@ -42,7 +42,7 @@ event Destroyed()
                 trash = Spawn(class'TrashPaper',,, loc);
                 if (trash != None)
                 {
-                    trash.SetPhysics(PHYS_Walking);  //(PHYS_Rolling);
+                    trash.SetPhysics(PHYS_Walking);
                     trash.rot = RotRand(True);
                     trash.rot.Yaw = 0;
                     trash.dir = VRand() * 20 + vect(20,20,0);

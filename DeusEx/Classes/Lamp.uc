@@ -25,27 +25,26 @@ function Frob(Actor Frobber, Inventory frobWith)
         PlaySound(sound'Switch4ClickOff');
         bUnlit = False;
     }
-    ResetScaleGlow();
+    ToggleUnlit();
 }
 
-event PostBeginPlay()
+event PostSetInitialState()
 {
     if (bOn)
         LightType = LT_Steady;
     else
         LightType = LT_None;
-        
-    Super.PostBeginPlay();
+
     SetTimer(0.1, false);
 }
 
 event Timer()
 {
-   ResetScaleGlow();
+   ToggleUnlit();
 }
 
 
-function ResetScaleGlow()
+function ToggleUnlit()
 {
    if(bOn)
    {

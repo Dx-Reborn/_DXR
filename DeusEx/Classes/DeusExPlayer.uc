@@ -229,6 +229,7 @@ function SaveTravelData()
 {
    class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
 }
+
 /* -------------------------------------------------------------------------------------------
    Восстановить флаги из массива байт.
  -------------------------------------------------------------------------------------------*/
@@ -240,6 +241,7 @@ function RestoreTravelData()
 function DeleteInventory(inventory item)
 {
     local DeusExHUD hud;
+
     // Vanilla Matters: Make sure VM_lastInHand is deleted properly.
     if (item == VM_lastInHand)
         VM_lastInHand = None;
@@ -264,8 +266,6 @@ function DeleteInventory(inventory item)
     hud = DeusExHUD(level.GetLocalPlayerController().myHUD);
     if (hud != None)
         hud.DeleteInventory(item);
-
-        log("DeleteInventory? "$item);
 
     Super.DeleteInventory(item);
 }
@@ -322,6 +322,24 @@ function RemoveChargedDisplay(ChargedPickup item)
 {
 //  DeusExRootWindow(rootWindow).hud.activeItems.RemoveIcon(item);
 }
+
+function StartTrainingMission()
+{
+    // Make sure the player isn't asked to do this more than
+    // once if prompted on the main menu.
+    if (!bAskedToTrain)
+    {
+        bAskedToTrain = True;
+        SaveConfig();
+    }
+
+    SkillSystem.ResetSkills();
+    ResetPlayer(true);
+    DeleteSaveGameFiles();
+    bStartingNewGame = true;
+    Level.Game.SendPlayer(PlayerController(Controller), "00_Training");
+}
+
 
 
 // ----------------------------------------------------------------------
@@ -723,8 +741,8 @@ function PlaceItemInSlot(Inventory anItem, int col, int row)
 
     SetInvSlots(anItem, 1);
 
-    gl = class'DeusExGlobals'.static.GetGlobals();
-    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
+//    gl = class'DeusExGlobals'.static.GetGlobals();
+//    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
 }
 
 // ----------------------------------------------------------------------
@@ -3743,7 +3761,7 @@ function SupportActor(Actor standingActor)
     local vector damagePoint;
     local float  damage;
 
-    log(self@"SupportActor()?"@standingActor);
+//    log(self@"SupportActor()?"@standingActor);
 
     zVelocity    = standingActor.Velocity.Z;
     standingMass = FMax(1, standingActor.Mass);
@@ -3762,10 +3780,10 @@ function SupportActor(Actor standingActor)
     newVelocity.Z = 0;
     newVelocity *= FRand()*25 + 25;
     newVelocity += standingActor.Velocity;
-    newVelocity.Z = 50;
+    newVelocity.Z = 50; //50
     standingActor.Velocity = newVelocity;
     standingActor.SetPhysics(PHYS_Falling);
-    log("standingActor velocity = "$standingActor.Velocity$" standingActor Physics ="@GetEnum(enum'EPhysics', standingActor.Physics));
+//    log("standingActor velocity = "$standingActor.Velocity$" standingActor Physics ="@GetEnum(enum'EPhysics', standingActor.Physics));
 }
 
 
@@ -4429,9 +4447,9 @@ exec function StartNewGame(String startMap)
 
     // Send the player to the specified map!
     if (startMap == "")
-        Level.Game.SendPlayer(DeusExPlayerController(Self.controller), DefaultStartMap);        // TODO: Must be stored somewhere!
+        Level.Game.SendPlayer(DeusExPlayerController(controller), DefaultStartMap);        // TODO: Must be stored somewhere!
     else
-        Level.Game.SendPlayer(DeusExPlayerController(Self.controller), startMap);
+        Level.Game.SendPlayer(DeusExPlayerController(controller), startMap);
 }
 
 // ----------------------------------------------------------------------
@@ -5434,7 +5452,6 @@ function RemoveItemDuringConversation(Inventory item)
         {
             DeusExWeapon(item).ScopeOff();
             DeusExWeapon(item).LaserOff();
-            log("Deactivated DeusExWeapon");
         }
         else if (item.IsA('DeusExPickup'))
         {

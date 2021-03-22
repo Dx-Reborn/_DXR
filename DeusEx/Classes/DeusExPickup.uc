@@ -267,13 +267,13 @@ function int GetinvPosY() // Y position on the inventory window
 
 function SetinvPosX(int position) // X position on the inventory window
 {
-   log(self$" invPosX="$position);
+//   log(self$" invPosX="$position);
    invPosX = position;
 }
 
 function SetinvPosY(int position) // Y position on the inventory window
 {
-   log(self$" invPosY="$position);
+//   log(self$" invPosY="$position);
    invPosY = position;
 }
 

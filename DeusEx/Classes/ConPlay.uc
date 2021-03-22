@@ -221,7 +221,7 @@ function JumpToConversation(ConDialogue jumpCon, String startLabel)
 {
   local DeusExGlobals gl;
 
-  log("******* Jump to convo?");
+  //log("******* Jump to convo?");
 
     assert(jumpCon != None);
 
@@ -286,7 +286,7 @@ function EDisplayMode GetDisplayMode()
 // ----------------------------------------------------------------------
 function PlayChoice(ConChoice choice)
 {
-    log("Trying to Play Choice "$choice$" with label="$ choice.ChoiceLabel,'PlayChoice');
+//    log("Trying to Play Choice "$choice$" with label="$ choice.ChoiceLabel,'PlayChoice');
 
     // First, save the choice text, but only if the DisplayAsSpeech 
     // flag isn't set, in which case the speech will be setup as a 
@@ -297,16 +297,16 @@ function PlayChoice(ConChoice choice)
     // If this choice has a label, then jump to it.  Otherwise just
     // continue with the conversation.
 
-    if (choice.choiceLabel != "")
-    {
-      CurrentChoice = choice;
-      log("CurrentChoice="$currentChoice);
+   if (choice.choiceLabel != "")
+   {
+       CurrentChoice = choice;
+       //log("CurrentChoice="$currentChoice);
 
     ProcessAction(EA_PlayChoiceAndNext, choice.choiceLabel);
 //    ProcessAction(EA_JumpToLabel, choice.choiceLabel);
-    }
-    else
-        ProcessAction(EA_NextEvent, "");
+   }
+   else
+       ProcessAction(EA_NextEvent, "");
 }
 
 // ----------------------------------------------------------------------

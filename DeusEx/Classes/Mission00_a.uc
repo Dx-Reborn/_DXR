@@ -212,7 +212,7 @@ function RemoveAllInventory()
                         DeusExPickup(item).Activate();
                 }
 
-            if (item.IsA('ChargedPickup'))
+                if (item.IsA('ChargedPickup'))
                     Player.RemoveChargedDisplay(ChargedPickup(item));
 
                 Player.DeleteInventory(item);

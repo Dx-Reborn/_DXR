@@ -33,7 +33,7 @@ event Tick(float deltaTime)
 
             if (trash != None)
             {
-                trash.SetPhysics(PHYS_Walking); // PHYS_Rolling
+                trash.SetPhysics(PHYS_Walking);
                 trash.rot = RotRand(True);
                 trash.rot.Yaw = 0;
                 trash.dir = Vector(Rotation) * WindSpeed;
