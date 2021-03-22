@@ -23,6 +23,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
 {
     if (bBeenDamaged) // DXR: Этого не должно произойти!
         return;
+
     if (damageType == class'DM_Shot')
         FireExtEffect = Spawn(class'EM_FireExtExplosion',,,hitlocation, Rotator(-aHitNormal) + rot(0, -16384, 0)); // Вычесть Yaw 16384
     if (FireExtEffect != None)

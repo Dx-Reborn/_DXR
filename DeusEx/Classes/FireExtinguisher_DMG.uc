@@ -5,6 +5,17 @@
 class FireExtinguisher_DMG extends DeusExDecoration;
 
 
+event Destroyed()
+{
+   local int i;
+   local DeusExEmitter em;
+
+   for(i=0; i<5; i++)
+       foreach RadiusActors(class'DeusExEmitter', em, 10)
+               em.Kill();
+}
+
+
 defaultproperties
 {
     ItemName="Used fireextinguisher"
