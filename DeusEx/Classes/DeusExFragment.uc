@@ -204,5 +204,8 @@ function CalcVelocity(vector Momentum, optional float ExplosionSize)
 
 defaultproperties
 {
-     LifeSpan=10.000000
+   LifeSpan=10.000000
+   bUnlit=True
 }
+
+

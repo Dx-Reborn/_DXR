@@ -5494,7 +5494,7 @@ function Tick(float deltaTime)
     local DeusExPlayer player;
     local vector       loc;
 
-    if (!bInWorld)
+    if ((!bInWorld) || (Controller == None))
         return;
 
     player = DeusExPlayer(GetPlayerPawn());
@@ -5547,19 +5547,20 @@ function Tick(float deltaTime)
     // this is UGLY!
     if (bOnFire && (health > 0))
     {
-       //if (Controller != none)
-       //    stateName = controller.GetStateName();
-
-       if ((Controller.GetStateName() != 'Burning') && (Controller.GetStateName() != 'TakingHit') && (Controller.GetStateName() != 'RubbingEyes'))
+       if (Controller != none)
+       {
+           if ((Controller.GetStateName() != 'Burning') && (Controller.GetStateName() != 'TakingHit') && (Controller.GetStateName() != 'RubbingEyes'))
                controller.GotoState('Burning');
+       }
     }  // До этого вылета нет...
     else // ------------
     {
         if (bDoLowPriority)
         {   // Эта часть может спровоцировать вылет.
             // Don't allow radius-based convos to interupt other conversations!
-            if ((player != None) && (Controller.GetStateName() != 'Conversation') && (Controller.GetStateName() != 'FirstPersonConversation'))
-                 player.StartConversation(Self, IM_Radius);
+            if (Controller != None)
+                if ((player != None) && (Controller.GetStateName() != 'Conversation') && (Controller.GetStateName() != 'FirstPersonConversation'))
+                     player.StartConversation(Self, IM_Radius);
         }
 
         bCheckEnemy = CheckEnemyPresence(deltaTime, bCheckPlayer, bCheckOther);
