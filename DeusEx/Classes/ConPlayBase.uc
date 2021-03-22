@@ -269,7 +269,7 @@ function bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
     // Hi Ken!
 
     if ((!bForcePlay) && (!con.bDataLinkCon) && (!con.CheckActors(true))) // true для вывода списка в лог.
-    {
+    {                                                             // true
 //      log(self$" forcePlay=false, not datalink, "$con$"CheckActors returned false");
         return false;
     }
@@ -628,7 +628,8 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     local ammunition AmmoType;
     local bool bSpawnedItem;
     local bool bSplitItem;
-    local int itemsTransferred;//, temp;
+    local int itemsTransferred;
+    local Lockpick lp; // DXR: Особое приглашение!
 
 
 /*  log("SetupEventTransferObject()------------------------------------------");
@@ -636,10 +637,18 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     log("  event.giveObject = " $ event.giveObject);
     log("  event.fromActor  = " $ event.fromActor );
     log("  event.toActor    = " $ event.toActor );*/
+    // DXR: Что это такое?
+    if ((Event != None) && (Event.giveObject != None) && (Player.GetLevelInfo().MapName ~= "00_Training"))
+    {
+       if (Event.giveObject == class'Lockpick')
+           foreach DynamicActors(class'Lockpick', lp)
+                   if (lp.Owner.IsA('PlayerPawn'))
+                       PlayerPawn(lp.Owner).DeleteInventory(lp);
+    }
 
     itemsTransferred = 1;
 
-    if ( event.failLabel != "" )
+    if (event.failLabel != "")
     {
         nextAction = EA_JumpToLabel;
         nextLabel  = event.failLabel;
@@ -655,7 +664,7 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     {
         log("SetupEventTransferObject:  WARNING!  toActor does not exist!");
         log("  Conversation = " $ con.Name);
-    log("--------------------------------------------------------------------");
+        log("--------------------------------------------------------------------");
         return nextAction;
     }
 
@@ -680,7 +689,7 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
     // If the giver doesn't have the item then we must spawn a copy of it
     if (invItemFrom == None)
     {
-        invItemFrom = Spawn(event.giveObject);
+        invItemFrom = Spawn(event.giveObject, None, '');
         bSpawnedItem = True;
     }
 
@@ -714,11 +723,11 @@ function EEventAction SetupEventTransferObject(ConEventTransferObject event, out
         // If this is ammo, then we want to just increment the ammo count
         // instead of adding another ammo to the inventory
 
-        if (invItemTo.IsA('ammunition'))
+        if (invItemTo.IsA('Ammunition'))
         {
             // If this is Ammo and the player already has it, make sure the player isn't
             // already full of this ammo type! (UGH!)
-            if (!ammunition(invItemTo).AddAmmo(ammunition(invItemFrom).AmmoAmount))
+            if (!Ammunition(invItemTo).AddAmmo(ammunition(invItemFrom).AmmoAmount))
             {
                 invItemFrom.Destroy();
                 return nextAction;
@@ -1006,7 +1015,7 @@ function int AddTransferCount(Inventory invItemFrom, Inventory invItemTo, ConEve
             itemsTransferred = 0;
     }
 
-log("  return itemsTransferred = " $ itemsTransferred);
+//log("  return itemsTransferred = " $ itemsTransferred);
 
     return itemsTransferred;
 }
@@ -1569,13 +1578,12 @@ function Sound GetSound(string path)
 
    bResult = class'SoundManager'.static.LoadSound(aPath $ Path, tmp, outer);
 
-  if (bResult)
-  {
-      LastSound = tmp;
-//      log(tmp); //
-      return tmp;
-  }
-  return none;
+   if (bResult)
+   {
+       LastSound = tmp;
+       return tmp;
+   }
+   return none;
 }
 
 final function ConCamera CreateConCamera()
