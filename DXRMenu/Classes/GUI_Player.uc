@@ -231,14 +231,19 @@ event HandleParameters(string Param1, string Param2)
     }
 }
 
-//var globalconfig int InterfaceMode; // 0 = Pause game, 1 = Set gamespeed to 0.1, 2 = Do nothing (RealTime)
+function bool GUIPlayerKeyEvent(out byte Key, out byte State, float delta)
+{
+    local Interactions.EInputKey iKey;
 
-//var globalconfig int  UIBackground;                   // 0 = Render 3D, 1 = Snapshot, 2 = Black
-//cubemapmode // Render 3D
-//menuMode // Черный
-//midMenuMode // Растянутый фон
+    iKey = EInputKey(Key);
 
+    if (iKey == IK_F1)
+        pmTabs.ActivateTabByName(strInventory, true);
+    if (iKey == IK_F2)
+        pmTabs.ActivateTabByName(strGoals, true);
 
+    return false;
+}
 
 defaultproperties
 {
@@ -254,31 +259,32 @@ defaultproperties
    strLogs=" Logs History "
 
    bRenderWorld=true
-   bAllowedAsLast=True
+   bAllowedAsLast=true
 
- lFrameX=-23
- lframeY=-55
- lfSizeX=384
- lfSizeY=138
+   OnKeyEvent=GUIPlayerKeyEvent
 
- mFrameX=361
- mframeY=-8
- mfSizeX=307
- mfSizeY=42
+   lFrameX=-23
+   lframeY=-55
+   lfSizeX=384
+   lfSizeY=138
 
- rFrameX=668
- rframeY=-59
- rfSizeX=148
- rfSizeY=138
+   mFrameX=361
+   mframeY=-8
+   mfSizeX=307
+   mfSizeY=42
 
- TabBackgroundX=6
- TabBackgroundY=5
+   rFrameX=668
+   rframeY=-59
+   rfSizeX=148
+   rfSizeY=138
+
+   TabBackgroundX=6
+   TabBackgroundY=5
 
 
 
   Begin Object class=GUIHeader name=dxHeader
         Caption=""
-//      StyleName="STY_DXR_Navbar"
         StyleName=""
         WinWidth=810
         WinHeight=32.0
@@ -300,14 +306,13 @@ defaultproperties
     End Object
   Controls(1)=dxtab*/
 
-    OnOpen=GUI_Player.InternalOnOpen
-    OnClose=GUI_Player.InternalOnClose
-    OnRender=IWantToDrawSomething
-    //OnRendered=IWantToDrawSomething
+   OnOpen=GUI_Player.InternalOnOpen
+   OnClose=GUI_Player.InternalOnClose
+   OnRender=IWantToDrawSomething
 
-  Background=none
-    WinWidth=800
-    WinHeight=600
-    WinTop=0.0
-    WinLeft=0.0
+   Background=none
+   WinWidth=800
+   WinHeight=600
+   WinTop=0.0
+   WinLeft=0.0
 }

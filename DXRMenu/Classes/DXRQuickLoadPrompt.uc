@@ -30,8 +30,8 @@ defaultproperties
 {
     openSound=sound'DeusExSounds.UserInterface.Menu_Activate'
 
-    stMessage="Do you want to load QuickSave?"
-    WinTitle="Load saved game?"
+    stMessage="You will lose your current game in progress, are you sure you wish to Quick Load?"
+    WinTitle="Quick Load?"
     stOk="Yes"
     stCancel="No"
 }

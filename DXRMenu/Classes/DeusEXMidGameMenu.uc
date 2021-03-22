@@ -117,14 +117,16 @@ function CreateMControls()
 
 event Opened(GUIComponent Sender)
 {
-  super.Opened(Sender);
+    super.Opened(Sender);
     DeusExHUD(playerOwner().myHUD).midMenuMode = true;
 }
 
 event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owner is closed
 {
-  super.Closed(Sender, bCancelled);
+    super.Closed(Sender, bCancelled);
     DeusExHUD(playerOwner().myHUD).midMenuMode = false;
+
+    PlayerOwner().Level.Game.SetGameSpeed(1.0);
 }
 
 

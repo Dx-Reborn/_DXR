@@ -12,32 +12,31 @@ class DeusExLoading extends UT2K4ServerLoading;
 
 struct sMapLocalized
 {
-	var localized string sMapName;
-	var localized string sMapCaption;
+    var localized string sMapName;
+    var localized string sMapCaption;
 };
-
 var() sMapLocalized sML[100]; // Для локализации это подходит лучше.
+
 
 simulated event Init()
 {
-  Super.Init();
-
-	DrawOpText(Operations[2]).Text = getMapDesc();
-}
+    Super.Init();
+    DrawOpText(Operations[2]).Text = getMapDesc();
+} 
 
 function string getMapDesc()
 {
-  local int z;
-  local string TheMap;
+   local int z;
+   local string TheMap;
 
-  TheMap = StripMap(MapName);
+   TheMap = StripMap(MapName);
 
-  for(z=0; z<ArrayCount(sML); z++)
-  {
-    if (sML[z].sMapName ~= TheMap)
-    return sML[z].sMapCaption;
-  }
-  return StripMap(MapName);
+   for(z=0; z<ArrayCount(sML); z++)
+   {
+       if (sML[z].sMapName ~= TheMap)
+           return sML[z].sMapCaption;
+   }
+   return StripMap(MapName);
 }
 
 defaultproperties
@@ -141,28 +140,28 @@ defaultproperties
 
    Backgrounds(0)=DXRLoading.loading.TP_Dust_Up
 
-	Begin Object Class=DrawOpText Name=OpLoading
-		Top=0.25
-		Lft=0.25
-		Height=0.05
-		Width=0.49
-		Justification=1
-		Text="LOADING"
-		FontName="DxFonts.fntUT2k4Large"
-		DrawColor=(R=0,G=0,B=255,A=255)
-		bWrapText=False
-	End Object
-	Operations(1)=OpLoading
+    Begin Object Class=DrawOpText Name=OpLoading
+        Top=0.25
+        Lft=0.25
+        Height=0.05
+        Width=0.49
+        Justification=1
+        Text="LOADING"
+        FontName="DxFonts.fntUT2k4Large"
+        DrawColor=(R=0,G=0,B=255,A=255)
+        bWrapText=False
+    End Object
+    Operations(1)=OpLoading
 
-	Begin Object Class=DrawOpText Name=OpMapname
-		Top=0.75
-		Lft=0.25
-		Height=0.05
-		Width=0.49
-		Justification=1
-		FontName="DxFonts.fntUT2k4Large"
-		DrawColor=(R=0,G=0,B=255,A=255)
-		bWrapText=True
-	End Object
-	Operations(2)=OpMapname
+    Begin Object Class=DrawOpText Name=OpMapname
+        Top=0.75
+        Lft=0.25
+        Height=0.25 // 0.05
+        Width=0.49
+        Justification=1
+        FontName="DxFonts.fntUT2k4Large"
+        DrawColor=(R=0,G=0,B=255,A=255)
+        bWrapText=True
+    End Object
+    Operations(2)=OpMapname
 }
