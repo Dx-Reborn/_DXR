@@ -192,17 +192,22 @@ function RegisterConFiles(string Path)
   }
 }
 
+function PostSetInitialState()
+{
+   log("PostSetInitialState()?");
+}
+
 
 function PreBeginPlay()
 {
-  super.PreBeginPlay();
-  ConBindEvents();
+   super.PreBeginPlay();
+   ConBindEvents();
 }
 
 event PostLoadSavedGame()
 {
-  log(self@"PostLoadSavedGame()");
-    ConBindEvents();
+   log(self@"PostLoadSavedGame()?");
+   ConBindEvents();
 }
 
 // ToDo: Добавить экран с текстом как в оригинале?
@@ -216,10 +221,10 @@ function ShowCredits(optional bool bLoadIntro)
 
 function DeusExGameInfo getFlagBase()
 {
-    if(flagBase == none)
-        flagBase = DeusExGameInfo(Level.Game);
+   if (flagBase == none)
+      flagBase = DeusExGameInfo(Level.Game);
 
-    return flagBase;
+   return flagBase;
 }
 
 function DeusExLevelInfo GetLevelInfo()
@@ -459,30 +464,67 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
     return rotator(AimSpot - projStart);
 }
 
+function DeleteInventory(inventory Item)
+{
+    // If this item is in our inventory chain, unlink it.
+    local actor Link;
+    local int Count;
+
+    if ((Item == Weapon) || (Item == myWeapon))
+    {
+        Weapon = None;
+        myWeapon = None;
+    }
+    if ((Item == SelectedItem) || (Item == mySelectedItem))
+    {
+        SelectedItem = None;
+        mySelectedItem = None;
+    }
+    for(Link = Self; Link!=None; Link=Link.Inventory)
+    {
+        if(Link.Inventory == Item)
+        {
+            Link.Inventory = Item.Inventory;
+            Item.Inventory = None;
+            Link.NetUpdateTime = Level.TimeSeconds - 1;
+            Item.NetUpdateTime = Level.TimeSeconds - 1;
+            break;
+        }
+        if (Level.NetMode == NM_Client)
+        {
+            Count++;
+            if (Count > 1000)
+            break;
+        }
+    }
+    Item.SetOwner(None);
+} 
+
+
 function bool AddInventory( inventory NewItem )
 {
     // Skip if already in the inventory.
-    local inventory Inv;
+   local inventory Inv;
     
-    // The item should not have been destroyed if we get here.
-    if (NewItem == None)
-        log("tried to add none inventory to "$self);
+   // The item should not have been destroyed if we get here.
+   if (NewItem == None)
+       log("tried to add none inventory to "$self);
 
-    for(Inv=Inventory; Inv!=None; Inv=Inv.Inventory)
-        if(Inv == NewItem)
-            return false;
+   for(Inv=Inventory; Inv!=None; Inv=Inv.Inventory)
+       if(Inv == NewItem)
+          return false;
 
-    // DEUS_EX AJY
-    // Update the previous owner's inventory chain
-    if (NewItem.Owner != None)
-        Pawn(NewItem.Owner).DeleteInventory(NewItem);
+   // DEUS_EX AJY
+   // Update the previous owner's inventory chain
+   if (NewItem.Owner != None)
+       Pawn(NewItem.Owner).DeleteInventory(NewItem);
 
-    // Add to front of inventory chain.
-    NewItem.SetOwner(Self);
-    NewItem.Inventory = Inventory;
-    Inventory = NewItem;
+   // Add to front of inventory chain.
+   NewItem.SetOwner(Self);
+   NewItem.Inventory = Inventory;
+   Inventory = NewItem;
 
-    return true;
+   return true;
 }
 
 function HitMarkerTick(float deltaTime)
@@ -597,6 +639,29 @@ exec function TestGunther()
     }
 }
 
+// For debugging
+exec function listConvos()
+{
+   local int i, x;
+   local DeusExPawn pwn;
+
+   foreach DynamicActors(class'DeusExPawn', pwn)
+   {
+       for (i=0; i<pwn.ConList.Length; i++)
+       {
+           log(pwn @ pwn.ConList[i]);
+           for (x=0; x<pwn.ConList[i].EventList.Length; x++)
+                log("Events:"@pwn.ConList[i].EventList[x]);
+       }
+   }
+
+
+/*    while(i < ConList.Length)
+    {
+        log("Conversation: " $ conlist[i]);
+        i++;
+    }*/
+}
 
 defaultproperties
 {
