@@ -1984,7 +1984,7 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
         // spawn a little spark and make a ricochet sound if we hit something
         if (Other != None)
         {
-            if (!bHandToHand && bInstantHit && bPenetrating)
+            if (/*bHandToHand && */bInstantHit/* && bPenetrating*/) //if (!bHandToHand && bInstantHit && bPenetrating)
             {
                 spark = spawn(class'Spark',,,HitLocation+HitNormal, Rotator(HitNormal));
                 if (spark != None)
