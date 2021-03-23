@@ -25,24 +25,67 @@ enum ESkinColor
 };
 
 var() ESkinColor SkinColor;
+var material ColorSkins[10];
 var() bool bPreDamage;
 var bool bLeaking;
 var float radTimer;
 var bool bGenCreated; // Только один генератор частиц на одну бочку. Иначе он корректно не уничтожается.
 
-event SetInitialState()
+event PostSetInitialState()
 {
-    super.SetInitialState();
-
     if (bPreDamage)
         TakeDamage(1, None, Location, vect(0,0,0), class'DM_shot');
 
 }
 
+// DXR: Overriden to use custom "landed" sound.
+event Landed(vector HitNormal)
+{
+    local Rotator rot;
+    local sound hitSound;
+
+    // make it lay flat on the ground
+    bFixedRotationDir = False;
+    rot = Rotation;
+    rot.Pitch = 0;
+    rot.Roll = 0;
+    SetRotation(rot);
+
+    // play a sound effect if it's falling fast enough
+    if (Velocity.Z <= -200)
+    {
+        if (fragType == class'WoodFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'WoodHit1';
+            else
+                hitSound = sound'WoodHit2';
+        }
+        else if (fragType == class'MetalFragment')
+        {
+            if (Mass <= 20)
+                hitSound = sound'MetalHit1';
+            else
+                hitSound = sound'STALKER_Sounds.Hit.barrel_2';
+        }
+
+        if ((hitSound != None) && (Level.TimeSeconds > 2)) //DXR: Не воспроизводить звук падения сразу после загрузки.
+            PlaySound(hitSound, SLOT_None);
+
+        // alert NPCs that I've landed
+        class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+    }
+
+    bWasCarried = false;
+    bBobbing    = false;
+
+        if ((bExplosive && (VSize(Velocity) > 425)) || (!bExplosive && (Velocity.Z < -500)))
+            TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), class'fell');
+}
+
 function SetDefaultSkin(material material)
 {
-//    default.Skins[0] = material;
-    Skins[0] = material;
+   Skins[0] = material;
 }
 
 function ResetScaleGlow()
@@ -105,37 +148,37 @@ function SetSkin()
 {
     switch (SkinColor)
     {
-        case SC_Biohazard:          SetDefaultSkin(Texture'Barrel1Tex1');
+        case SC_Biohazard:          SetDefaultSkin(ColorSkins[0]);
                                     break;
 
-        case SC_Blue:               SetDefaultSkin(Texture'Barrel1Tex2'); 
+        case SC_Blue:               SetDefaultSkin(ColorSkins[1]); 
                                     break;
 
-        case SC_Brown:              SetDefaultSkin(Texture'Barrel1Tex3'); 
+        case SC_Brown:              SetDefaultSkin(ColorSkins[2]); 
                                     break;
 
-        case SC_Rusty:              SetDefaultSkin(Texture'Barrel1Tex4');
+        case SC_Rusty:              SetDefaultSkin(ColorSkins[3]);
                                     break;
 
-        case SC_Explosive:          SetDefaultSkin(Texture'Barrel1Tex5');
+        case SC_Explosive:          SetDefaultSkin(ColorSkins[4]);
                                     break;
 
-        case SC_FlammableLiquid:    SetDefaultSkin(Texture'Barrel1Tex6');
+        case SC_FlammableLiquid:    SetDefaultSkin(ColorSkins[5]);
                                     break;
 
-        case SC_FlammableSolid:     SetDefaultSkin(Texture'Barrel1Tex7');
+        case SC_FlammableSolid:     SetDefaultSkin(ColorSkins[6]);
                                     break;
 
-        case SC_Poison:             SetDefaultSkin(Texture'Barrel1Tex8');
+        case SC_Poison:             SetDefaultSkin(ColorSkins[7]);
                                     break;
 
-        case SC_RadioActive:        SetDefaultSkin(Texture'Barrel1Tex9');
+        case SC_RadioActive:        SetDefaultSkin(ColorSkins[8]);
                                     break;
 
         case SC_Wood:               SetDefaultSkin(Texture'Barrel1Tex10');
                                     break;
 
-        case SC_Yellow:             SetDefaultSkin(Texture'Barrel1Tex11');
+        case SC_Yellow:             SetDefaultSkin(ColorSkins[9]);
                                     break;
     }
 }
@@ -358,13 +401,29 @@ auto state Active
 
 defaultproperties
 {
-    SkinColor=SC_Brown
-    HitPoints=30
-    ItemName="Barrel"
-    bBlockSight=True
-    mesh=mesh'DeusExDeco.Barrel1'
-    CollisionRadius=20.00
-    CollisionHeight=29.00
-    Mass=80.00
-    Buoyancy=90.00
+   SkinColor=SC_Brown
+   HitPoints=30
+   ItemName="Barrel"
+   bBlockSight=true
+//    mesh=mesh'DeusExDeco.Barrel1'
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.Barrel1a_HD'
+
+   CollisionRadius=20.00
+   CollisionHeight=29.00
+
+   Mass=80.00
+   Buoyancy=90.00
+
+   ColorSkins[0]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex1'
+   ColorSkins[1]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex2'
+   ColorSkins[2]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex3'
+   ColorSkins[3]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex4'
+   ColorSkins[4]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex5'
+   ColorSkins[5]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex6'
+   ColorSkins[6]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex7'
+   ColorSkins[7]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex8'
+   ColorSkins[8]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex9'
+   ColorSkins[9]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex11'
 }
+
