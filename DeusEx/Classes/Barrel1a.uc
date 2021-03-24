@@ -30,6 +30,7 @@ var() bool bPreDamage;
 var bool bLeaking;
 var float radTimer;
 var bool bGenCreated; // Только один генератор частиц на одну бочку. Иначе он корректно не уничтожается.
+const RAD_BARREL_DAMAGE_RADIUS = 128.00;
 
 event PostSetInitialState()
 {
@@ -210,7 +211,7 @@ auto state Active
                 radTimer = 0;
 
                 // check to see if anything has entered our effect radius
-                foreach VisibleActors(class'Actor', A, 128.0)
+                foreach VisibleActors(class'Actor', A, RAD_BARREL_DAMAGE_RADIUS)
                     if (A != None)
                     {
                         // be sure to damage the torso
@@ -365,7 +366,7 @@ auto state Active
                     loc.Z = CollisionHeight + 8;
                     loc += Location;
 
-                    log ("bGenCreated"@bGenCreated);
+                    //log ("bGenCreated"@bGenCreated);
 
                     if (!bGenCreated)
                     {
@@ -417,16 +418,16 @@ defaultproperties
    Mass=80.00
    Buoyancy=90.00
 
-   ColorSkins[0]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex1'
-   ColorSkins[1]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex2'
-   ColorSkins[2]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex3'
+   ColorSkins[0]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1' //texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex1'
+   ColorSkins[1]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex2'
+   ColorSkins[2]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH3'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex3'
    ColorSkins[3]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex4'
-   ColorSkins[4]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex5'
-   ColorSkins[5]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex6'
-   ColorSkins[6]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex7'
-   ColorSkins[7]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex8'
-   ColorSkins[8]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex9'
-   ColorSkins[9]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex11'
-   ColorSkins[10]=texture'DeusExStaticMeshes0.Wood.Barrel1a_HD_Tex10'
+   ColorSkins[4]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH5'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex5'
+   ColorSkins[5]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH6'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex6'
+   ColorSkins[6]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH7'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex7'
+   ColorSkins[7]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH8'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex8'
+   ColorSkins[8]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex9'
+   ColorSkins[9]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex11'
+   ColorSkins[10]=shader'DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10'//texture'DeusExStaticMeshes0.Wood.Barrel1a_HD_Tex10'
 }
 
