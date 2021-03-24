@@ -25,7 +25,8 @@ enum ESkinColor
 };
 
 var() ESkinColor SkinColor;
-var material ColorSkins[11];
+//var material ColorSkins[11];
+var string ColorSkins[11];
 var() bool bPreDamage;
 var bool bLeaking;
 var float radTimer;
@@ -84,9 +85,10 @@ event Landed(vector HitNormal)
             TakeDamage((1-Velocity.Z/30), Instigator, Location, vect(0,0,0), class'fell');
 }
 
-function SetDefaultSkin(material material)
+function SetDefaultSkin(string mat)//(material material)
 {
-   Skins[0] = material;
+   //Skins[0] = material;
+   Skins[0] = Material(DynamicLoadObject(mat, class'Material', false));
 }
 
 function ResetScaleGlow()
@@ -418,16 +420,30 @@ defaultproperties
    Mass=80.00
    Buoyancy=90.00
 
-   ColorSkins[0]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1' //texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex1'
-   ColorSkins[1]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex2'
-   ColorSkins[2]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH3'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex3'
+   ColorSkins[0]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1"
+   ColorSkins[1]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2"
+   ColorSkins[2]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH3"
+   ColorSkins[3]="DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex4"
+   ColorSkins[4]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH5"
+   ColorSkins[5]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH6"
+   ColorSkins[6]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH7"
+   ColorSkins[7]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH8"
+   ColorSkins[8]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9"
+   ColorSkins[9]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11"
+   ColorSkins[10]="DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10"
+
+/*   ColorSkins[0]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1'
+   ColorSkins[1]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2'
+   ColorSkins[2]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH3'
    ColorSkins[3]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex4'
-   ColorSkins[4]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH5'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex5'
-   ColorSkins[5]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH6'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex6'
-   ColorSkins[6]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH7'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex7'
-   ColorSkins[7]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH8'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex8'
-   ColorSkins[8]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex9'
-   ColorSkins[9]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11'//texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex11'
-   ColorSkins[10]=shader'DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10'//texture'DeusExStaticMeshes0.Wood.Barrel1a_HD_Tex10'
+   ColorSkins[4]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH5'
+   ColorSkins[5]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH6'
+   ColorSkins[6]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH7'
+   ColorSkins[7]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH8'
+   ColorSkins[8]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9'
+   ColorSkins[9]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11'
+   ColorSkins[10]=shader'DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10'*/
 }
+
+
 
