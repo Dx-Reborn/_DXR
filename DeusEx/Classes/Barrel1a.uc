@@ -25,7 +25,7 @@ enum ESkinColor
 };
 
 var() ESkinColor SkinColor;
-var material ColorSkins[10];
+var material ColorSkins[11];
 var() bool bPreDamage;
 var bool bLeaking;
 var float radTimer;
@@ -137,8 +137,10 @@ function SetStuff()
           ScaleGlow = 0.4;
                     break;
 
-              case SC_Wood:               
-   FragType = Class'DeusEx.WoodFragment'; //CyberP
+              case SC_Wood:
+   SetStaticMesh(StaticMesh'DeusExStaticMeshes0.Barrel1a_HD_Wood');
+   FragType = class'DeusEx.WoodFragment'; //CyberP
+   pushSound = sound'PushWood'; // DXR
                      break;
 
     }
@@ -175,7 +177,7 @@ function SetSkin()
         case SC_RadioActive:        SetDefaultSkin(ColorSkins[8]);
                                     break;
 
-        case SC_Wood:               SetDefaultSkin(Texture'Barrel1Tex10');
+        case SC_Wood:               SetDefaultSkin(ColorSkins[10]);
                                     break;
 
         case SC_Yellow:             SetDefaultSkin(ColorSkins[9]);
@@ -425,5 +427,6 @@ defaultproperties
    ColorSkins[7]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex8'
    ColorSkins[8]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex9'
    ColorSkins[9]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex11'
+   ColorSkins[10]=texture'DeusExStaticMeshes0.Wood.Barrel1a_HD_Tex10'
 }
 
