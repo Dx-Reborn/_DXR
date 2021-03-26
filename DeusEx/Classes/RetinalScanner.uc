@@ -7,32 +7,36 @@ var() localized String msgUsed;
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-	local Actor A;
+   local Actor A;
 
-	Super.HackAction(Hacker, bHacked);
+   Super.HackAction(Hacker, bHacked);
 
-	if (bHacked)
-		if (Event != '')
-		{
-			if (Pawn(Hacker) != None)
-				Pawn(Hacker).ClientMessage(msgUsed);
+   if (bHacked)
+       if (Event != '')
+       {
+           if (Pawn(Hacker) != None)
+               Pawn(Hacker).ClientMessage(msgUsed);
 
-			foreach AllActors(class 'Actor', A, Event)
-				A.Trigger(Self, Pawn(Hacker));
-		}
+           foreach AllActors(class 'Actor', A, Event)
+                   A.Trigger(Self, Pawn(Hacker));
+       }
 }
 
 defaultproperties
 {
-     msgUsed="Clearance granted"
-     ItemName="Retinal Scanner"
-     AmbientSound=Sound'DeusExSounds.Generic.SecurityL'
-     mesh=mesh'DeusExDeco.RetinalScanner'
-     SoundRadius=8
-     SoundVolume=255
-     SoundPitch=96
-     CollisionRadius=10.000000
-     CollisionHeight=11.430000
-     Mass=30.000000
-     Buoyancy=40.000000
+   msgUsed="Clearance granted"
+   ItemName="Retinal Scanner"
+   AmbientSound=Sound'DeusExSounds.Generic.SecurityL'
+//   mesh=mesh'DeusExDeco.RetinalScanner'
+   DrawType=DT_StaticMesh
+   Staticmesh=Staticmesh'DeusExStaticMeshes0.RetinalScanner_HD'
+   SoundRadius=8
+   SoundVolume=255
+   SoundPitch=96
+   CollisionRadius=10.000000
+   CollisionHeight=11.430000
+   Mass=30.000000
+   Buoyancy=40.000000
 }
+
+
