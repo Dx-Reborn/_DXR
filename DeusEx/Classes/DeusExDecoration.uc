@@ -183,12 +183,7 @@ function PreBeginPlay()
     Role = default.Role;
 }
 
-
-
-// ----------------------------------------------------------------------
-// PostPostBeginPlay()
-// ----------------------------------------------------------------------
-event SetInitialState()
+event PostSetInitialState()
 {
     super.SetInitialState();
     ConBindEvents();

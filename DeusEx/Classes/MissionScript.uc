@@ -22,11 +22,9 @@ var DeusExLevelInfo dxInfo;
 var bool bFirstFrame;
 
 // ----------------------------------------------------------------------
-// PostPostBeginPlay()
-//
 // Set the timer
 // ----------------------------------------------------------------------
-event SetInitialState()
+event PostSetInitialState()
 {
     // start the script
     SetTimer(checkTime, True);

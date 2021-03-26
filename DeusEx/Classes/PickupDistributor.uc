@@ -26,13 +26,11 @@ struct SNanoKeyInitStruct
 
 var() SNanoKeyInitStruct NanoKeyData[8];
 
-event SetInitialState() // was PostPostBeginPlay(), but UT2k4 does not have such event
+function PostSetInitialState()
 {
     local int i;
     local ScriptedPawn P;
     local NanoKey key;
-
-    Super.SetInitialState();
 
     for(i=0; i<ArrayCount(NanoKeyData); i++)
     {

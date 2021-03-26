@@ -3,43 +3,42 @@
 //=============================================================================
 class PaulDentonCarcass extends DeusExCarcass;
 
-// ----------------------------------------------------------------------
-// PostPostBeginPlay()
-// ----------------------------------------------------------------------
 
-
-// ----------------------------------------------------------------------
-// SetSkin()
-// ----------------------------------------------------------------------
-function SetSkin(DeusExPlayer player)
+function PostSetInitialState()
 {
-	if (player != None)
-	{
-		switch(player.PlayerSkin)
-		{
-			case 0:	Skins[0] = Texture'PaulDentonTex0';
-					Skins[3] = Texture'PaulDentonTex0';
-					break;
-			case 1:	Skins[0] = Texture'PaulDentonTex4';
-					Skins[3] = Texture'PaulDentonTex4';
-					break;
-			case 2:	Skins[0] = Texture'PaulDentonTex5';
-					Skins[3] = Texture'PaulDentonTex5';
-					break;
-			case 3:	Skins[0] = Texture'PaulDentonTex6';
-					Skins[3] = Texture'PaulDentonTex6';
-					break;
-			case 4:	Skins[0] = Texture'PaulDentonTex7';
-					Skins[3] = Texture'PaulDentonTex7';
-					break;
-		}
-	}
+    local DeusExPlayer player;
+
+    foreach AllActors(class'DeusExPlayer', player)
+            break;
+
+    SetSkin(player);
 }
 
+function SetSkin(DeusExPlayer player)
+{
+    if (player != None)
+    {
+        switch(player.PlayerSkin)
+        {
+            case 0: Skins[0] = Texture'PaulDentonTex0';
+                    Skins[3] = Texture'PaulDentonTex0';
+                    break;
+            case 1: Skins[0] = Texture'PaulDentonTex4';
+                    Skins[3] = Texture'PaulDentonTex4';
+                    break;
+            case 2: Skins[0] = Texture'PaulDentonTex5';
+                    Skins[3] = Texture'PaulDentonTex5';
+                    break;
+            case 3: Skins[0] = Texture'PaulDentonTex6';
+                    Skins[3] = Texture'PaulDentonTex6';
+                    break;
+            case 4: Skins[0] = Texture'PaulDentonTex7';
+                    Skins[3] = Texture'PaulDentonTex7';
+                    break;
+        }
+    }
+}
 
-
-// ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
 
 defaultproperties
 {

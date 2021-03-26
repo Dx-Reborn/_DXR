@@ -334,11 +334,9 @@ function PreBeginPlay()
 // ----------------------------------------------------------------------
 event PostBeginPlay()
 {
-  local float defHeight;
+   local float defHeight;
 
-  defHeight = collisionHeight;
-
-    ConBindEvents();
+   defHeight = collisionHeight;
 
     Super.PostBeginPlay();
 
@@ -354,6 +352,12 @@ event PostBeginPlay()
         Controller.pawn = self;
     }
     CreateShadow();
+}
+
+function PostSetInitialState()
+{
+   // Bind any conversation events to this ScriptedPawn
+   ConBindEvents();
 }
 
 event Destroyed()

@@ -3,31 +3,31 @@
 //=============================================================================
 class JCDentonMaleCarcass extends DeusExCarcass;
 
-// ----------------------------------------------------------------------
-// PostPostBeginPlay()
-// ----------------------------------------------------------------------
 
-
-// ----------------------------------------------------------------------
-// SetSkin()
-// ----------------------------------------------------------------------
-function SetSkin(DeusExPlayer player)
+function PostSetInitialState()
 {
-	if (player != None)
-	{
-		switch(player.PlayerSkin)
-		{
-			case 0:	Skins[0] = Texture'JCDentonTex0'; break;
-			case 1:	Skins[0] = Texture'JCDentonTex4'; break;
-			case 2:	Skins[0] = Texture'JCDentonTex5'; break;
-			case 3:	Skins[0] = Texture'JCDentonTex6'; break;
-			case 4:	Skins[0] = Texture'JCDentonTex7'; break;
-		}
-	}
+   local DeusExPlayer player;
+
+   foreach AllActors(class'DeusExPlayer', player)
+          break;
+   SetSkin(player);
 }
 
-// ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
+function SetSkin(DeusExPlayer player)
+{
+    if (player != None)
+    {
+        switch(player.PlayerSkin)
+        {
+            case 0: Skins[0] = Texture'JCDentonTex0'; break;
+            case 1: Skins[0] = Texture'JCDentonTex4'; break;
+            case 2: Skins[0] = Texture'JCDentonTex5'; break;
+            case 3: Skins[0] = Texture'JCDentonTex6'; break;
+            case 4: Skins[0] = Texture'JCDentonTex7'; break;
+        }
+    }
+}
+
 
 defaultproperties
 {
