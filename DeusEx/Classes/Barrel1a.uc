@@ -129,15 +129,17 @@ function SetStuff()
       case SC_RadioActive:        
        bInvincible = True;
     LightType = LT_Steady;
-          LightRadius = 8;
+        LightRadius = 2.5; // 8;
     LightBrightness = 128;
             LightHue = 64;
      LightSaturation = 96;
         AmbientSound = sound'GeigerLoop';
-          SoundRadius = 8;
+         SoundRadius = 24; //8;
         SoundVolume = 255;
-            bUnlit = True;
-          ScaleGlow = 0.4;
+            //bUnlit = True;
+ bDramaticLighting = true;
+     bDynamicLight = true;
+          //ScaleGlow = 0.4;
                     break;
 
               case SC_Wood:
