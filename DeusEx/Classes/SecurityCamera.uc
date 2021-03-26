@@ -31,6 +31,15 @@ var localized string msgDeactivated;
 var int LightSkinNum; // DXR: Instead of hardcoded Skins[value]
 var material RedLight, GreenLight, YellowLight, NeutralLight; // DXR: this way is more flexible, I think.
 
+//event Destroyed()
+function TakeDamage(int Damage,Pawn EventInstigator,vector HitLocation, vector Momentum, class<DamageType> DamageType)
+{
+   Super.TakeDamage(Damage,EventInstigator,HitLocation,Momentum,DamageType);
+
+   if (HitPoints <= 10)
+       Spawn(class'EM_CameraExplosion',None,'',location,rotation + RotRand(true));
+}
+
 function Trigger(Actor Other, Pawn Instigator)
 {
     if (bConfused)

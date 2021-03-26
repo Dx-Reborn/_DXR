@@ -79,7 +79,7 @@ function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
 
    if (Actor.IsA('BarrelFire') || Actor.IsA('MetalBoxes') || Actor.IsA('MailBox') ||
       (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || 
-       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || Actor.IsA('SecurityCamera') ||
+       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || //Actor.IsA('SecurityCamera') ||
        Actor.IsA('FireExtinguisher') || Actor.IsA('CageLight'))
    {
       Spawn(class'EM_MetalHit',,,Loc,);

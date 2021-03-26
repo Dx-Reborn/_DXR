@@ -388,6 +388,21 @@ exec function CopyCurrentFiles(string dest)
    }
 }
 
+// exec для тестирования.
+exec function SaveGameAs(string Path)
+{
+   local DeusExGameEngine eng;
+
+   eng = class'DeusExGameEngine'.static.GetEngine();
+   if (eng == None)
+   {
+       log("Something wrong, unable to get pointer to DeusExGameEngine! SaveGame aborted!",'SaveSystem');
+       return;
+   }
+
+   eng.SaveGameEx(Path);
+}
+
 /*-------------------------------------------------------------
   Сохраняет карту без информации об игроке
   Исследования показали что из файла сохранения нужно исключить
@@ -404,13 +419,14 @@ exec function CopyCurrentFiles(string dest)
 exec function SaveCurrentMap()
 {
    local bool Fsave;
-   local string Quick, sd;
+   local string curr, sd;
    local DeusExLevelInfo info;
    local Augmentation aug;
    local Skill skl;
    local beam lt;
    local Inventory anItem;
    local LightProjector lp;
+   local int CheckFileHandle;
 
    info = GetLevelInfo();
    gl = class'DeusExGlobals'.static.GetGlobals();
@@ -432,7 +448,7 @@ exec function SaveCurrentMap()
    for (anItem=pawn.Inventory; anItem!=None; anItem=anItem.Inventory)
    {
 //    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
-//    class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
+       class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
 //    log("setting RF_Transient for "$anItem);
     //pawn.DeleteInventory(anItem);
    }
@@ -448,36 +464,45 @@ exec function SaveCurrentMap()
 
    foreach AllActors(class'Augmentation', aug)
    {
-     if (aug != none)
-     class'ObjectManager'.static.SetObjectFlags(aug, RF_Transient);
+       if (aug != none)
+       class'ObjectManager'.static.SetObjectFlags(aug, RF_Transient);
    }
    foreach AllActors(class'Skill', skl)
    {
-     if (skl != none)
-     class'ObjectManager'.static.SetObjectFlags(skl, RF_Transient);
+       if (skl != none)
+       class'ObjectManager'.static.SetObjectFlags(skl, RF_Transient);
    }
    foreach AllActors(class'Beam', lt)
    {
-     if (lt != none)
-     class'ObjectManager'.static.SetObjectFlags(lt, RF_Transient);
+       if (lt != none)
+       class'ObjectManager'.static.SetObjectFlags(lt, RF_Transient);
    }
    foreach AllActors(class'LightProjector', lp)
    {
-     if (lt != none)
-     class'ObjectManager'.static.SetObjectFlags(lp, RF_Transient);
+       if (lt != none)
+       class'ObjectManager'.static.SetObjectFlags(lp, RF_Transient);
    }
 
 
-   consolecommand("SAVEGAME 100");
-
+//   consolecommand("SAVEGAME 100");
+   // Получаем путь для сохранений
    sd = ConsoleCommand("get System savepath");
-   Quick = sd$"\\Current";
-   Fsave = class'filemanager'.static.MakeDirectory(Quick, true);
-   Fsave = class'filemanager'.static.MoveFile(sd$"\\Save100.usa", Quick$"\\"$GetLevelInfo().mapName$SAVE_EXT, true, true);
-   if (Fsave)
-   Log("Saved map "$GetLevelInfo().mapName,'SaveSystem');
+   curr = sd$"\\Current";
+
+   // создаем каталог
+   Fsave = class'filemanager'.static.MakeDirectory(curr, true);
+
+   // сохраняемся...
+   SaveGameAs(curr$"\\"$GetLevelInfo().mapName$SAVE_EXT);
+
+   // проверяем что все прошло нормально...
+   CheckFileHandle = class'filemanager'.static.FileSize(curr$"\\"$GetLevelInfo().mapName$SAVE_EXT);
+   //Fsave = class'filemanager'.static.MoveFile(sd$"\\Save100.usa", Quick$"\\"$GetLevelInfo().mapName$SAVE_EXT, true, true);
+   log("CheckFileHandle = "$CheckFileHandle,'SaveSystem');
+   if (CheckFileHandle != -1)
+       Log("Saved map "$GetLevelInfo().mapName,'SaveSystem');
    else
-   Log("Saving map "$GetLevelInfo().mapName$" FAILED!",'SaveSystem');
+       Log("Saving map "$GetLevelInfo().mapName$" FAILED!",'SaveSystem');
 }
 
 /*-------------------------------------------------------------

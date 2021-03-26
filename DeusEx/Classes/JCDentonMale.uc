@@ -418,8 +418,11 @@ exec function m09()
 
 function PostSaveGame()
 {
-   ClientMessage("PostSaveGame() from UDxrNativeGameEngine called!");
-      log("PostSaveGame() from UDxrNativeGameEngine called!");
+   local string str;
+
+   str = "PostSaveGame() from UDeusExGameEngine called!";
+   ClientMessage(str);
+   log(str);
 }
 
 exec function DVect()
