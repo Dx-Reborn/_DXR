@@ -17,5 +17,5 @@ defaultproperties
      Mass=200.000000
      Buoyancy=50.000000
 //     Skins[0]=Texture'DeusExDeco.Skins.RoadBlockTex1'
-     Skins[0]=Texture'DeusExStaticMeshes0.Stone.roadblock_HD_Tex'
+//     Skins[0]=Texture'DeusExStaticMeshes0.Stone.roadblock_HD_Tex'
 }

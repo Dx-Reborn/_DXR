@@ -16,7 +16,7 @@ defaultproperties
      CollisionRadius=16.000000
      CollisionHeight=28.770000
      LightType=LT_Steady
-     LightEffect=LE_None //LE_WateryShimmer
+     LightEffect=LE_None
      LightBrightness=96
      LightHue=80
      LightRadius=4

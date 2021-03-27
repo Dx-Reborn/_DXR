@@ -25,7 +25,7 @@ enum ESkinColor
 
 var() ESkinColor SkinColor;
 var bool bJustHit;
-var StaticMesh OtherModels[16];
+var string OtherModels[16];
 
 
 event BeginPlay()
@@ -50,22 +50,22 @@ event BeginPlay()
         case SC_14:     Skins[0] = Texture'PoolballTex14'; break;
         case SC_15:     Skins[0] = Texture'PoolballTex15'; break;
         case SC_Cue:    Skins[0] = Texture'PoolballTex16'; break;*/
-        case SC_1:      SetStaticMesh(OtherModels[0]); break;
-        case SC_2:      SetStaticMesh(OtherModels[1]); break;
-        case SC_3:      SetStaticMesh(OtherModels[2]); break;
-        case SC_4:      SetStaticMesh(OtherModels[3]); break;
-        case SC_5:      SetStaticMesh(OtherModels[4]); break;
-        case SC_6:      SetStaticMesh(OtherModels[5]); break;
-        case SC_7:      SetStaticMesh(OtherModels[6]); break;
-        case SC_8:      SetStaticMesh(OtherModels[7]); break;
-        case SC_9:      SetStaticMesh(OtherModels[8]); break;
-        case SC_10:     SetStaticMesh(OtherModels[9]); break;
-        case SC_11:     SetStaticMesh(OtherModels[10]); break;
-        case SC_12:     SetStaticMesh(OtherModels[11]); break;
-        case SC_13:     SetStaticMesh(OtherModels[12]); break;
-        case SC_14:     SetStaticMesh(OtherModels[13]); break;
-        case SC_15:     SetStaticMesh(OtherModels[14]); break;
-        case SC_Cue:    SetStaticMesh(OtherModels[15]); break;
+        case SC_1:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[0], class'StaticMesh', false))); break;  
+        case SC_2:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[1], class'StaticMesh', false))); break;
+        case SC_3:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[2], class'StaticMesh', false))); break;
+        case SC_4:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[3], class'StaticMesh', false))); break;
+        case SC_5:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[4], class'StaticMesh', false))); break;
+        case SC_6:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[5], class'StaticMesh', false))); break;
+        case SC_7:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[6], class'StaticMesh', false))); break;
+        case SC_8:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[7], class'StaticMesh', false))); break;
+        case SC_9:      SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[8], class'StaticMesh', false))); break;
+        case SC_10:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[9], class'StaticMesh', false))); break;
+        case SC_11:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[10], class'StaticMesh', false))); break;
+        case SC_12:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[11], class'StaticMesh', false))); break;
+        case SC_13:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[12], class'StaticMesh', false))); break;
+        case SC_14:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[13], class'StaticMesh', false))); break;
+        case SC_15:     SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[14], class'StaticMesh', false))); break;
+        case SC_Cue:    SetStaticMesh(StaticMesh(DynamicLoadObject(OtherModels[15], class'StaticMesh', false))); break;
     }
 }
 
@@ -144,24 +144,24 @@ function Frob(Actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
-     OtherModels[0]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_1'
-     OtherModels[1]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_2'
-     OtherModels[2]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_3'
-     OtherModels[3]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_4'
-     OtherModels[4]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_5'
-     OtherModels[5]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_6'
-     OtherModels[6]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_7'
-     OtherModels[7]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_8'
-     OtherModels[8]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_9'
-     OtherModels[9]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_10'
-     OtherModels[10]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_11'
-     OtherModels[11]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_12'
-     OtherModels[12]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_13'
-     OtherModels[13]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_14'
-     OtherModels[14]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_15'
-     OtherModels[15]=StaticMesh'DXR_PoolTable_Set.Pool_Ball_White'
+     OtherModels[0]="DXR_PoolTable_Set.Pool_Ball_1"
+     OtherModels[1]="DXR_PoolTable_Set.Pool_Ball_2"
+     OtherModels[2]="DXR_PoolTable_Set.Pool_Ball_3"
+     OtherModels[3]="DXR_PoolTable_Set.Pool_Ball_4"
+     OtherModels[4]="DXR_PoolTable_Set.Pool_Ball_5"
+     OtherModels[5]="DXR_PoolTable_Set.Pool_Ball_6"
+     OtherModels[6]="DXR_PoolTable_Set.Pool_Ball_7"
+     OtherModels[7]="DXR_PoolTable_Set.Pool_Ball_8"
+     OtherModels[8]="DXR_PoolTable_Set.Pool_Ball_9"
+     OtherModels[9]="DXR_PoolTable_Set.Pool_Ball_10"
+     OtherModels[10]="DXR_PoolTable_Set.Pool_Ball_11"
+     OtherModels[11]="DXR_PoolTable_Set.Pool_Ball_12"
+     OtherModels[12]="DXR_PoolTable_Set.Pool_Ball_13"
+     OtherModels[13]="DXR_PoolTable_Set.Pool_Ball_14"
+     OtherModels[14]="DXR_PoolTable_Set.Pool_Ball_15"
+     OtherModels[15]="DXR_PoolTable_Set.Pool_Ball_White"
 
-     bInvincible=True
+     bInvincible=true
      ItemName="Poolball"
      bPushable=False
      Physics=PHYS_Walking
