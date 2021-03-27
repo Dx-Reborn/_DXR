@@ -143,7 +143,7 @@ function SetStuff()
                     break;
 
               case SC_Wood:
-   SetStaticMesh(StaticMesh'DeusExStaticMeshes0.Barrel1a_HD_Wood');
+   SetStaticMesh(StaticMesh(DynamicLoadObject("DeusExStaticMeshes0.Barrel1a_HD_Wood", class'StaticMesh', false)));
    FragType = class'DeusEx.WoodFragment'; //CyberP
    pushSound = sound'PushWood'; // DXR
                      break;
@@ -433,18 +433,6 @@ defaultproperties
    ColorSkins[8]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9"
    ColorSkins[9]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11"
    ColorSkins[10]="DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10"
-
-/*   ColorSkins[0]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1'
-   ColorSkins[1]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2'
-   ColorSkins[2]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH3'
-   ColorSkins[3]=texture'DeusExStaticMeshes0.Metal.Barrel1a_HD_Tex4'
-   ColorSkins[4]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH5'
-   ColorSkins[5]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH6'
-   ColorSkins[6]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH7'
-   ColorSkins[7]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH8'
-   ColorSkins[8]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH9'
-   ColorSkins[9]=shader'DeusExStaticMeshes0.Metal.Barrel1a_HD_SH11'
-   ColorSkins[10]=shader'DeusExStaticMeshes0.Wood.Barrel1a_HD_SH10'*/
 }
 
 

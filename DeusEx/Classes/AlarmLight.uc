@@ -43,28 +43,28 @@ function SetLightColor(ESkinColor color)
 {
     switch (SkinColor)
     {
-        case SC_Red:        
-                            Skins[0]=Shader'DeusExDeco_EX.Shader.AlarmLightTex1_SH';
-                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex2_SH';
-                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightRed_TE';
+        case SC_Red:
+                            Skins[0]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex1_SH", class'Material', false));
+                            Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex2_SH", class'Material', false));
+                            Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightRed_TE", class'Material', false));
                             if (proj != None)
                                 proj.ProjTexture = texture'AlarmLightTex2';
                             break;
         case SC_Green:      
-                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex3_SH';
-                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightGreen_TE';
+                            Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex3_SH", class'Material', false));
+                            Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightGreen_TE", class'Material', false)); 
                             if (proj != None)
                                 proj.ProjTexture = texture'AlarmLightTex4';
                             break;
         case SC_Blue:       
-                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex4_SH';
-                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightBlue_TE';
+                            Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex4_SH", class'Material', false));
+                            Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightBlue_TE", class'Material', false));
                             if (proj != None)
                                 proj.ProjTexture = texture'AlarmLightTex6';
                             break;
         case SC_Amber:      
-                            Skins[1]=Shader'DeusExDeco_EX.Shader.AlarmLightTex5_SH';
-                            Skins[2]=TexEnvMap'DeusExDeco_EX.Shader.AlarmLightAmber_TE';
+                            Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex5_SH", class'Material', false));
+                            Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightAmber_TE", class'Material', false));
                             if (proj != None)
                                 proj.ProjTexture = texture'AlarmLightTex8';
                             break;

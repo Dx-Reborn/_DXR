@@ -61,11 +61,11 @@ var sound pushSoundId;              // used to stop playing the push sound
 var int gradualHurtSteps;           // how many separate explosions for the staggered HurtRadius
 var int gradualHurtCounter;         // which one are we currently doing
 
-
 var FlyGenerator flyGen;            // fly generator
 
 var() localized string itemName;      // human readable name
 var() finalBlend HoldTexture;         // вариант "в руках"
+var bool bUseTransMat;
 
 /*
    DXR: A note about shadows for decoratons. These shadows are true FPS devourers, 
@@ -81,6 +81,11 @@ var(DynamicShadow) float ShadowMaxTraceDistance;
 
 var name NextState;                 // for queueing states
 var name NextLabel;                 // for queueing states
+
+function bool UseTranslucentMaterial()
+{
+   return bUseTransMat;
+}
 
 // Сдвинуть при нанесении урона
 function DamageForce(int Damage);

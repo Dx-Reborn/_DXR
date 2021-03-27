@@ -64,13 +64,13 @@ var travel float EnergyDrainTotal;      // total amount of energy to drain
 /* -- Сохраняемые данные ------------------------------------------------------------------------- */
 
 //!!! Есть опасность того что все это перестанет помещаться в travelInfo, что приведет в тихому вылету.!!!
-struct SNanoKeyStruct
+/*struct SNanoKeyStruct
 {
     var() name             KeyID;
     var() localized String Description;
-};
-var() travel array<SNanoKeyStruct> NanoKeys; // ключи
-var() /*travel*/ NanoKeyRing KeyRing;
+};*/
+//var() travel array<SNanoKeyStruct> NanoKeys; // ключи
+var() travel NanoKeyRing KeyRing;
 /* ----------------------------------------------------------------------------------------------- */
 struct SDeusExNote
 {
@@ -2976,9 +2976,9 @@ function PutCarriedDecorationInHand()
 
             // make it translucent
             // DXR: Только если пененосимая декорация достаточно объемная, чтобы мешать обзору.
-            if (CarriedDecoration.CollisionHeight > 15)
+            if (CarriedDecoration.UseTranslucentMaterial())
             {
-              CarriedDecoration.bUnlit = True;
+              CarriedDecoration.bUnlit = true;
               CarriedDecoration.Skins[0] = CarriedDecoration.CreateHoldMaterial();
             }
 
@@ -4509,7 +4509,7 @@ function ResetPlayerToDefaults()
     if (KeyRing != None)
     {
         KeyRing.RemoveAllKeys();
-        NanoKeys.length = 0; // убрать все ключи из карманов
+        //NanoKeys.length = 0; // убрать все ключи из карманов
         KeyRing.destroy();// = None;
     }
 

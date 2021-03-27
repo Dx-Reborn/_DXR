@@ -12,7 +12,7 @@ enum ESkinColor
     PSC_Gray,
 };
 var() ESkinColor SkinColor;
-var staticMesh variations[3];
+var /*staticMesh*/ string variations[3];
 
 event BeginPlay()
 {
@@ -23,13 +23,13 @@ event BeginPlay()
        case PSC_LightBrown: SetStaticMesh(default.staticMesh);
        break;
 
-       case PSC_DarkRed: SetStaticMesh(variations[0]);
+       case PSC_DarkRed: SetStaticMesh(StaticMesh(DynamicLoadObject(variations[0], class'StaticMesh', false)));
        break;
 
-       case PSC_Bright: SetStaticMesh(variations[1]);
+       case PSC_Bright: SetStaticMesh(StaticMesh(DynamicLoadObject(variations[1], class'StaticMesh', false)));
        break;
 
-       case PSC_Gray: SetStaticMesh(variations[2]);
+       case PSC_Gray: SetStaticMesh(StaticMesh(DynamicLoadObject(variations[2], class'StaticMesh', false)));
        break;
    }
 }
@@ -47,9 +47,9 @@ defaultproperties
 //     Skins[0]=Texture'DeusExDeco.Skins.PillowTex1'
      DrawType=DT_StaticMesh
      StaticMesh=StaticMesh'DeusExStaticMeshes0.Pillows_x4a'
-     variations[0]=StaticMesh'DeusExStaticMeshes0.Pillows_x4b'
-     variations[1]=StaticMesh'DeusExStaticMeshes0.Pillows_x4c'
-     variations[2]=StaticMesh'DeusExStaticMeshes0.Pillows_x4d'
+     variations[0]="DeusExStaticMeshes0.Pillows_x4b"
+     variations[1]="DeusExStaticMeshes0.Pillows_x4c"
+     variations[2]="DeusExStaticMeshes0.Pillows_x4d"
 }
 
 
