@@ -14,13 +14,13 @@ var bool bUsing;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_Clean:  Skins[0] = Texture'ToiletTex1'; break;
-        case SC_Filthy: Skins[0] = Texture'ToiletTex2'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_Clean:  Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.ToiletTex1", class'Material', false)); break;
+       case SC_Filthy: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.ToiletTex2", class'Material', false)); break;
+   }
 }
 
 event Timer()

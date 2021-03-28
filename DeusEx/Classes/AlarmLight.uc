@@ -48,25 +48,25 @@ function SetLightColor(ESkinColor color)
                             Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex2_SH", class'Material', false));
                             Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightRed_TE", class'Material', false));
                             if (proj != None)
-                                proj.ProjTexture = texture'AlarmLightTex2';
+                                proj.ProjTexture = texture(DynamicLoadObject("DeusExDeco.Skins.AlarmLightTex2", class'texture', false));
                             break;
         case SC_Green:      
                             Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex3_SH", class'Material', false));
                             Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightGreen_TE", class'Material', false)); 
                             if (proj != None)
-                                proj.ProjTexture = texture'AlarmLightTex4';
+                                proj.ProjTexture = texture(DynamicLoadObject("DeusExDeco.Skins.AlarmLightTex4", class'texture', false));
                             break;
         case SC_Blue:       
                             Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex4_SH", class'Material', false));
                             Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightBlue_TE", class'Material', false));
                             if (proj != None)
-                                proj.ProjTexture = texture'AlarmLightTex6';
+                                proj.ProjTexture = texture(DynamicLoadObject("DeusExDeco.Skins.AlarmLightTex6", class'texture', false));
                             break;
         case SC_Amber:      
                             Skins[1]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightTex5_SH", class'Material', false));
                             Skins[2]=Material(DynamicLoadObject("DeusExDeco_EX.Shader.AlarmLightAmber_TE", class'Material', false));
                             if (proj != None)
-                                proj.ProjTexture = texture'AlarmLightTex8';
+                                proj.ProjTexture = texture(DynamicLoadObject("DeusExDeco.Skins.AlarmLightTex8", class'texture', false));
                             break;
     }
 }

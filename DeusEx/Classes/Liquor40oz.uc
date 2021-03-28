@@ -15,14 +15,15 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
-    switch (SkinColor)
-    {
-        case SC_Super45:        Skins[0] = Texture'Liquor40ozTex1'; break;
-        case SC_Bottle2:        Skins[0] = Texture'Liquor40ozTex2'; break;
-        case SC_Bottle3:        Skins[0] = Texture'Liquor40ozTex3'; break;
-        case SC_Bottle4:        Skins[0] = Texture'Liquor40ozTex4'; break;
-    }
+   Super.BeginPlay();
+
+   switch (SkinColor)
+   {
+       case SC_Super45: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex1", class'Material', false)); break;
+       case SC_Bottle2: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex2", class'Material', false)); break;
+       case SC_Bottle3: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex3", class'Material', false)); break;
+       case SC_Bottle4: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex4", class'Material', false)); break;
+   }
 }
 
 state Activated

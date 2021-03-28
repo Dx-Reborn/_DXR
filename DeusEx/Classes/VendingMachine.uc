@@ -20,13 +20,13 @@ var localized String msgEmpty;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_Drink:  Skins[0] = Texture'VendingMachineTex1'; break;
-        case SC_Snack:  Skins[0] = Texture'VendingMachineTex2'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_Drink: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.VendingMachineTex1", class'Material', false)); break;
+       case SC_Snack: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.VendingMachineTex2", class'Material', false)); break;
+   }
 }
 
 function Frob(actor Frobber, Inventory frobWith)

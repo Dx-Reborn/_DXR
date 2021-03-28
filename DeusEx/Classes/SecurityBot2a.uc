@@ -17,8 +17,8 @@ event BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_UNATCO:     Skins[1] = Texture'SecurityBot2Tex1'; break;
-        case SC_Chinese:    Skins[1] = Texture'SecurityBot2Tex2'; break;
+        case SC_UNATCO:     Skins[1] = Material(DynamicLoadObject("DeusExCharacters.Skins.SecurityBot2Tex1", class'Material', false)) ; break;
+        case SC_Chinese:    Skins[1] = Material(DynamicLoadObject("DeusExCharacters.Skins.SecurityBot2Tex2", class'Material', false)) ; break;
     }
 }
 
@@ -26,12 +26,12 @@ event BeginPlay()
 // These two functions are called from mesh notify
 function SecBot2StepLeft()
 {
-  PlayFootStep();
+   PlayFootStep();
 }
 
 function SecBot2StepRight()
 {
-  PlayFootStep();
+   PlayFootStep();
 }
 
 function PlayDisabled()

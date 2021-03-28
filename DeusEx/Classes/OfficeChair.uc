@@ -15,15 +15,15 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_GrayLeather:    Skins[0] = Texture'OfficeChairTex1'; break;
-        case SC_BrownLeather:   Skins[0] = Texture'OfficeChairTex2'; break;
-        case SC_BrownCloth:     Skins[0] = Texture'OfficeChairTex3'; break;
-        case SC_GrayCloth:      Skins[0] = Texture'OfficeChairTex4'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_GrayLeather:    Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.OfficeChairTex1", class'Material', false)); break;
+       case SC_BrownLeather:   Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.OfficeChairTex2", class'Material', false)); break;
+       case SC_BrownCloth:     Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.OfficeChairTex3", class'Material', false)); break;
+       case SC_GrayCloth:      Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.OfficeChairTex4", class'Material', false)); break;
+   }
 }
 
 

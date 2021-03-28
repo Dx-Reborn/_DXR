@@ -15,15 +15,15 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_LightBlue:  Skins[0] = Texture'CarStrippedTex1'; break;
-        case SC_DarkBlue:       Skins[0] = Texture'CarStrippedTex2'; break;
-        case SC_Gray:               Skins[0] = Texture'CarStrippedTex3'; break;
-        case SC_Black:          Skins[0] = Texture'CarStrippedTex4'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_LightBlue: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CarStrippedTex1", class'Material', false)); break;
+       case SC_DarkBlue:  Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CarStrippedTex2", class'Material', false)); break;
+       case SC_Gray:      Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CarStrippedTex3", class'Material', false)); break;
+       case SC_Black:     Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CarStrippedTex4", class'Material', false)); break;
+   }
 }
 
 

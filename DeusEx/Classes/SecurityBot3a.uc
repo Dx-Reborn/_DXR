@@ -17,8 +17,8 @@ event BeginPlay()
 
     switch (SkinColor)
     {
-        case SC_UNATCO:     Skins[0] = Texture'SecurityBot3Tex1'; break;
-        case SC_Chinese:    Skins[0] = Texture'SecurityBot3Tex2'; break;
+        case SC_UNATCO:  Skins[0] = Material(DynamicLoadObject("DeusExCharacters.Skins.SecurityBot3Tex1", class'Material', false)); break;
+        case SC_Chinese: Skins[0] = Material(DynamicLoadObject("DeusExCharacters.Skins.SecurityBot3Tex2", class'Material', false)); break;
     }
 }
 

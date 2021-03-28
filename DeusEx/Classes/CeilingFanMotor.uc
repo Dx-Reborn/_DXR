@@ -16,16 +16,16 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_WoodBrass:      Skins[0] = Texture'CeilingFanTex1'; break;
-        case SC_DarkWoodIron:   Skins[0] = Texture'CeilingFanTex2'; break;
-        case SC_White:          Skins[0] = Texture'CeilingFanTex3'; break;
-        case SC_WoodBrassFancy: Skins[0] = Texture'CeilingFanTex4'; break;
-        case SC_WoodPlastic:    Skins[0] = Texture'CeilingFanTex5'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_WoodBrass:      Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CeilingFanTex1", class'Material', false)); break;
+       case SC_DarkWoodIron:   Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CeilingFanTex2", class'Material', false)); break;
+       case SC_White:          Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CeilingFanTex3", class'Material', false)); break;
+       case SC_WoodBrassFancy: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CeilingFanTex4", class'Material', false)); break;
+       case SC_WoodPlastic:    Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.CeilingFanTex5", class'Material', false)); break;
+   }
 }
 
 

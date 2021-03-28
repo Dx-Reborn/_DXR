@@ -10,28 +10,26 @@ enum ESkinColor
     SC_GrayMarble
 };
 var() ESkinColor SkinColor;
-
-var material SkinColors[3];
+var string SkinColors[3];
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_WhiteMarble:    Skins[0] = SkinColors[0]; break; //Texture'CoffeeTableTex1'
-        case SC_BlackMarble:    Skins[0] = SkinColors[0]; break; //Texture'CoffeeTableTex2'
-        case SC_GrayMarble:     Skins[0] = SkinColors[0]; break; //Texture'CoffeeTableTex3'
-    }
+   switch (SkinColor)
+   {
+       case SC_WhiteMarble: Skins[0] = Material(DynamicLoadObject(SkinColors[0], class'Material', false)); break; //Texture'CoffeeTableTex1'
+       case SC_BlackMarble: Skins[0] = Material(DynamicLoadObject(SkinColors[1], class'Material', false)); break; //Texture'CoffeeTableTex2'
+       case SC_GrayMarble:  Skins[0] = Material(DynamicLoadObject(SkinColors[2], class'Material', false)); break; //Texture'CoffeeTableTex3'
+   }
 }
 
 defaultproperties
 {
-     SkinColors[0]=Texture'DeusExStaticMeshes0.Wood.CoffeeTable_HD_Tex1'
-     SkinColors[1]=Shader'DeusExStaticMeshes0.Wood.CoffeeTable_SH1'
-     SkinColors[2]=Texture'DeusExStaticMeshes0.Wood.CoffeeTable_HD_Tex3'
-
-     bCanBeBase=True
+     SkinColors[0]="DeusExStaticMeshes0.Wood.CoffeeTable_HD_Tex1"
+     SkinColors[1]="DeusExStaticMeshes0.Wood.CoffeeTable_SH1"
+     SkinColors[2]="DeusExStaticMeshes0.Wood.CoffeeTable_HD_Tex3"
+     bCanBeBase=true
      ItemName="Coffee Table"
      //mesh=mesh'DeusExDeco.CoffeeTable'
      DrawType=DT_StaticMesh

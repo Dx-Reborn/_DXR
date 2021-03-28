@@ -15,15 +15,15 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_Red:        Skins[0] = Texture'FirePlugTex1'; break;
-        case SC_Orange: Skins[0] = Texture'FirePlugTex2'; break;
-        case SC_Blue:       Skins[0] = Texture'FirePlugTex3'; break;
-        case SC_Gray:       Skins[0] = Texture'FirePlugTex4'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_Red:    Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.FirePlugTex1", class'Material', false)); break;
+       case SC_Orange: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.FirePlugTex2", class'Material', false)); break;
+       case SC_Blue:   Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.FirePlugTex3", class'Material', false)); break;
+       case SC_Gray:   Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.FirePlugTex4", class'Material', false)); break;
+   }
 }
 
 

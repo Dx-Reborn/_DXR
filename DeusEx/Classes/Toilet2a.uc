@@ -14,32 +14,32 @@ var bool bUsing;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_Clean:  Skins[0] = Texture'Toilet2Tex1'; break;
-        case SC_Filthy: Skins[0] = Texture'Toilet2Tex2'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_Clean:  Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.Toilet2Tex1", class'Material', false)); break;
+       case SC_Filthy: Skins[0] = Material(DynamicLoadObject("DeusExDeco.Skins.Toilet2Tex2", class'Material', false)); break;
+   }
 }
 
 event Timer()
 {
-    bUsing = False;
+   bUsing = False;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-    Super.Frob(Frobber, frobWith);
+   Super.Frob(Frobber, frobWith);
 
-    if (bUsing)
-        return;
+   if (bUsing)
+       return;
 
-    SetTimer(2.0, False);
-    bUsing = True;
+   SetTimer(2.0, False);
+   bUsing = true;
 
-    PlaySound(sound'FlushUrinal',,,, 256);
-    PlayAnim('Flush');
+   PlaySound(sound'FlushUrinal',,,, 256);
+   PlayAnim('Flush');
 }
 
 

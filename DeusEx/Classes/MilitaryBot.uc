@@ -13,26 +13,26 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_UNATCO:     Skins[0] = Texture'MilitaryBotTex1'; break;
-        case SC_Chinese:    Skins[0] = Texture'MilitaryBotTex2'; break;
-    }
+   switch (SkinColor)
+   {
+       case SC_UNATCO:  Skins[0] = Material(DynamicLoadObject("DeusExCharacters.Skins.MilitaryBotTex1", class'Material', false)); break;
+       case SC_Chinese: Skins[0] = Material(DynamicLoadObject("DeusExCharacters.Skins.MilitaryBotTex2", class'Material', false)); break;
+   }
 }
 
 function PlayDisabled()
 {
-    local int rnd;
+   local int rnd;
 
-    rnd = Rand(3);
-    if (rnd == 0)
-        TweenAnimPivot('Disabled1', 0.2);
-    else if (rnd == 1)
-        TweenAnimPivot('Disabled2', 0.2);
-    else
-        TweenAnimPivot('Still', 0.2);
+   rnd = Rand(3);
+   if (rnd == 0)
+       TweenAnimPivot('Disabled1', 0.2);
+   else if (rnd == 1)
+       TweenAnimPivot('Disabled2', 0.2);
+   else
+       TweenAnimPivot('Still', 0.2);
 }
 
 

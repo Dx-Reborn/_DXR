@@ -3,7 +3,7 @@
 //=============================================================================
 class NanoKey extends DeusExPickup;
 
-var() name          KeyID;          // unique FName identifier used for movers and such
+var() name KeyID; // unique FName identifier used for movers and such
 
 enum ESkinColor
 {
@@ -12,7 +12,6 @@ enum ESkinColor
     SC_Level3,
     SC_Level4
 };
-
 var() ESkinColor SkinColor;
 
 // ----------------------------------------------------------------------
@@ -21,30 +20,30 @@ var() ESkinColor SkinColor;
 
 event BeginPlay()
 {
-    Super.BeginPlay();
+   Super.BeginPlay();
 
-    switch (SkinColor)
-    {
-        case SC_Level1: 
-        Skins[0] = Texture'NanoKeyTex1';
-        Icon=Texture'BeltIconNanoKey';
-        break;
+   switch (SkinColor)
+   {
+       case SC_Level1: 
+       Skins[0] = texture(DynamicLoadObject("DeusExItems.Skins.NanoKeyTex1", class'texture', false)); //Texture'NanoKeyTex1';
+       Icon = texture(DynamicLoadObject("DeusExUI.Icons.BeltIconNanoKey", class'texture', false));
+       break;
+       // New icons from HX (DeusEx Coop mod).
+       case SC_Level2: 
+       Skins[0] = texture(DynamicLoadObject("DeusExItems.Skins.NanoKeyTex3", class'texture', false)); //Texture'NanoKeyTex2'; 
+       Icon = texture(DynamicLoadObject("DeusExUI.Icons.HXBeltIconNanoKey2", class'texture', false));
+       break;
 
-        case SC_Level2: 
-        Skins[0] = Texture'NanoKeyTex2'; 
-        Icon=Texture'HXBeltIconNanoKey2'; // New icons from HX (DeusEx Coop mod).
-        break;
+       case SC_Level3: 
+       Skins[0] = texture(DynamicLoadObject("DeusExItems.Skins.NanoKeyTex3", class'texture', false)); //Texture'NanoKeyTex3'; 
+       Icon = texture(DynamicLoadObject("DeusExUI.Icons.HXBeltIconNanoKey3", class'texture', false));
+       break;
 
-        case SC_Level3: 
-        Skins[0] = Texture'NanoKeyTex3'; 
-        Icon=Texture'HXBeltIconNanoKey3';
-        break;
-
-        case SC_Level4: 
-        Skins[0] = Texture'NanoKeyTex4'; 
-        Icon=Texture'HXBeltIconNanoKey4';
-        break;
-    }
+       case SC_Level4: 
+       Skins[0] = texture(DynamicLoadObject("DeusExItems.Skins.NanoKeyTex4", class'texture', false)); //Texture'NanoKeyTex4';
+       Icon = texture(DynamicLoadObject("DeusExUI.Icons.HXBeltIconNanoKey4", class'texture', false));
+       break;
+   }
 }
 
 
