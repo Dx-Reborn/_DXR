@@ -41,13 +41,15 @@ function Frob(actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
-     FragType=Class'DeusEx.WoodFragment'
-     ItemName="Ship's Wheel"
-     bPushable=False
-     Physics=PHYS_None
-     mesh=mesh'DeusExDeco.ShipsWheel'
-     CollisionRadius=21.000000
-     CollisionHeight=21.000000
-     Mass=50.000000
-     Buoyancy=5.000000
+   FragType=Class'DeusEx.WoodFragment'
+   ItemName="Ship's Wheel"
+   bPushable=False
+   Physics=PHYS_None
+//   mesh=mesh'DeusExDeco.ShipsWheel'
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.ShipsWheel_HD'
+   CollisionRadius=21.000000
+   CollisionHeight=21.000000
+   Mass=50.000000
+   Buoyancy=5.000000
 }
