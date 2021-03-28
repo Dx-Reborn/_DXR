@@ -26,10 +26,13 @@ function Frob(actor Frobber, Inventory frobWith)
 
 defaultproperties
 {
-     ItemName="Pinball Machine"
-     mesh=mesh'DeusExDeco.Pinball'
-     CollisionRadius=37.000000
-     CollisionHeight=45.000000
-     Mass=100.000000
-     Buoyancy=5.000000
+   ItemName="Pinball Machine"
+//    mesh=mesh'DeusExDeco.Pinball'
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.Pinball_HD'
+   CollisionRadius=37.000000
+   CollisionHeight=45.000000
+   Mass=100.000000
+   Buoyancy=5.000000
 }
+
