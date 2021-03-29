@@ -19,10 +19,10 @@ event BeginPlay()
 
    switch (SkinColor)
    {
-       case SC_Super45: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex1", class'Material', false)); break;
-       case SC_Bottle2: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex2", class'Material', false)); break;
-       case SC_Bottle3: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex3", class'Material', false)); break;
-       case SC_Bottle4: Skins[0] = Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex4", class'Material', false)); break;
+       case SC_Super45: Skins[0] = Material(DynamicLoadObject("DXR_Pickups.Shaders.L40oz_SH1", class'Material', false)); break; //Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex1", class'Material', false));
+       case SC_Bottle2: Skins[0] = Material(DynamicLoadObject("DXR_Pickups.Shaders.L40oz_SH2", class'Material', false)); break; //Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex2", class'Material', false));
+       case SC_Bottle3: Skins[0] = Material(DynamicLoadObject("DXR_Pickups.Shaders.L40oz_SH3", class'Material', false)); break; //Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex3", class'Material', false));
+       case SC_Bottle4: Skins[0] = Material(DynamicLoadObject("DXR_Pickups.Shaders.L40oz_SH4", class'Material', false)); break; //Material(DynamicLoadObject("DeusExItems.Skins.Liquor40ozTex4", class'Material', false));
    }
 }
 
@@ -53,28 +53,35 @@ Begin:
 
 defaultproperties
 {
-    bBreakable=True
-    maxCopies=10
-    bCanHaveMultipleCopies=True
-    bActivatable=True
+   bBreakable=True
+   maxCopies=10
+   bCanHaveMultipleCopies=True
+   bActivatable=True
 
-    PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00)
-    Description="'COLD SWEAT forty ounce malt liquor. Never let 'em see your COLD SWEAT.'"
-    ItemName="Forty"
-    beltDescription="FORTY"
-    Icon=Texture'DeusExUI.Icons.BeltIconBeerBottle'
-    largeIcon=Texture'DeusExUI.Icons.LargeIconBeerBottle'
-    largeIconWidth=14
-    largeIconHeight=47
+   PlayerViewOffset=(X=30.00,Y=0.00,Z=-12.00)
+   Description="'COLD SWEAT forty ounce malt liquor. Never let 'em see your COLD SWEAT.'"
+   ItemName="Forty"
+   beltDescription="FORTY"
+   Icon=Texture'DeusExUI.Icons.BeltIconBeerBottle'
+   largeIcon=Texture'DeusExUI.Icons.LargeIconBeerBottle'
+   largeIconWidth=14
+   largeIconHeight=47
 
-    LandSound=Sound'DeusExSounds.Generic.GlassHit1'
+   LandSound=Sound'DeusExSounds.Generic.GlassHit1'
 
-    Mesh=Mesh'DeusExItems.Liquor40oz'
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DXR_Pickups.Liquor40oz_HD'
+   PickupViewStaticMesh=StaticMesh'DXR_Pickups.Liquor40oz_HD_Pickup'
+   FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Liquor40oz_HD'
+   bUseFirstPersonStaticMesh=true
+   bUsePickupViewStaticMesh=true
+
+/*    Mesh=Mesh'DeusExItems.Liquor40oz'
     PickupViewMesh=Mesh'DeusExItems.Liquor40oz'
     FirstPersonViewMesh=Mesh'DeusExItems.Liquor40oz'
-
-    CollisionRadius=3.000000
-    CollisionHeight=9.140000
-    Mass=10.000000
-    Buoyancy=8.000000
+*/
+   CollisionRadius=3.000000
+   CollisionHeight=9.140000
+   Mass=10.000000
+   Buoyancy=8.000000
 }
