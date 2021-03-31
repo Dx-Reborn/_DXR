@@ -1,4 +1,4 @@
-class TrasBagD extends Trashbags;
+class TrashBagD extends Trashbags;
 
 defaultproperties
 {
