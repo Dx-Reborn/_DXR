@@ -323,12 +323,11 @@ function UpdateHud()
     }
 }
 
-event SetInitialState()
+event PostSetInitialState()
 {
     dxc = new(Outer) class'DxCanvas';
     GetMapTrueNorth();
     ConsoleMessageCount = 8; // Human(player.pawn).MaxLogLines;
-    Super.SetInitialState();
 }
 
 // TODO: Добавить условия для включения и отключение ГДИ или его частей

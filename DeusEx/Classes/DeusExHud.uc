@@ -42,15 +42,12 @@ function RefreshHUDDisplay(float DT)
 //    UpdateInHand();
 }
 
-event SetInitialState()
+event PostSetInitialState()
 {
    LoadColorTheme();
    PopulateBelt();
 
-//  foreach AllActors(class'DeusExMover', DxMover)
-//  break;
-
-   super.setInitialState();
+   super.PostSetInitialState();
 }
 
 function LoadColorTheme()

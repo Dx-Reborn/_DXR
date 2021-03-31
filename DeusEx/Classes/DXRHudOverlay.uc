@@ -4,8 +4,8 @@ var transient DxCanvas dxc;
 
 event PreBeginPlay()
 {
-    if (dxc == None)
-        dxc = DeusExHUD(Level.GetLocalPlayerController().myHUD).dxc;
+   if (dxc == None)
+       dxc = DeusExHUD(Level.GetLocalPlayerController().myHUD).dxc;
 
-    Super.PreBeginPlay();
+   Super.PreBeginPlay();
 }

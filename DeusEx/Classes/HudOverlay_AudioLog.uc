@@ -1,4 +1,4 @@
-class HudOverlay_AudioLog extends HUDOverlay;
+class HudOverlay_AudioLog extends DXRHudOverlay;
 
 #exec OBJ LOAD FILE=DXR_AudioLogMat.utx
 

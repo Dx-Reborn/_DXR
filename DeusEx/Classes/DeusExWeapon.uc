@@ -361,7 +361,7 @@ event TravelPostAccept()
 
     Super.TravelPostAccept();
 
-    beltPos--;
+//    beltPos--;
 
     // make sure the AmmoName matches the currently loaded AmmoType
     if (AmmoType != None)

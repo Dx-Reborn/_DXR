@@ -24,7 +24,7 @@ event RightBeforeSaveGame()
 }
 
 /*--- Создать каталог Save\Current\ ---*/
-event SetInitialState()
+event PostSetInitialState()
 {
   local string dir;
 
@@ -70,6 +70,7 @@ event ClientTravel(string URL, ETravelType TravelType, bool bItems)
      URL = stroka$"#"$rest;
      log("Found saved version of: "$mapN$" -->"$stroka,'SaveSystem');
      super.ClientTravel(URL, TravelType, bItems);
+     return;//?
   }
   else
      super.ClientTravel(URL, TravelType, bItems);
@@ -511,20 +512,25 @@ exec function SaveCurrentMap()
 -------------------------------------------------------------*/
 exec function bool CheckSavedVersion(string whatMap, optional out string SaveWithPath)
 {
-  local array <string> whatWasFound;
-  local string temp, ts, ds;
-  local int i;
+   local array <string> whatWasFound;
+   local string temp, ts, ds;
+   local int i, lookForHandle;
 
-  ds = ConsoleCommand("get System savepath");
-  temp = ds$"\\Current\\";
-  ds = temp$whatmap$SAVE_EXT;
-  whatWasFound = class'filemanager'.static.FindFiles(ds, true, false);
-  ts = class'DxUtil'.static.StripPathFromFileName(ds);
+   ds = ConsoleCommand("get System savepath");
+   temp = ds$"\\Current\\";
+   ds = temp$whatmap$SAVE_EXT;
+   whatWasFound = class'filemanager'.static.FindFiles(ds, true, false);
+   ts = class'DxUtil'.static.StripPathFromFileName(ds);
                                    //(string Path, bool DoListFiles, bool DoListDirs);
-  log("Looking for "$ds$" ...",'SaveSystem');
+   lookForHandle = class'FileManager'.static.FileSize(ds);
 
-  if (ts ~= "00_Intro")
-      return false;
+   if (lookForHandle == -1)
+       log("Looking for "$ds$" ... NOT FOUND!",'SaveSystem');
+   else
+       log("Looking for "$ds$" ... FOUND!",'SaveSystem');
+
+   if (ts ~= "00_Intro")
+       return false;
 
   for(i=0; i<whatWasFound.length; i++)
   {
@@ -614,14 +620,14 @@ exec function CreateSaveInfo(string slot, optional string desc)
 //exec function loadflags()
 event PostLoadSavedGame()
 {
-  Super.PostLoadSavedGame();
-  class'GameFlags'.static.ImportFlagsFromArray(class'DeusExGlobals'.static.GetGlobals().RawByteFlags);
-  SetInitialState();
+   Super.PostLoadSavedGame();
+   class'GameFlags'.static.ImportFlagsFromArray(class'DeusExGlobals'.static.GetGlobals().RawByteFlags);
+   PostSetInitialState();
 }
 
 exec function saveflags()
 {
-  class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
+   class'DeusExGlobals'.static.GetGlobals().RawByteFlags = class'GameFlags'.static.ExportFlagsToArray();
 }
 
 

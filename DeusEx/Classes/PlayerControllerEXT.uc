@@ -432,10 +432,11 @@ final function DeusExLevelInfo GetLevelInfo()
 {
     local DeusExLevelInfo info;
 
-    info = class'DeusExGlobals'.static.GetGlobals().DxLevelInfo;
+/*    info = class'DeusExGlobals'.static.GetGlobals().DxLevelInfo;
     if (info != None)
         return info;
     else // Запасной вариант
+    */
     foreach AllActors(class'DeusExLevelInfo', info)
             break;
     return info;

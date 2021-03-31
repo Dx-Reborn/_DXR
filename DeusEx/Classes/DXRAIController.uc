@@ -352,12 +352,12 @@ function int GetProjectileList(out ScriptedPawn.NearbyProjectileList projList, v
 }
 
 
-event SetInitialState()
+event PostSetInitialState()
 {
     if (mark == None)
         mark = Spawn(class'DestLocMarker');
 
-    GotoState('Auto');
+//    GotoState('Auto');
 }
 
 event LongFall() // called when latent function WaitForLanding() doesn't return after 4 seconds

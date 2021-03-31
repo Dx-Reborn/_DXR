@@ -4,7 +4,7 @@
    Выводится как массив строк.
 */
 
-class HudOverlay_EndGameQuotes extends HudOverlay;
+class HudOverlay_EndGameQuotes extends DXRHudOverlay;
 
 var float displayTime;
 var bool bTickEnabled;
@@ -35,9 +35,7 @@ function Render(Canvas u)
       u.Font = msgFont;
 
    u.DrawColor = TextColor;
-
    split(TheMessage,"|", TheMessages);
-
    u.strLen(longest, tsX, tsY);
 
    for(i=0; i<TheMessages.Length; i++)
@@ -69,46 +67,46 @@ function AddMessage(String str)
 
 function StartMessage()
 {
-  class'DxUtil'.static.FindLongestPart(message, longest);
-    bTickEnabled = true;
-    bSpewingText = true;
+   class'DxUtil'.static.FindLongestPart(message, longest);
+   bTickEnabled = true;
+   bSpewingText = true;
 }
 
 event Tick(float deltaTime)
 {
- if (bTickEnabled)
- {
-    if (bSpewingText)
-    {
-    charTime += deltaTime;
-    if (charTime > charDelay)
-       PrintNextCharacter();
-    }
-    else
-    {
-        displayTime -= deltaTime;
+   if (bTickEnabled)
+   {
+       if (bSpewingText)
+       {
+           charTime += deltaTime;
+           if (charTime > charDelay)
+               PrintNextCharacter();
+       }
+       else
+       {
+           displayTime -= deltaTime;
 
-        if (displayTime <= 0)
-        {
-            bTickEnabled = false;
-            Destroy(); // Время вышло, уничтожить.
-        }
-    }
- }
+           if (displayTime <= 0)
+           {
+               bTickEnabled = false;
+               Destroy(); // Время вышло, уничтожить.
+           }
+       }
+   }
 }
 
 function PrintNextCharacter()
 {
-    if (charIndex < len(message))
-    {
-        AppendText(mid(message, charIndex, 1));
-        charIndex++;
-    }
-    else
-    {
-        // Now more characters to print, so pause and then go away
-        bSpewingText = False;
-    }
+   if (charIndex < len(message))
+   {
+       AppendText(mid(message, charIndex, 1));
+       charIndex++;
+   }
+   else
+   {
+       // Now more characters to print, so pause and then go away
+       bSpewingText = False;
+   }
 }
 
 function AppendText(string str)

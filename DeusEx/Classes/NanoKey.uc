@@ -58,6 +58,8 @@ function GiveTo(pawn Other)
 {
     local DeusExPlayer player;
 
+    log("GiveTo()?"$Other);
+
     if (Other.IsA('DeusExPlayer'))
     {
         player = DeusExPlayer(Other);

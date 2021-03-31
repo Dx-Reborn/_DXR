@@ -7,12 +7,12 @@ class FuelLamps extends DeusExDecoration
 
 var() bool bOn;
 
-event SetInitialState()
+event PostSetInitialState()
 {
     if (bOn)
         TurnOn();
 
-    Super.SetInitialState();
+    Super.PostSetInitialState();
 }
 
 /* override in subclasses */
@@ -21,13 +21,13 @@ function TurnOff();
 
 function TurnOn()
 {
-    SpawnStuff();
+   SpawnStuff();
 }
 
 event Destroyed()
 {
-     TurnOff();
-     Super.Destroyed();
+   TurnOff();
+   Super.Destroyed();
 }
 
 

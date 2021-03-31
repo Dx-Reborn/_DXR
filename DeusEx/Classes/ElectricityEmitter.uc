@@ -95,7 +95,7 @@ function TurnOff()
     if (bEmitLight)
     {
         LightType = LT_None;
-        bDynamicLight=false;
+        bDynamicLight = false;
     }
 }
 

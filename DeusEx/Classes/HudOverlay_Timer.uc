@@ -2,7 +2,7 @@
    А он нужен?
 */
 
-class HudOverlay_Timer extends HudOverlay;
+class HudOverlay_Timer extends DXRHudOverlay;
 
 var Texture timerBackground;
 var Color colNormal, colCritical, colBlack;
