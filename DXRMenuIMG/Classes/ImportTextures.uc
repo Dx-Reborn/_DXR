@@ -130,10 +130,12 @@ class ImportTextures extends Resource;
 
 #exec Texture Import File=Textures\DXR_MenuMainBackground.bmp Name=DXR_MenuMainBackground Mips=Off Masked=true LODSET=LODSET_Interface DXT=5
 
-
 #exec Texture Import File=Textures\DXR_GameOptions_Ext.bmp Name=DXR_GameOptions_Ext Mips=Off Masked=true LODSET=LODSET_Interface DXT=5
 
 #exec Texture Import File=Textures\YesNoMessageShadow_1.bmp Name=YesNoMessageShadow_1 Mips=Off Masked=false LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
+#exec Texture Import File=Textures\CrossCircle.PCX Name=CrossCircle Mips=Off Masked=true LODSET=LODSET_Interface UCLAMPMODE=CLAMP VCLAMPMODE=CLAMP
+
 
 
 
