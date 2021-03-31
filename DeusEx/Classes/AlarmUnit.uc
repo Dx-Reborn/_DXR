@@ -194,47 +194,53 @@ function UnTrigger(Actor Other, Pawn Instigator)
 
 auto state Active
 {
-    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
-    {
-        if (DamageType == class'DM_EMP')
-        {
-            confusionTimer = 0;
-            if (!bConfused)
-            {
-                curTime = alarmTimeout;
-                bConfused = True;
-                PlaySound(sound'EMPZap', SLOT_None,,, 1280);
-                UnTrigger(Self, None);
-            }
-            return;
-        }
-        Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, DamageType);
-    }
+   function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
+   {
+       if (DamageType == class'DM_EMP')
+       {
+           confusionTimer = 0;
+           if (!bConfused)
+           {
+               curTime = alarmTimeout;
+               bConfused = True;
+               PlaySound(sound'EMPZap', SLOT_None,,, 1280);
+               UnTrigger(Self, None);
+           }
+           return;
+       }
+       Super.TakeDamage(Damage, instigatedBy, HitLocation, Momentum, DamageType);
+   }
 }
 
 
 defaultproperties
 {
-     alarmTimeout=30
-     msgActivated="Alarm activated"
-     msgDeactivated="Alarm deactivated"
-     confusionDuration=10.000000
-     HitPoints=50
-     minDamageThreshold=50
-     bInvincible=False
-     ItemName="Alarm Sounder Panel"
-     AmbientSound=Sound'DeusExSounds.Generic.AlarmUnitHum'
-     mesh=mesh'DeusExDeco.AlarmUnit'
-         skins(0)=Texture'DeusExDeco.Skins.AlarmUnitTex1'
-     skins(1)=Texture'DeusExDeco.Skins.PinkMaskTex'
-     SoundRadius=16
-     SoundVolume=192
-     CollisionRadius=9.720000
-     CollisionHeight=9.720000
-     LightBrightness=255
-     LightRadius=1
-     Mass=10.000000
-     Buoyancy=5.000000
-     bFullVolume=true
-     bDynamicLight=true
+   alarmTimeout=30
+   msgActivated="Alarm activated"
+   msgDeactivated="Alarm deactivated"
+   confusionDuration=10.000000
+   HitPoints=50
+   minDamageThreshold=50
+   bInvincible=False
+   ItemName="Alarm Sounder Panel"
+//   AmbientSound=Sound'DeusExSounds.Generic.AlarmUnitHum'
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.AlarmUnit_HD'
+   mesh=mesh'DeusExDeco.AlarmUnit'
+   skins(0)=Shader'DeusExStaticMeshes0.Plastic.AlarmUnit_HD_SH'
+   skins(1)=Texture'DeusExDeco.Skins.PinkMaskTex'
+//   skins(0)=Texture'DeusExDeco.Skins.AlarmUnitTex1'
+//   skins(1)=Texture'DeusExDeco.Skins.PinkMaskTex'
+   SoundRadius=16
+   SoundVolume=192
+   CollisionRadius=9.720000
+   CollisionHeight=9.720000
+   LightBrightness=255
+   LightRadius=1
+   Mass=10.000000
+   Buoyancy=5.000000
+   bFullVolume=true
+   bDynamicLight=true
 }
+
+
