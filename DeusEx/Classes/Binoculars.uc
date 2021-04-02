@@ -7,32 +7,49 @@ var localized string binocsActive, binocsInactive;
 var int BinocularsMaxRange;
 var int ZoomFOV;
 
+var texture Binocs_Background, Binocs_Cross;
+var Material LinesShader;
+
+event PreBeginPlay()
+{
+   LoadSomeTextures();
+   Super.PreBeginPlay();
+}
+
+function LoadSomeTextures()
+{
+   Binocs_Background = Texture(DynamicLoadObject("DeusExUIExtra.HUD.HUDBinocularView", class'Texture', false));
+   Binocs_Cross = Texture(DynamicLoadObject("DeusExUIExtra.HUD.HUDBinocularCrossHair", class'Texture', false));
+   LinesShader = Material(DynamicLoadObject("GUIContent.back.VisionLined_Gray_SH", class'Material', false));
+}
+
+
 state Activated
 {
-    function BeginState()
-    {
-        Super.BeginState();
-        ToggleBinocularsView(true);
-    }
+   function BeginState()
+   {
+       Super.BeginState();
+       ToggleBinocularsView(true);
+   }
 
 Begin:
 }
 
 state DeActivated
 {
-    function BeginState()
-    {
-        local DeusExPlayer player;
-        
-        Super.BeginState();
+   function BeginState()
+   {
+       local DeusExPlayer player;
+       
+       Super.BeginState();
 
-        player = DeusExPlayer(Owner);
-        if (player != None)
-        {
-            // Hide the Scope View
-            ToggleBinocularsView(false);
-        }
-    }
+       player = DeusExPlayer(Owner);
+       if (player != None)
+       {
+           // Hide the Scope View
+           ToggleBinocularsView(false);
+       }
+   }
 }
 
 function ToggleBinocularsView(bool bDoIt)
@@ -57,36 +74,30 @@ function ToggleBinocularsView(bool bDoIt)
 
 event RenderOverlays(Canvas u)
 {
-    Super.RenderOverlays(u);
+   Super.RenderOverlays(u);
 
-    if (bActive)
-    {
-        RenderBinoculars(u);
-    }
+   if (bActive)
+   {
+       RenderBinoculars(u);
+   }
 }
 
 function RenderBinoculars(Canvas u)
 {
     local ScriptedPawn target;
-    local texture bg, cr;
-    local shader Lines;
-
-    bg = texture'HUDBinocularView';
-    cr = texture'HUDBinocularCrossHair';
-    Lines = shader'VisionLined_Gray_SH';
 
     // Вид из бинокля...
     u.setPos(u.sizeX / 2 - 512,u.sizeY / 2 - 256);
     u.Style = ERenderStyle.STY_Modulated;
-    u.DrawTileJustified(bg, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
+    u.DrawTileJustified(Binocs_Background, 1, 1024, 512); // 0 = left/top, 1 = center, 2 = right/bottom 
     u.Style = ERenderStyle.STY_Normal;
 
     u.SetDrawColor(0,255,0,255);// Green crosshair
-    u.DrawTileJustified(cr, 1, 1024, 512); 
+    u.DrawTileJustified(Binocs_Cross, 1, 1024, 512);
 
     u.SetPos(0,0);
     u.SetDrawColor(255,255,255,255);
-    u.DrawPattern(Lines, u.SizeX, u.SizeY, 1);
+    u.DrawPattern(LinesShader, u.SizeX, u.SizeY, 1);
 
     // Заполнители
     u.Style = ERenderStyle.STY_Normal;

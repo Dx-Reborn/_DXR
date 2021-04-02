@@ -7,17 +7,6 @@ class GameInfoExt extends GameInfo;
 
 var int defaultFlagExpiration;
 
-/*enum EFlagType
-{
-    FLAG_Bool,
-    FLAG_Byte,
-    FLAG_Int,
-    FLAG_Float,
-    FLAG_Name,
-    FLAG_Vector,
-    FLAG_Rotator,
-};*/
-
 event InitGame(string Options, out string Error)
 {
     class'DeusExGlobals'.Static.GetGlobals().DxLevelInfo = GetLevelInfo();
@@ -28,11 +17,11 @@ event InitGame(string Options, out string Error)
 
 function DeusExLevelInfo GetLevelInfo()
 {
-    local DeusExLevelInfo info;
+   local DeusExLevelInfo info;
 
-    foreach AllActors(class'DeusExLevelInfo', info)
-        break;
-    return info;
+   foreach AllActors(class'DeusExLevelInfo', info)
+           break;
+   return info;
 }
 
 
@@ -215,7 +204,7 @@ final function DeleteExpiredFlags(int criteria)
 
 final function SetDefaultExpiration(int expiration)
 {
-    defaultFlagExpiration = expiration;
+   defaultFlagExpiration = expiration;
 }
 
 final function DeleteAllFlags()
@@ -282,7 +271,7 @@ function SetGameSpeed(Float T)
     else
     {
         OldSpeed = GameSpeed;
-        GameSpeed = FMax(T, 0.0); /// 0.1 // 0.0001
+        GameSpeed = FMax(T, 0.1);
         Level.TimeDilation = 1.0 * GameSpeed;
         if (GameSpeed != OldSpeed)
         {

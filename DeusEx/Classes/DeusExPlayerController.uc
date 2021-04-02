@@ -185,24 +185,21 @@ exec function Summon(string ClassName)
 }
 
 // Переходы по картам
-event TravelPostAccept()
+/*event TravelPostAccept()
 {
   super.TravelPostAccept();
   Human(pawn).TravelPostAccept();
-}
+} */
 
 event PreClientTravel()
 {
-  local actor act;
+   local actor act;
 
-    super.PreClientTravel();
+   super.PreClientTravel();
 
-         foreach AllActors(class'Actor', act)
-         {
-            act.PreTravel();
-         }
-//  Human(pawn).PreClientTravel();
-} 
+   foreach AllActors(class'Actor', act)
+           act.PreTravel();
+}
 
 //================================================================================================================
 // Dump player inventory and ammo types to log
@@ -231,34 +228,19 @@ exec function KillPl()
 
 function bool PlayerCanRestart(PlayerController aPlayer)
 {
-    return false;
+   return false;
 }
 
 exec function CDObj(class objClass, string objName, string packageName)
 {
-    Level.Game.CreateDataObject(objClass, objName, packageName);
+   Level.Game.CreateDataObject(objClass, objName, packageName);
 }
 
 exec function sp(string packageName)
 {
-        Level.Game.SavePackage(packageName);
+   Level.Game.SavePackage(packageName);
 }
 
-// Функции для тестирования функций :)
-/*exec function saveflags()
-{
-    DeusExGameInfo(Level.Game).saveflags();
-}
-
-exec function loadflags()
-{
-    DeusExGameInfo(Level.Game).loadflags();
-}
-
-exec function RemoveAllFlags()
-{
-    DeusExGameInfo(Level.Game).RemoveAllFlags();
-}*/
 
 
 /*
@@ -272,7 +254,7 @@ native final function bool      DeletePackage    ( string packageName );*/
 /*  Variable is too large (x bytes, 255 max)
     Static arrays and large structs can only be accessed from outside the object containing them 
 when they use less than 255 bytesx of memory. This restriction may seem weird, but you'll have to live with it. 
-Try using a dynamic array instead of a static one, break doen the struct into several class properties or use
+Try using a dynamic array instead of a static one, break down the struct into several class properties or use
  accessor functions to work around this restriction. */
 
 exec function ViewSPawn()
@@ -308,8 +290,8 @@ state Paralyzed
         Human(pawn).bPhysicsAnimUpdate = false;
         ViewFlash(deltaTime);
         // Почему я должна тебя заставлять?
-        Human(pawn).EyeHeight = 0.0;//4;
-        Human(pawn).BaseEyeHeight = 0.0;//4;
+        Human(pawn).EyeHeight = 0.0;
+        Human(pawn).BaseEyeHeight = 0.0;
     }
 
 Begin:

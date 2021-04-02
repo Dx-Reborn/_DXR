@@ -63,60 +63,64 @@ var transient DxCanvas dxc;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner)
 {
-    local DeusExHUD h;
+   local DeusExHUD h;
 
-    Super.InitComponent(MyController, MyOwner);
+   Super.InitComponent(MyController, MyOwner);
 
-    dxc = DeusExHUD(PlayerOwner().myHUD).dxc;
-    if (dxc == None)
-        dxc = new(outer) class'DxCanvas';
+   dxc = DeusExHUD(PlayerOwner().myHUD).dxc;
+   if (dxc == None)
+       dxc = new(outer) class'DxCanvas';
 
-    // DXR: Get colors...
-    h = DeusExHUD(PlayerOwner().myHUD);
-    InfoLinkBG = h.InfoLinkBG;
-    InfoLinkText = h.InfoLinkText;
-    InfoLinkTitles = h.InfoLinkTitles;
-    InfoLinkFrame = h.InfoLinkFrame;
+   // DXR: Get colors...
+   h = DeusExHUD(PlayerOwner().myHUD);
+   InfoLinkBG = h.InfoLinkBG;
+   InfoLinkText = h.InfoLinkText;
+   InfoLinkTitles = h.InfoLinkTitles;
+   InfoLinkFrame = h.InfoLinkFrame;
 
-    DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
+   DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
 
-    t_WindowTitle.DockAlign = PGA_Top;
-    t_WindowTitle.winWidth = 0.0;
+   t_WindowTitle.DockAlign = PGA_Top;
+   t_WindowTitle.winWidth = 0.0;
 
-    i_FrameBG.Image = texture'Engine.BlackTexture';
-    i_FrameBG.ImageRenderStyle=MSTY_Alpha;
-    i_FrameBG.WinTop=0.8;
-    i_FrameBG.bStandardized=true;
-    i_FrameBG.StandardHeight=0.2;
-    i_FrameBG.ImageColor.A=255;
+   i_FrameBG.Image = texture'Engine.BlackTexture';
+   i_FrameBG.ImageRenderStyle=MSTY_Alpha;
+   i_FrameBG.WinTop=0.8;
+   i_FrameBG.bStandardized=true;
+   i_FrameBG.StandardHeight=0.2;
+   i_FrameBG.ImageColor.A=255;
 
-    if (i_FrameBG2 == none)
-        i_FrameBG2 = new(none) class'floatingimage';
-        i_FrameBG2.Image = texture'Engine.BlackTexture';
-        i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
-        i_FrameBG2.WinTop = 0.0;
-        i_FrameBG2.WinLeft = 0.0;
-        i_FrameBG2.WinWidth = 1.0;
-        i_FrameBG2.bStandardized=true;
-        i_FrameBG2.StandardHeight = 0.2;
-        i_FrameBG2.bBoundToParent = true;
-        i_FrameBG2.DropShadow = none;
-        i_FrameBG2.ImageColor.A=255;
-        i_FrameBG2.bFocusOnWatch = true;
-        AppendComponent(i_FrameBG2, true);
+   if (i_FrameBG2 == none)
+       i_FrameBG2 = new(none) class'floatingimage';
+       i_FrameBG2.Image = texture'Engine.BlackTexture';
+       i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
+       i_FrameBG2.WinTop = 0.0;
+       i_FrameBG2.WinLeft = 0.0;
+       i_FrameBG2.WinWidth = 1.0;
+       i_FrameBG2.bStandardized=true;
+       i_FrameBG2.StandardHeight = 0.2;
+       i_FrameBG2.bBoundToParent = true;
+       i_FrameBG2.DropShadow = none;
+       i_FrameBG2.ImageColor.A=255;
+       i_FrameBG2.bFocusOnWatch = true;
+       AppendComponent(i_FrameBG2, true);
 
-    if (PlayerPawn(PlayerOwner().pawn).bSubtitles == false)
-        DisplayName("");
+   ShowMouseCursor(false);
+}
+
+function ShowMouseCursor(bool bNewValue)
+{
+   DeusExGUIController(Controller).ShowMouseCursor(bNewValue);
 }
 
 
 function DisplayName(string text)
 {
-    // Don't do this if bForcePlay == True
-    if (!bForcePlay)
-    {
-        SpeakerName.caption = text;
-    }
+   // Don't do this if bForcePlay == True
+   if (!bForcePlay)
+   {
+       SpeakerName.caption = text;
+   }
 }
 
 function SetForcePlay(bool bNewForcePlay)
@@ -160,26 +164,28 @@ function AbortCinematicConvo()
 
 function RemoveChoices()
 {
-    local int buttonIndex;
+   local int buttonIndex;
 
-    // Clear our array as well
-    for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++)
-    {
-        conChoices[buttonIndex].bNeverFocus = true;
-        conChoices[buttonIndex].FocusInstead = t_WindowTitle;
-        conChoices[buttonIndex].SetText("");
-        conChoices[buttonIndex].SetUserObject(none);
-        conChoices[buttonIndex].Hide();
-        conChoices[buttonIndex] = none;
-    }
-    numChoices = 0;
-    bRenderPlayerCredits = false;
+   // Clear our array as well
+   for (buttonIndex=0; buttonIndex<numChoices; buttonIndex++)
+   {
+       conChoices[buttonIndex].bNeverFocus = true;
+       conChoices[buttonIndex].FocusInstead = t_WindowTitle;
+       conChoices[buttonIndex].SetText("");
+       conChoices[buttonIndex].SetUserObject(none);
+       conChoices[buttonIndex].Hide();
+       conChoices[buttonIndex] = none;
+   }
+   numChoices = 0;
+   bRenderPlayerCredits = false;
+
+   ShowMouseCursor(false);
 }
 
 function InternalOnClose(optional bool bCanceled)
 {
-    RemoveChoices();
-    Super.OnClose(bCanceled);
+   RemoveChoices();
+   Super.OnClose(bCanceled);
 }
 
 
@@ -190,20 +196,21 @@ function InternalOnClose(optional bool bCanceled)
 // ----------------------------------------------------------------------
 function DisplayChoice(ConChoice choice)
 {
-    local ConChoiceWindow newButton;
+   local ConChoiceWindow newButton;
 
-    newButton = CreateConButton(colConTextChoice, colConTextFocus);
-    newButton.SetText(ChoiceBeginningChar $ choice.choiceText);
-    newButton.SetUserObject(choice);
+   newButton = CreateConButton(colConTextChoice, colConTextFocus);
+   newButton.SetText(ChoiceBeginningChar $ choice.choiceText);
+   newButton.SetUserObject(choice);
 
-    // These next two calls handle highlighting of the choice
-    newButton.SetButtonTextures(,Texture'Solid', Texture'Solid', Texture'Solid');
-    newButton.SetButtonColors(,colConTextChoice, colConTextChoice, colConTextChoice);
+   // These next two calls handle highlighting of the choice
+   newButton.SetButtonTextures(,Texture'Solid', Texture'Solid', Texture'Solid');
+   newButton.SetButtonColors(,colConTextChoice, colConTextChoice, colConTextChoice);
 
-    // Add the button
-    AddButton(newButton);
+   // Add the button
+   AddButton(newButton);
 
-    bRenderPlayerCredits = true;
+   bRenderPlayerCredits = true;
+   ShowMouseCursor(true); // DXR: Отобразить курсор для выбора ответа.
 }
 
 // ----------------------------------------------------------------------
@@ -244,6 +251,8 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 
    DeusExHud((PlayerOwner()).myHUD).SafeRestore();
    moveMode     = MM_None;
+
+   ShowMouseCursor(true);
 //   bTickEnabled = false;
 }
 
@@ -812,7 +821,7 @@ defaultproperties
     winSpeech=MySubtitles
 
     Begin Object Class=GUILabel Name=MySpeaker
-        Caption="Test Caption Text"
+        Caption=""
         bMultiLine=true
         TextAlign=TXTA_Right
         TextColor=(B=255,G=255,R=255)

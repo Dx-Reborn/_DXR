@@ -28,7 +28,7 @@ event Tick(float deltaTime)
 // DrawWindow()
 // ----------------------------------------------------------------------
 
-function Render(Canvas c)
+function Render(Canvas u)
 {
 /*  local string str;
     local int mins;

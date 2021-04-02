@@ -446,22 +446,21 @@ exec function SaveCurrentMap()
    if (human(pawn).SkillSystem != none)
    class'ObjectManager'.static.SetObjectFlags(Human(pawn).SkillSystem, RF_Transient);
 
-   for (anItem=pawn.Inventory; anItem!=None; anItem=anItem.Inventory)
+/*   for (anItem=pawn.Inventory; anItem!=None; anItem=anItem.Inventory)
    {
 //    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
        class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
 //    log("setting RF_Transient for "$anItem);
-    //pawn.DeleteInventory(anItem);
-   }
+   }*/
 
-/*  foreach AllActors(class'Inventory', inv)
+  foreach AllActors(class'Inventory', anItem)
   {
-    if (inv.owner.IsA('DeusExPlayer'))
+    if (anItem.owner == pawn)
     {
-      log("Transient inventory:"@amm);
-      class'ObjectManager'.static.SetObjectFlags(inv, RF_Transient);
+      log("Transient inventory:"@anItem @ anItem.GetBeltPos());
+      class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
     }
-  }*/
+  }
 
    foreach AllActors(class'Augmentation', aug)
    {

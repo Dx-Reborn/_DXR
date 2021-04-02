@@ -1430,13 +1430,16 @@ event TravelPostAccept()
     local augmentation aug;
     local DeusExHUD hud;
 
+    if (bTPA_OnlyOnce)
+    return;
+
+    log(self@"TravelPostAccept()?");
+
     dxpc = DeusExPlayerController(Controller);
     hud = DeusExHUD(dxpc.myHUD);
 
- if (!bTPA_OnlyOnce)
- {
-//    hud.ClearBelt();
-//    hud.PopulateBelt();
+    hud.ClearBelt();
+    hud.PopulateBelt();
 
     // reset the keyboard // DXR: For what purpose? This screws up everything...
 
@@ -1449,9 +1452,7 @@ event TravelPostAccept()
 
     // Make sure the Skills and Augmentation systems 
     // are properly initialized and reset.
-
     RestoreSkillPoints();
-
     if (SkillSystem != None)
     {
         SkillSystem.SetPlayer(Self);
@@ -1481,7 +1482,7 @@ event TravelPostAccept()
     PutCarriedDecorationInHand();
 
     // Reset FOV
-    SetFOVAngle(DeusExPlayerController(controller).Default.DesiredFOV);
+    SetFOVAngle(DeusExPlayerController(controller).default.DesiredFOV);
 
     // If the player had a scope view up, make sure it's 
     // properly restore
@@ -1501,13 +1502,12 @@ event TravelPostAccept()
     // make sure the player's eye height is correct
     BaseEyeHeight = CollisionHeight - (GetDefaultCollisionHeight() - Default.BaseEyeHeight);
 
-    /*hud.*/objects[0] = FindInventoryType(Class'NanoKeyRing');
-
-    bTPA_OnlyOnce = true;
+    objects[0] = FindInventoryType(Class'NanoKeyRing');
 
     if (inHand != None)
         PutInHand(inHand);
- }
+
+    bTPA_OnlyOnce = true;
 }
 
 function UpdatePlayerSkin()
@@ -4596,16 +4596,16 @@ function SaveSkillPoints()
 
 exec function SaveTravelDecoration()
 {
-  if (carriedDecoration != none)
-  {
+   if (carriedDecoration != none)
+   {
 /*    gl = class'DeusExGlobals'.static.GetGlobals();
     gl.TravelDeco = "DeusEx."$CarriedDecoration.GetHumanReadableName();
     gl.decoRotation = CarriedDecoration.rotation;*/
     carriedDecorationClass = carriedDecoration.class;
     carriedDecorationRotation = carriedDecoration.Rotation;
 
-    log("carriedDecorationRotation = "$carriedDecorationRotation);
-  }
+    //log("carriedDecorationRotation = "$carriedDecorationRotation);
+   }
 }
 
 /* Восстановить переносимый предмет */
@@ -4622,35 +4622,35 @@ exec function RestoreTravelDecoration()
       myDeco = class<DeusExDecoration>(DynamicLoadObject(gl.TravelDeco, class'Class'));
   if (myDeco != none)*/
 
-  if (carriedDecorationClass != none)  // != none? Then spawn it...
-  {
-    finalDeco = Spawn(carriedDecorationClass, self);
-    log("carriedDecorationRotation = "$carriedDecorationRotation);
-    finalDeco.SetPhysics(PHYS_None);                  // So it does not fall on the ground...
-    frobTarget = finalDeco;                           // Set it as frobTarget...
-    ParseRightClick();                                // Grab it...
-    finalDeco.SetRotation(carriedDecorationRotation); // Rotate it...
+   if (carriedDecorationClass != none)  // != none? Then spawn it...
+   {
+       finalDeco = Spawn(carriedDecorationClass, self);
+       //log("carriedDecorationRotation = "$carriedDecorationRotation);
+       finalDeco.SetPhysics(PHYS_None);                  // So it does not fall on the ground...
+       frobTarget = finalDeco;                           // Set it as frobTarget...
+       ParseRightClick();                                // Grab it...
+       finalDeco.SetRotation(carriedDecorationRotation); // Rotate it...
 
-    // Now we have deco in our hands, now we need to clear 
-    // variables, used to restore rotation and class.
-    carriedDecorationClass = None;
+       // Now we have deco in our hands, now we need to clear 
+       // variables, used to restore rotation and class.
+       carriedDecorationClass = None;
 //    carriedDecorationRotation = rot(0,0,0);
 //  gl.TravelDeco = "";
-  }
+   }
 }
 
 
 static function string GetTruePlayerName()
 {
-  return default.TruePlayerName;
+   return default.TruePlayerName;
 }
 
 static function string GetPlayerFirstName()
 {
-  local string f, l;
+   local string f, l;
 
-  Divide(default.TruePlayerName, " ", f, l);
-  return f;
+   Divide(default.TruePlayerName, " ", f, l);
+   return f;
 }
 
 function string GetBindName()

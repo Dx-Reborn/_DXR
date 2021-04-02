@@ -70,7 +70,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
     player = DeusExPlayer(PlayerOwner().pawn);
 
     CreateMyControls();
-    invListChange(none);
+    invListChange(Self); // none
 }
 
 function CreateMyControls()
@@ -360,39 +360,41 @@ function SetMoney()
 
 function ListNanoKeys()
 {
-  local int i;
-  local DeusExPlayer p;
+   local int i;
+   local DeusExPlayer p;
 
-  p = DeusExPlayer(PlayerOwner().pawn);
+   p = DeusExPlayer(PlayerOwner().pawn);
 
-  tDesc.SetContent(NanoKeyRingLabel);
+   if (p == None)
+       return;
 
-  if (p.NanoKeys.Length == 0)
-  {
-   tDesc.AddText(strNoKeys);
-  }
-  else
-    {
-      for (i=0;i<p.NanoKeys.Length;i++)
-      {
-         tDesc.AddText(p.NanoKeys[i].Description);
-      }
-    }
+   tDesc.SetContent(NanoKeyRingLabel);
+
+   if (p.KeyRing.NanoKeys.Length == 0)
+   {
+      tDesc.AddText(strNoKeys);
+   }
+   else
+   {
+       for (i=0;i<p.KeyRing.NanoKeys.Length;i++)
+       {
+           tDesc.AddText(p.KeyRing.NanoKeys[i].Description);
+       }
+   }
 }
 
 function fillList()
 {
-    local Inventory inv;
+   local Inventory inv;
 
-    invList.List.Clear();
-
-    inv = PlayerOwner().Pawn.Inventory;
-    while (inv != None)
-    {
+   invList.List.Clear();
+   inv = PlayerOwner().Pawn.Inventory;
+   while (inv != None)
+   {
 //    log("Adding inventory to list...");
-        invList.List.Add(inv.ItemName, inv, inv.GetDescription());
-        inv = inv.inventory;
-    }
+       invList.List.Add(inv.ItemName, inv, inv.GetDescription());
+       inv = inv.inventory;
+   }
 }
 
 function invListChange(GUIComponent Sender)

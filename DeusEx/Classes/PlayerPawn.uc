@@ -12,7 +12,7 @@ const MAX_FIRE_ACTORS = 1;
 const MAX_INVENTORY_CELLS = 30;
 const TOOLBELT_LENGTH = 10;
 
-var() travel inventory objects[TOOLBELT_LENGTH]; // DXR: for toolbelt
+var() /*travel*/ transient inventory objects[TOOLBELT_LENGTH]; // DXR: for toolbelt
 var() travel Weapon myWeapon; // DXR: I have no idea why pawn.weapon is set to None after traveling...
 var() travel Powerups mySelectedItem; // Same...
 
@@ -337,15 +337,15 @@ function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
    Super.DisplayDebug(Canvas, YL, YPos);
 
-    if (SelectedItem == None)
-    {
-        Canvas.SetDrawColor(0,255,0);
-        Canvas.DrawText("NO SelectedItem");
-        YPos += YL;
-        Canvas.SetPos(4,YPos);
-    }
-    else
-        SelectedItem.DisplayDebug(Canvas,YL,YPos);
+   if (SelectedItem == None)
+   {
+       Canvas.SetDrawColor(0,255,0);
+       Canvas.DrawText("NO SelectedItem");
+       YPos += YL;
+       Canvas.SetPos(4,YPos);
+   }
+   else
+       SelectedItem.DisplayDebug(Canvas,YL,YPos);
 }
 
 function DropDecoration();

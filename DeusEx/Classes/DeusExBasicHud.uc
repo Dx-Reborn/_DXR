@@ -141,9 +141,9 @@ var Color colText;
 
 var float CrosshairCorrectionX,CrosshairCorrectionY;
 var texture CrosshairTex;
-var texture ItemNameBoxT;
 var texture HudHitBase, HudHitFrame, HudHitBody,HudHitArmL,  HudHitArmR,HudHitLegL, HudHitLegR,HudHitHead, HudHitTorso;
 var material HitMarkerMat;
+var material ItemNameBoxT;
 var material INBox;
 
 var float HHframeX, HHframeY, BodyX, BodyY, SHHframeX, SHHframeY, SBodyX, SBodyY;
@@ -172,6 +172,31 @@ var bool bDrawCrossHair, bDrawHealth, bDrawFrobBox;
 
 // Указатель на Север (Задается в DeusExLevelInfo (TrueNorth))
 var Int mapNorth;
+
+event PreBeginPlay()
+{
+   LoadSomeTextures();
+   Super.PreBeginPlay();
+}
+
+function LoadSomeTextures()
+{
+   HudHitBase = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplayBackground_1", class'texture', false));
+   HudHitFrame = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplayBorder_1", class'texture', false));
+   HudHitBody = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_Body", class'texture', false));
+   HudHitArmL = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_ArmLeft", class'texture', false));
+   HudHitArmR = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_ArmRight", class'texture', false));
+   HudHitLegL = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_LegLeft", class'texture', false));
+   HudHitLegR = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_LegRight", class'texture', false));
+   HudHitHead = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_Head", class'texture', false));
+   HudHitTorso = texture(DynamicLoadObject("DeusExUi.UserInterface.HUDHitDisplay_Torso", class'texture', false));
+
+   HitMarkerMat = Material(DynamicLoadObject("DeusExUIExtra.HUD.HitMarker_TXR", class'Material', false));
+   INBox = Material(DynamicLoadObject("DeusExUiExtra.F_ItemNameBox", class'Material', false));
+   ItemNameBoxT = Material(DynamicLoadObject("DeusExUIExtra.HUD.ItemNameBox", class'Material', false));
+   default.CrosshairTex = texture(DynamicLoadObject("DXRMenuIMG.CrossCircle", class'texture', false));
+}
+
 
 /* returns true if target is projected on visible canvas area */
 static function bool IsTargetInFrontOfPlayer(Canvas C, Actor Target, out Vector ScreenPos, Vector CamLoc, Rotator CamRot)
@@ -1486,24 +1511,7 @@ defaultproperties
     HHframeY=-21
     HHframeX=-21
 
-    HitMarkerMat=TexRotator'DeusExUIExtra.HUD.HitMarker_TXR'
-    CrosshairTex=Texture'CrossSquare'
-    ItemNameBoxT=Texture'ItemNameBox'
-
-    HudHitBase=texture'DeusExUi.UserInterface.HUDHitDisplayBackground_1'
-    HudHitFrame=texture'DeusExUi.UserInterface.HUDHitDisplayBorder_1'
-    HudHitBody=texture'DeusExUi.UserInterface.HUDHitDisplay_Body'
-    HudHitArmL=texture'DeusExUi.UserInterface.HUDHitDisplay_ArmLeft'
-    HudHitArmR=texture'DeusExUi.UserInterface.HUDHitDisplay_ArmRight'
-    HudHitLegL=texture'DeusExUi.UserInterface.HUDHitDisplay_LegLeft'
-    HudHitLegR=texture'DeusExUi.UserInterface.HUDHitDisplay_LegRight'
-    HudHitHead=texture'DeusExUi.UserInterface.HUDHitDisplay_Head'
-    HudHitTorso=texture'DeusExUi.UserInterface.HUDHitDisplay_Torso'
-    INBox=FinalBlend'DeusExUiExtra.F_ItemNameBox'
-
 //-------------------------------------------------------
-
-
     marginX=4.00 // Для аугментаций с графическим интерфейсом !!!
     corner=9.00
     margin=70.00 // Для рамки выделения!!!
