@@ -108,6 +108,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
    ShowMouseCursor(false);
 }
 
+// DXR: Works only in fullscreen mode!
 function ShowMouseCursor(bool bNewValue)
 {
    DeusExGUIController(Controller).ShowMouseCursor(bNewValue);
@@ -125,22 +126,27 @@ function DisplayName(string text)
 
 function SetForcePlay(bool bNewForcePlay)
 {
-    bForcePlay = bNewForcePlay;
+   bForcePlay = bNewForcePlay;
+
+   winSpeech.TextAlign = TXTA_Center; // DXR: Установить текст по центру, как в оригинале.
+   winSpeech.bNoTeletype = true; // Иначе это невозможно прочесть.
+   winSpeech.InitComponent(Controller, self); // Ещё раз? Тогда это работает!
+
 }
 
 function RestrictInput(bool bNewRestrictInput)
 {
-    bRestrictInput = bNewRestrictInput;
+   bRestrictInput = bNewRestrictInput;
 }
 
 function DisplayText(string text, Actor speakingActor)
 {
-    winSpeech.SetContent(text);
+   winSpeech.SetContent(text);
 }
 
 function AppendText(string text)
 {
-    winSpeech.AddText(text);
+   winSpeech.AddText(text);
 }
 
 function ShowChoiceAsSpeech(string Text)
@@ -816,7 +822,7 @@ defaultproperties
         RepeatDelay=3.0
         StyleName="STY_DXR_DXSubTitles"
         FontScale=FNS_Small
-//        TextAlign=TXTA_Center
+        TextAlign=TXTA_Left
     End Object
     winSpeech=MySubtitles
 
