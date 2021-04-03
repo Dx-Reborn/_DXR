@@ -128,10 +128,12 @@ function SetForcePlay(bool bNewForcePlay)
 {
    bForcePlay = bNewForcePlay;
 
-   winSpeech.TextAlign = TXTA_Center; // DXR: Установить текст по центру, как в оригинале.
-   winSpeech.bNoTeletype = true; // Иначе это невозможно прочесть.
-   winSpeech.InitComponent(Controller, self); // Ещё раз? Тогда это работает!
-
+   if (bForcePlay)
+   {
+       winSpeech.TextAlign = TXTA_Center; // DXR: Установить текст по центру, как в оригинале.
+       winSpeech.bNoTeletype = true; // Иначе это невозможно прочесть.
+       winSpeech.InitComponent(Controller, self); // Ещё раз? Тогда это работает!
+   }
 }
 
 function RestrictInput(bool bNewRestrictInput)
