@@ -21,7 +21,7 @@ enum EMoveModes
 };
 var EMoveModes moveMode;
 var bool bExpandEffect; // DXR: Использовать эффект как в оригинальной игре
-var config bool bChoicesAtTop; // Варианты ответа сверху.
+var config bool bChoicesAtTop; // Варианты ответа сверху. // ToDo: Если варианты ответа не умещаются, переместить их вверх!
 
 struct sReceivedItems
 {
@@ -57,7 +57,7 @@ var float SpeakerStrLen;
 
 var() automated GUILabel SpeakerName;
 var() floatingimage i_FrameBG2;
-var() automated GUIScrollTextBox winSpeech;
+var() /*automated*/ GUIScrollTextBox winSpeech;
 
 var transient DxCanvas dxc;
 
@@ -80,6 +80,23 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
 
    DeusExPlayer(playerOwner().pawn).conPlay.conWinThird = self;
 
+   winSpeech = new class'GUIScrollTextBox';
+   winSpeech.RenderWeight = 0.8;
+   winSpeech.WinWidth = 0.98;
+   winSpeech.WinHeight = 0.18;
+   winSpeech.WinLeft = 0.01;
+   winSpeech.WinTop = 0.806667;
+   winSpeech.TabOrder = 2;
+   winSpeech.bVisibleWhenEmpty = false;
+   winSpeech.bNoTeletype = class'DeusExGlobals'.static.GetGlobals().bUseCursorEffects;
+   winSpeech.CharDelay=0.005;
+   winSpeech.EOLDelay = 0.75;
+   winSpeech.RepeatDelay = 3.0;
+   winSpeech.StyleName = "STY_DXR_DXSubTitles";
+   winSpeech.FontScale = FNS_Small;
+   winSpeech.TextAlign = TXTA_Left;
+   AppendComponent(winSpeech, true);
+
    t_WindowTitle.DockAlign = PGA_Top;
    t_WindowTitle.winWidth = 0.0;
 
@@ -93,7 +110,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
    if (i_FrameBG2 == none)
        i_FrameBG2 = new(none) class'floatingimage';
        i_FrameBG2.Image = texture'Engine.BlackTexture';
-       i_FrameBG2.ImageRenderStyle=MSTY_Alpha;
+       i_FrameBG2.ImageRenderStyle = MSTY_Alpha;
        i_FrameBG2.WinTop = 0.0;
        i_FrameBG2.WinLeft = 0.0;
        i_FrameBG2.WinWidth = 1.0;
@@ -101,7 +118,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner)
        i_FrameBG2.StandardHeight = 0.2;
        i_FrameBG2.bBoundToParent = true;
        i_FrameBG2.DropShadow = none;
-       i_FrameBG2.ImageColor.A=255;
+       i_FrameBG2.ImageColor.A = 255;
        i_FrameBG2.bFocusOnWatch = true;
        AppendComponent(i_FrameBG2, true);
 
@@ -257,7 +274,8 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 {
    Super.Closed(Sender, bCancelled);
 
-   DeusExHud((PlayerOwner()).myHUD).SafeRestore();
+   if (!bForcePlay)
+       DeusExHud((PlayerOwner()).myHUD).SafeRestore();
    moveMode     = MM_None;
 
    ShowMouseCursor(true);
@@ -266,7 +284,9 @@ event Closed(GUIComponent Sender, bool bCancelled)  // Called when the Menu Owne
 
 event Free()
 {
-   DeusExHud((PlayerOwner()).myHUD).SafeRestore();
+   if (!bForcePlay)
+       DeusExHud((PlayerOwner()).myHUD).SafeRestore();
+
    Super.Free();
 }
 
@@ -810,7 +830,7 @@ defaultproperties
     //movePeriod=0.60
     movePeriod=0.30
 
-    Begin Object class=GUIScrollTextBox Name=MySubTitles
+/*    Begin Object class=GUIScrollTextBox Name=MySubTitles
         RenderWeight=0.8
         WinWidth=0.98
         WinHeight=0.18
@@ -826,7 +846,7 @@ defaultproperties
         FontScale=FNS_Small
         TextAlign=TXTA_Left
     End Object
-    winSpeech=MySubtitles
+    winSpeech=MySubtitles*/
 
     Begin Object Class=GUILabel Name=MySpeaker
         Caption=""
