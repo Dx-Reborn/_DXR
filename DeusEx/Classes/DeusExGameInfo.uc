@@ -142,7 +142,7 @@ event PlayerController Login(string Portal,string Options,out string Error)
     local PlayerController  NewPlayer, TestPlayer;//, PC;
     local string            InName;//, InAdminName;
     local byte              InTeam;
-    local pawn                          TestPawn;
+    local pawn              TestPawn;
     local DeusExLevelInfo   DX;
 
     Options = StripColor(Options);  // Strip out color Codes
@@ -150,22 +150,21 @@ event PlayerController Login(string Portal,string Options,out string Error)
     BaseMutator.ModifyLogin(Portal, Options);
 
     // Get URL options.
-    InName     = Left(ParseOption ( Options, "Name"), 20);
-    InTeam     = GetIntOption( Options, "Team", 255 ); // default to "no team"
-
+    InName = Left(ParseOption (Options, "Name"), 20);
+    InTeam = GetIntOption(Options, "Team", 255); // default to "no team"
     DX = GetLevelInfo();
 
-    if (HasOption(Options, "Load"))
-    {
-        log("Loading Savegame");
+   if (HasOption(Options, "Load"))
+   {
+       log("Loading Savegame");
 
-        InitSavedLevel();
-        bIsSaveGame = true;
+       InitSavedLevel();
+       bIsSaveGame = true;
 
-        // Try to match up to existing unoccupied player in level,
-        // for savegames - also needed coop level switching.
-        foreach DynamicActors(class'PlayerController', TestPlayer)
-        {
+       // Try to match up to existing unoccupied player in level,
+       // for savegames - also needed coop level switching.
+       foreach DynamicActors(class'PlayerController', TestPlayer)
+       {
 //                log("TestPlayer = "$TestPlayer);
 //                log("TestPlayer.Pawn = "$TestPlayer.Pawn);
 //                log("TestPlayer.PlayerReplicationInfo = "$TestPlayer.PlayerReplicationInfo);
@@ -173,50 +172,50 @@ event PlayerController Login(string Portal,string Options,out string Error)
            // if ( (TestPlayer.Player==None) && (TestPlayer.PlayerOwnerName~=InName) )
             //{
                 TestPawn = TestPlayer.Pawn;
-                if ( TestPawn != None )
+                if (TestPawn != None)
                     TestPawn.SetRotation(TestPawn.Controller.Rotation);
 
                 log("FOUND "$TestPlayer@TestPlayer.PlayerReplicationInfo.PlayerName);
                 return TestPlayer;
                 
             //}
-        }
-    }
+       }
+   }
 
       // Find a start spot.
-    StartSpot = FindPlayerStart( None, InTeam, Portal );
+   StartSpot = FindPlayerStart( None, InTeam, Portal );
 
-    if(StartSpot == None)
-    {
-        Error = GameMessageClass.default.FailedPlaceMessage;
-        return None;
-    }
+   if(StartSpot == None)
+   {
+       Error = GameMessageClass.default.FailedPlaceMessage;
+       return None;
+   }
 
-    if (PlayerControllerClass == None)
-        PlayerControllerClass = class<PlayerController>(DynamicLoadObject(PlayerControllerClassName, class'Class'));
+   if (PlayerControllerClass == None)
+       PlayerControllerClass = class<PlayerController>(DynamicLoadObject(PlayerControllerClassName, class'Class'));
 
-    NewPlayer = spawn(PlayerControllerClass,,,StartSpot.Location,StartSpot.Rotation);
+   NewPlayer = spawn(PlayerControllerClass,,,StartSpot.Location,StartSpot.Rotation);
 
-    // Handle spawn failure.
-    if(NewPlayer == None)
-    {
-        log("Couldn't spawn player controller of class "$PlayerControllerClass);
-        Error = GameMessageClass.Default.FailedSpawnMessage;
-        return None;
-    }
+   // Handle spawn failure.
+   if(NewPlayer == None)
+   {
+       log("Couldn't spawn player controller of class "$PlayerControllerClass);
+       Error = GameMessageClass.Default.FailedSpawnMessage;
+       return None;
+   }
 
-    NewPlayer.StartSpot = StartSpot;
+   NewPlayer.StartSpot = StartSpot;
 
-    // Init player's replication info
-    NewPlayer.GameReplicationInfo = GameReplicationInfo;
+   // Init player's replication info
+   NewPlayer.GameReplicationInfo = GameReplicationInfo;
 
-    // Set the player's ID.
-    NewPlayer.PlayerReplicationInfo.PlayerID = CurrentID++;
+   // Set the player's ID.
+   NewPlayer.PlayerReplicationInfo.PlayerID = CurrentID++;
 
-    newPlayer.StartSpot = StartSpot;
+   newPlayer.StartSpot = StartSpot;
 
-        if (bTestMode)
-        TestLevel();
+   if (bTestMode)
+       TestLevel();
 
     return newPlayer;
 }

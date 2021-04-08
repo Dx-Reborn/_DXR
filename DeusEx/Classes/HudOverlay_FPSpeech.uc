@@ -13,11 +13,9 @@ var() font TitleFont, SpeechFont, SpeechFontRus;
 var bool bIsVisible, bRestrictInput;
 var color InfoLinkBG, InfoLinkText, InfoLinkTitles, InfoLinkFrame;
 
-event SetInitialState()
+event PostSetInitialState()
 {
    local DeusExHUD h;
-
-   Super.SetInitialState();
 
    h = DeusExHUD(level.GetLocalPlayerController().myHUD);
    InfoLinkBG = h.InfoLinkBG;
@@ -34,11 +32,11 @@ event Timer()
 // == Прорисовка диалогов == //
 function Render(Canvas C)
 {
-    local float w,h,holdX,holdY;
-    local texture border;
+   local float w,h,holdX,holdY;
+   local texture border;
 
-    if (bIsVisible)
-    {
+   if (bIsVisible)
+   {
       dxc.SetCanvas(C);
       c.DrawColor = InfoLinkBG;
       c.Font = TitleFont; // DXR: Now using Unicode font.
@@ -55,160 +53,159 @@ function Render(Canvas C)
       c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
       c.SetClip(w, h);
 
-        if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
-            c.Style = ERenderStyle.STY_Translucent;
-              else
-            c.Style = ERenderStyle.STY_Normal;
+       if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
+           c.Style = ERenderStyle.STY_Translucent;
+             else
+           c.Style = ERenderStyle.STY_Normal;
 
-        //TL
-        c.SetPos(-13,-16);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_TL',63,16, 1,0,63,16);
-        //L
-        c.SetPos(-13,0);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Left',63,h, 1,0,63,8);
-        //BL
-        c.SetPos(-13, c.ClipY);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_BL',63,16, 1,0,63,16);
+       //TL
+       c.SetPos(-13,-16);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_TL',63,16, 1,0,63,16);
+       //L
+       c.SetPos(-13,0);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_Left',63,h, 1,0,63,8);
+       //BL
+       c.SetPos(-13, c.ClipY);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_BL',63,16, 1,0,63,16);
 
-        //T
-        c.SetPos(50,-16);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Top',w-51,16, 0,0,8,16);
-        //M
-        c.SetPos(50,0);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Center',w-51,h, 0,0,8,8);
-        //B
-        c.SetPos(50,c.ClipY);
-        c.DrawTile(texture'DeusExUI.HUDWindowBackground_Bottom',w-51,16, 0,0,8,16);
-
-
-        c.SetOrigin(c.OrgX+c.ClipX-1,c.OrgY-16);
-        c.SetClip(32,h+32);
-        //TR
-        c.SetPos(0,0);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_TR',30,16, 1,0,31,16);
-        //R
-        c.SetPos(0,16);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
-        //BR
-        c.SetPos(0, c.ClipY-16);
-        c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
+       //T
+       c.SetPos(50,-16);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_Top',w-51,16, 0,0,8,16);
+       //M
+       c.SetPos(50,0);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_Center',w-51,h, 0,0,8,8);
+       //B
+       c.SetPos(50,c.ClipY);
+       c.DrawTile(texture'DeusExUI.HUDWindowBackground_Bottom',w-51,16, 0,0,8,16);
 
 
-        c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
-        c.SetClip(w, h);
+       c.SetOrigin(c.OrgX+c.ClipX-1,c.OrgY-16);
+       c.SetClip(32,h+32);
+       //TR
+       c.SetPos(0,0);
+       c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_TR',30,16, 1,0,31,16);
+       //R
+       c.SetPos(0,16);
+       c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_Right',30,h, 1,0,31,8);
+       //BR
+       c.SetPos(0, c.ClipY-16);
+       c.DrawTileClipped(texture'DeusExUI.HUDWindowBackground_BR',30,16, 1,0,31,16);
 
-          if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
-          {
-             if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
-                 c.Style = ERenderStyle.STY_Translucent;
+       c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
+       c.SetClip(w, h);
+
+       if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBordersVisible)
+       {
+           if (DeusExPlayerController(Level.GetLocalPlayerController()).bHUDBackgroundTranslucent)
+               c.Style = ERenderStyle.STY_Translucent;
                    else
-                 c.Style = ERenderStyle.STY_Alpha;
+               c.Style = ERenderStyle.STY_Alpha;
 
-                c.DrawColor = InfoLinkFrame;
+           c.DrawColor = InfoLinkFrame;
 
-                c.SetPos(-14,-16);
-                border = texture'DeusExUI.HUDWindowBorder_TL';
-                c.DrawTile(border,64,16, 0,0,64,16);
+           c.SetPos(-14,-16);
+           border = texture'DeusExUI.HUDWindowBorder_TL';
+           c.DrawTile(border,64,16, 0,0,64,16);
 
-                c.SetPos(-14,0);
-                border = texture'DeusExUI.HUDWindowBorder_Left';
-                c.DrawTile(border,64,h, 0,0,64,8);
+           c.SetPos(-14,0);
+           border = texture'DeusExUI.HUDWindowBorder_Left';
+           c.DrawTile(border,64,h, 0,0,64,8);
 
-                c.SetPos(-14, c.ClipY);
-                border = texture'DeusExUI.HUDWindowBorder_BL';
-                c.DrawIcon(border,1.0);
+           c.SetPos(-14, c.ClipY);
+           border = texture'DeusExUI.HUDWindowBorder_BL';
+           c.DrawIcon(border,1.0);
 
-                c.SetPos(50,-16);
-                border = texture'DeusExUI.HUDWindowBorder_Top';
-                c.DrawTile(border,w-52,16, 0,0,8,16);
+           c.SetPos(50,-16);
+           border = texture'DeusExUI.HUDWindowBorder_Top';
+           c.DrawTile(border,w-52,16, 0,0,8,16);
 
-                c.SetPos(50,c.ClipY);
-                border = texture'DeusExUI.HUDWindowBorder_Bottom';
-                c.DrawTile(border,w-52,16, 0,0,8,16);
+           c.SetPos(50,c.ClipY);
+           border = texture'DeusExUI.HUDWindowBorder_Bottom';
+           c.DrawTile(border,w-52,16, 0,0,8,16);
 
-                c.SetPos(c.ClipX-3,-16);
-                border = texture'DeusExUI.HUDWindowBorder_TR';
-                c.DrawIcon(border,1.0);
+           c.SetPos(c.ClipX-3,-16);
+           border = texture'DeusExUI.HUDWindowBorder_TR';
+           c.DrawIcon(border,1.0);
 
-                c.SetPos(C.OrgX+c.ClipX-3,C.OrgY);
-                border = texture'DeusExUI.HUDWindowBorder_Right';
-                c.DrawTileStretched(border,32,h);
+           c.SetPos(C.OrgX+c.ClipX-3,C.OrgY);
+           border = texture'DeusExUI.HUDWindowBorder_Right';
+           c.DrawTileStretched(border,32,h);
 
-                c.SetPos(c.ClipX-3, c.ClipY);
-                border = texture'DeusExUI.HUDWindowBorder_BR';
-                c.DrawIcon(border,1.0);
-          }
+           c.SetPos(c.ClipX-3, c.ClipY);
+           border = texture'DeusExUI.HUDWindowBorder_BR';
+           c.DrawIcon(border,1.0);
+       }
 
-        c.Style=ERenderStyle.STY_Normal;
-        c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
-        c.SetClip(w, h);
+       c.Style=ERenderStyle.STY_Normal;
+       c.SetOrigin(int((c.SizeX-w)/2), int((c.SizeY-(h+32)-64)));
+       c.SetClip(w, h);
 
-        c.SetPos(8,0); //x,y
+       c.SetPos(8,0); //x,y
 
-        c.DrawColor = InfoLinkTitles;
-        dxc.DrawText(Speaker); // кто
+       c.DrawColor = InfoLinkTitles;
+       dxc.DrawText(Speaker); // кто
                 
-        //Нарисовать линию с тенью
-        dxc.DrawHorizontal(int(c.CurY)+3,596);
-        c.SetDrawColor(0,0,0);
-        dxc.DrawHorizontal(int(c.CurY)+4,596);
-        c.SetDrawColor(255,255,255);
+       //Нарисовать линию с тенью
+       dxc.DrawHorizontal(int(c.CurY)+3,596);
+       c.SetDrawColor(0,0,0);
+       dxc.DrawHorizontal(int(c.CurY)+4,596);
+       c.SetDrawColor(255,255,255);
 
         //c.SetPos(c.CurX, c.CurY + 8);
-        c.SetPos(c.CurX, c.CurY + 6);
+       c.SetPos(c.CurX, c.CurY + 6);
 
-        if (class'GameManager'.static.GetGameLanguage() ~= "rus")
-            c.font = SpeechFontRus;
-        else
-            c.Font = SpeechFont;
+       if (class'GameManager'.static.GetGameLanguage() ~= "rus")
+           c.font = SpeechFontRus;
+       else
+           c.Font = SpeechFont;
 
-        c.DrawColor = InfoLinkText;
-        // Render the text
-        dxc.DrawText(fpsSpeech); 
-        c.reset();
-        c.SetClip(c.SizeX, c.SizeY);
-    }
+       c.DrawColor = InfoLinkText;
+       // Render the text
+       dxc.DrawText(fpsSpeech); 
+       c.reset();
+       c.SetClip(c.SizeX, c.SizeY);
+   }
 }
 
 function bool isVisible()
 {
-    return bIsVisible;
+   return bIsVisible;
 }
 
 function DisplayName(string text)
 {
-    Speaker = text;
+   Speaker = text;
 }
 
 function DisplayText(string text, Actor speakingActor)
 {
-    fpsSpeech = text;
+   fpsSpeech = text;
 }
 
 function AppendText(string text)
 {
-    fpsSpeech = text $= fpsSpeech;
+   fpsSpeech = text $= fpsSpeech;
 }
 
 function Close()
 {
-  Destroy();
+   Destroy();
 }
 
 function Show()
 {
-    bIsVisible=true;
+   bIsVisible=true;
 }
 
 function Hide()
 {
-    bIsVisible=false;
+   bIsVisible=false;
 }
 
 function Clear()
 {
-    Speaker = "test";
-    fpsSpeech="test";
+   Speaker = "test";
+   fpsSpeech="test";
 }
 
 function RestrictInput(bool bNewRestrictInput)

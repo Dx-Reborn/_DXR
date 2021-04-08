@@ -4222,7 +4222,7 @@ function CheckBob(float DeltaTime, vector Y)
     local int m,n;
 
     OldBobTime = BobTime;
-    Super.CheckBob(DeltaTime,Y);
+    Super.CheckBob(DeltaTime, Y);
 
     if (Physics == PHYS_Swimming)
         return;
@@ -4275,11 +4275,11 @@ function inWaterLeft()
 
 exec function ToggleWalk()
 {
-    if (DeusExPlayerController(controller).RestrictInput())
+   if (DeusExPlayerController(controller).RestrictInput())
         return;
 
- if (bAlwaysRun)
-    bToggleWalk = !bToggleWalk;
+   if (bAlwaysRun)
+       bToggleWalk = !bToggleWalk;
 }
 
 function UpdateBeltText(Inventory item)
@@ -4313,19 +4313,10 @@ function UpdateAmmoBeltText(Ammunition ammo)
 
 
 function DoneReloading(DeusExWeapon weapon);
-
-
-function ResetConversationHistory()
-{
-}
-
-
+function ResetConversationHistory();
 function PlayTurning();
 
 
-/* 
-   ToDo: ƒобавить HandleParameters в DxrMenu\GUI_Player.uc, чтобы открывать нужную вкладку
-*/
 exec function ShowInventoryWindow()
 {
     local Object mi;
@@ -4405,7 +4396,6 @@ exec function ShowLogsWindow()
 
     mi = DeusExPlayerController(Controller).OpenMenuEx("DXRMenu.GUI_Player",false, "LOGS");
 }
-/**/
 
 
 function PostIntro()
@@ -4424,13 +4414,13 @@ function PostIntro()
 
 function ShowIntro(optional bool bStartNewGame)
 {
-  bStartNewGameAfterIntro = bStartNewGame;
+   bStartNewGameAfterIntro = bStartNewGame;
 
-  // Make sure all augmentations are OFF before going into the intro
-  AugmentationSystem.DeactivateAll();
+   // Make sure all augmentations are OFF before going into the intro
+   AugmentationSystem.DeactivateAll();
 
-  // Reset the player
-  Level.Game.SendPlayer(DeusExPlayerController(Self.controller), "00_Intro");
+   // Reset the player
+   Level.Game.SendPlayer(DeusExPlayerController(Self.controller), "00_Intro");
 }
 
 exec function StartNewGame(String startMap)
@@ -4676,22 +4666,23 @@ function float GetLastConEndTime()  // Time when last conversation ended
 // Called by ConPlay when a conversation has finished.
 function EndConversation()
 {
-  LastConEndTime = Level.TimeSeconds;
+   LastConEndTime = Level.TimeSeconds;
 
-    // If we're in a bForcePlay (cinematic) conversation,
-    // force the CinematicWindow to be displayd
-    if ((conPlay != None) && (conPlay.GetForcePlay()))
-    {
+   // If we're in a bForcePlay (cinematic) conversation,
+   // force the CinematicWindow to be displayd
+   if ((conPlay != None) && (conPlay.GetForcePlay()))
+   {
 //      if (DeusExRootWindow(rootWindow) != None)
 //          DeusExRootWindow(rootWindow).NewChild(class'CinematicWindow');
-        ClientMessage("STUB for cinematic HUD here!!!");
-    }
+        //ClientMessage("STUB for cinematic HUD here!!!");
+       DeusExHUD(Level.GetLocalPlayerController().myHUD).cubemapmode = true;
+   }
 
-    conPlay = None;
+   conPlay = None;
 
-    // Check to see if we need to resume any DataLinks that may have
-    // been aborted when we started this conversation
-    ResumeDataLinks();
+   // Check to see if we need to resume any DataLinks that may have
+   // been aborted when we started this conversation
+   ResumeDataLinks();
 
 //  StopBlendAnims();
 
@@ -4702,13 +4693,13 @@ function EndConversation()
     // Also make sure the player is actually in the Conversation state
     // before attempting to kick him out of it.
 
-    if ((Health > 0) && ((Controller.IsInState('Conversation')) || (Controller.IsInState('FirstPersonConversation')) || (NextState == 'Interpolating')))
-    {
-        if (NextState == '')
-            Controller.GotoState('PlayerWalking');
-        else
-            Controller.GotoState(NextState);
-    }
+   if ((Health > 0) && ((Controller.IsInState('Conversation')) || (Controller.IsInState('FirstPersonConversation')) || (NextState == 'Interpolating')))
+   {
+       if (NextState == '')
+           Controller.GotoState('PlayerWalking');
+       else
+           Controller.GotoState(NextState);
+   }
 }
 
 // ----------------------------------------------------------------------

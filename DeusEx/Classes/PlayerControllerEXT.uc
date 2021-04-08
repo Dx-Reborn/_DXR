@@ -1015,13 +1015,13 @@ ignores SeePlayer, HearNoise, Bump;
         }
         else
         {
-            if ( !bKeyboardLook && (bLook == 0) && bCenterView )
+            if (!bKeyboardLook && (bLook == 0) && bCenterView)
             {
                 ViewRotation.Pitch = ViewRotation.Pitch & 65535;
                 if (ViewRotation.Pitch > 32768)
                     ViewRotation.Pitch -= 65536;
                         ViewRotation.Pitch = ViewRotation.Pitch * (1 - 12 * FMin(0.0833, deltaTime));
-                if ( (Abs(ViewRotation.Pitch) < 250) && (ViewRotation.Pitch < 100) )
+                if ((Abs(ViewRotation.Pitch) < 250) && (ViewRotation.Pitch < 100))
                     ViewRotation.Pitch = -249;
             }
         }
