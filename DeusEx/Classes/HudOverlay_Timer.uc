@@ -1,5 +1,5 @@
 /*
-   А он нужен?
+   HUD Overlay for Timer actor (never been used in the original game).
 */
 
 class HudOverlay_Timer extends DXRHudOverlay;
@@ -11,17 +11,18 @@ var bool bFlash;
 var float time;
 var float flashTime;
 var string message;
+var float offsetX, offsetY;
         
-event SetInitialState()
+event PostSetInitialState()
 {
-    time = 0;
-    flashTime = 0;
+   time = 0;
+   flashTime = 0;
 }
 
 event Tick(float deltaTime)
 {
-    if (bFlash)
-        flashTime += deltaTime;
+   if (bFlash)
+       flashTime += deltaTime;
 }
 
 // ----------------------------------------------------------------------
@@ -30,41 +31,43 @@ event Tick(float deltaTime)
 
 function Render(Canvas u)
 {
-/*  local string str;
-    local int mins;
-    local float secs;
+   local string str;
+   local int mins;
+   local float secs;
 
-    // Draw the timer
-    c.Font=Font'FontComputer8x20_B';
+   // Draw the timer
+   u.Font = Font'DS_Digits_18';
 
-    if (bCritical)
-        c.DrawColor(colCritical);
-    else
-        c.DrawColor(colNormal);
+   if (bCritical)
+       u.DrawColor = colCritical;
+   else
+       u.DrawColor = colNormal;
 
-    // print the time nicely
-    mins = time / 60;
-    secs = time % 60;
+   // print the time nicely
+   mins = time / 60;
+   secs = time % 60;
 
-    if (mins < 10)
-        str = "0";
-    str = str $ mins $ ":";
-    if (secs < 10)
-        str = str $ "0";
-    str = str $ secs;
+   if (mins < 10)
+       str = "0";
+   str = str $ mins $ ":";
+   if (secs < 10)
+       str = str $ "0";
+   str = str $ secs;
 
-    if (bFlash && (flashTime >= 0.75))
-    {
-        c.DrawColor(colBlack);
-        if (flashTime >= 1.0)
-            flashTime = 0;
-    }
+   if (bFlash && (flashTime >= 0.75))
+   {
+       u.DrawColor = colBlack;
+       if (flashTime >= 1.0)
+           flashTime = 0;
+   }
 
-    c.DrawText(0, 0, width, height, str);
+   u.SetPos(u.sizeX - offsetX,u.sizeY - offsetY);
+   u.DrawText(str);
 
-    // draw title
-    c.Font=Font'TechSmall';
-    c.DrawText(2, 2, width-2, height-2, message);*/
+   // draw title
+   u.Font = Font'EU_14';
+   u.SetPos(u.sizeX - offsetX, u.sizeY - offsetY - 40);
+   u.DrawText(message);
 }
 
 // ----------------------------------------------------------------------
@@ -72,7 +75,9 @@ function Render(Canvas u)
 
 defaultproperties
 {
-    timerBackground=Texture'DeusExUI.UserInterface.ConWindowBackground'
-    colNormal=(R=0,G=255,B=0,A=255),
-    colCritical=(R=255,G=0,B=0,A=255),
+   offsetX=120
+   offsetY=100
+   timerBackground=Texture'DeusExUI.UserInterface.ConWindowBackground'
+   colNormal=(R=0,G=255,B=0,A=255)
+   colCritical=(R=255,G=0,B=0,A=255)
 }
