@@ -28,15 +28,15 @@ var sound FallBack[4];
 
 function SpawnSpecialCase(Actor Target, vector HitLocation, vector HitNormal)
 {
-    local EM_WaterPipeHit water;
+   local EM_WaterPipeHit water;
 
-    if (Target.SurfaceType == EST_Water)
-        water = spawn(class'EM_WaterPipeHit',,,HitLocation, Rotator(HitNormal));
-        if (water != None)
-        {
-            water.AmbientSound = sound'Ambient.Ambient.WaterTrickle2';
-            water.SoundPitch = 135;
-        }
+   if (Target.SurfaceType == EST_Water)
+       water = spawn(class'EM_WaterPipeHit',,,HitLocation, Rotator(HitNormal));
+       if (water != None)
+       {
+           water.AmbientSound = sound'Ambient.Ambient.WaterTrickle2';
+           water.SoundPitch = 135;
+       }
 }
 
 
@@ -77,10 +77,7 @@ function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
    if (Actor == None)
        return;
 
-   if (Actor.IsA('BarrelFire') || Actor.IsA('MetalBoxes') || Actor.IsA('MailBox') ||
-      (Actor.IsA('Barrel1a') && Barrel1a(Actor).SkinColor != SC_Wood) || 
-       Actor.IsA('FirePlug') || Actor.IsA('Trashcans') || //Actor.IsA('SecurityCamera') ||
-       Actor.IsA('FireExtinguisher') || Actor.IsA('CageLight'))
+   if (Actor.SurfaceType == EST_Metal)
    {
       Spawn(class'EM_MetalHit',,,Loc,);
       PlayActorSound('Metal');
@@ -102,7 +99,7 @@ function SpawnActorEffect(Actor Actor, vector Loc, vector HitNormal)
    {
       PlayActorSound('Ceramic');
    }
-   else if (Actor.IsA('CrateBreakableMedMedical') || Actor.IsA('CrateBreakableMedGeneral') || Actor.IsA('CrateBreakableMedCombat'))
+   else if (Actor.SurfaceType == EST_Wood) //(Actor.IsA('CrateBreakableMedMedical') || Actor.IsA('CrateBreakableMedGeneral') || Actor.IsA('CrateBreakableMedCombat'))
    {
       Spawn(class'EM_WoodHit',,,Loc,);
       PlayActorSound('Wood');

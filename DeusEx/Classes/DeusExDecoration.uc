@@ -79,8 +79,12 @@ var(DynamicShadow) vector ShadowDirection;
 var(DynamicShadow) float ShadowLightDistance;
 var(DynamicShadow) float ShadowMaxTraceDistance;
 
+var EmptyClass Stub; // DXR: Заглушка для того чтобы удерживаемая декорация не жила своей жизнью.
+
 var name NextState;                 // for queueing states
 var name NextLabel;                 // for queueing states
+
+function OnFrag();
 
 function bool UseTranslucentMaterial()
 {
@@ -202,7 +206,6 @@ event PostSetInitialState()
 event BeginPlay()
 {
     local Mover M;
-    local EmptyClass Stub; // DXR: Заглушка для того чтобы удерживаемая декорация не жила своей жизнью.
 
     Super.BeginPlay();
 
@@ -1049,7 +1052,6 @@ function Frag(class<fragment> FragType, vector Momentum, float DSize, int NumFra
                 fr.bSmoking = True;
         }
     }
-
     if (!bExplosive)
         Destroy();
 }
@@ -1094,6 +1096,7 @@ event Destroyed()
     }
 
     DropThings();
+    OnFrag();
 
     if (!IsA('Containers'))
         Super.Destroyed();
