@@ -232,18 +232,22 @@ event Destroyed()
 
 defaultproperties
 {
-     bIsOn=True
-     confusionDuration=10.000000
-     HitPoints=50
-     minDamageThreshold=50
-     alarmTimeout=30
-     TriggerType=TT_AnyProximity
-     bHidden=False
-     bDirectional=True
-     mesh=mesh'DeusExDeco.LaserEmitter'
-     DrawType=DT_Mesh
-     CollisionRadius=2.500000
-     CollisionHeight=2.500000
-     Skins[0]=Texture'DeusExDeco.Skins.LaserEmitterTex1'
-     Skins[1]=Texture'DeusExDeco.Skins.AlarmLightTex2'
+   bIsOn=true
+   confusionDuration=10.000000
+   HitPoints=50
+   minDamageThreshold=50
+   alarmTimeout=30
+   TriggerType=TT_AnyProximity
+   bHidden=false
+   bDirectional=true
+   mesh=mesh'DeusExDeco.LaserEmitter'
+//   DrawType=DT_Mesh
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.LaserEmitter_HD'
+   CollisionRadius=2.500000
+   CollisionHeight=2.500000
+   Skins[0]=Texture'DeusExStaticMeshes0.Plastic.LaserEmitter_HD_Tex'
+   Skins[1]=Texture'DeusExDeco.Skins.AlarmLightTex2'
+//   Skins[0]=Texture'DeusExDeco.Skins.LaserEmitterTex1'
+//   Skins[1]=Texture'DeusExDeco.Skins.AlarmLightTex2'
 }

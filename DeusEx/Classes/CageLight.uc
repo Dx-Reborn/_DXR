@@ -62,36 +62,36 @@ event PostBeginPlay()
 
 defaultproperties
 {
-     LightSkins[0] = Shader'DeusExStaticMeshes0.Plastic.KP_White_SH'; break; // Белый
-     LightSkins[1] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // Жёлтый
-     LightSkins[2] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // Красный
-     LightSkins[3] = Shader'DeusExStaticMeshes0.Plastic.KP_Blue_SH'; break; // Синий
-     LightSkins[4] = Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // o5 жёлтый?
-     LightSkins[5] = Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // o5 красный?
-
-     bOn=True
-     HitPoints=5
-     bInvincible=True
-     FragType=Class'DeusEx.GlassFragment'
-     bHighlight=False
-     bCanBeBase=True
-     ItemName="Light Fixture"
-     bPushable=False
-     Physics=PHYS_None
+   LightSkins[0]=Shader'DeusExStaticMeshes0.Plastic.KP_White_SH'; break; // Белый
+   LightSkins[1]=Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // Жёлтый
+   LightSkins[2]=Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // Красный
+   LightSkins[3]=Shader'DeusExStaticMeshes0.Plastic.KP_Blue_SH'; break; // Синий
+   LightSkins[4]=Shader'DeusExStaticMeshes0.Plastic.KP_Yellow_SH'; break; // o5 жёлтый?
+   LightSkins[5]=Shader'DeusExStaticMeshes0.Plastic.KP_Red_SH'; break; // o5 красный?
+   SurfaceType=EST_Metal
+   bOn=True
+   HitPoints=5
+   bInvincible=True
+   FragType=Class'DeusEx.GlassFragment'
+   bHighlight=False
+   bCanBeBase=True
+   ItemName="Light Fixture"
+   bPushable=False
+   Physics=PHYS_None
 //     mesh=mesh'DeusExDeco.CageLight'
-     ScaleGlow=2.000000
-     CollisionRadius=17.139999
-     CollisionHeight=17.139999
-     LightType=LT_Steady
-     LightBrightness=255
-     LightHue=32
-     LightSaturation=224
+   ScaleGlow=2.000000
+   CollisionRadius=17.139999
+   CollisionHeight=17.139999
+   LightType=LT_Steady
+   LightBrightness=255
+   LightHue=32
+   LightSaturation=224
 //     LightRadius=8
-     LightRadius=0
-     Mass=20.000000
-     Buoyancy=10.000000
-     DrawType=DT_StaticMesh
-     StaticMesh=StaticMesh'DeusExStaticMeshes0.CageLight_HD'
+   LightRadius=0
+   Mass=20.000000
+   Buoyancy=10.000000
+   DrawType=DT_StaticMesh
+   StaticMesh=StaticMesh'DeusExStaticMeshes0.CageLight_HD'
 }
 
 
