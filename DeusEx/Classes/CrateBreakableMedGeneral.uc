@@ -10,17 +10,12 @@ auto state Active
    {
        if ((damageType == class'DM_Shot') || (damageType == class'DM_Decapitated'))
        {
-           PlayWoodHitSounds();
+           stub.PlayWoodHitSounds(1.0);
        }
        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
    }
 }
 
-
-function OnFrag()
-{
-   stub.PlayWoodHitSounds();
-}
 
 defaultproperties
 {

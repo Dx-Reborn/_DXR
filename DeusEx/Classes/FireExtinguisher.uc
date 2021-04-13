@@ -117,6 +117,7 @@ defaultproperties
 //    CollisionRadius=8.000000
     CollisionRadius=3.10
     CollisionHeight=10.27
+    SurfaceType=EST_Metal
     Mass=10.000000
     Buoyancy=8.000000
 }

@@ -25,7 +25,6 @@ var travel   float       LastConEndTime;            // Time when last conversati
 var(Conversation) float  ConStartInterval;          // Amount of time required between two convos.
 var(Conversation) editconst transient array<ConDialogue> conlist; // Диалоги хранятся здесь.
 
-
 // DEUS_EX AMSD Added to make vision aug run faster.  If true, the vision aug needs to check this object more closely.
 // Used for heat sources as well as things that blind.
 var bool    bVisionImportant;
@@ -80,6 +79,7 @@ var(DynamicShadow) float ShadowLightDistance;
 var(DynamicShadow) float ShadowMaxTraceDistance;
 
 var EmptyClass Stub; // DXR: Заглушка для того чтобы удерживаемая декорация не жила своей жизнью.
+var Actor EffectWhenDestroyedPtr;
 
 var name NextState;                 // for queueing states
 var name NextLabel;                 // for queueing states
@@ -856,6 +856,9 @@ auto state Active
         {
             DropThings();
 
+            if (EffectWhenDestroyed != None)
+                EffectWhenDestroyedPtr = Spawn(EffectWhenDestroyed, Owner,, Location);
+                   
             // clear the event to keep Destroyed() from triggering the event
             Event = '';
             avg = (CollisionRadius + CollisionHeight) / 2;
@@ -866,9 +869,9 @@ auto state Active
             if (fragType == class'WoodFragment')
             {
                 if (avg > 20)
-                    PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 512);
+                    PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 2048); // 512
                 else
-                    PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 512);
+                    PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 2048);  // 512
                 class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , 512);
             }
             if (bExplosive)
@@ -1229,37 +1232,37 @@ function float GetLastConEndTime()  // Time when last conversation ended
 
 defaultproperties
 {
-     ShadowDirection=(X=1.00,Y=1.00,Z=6.00)
-     HitPoints=20
-     FragType=Class'DeusEx.MetalFragment'
-     Flammability=30.000000
-     explosionDamage=100
-     explosionRadius=768.000000
-     bHighlight=True
-     ItemName="DEFAULT DECORATION NAME - REPORT THIS AS A BUG"
-     bPushable=True
-     PushSound=None // Sound'DeusExSounds.Generic.PushMetal'
-     bStatic=False
-     Texture=Texture'Engine.S_Pawn'
-     bTravel=True
-     bCollideActors=True
-     bCollideWorld=True
-     bBlockActors=True
-     bBlockPlayers=True
-     physics=PHYS_Falling
+   ShadowDirection=(X=1.00,Y=1.00,Z=6.00)
+   HitPoints=20
+   FragType=Class'DeusEx.MetalFragment'
+   Flammability=30.000000
+   explosionDamage=100
+   explosionRadius=768.000000
+   bHighlight=True
+   ItemName="DEFAULT DECORATION NAME - REPORT THIS AS A BUG"
+   bPushable=True
+   PushSound=None
+   bStatic=False
+   Texture=Texture'Engine.S_Pawn'
+   bTravel=True
+   bCollideActors=True
+   bCollideWorld=True
+   bBlockActors=True
+   bBlockPlayers=True
+   physics=PHYS_Falling
+   effectWhenDestroyed=class'EM_DestroyedDeco'
+   AmountOfFire=1 // DXR: Количество источников огня. 
+   bUseDynamicLights=true // DXR: Чтобы более-менее освещались от AugLight
+   bFullVolume=false
+   bHardAttach=false
+   bIgnoreOutOfWorld=true
+   bLightingVisibility=false
+   bActorShadows=false
+   bCanBePushedByDamage=false
+   bUseCylinderCollision=true // DXR: Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
 
-     AmountOfFire=1 // DXR: Количество источников огня. 
-     bUseDynamicLights=true // DXR: Чтобы более-менее освещались от AugLight
-     bFullVolume=false
-     bHardAttach=false
-     bIgnoreOutOfWorld=true
-     bLightingVisibility=false
-     bActorShadows=false
-     bCanBePushedByDamage=false
-     bUseCylinderCollision=true // DXR: Ignore StaticMesh built-in collision (if DrawType=DT_StaticMesh of course)
+   bOrientOnSlope=false // Important for this case!
 
-     bOrientOnSlope=false // Important for this case! // for now
-
-     ShadowLightDistance=1200
-     ShadowMaxTraceDistance=1050
+   ShadowLightDistance=1200
+   ShadowMaxTraceDistance=1050
 }

@@ -67,7 +67,8 @@ event Destroyed()
            loc = Location;
            loc.Z -= CollisionHeight;
            tc = spawn(class'TinCanA',,,loc);
-           tc.SetRotation(RotRand(true));
+           if (tc != None)
+               tc.SetRotation(RotRand(true));
         }
     }
 

@@ -37,7 +37,6 @@ event PostSetInitialState()
 {
     if (bPreDamage)
         TakeDamage(1, None, Location, vect(0,0,0), class'DM_shot');
-
 }
 
 // DXR: Overriden to use custom "landed" sound.
@@ -146,6 +145,7 @@ function SetStuff()
    SetStaticMesh(StaticMesh(DynamicLoadObject("DeusExStaticMeshes0.Barrel1a_HD_Wood", class'StaticMesh', false)));
    FragType = class'DeusEx.WoodFragment'; //CyberP
    pushSound = sound'PushWood'; // DXR
+   SurfaceType = EST_Wood;
                      break;
 
     }
@@ -421,6 +421,7 @@ defaultproperties
 
    Mass=80.00
    Buoyancy=90.00
+   SurfaceType=EST_Metal
 
    ColorSkins[0]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH1"
    ColorSkins[1]="DeusExStaticMeshes0.Metal.Barrel1a_HD_SH2"

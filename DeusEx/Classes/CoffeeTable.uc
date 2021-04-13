@@ -12,6 +12,8 @@ enum ESkinColor
 var() ESkinColor SkinColor;
 var string SkinColors[3];
 
+function ResetScaleGlow();
+
 event BeginPlay()
 {
    Super.BeginPlay();

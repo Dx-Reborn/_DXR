@@ -29,9 +29,10 @@ event BeginPlay()
 
 defaultproperties
 {
-     mesh=mesh'DeusExDeco.FirePlug'
-     CollisionRadius=8.000000
-     CollisionHeight=16.500000
-     Mass=50.000000
-     Buoyancy=30.000000
+   mesh=mesh'DeusExDeco.FirePlug'
+   CollisionRadius=8.000000
+   CollisionHeight=16.500000
+   Mass=50.000000
+   Buoyancy=30.000000
+   SurfaceType=EST_Metal
 }
