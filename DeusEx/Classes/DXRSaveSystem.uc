@@ -453,14 +453,14 @@ exec function SaveCurrentMap()
 //    log("setting RF_Transient for "$anItem);
    }*/
 
-  foreach AllActors(class'Inventory', anItem)
-  {
-    if (anItem.owner == pawn)
-    {
-      log("Transient inventory:"@anItem @ anItem.GetBeltPos());
-      class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
-    }
-  }
+   foreach AllActors(class'Inventory', anItem)
+   {
+       if (anItem.owner == pawn)
+       {
+//      log("Transient inventory:"@anItem @ anItem.GetBeltPos());
+           class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
+       }
+   }
 
    foreach AllActors(class'Augmentation', aug)
    {
@@ -479,8 +479,11 @@ exec function SaveCurrentMap()
    }
    foreach AllActors(class'LightProjector', lp)
    {
-       if (lt != none)
-       class'ObjectManager'.static.SetObjectFlags(lp, RF_Transient);
+       if (lp != none)
+       {
+           lp.projTexture = None;
+           class'ObjectManager'.static.SetObjectFlags(lp, RF_Transient);
+       }
    }
 
 
