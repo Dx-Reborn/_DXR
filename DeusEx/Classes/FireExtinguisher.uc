@@ -10,33 +10,38 @@ var FireExtinguisher_DMG replacement; // ѕри повреждении заменить на использован
 
 function BecomePickup()
 {
-    Super.BecomePickup();
-    SetCollision(true, true);
+   Super.BecomePickup();
+   SetCollision(true, true);
 }
 
 event Timer()
 {
-    Destroy();
+   Destroy();
 }
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class<DamageType> damageType)
 {
-    if (bBeenDamaged) // DXR: Ётого не должно произойти!
-        return;
+   local EM_DestroyedDeco DestroyedSound;
 
-    if (damageType == class'DM_Shot')
-        FireExtEffect = Spawn(class'EM_FireExtExplosion',,,hitlocation, Rotator(-aHitNormal) + rot(0, -16384, 0)); // ¬ычесть Yaw 16384
-    if (FireExtEffect != None)
-    {
-        bBeenDamaged = true;
-        SetCollision(false, false); // 
-        replacement = spawn(class'FireExtinguisher_DMG',,,Location, Rotation);
-        if (replacement != None)
-        {
-            replacement.PlaySound(Sound'STALKER_Sounds.Hit.Steam01',SLOT_None, 1.5,,, 0.5);
-            Destroy();
-        }
-    }
+   if (bBeenDamaged) // DXR: Ётого не должно произойти!
+       return;
+
+   DestroyedSound = Spawn(class'EM_DestroyedDeco');
+   DestroyedSound.SetSound(sound'STALKER_Sounds.Hit.BulletImpactMetal2');
+
+   if (damageType == class'DM_Shot')
+       FireExtEffect = Spawn(class'EM_FireExtExplosion',,,hitlocation, Rotator(-aHitNormal) + rot(0, -16384, 0)); // ¬ычесть Yaw 16384
+   if (FireExtEffect != None)
+   {
+       bBeenDamaged = true;
+       SetCollision(false, false); // DXR: Turn off the collision
+       replacement = spawn(class'FireExtinguisher_DMG',,,Location, Rotation); // And spawn the fake FireExtinguisher
+       if (replacement != None)
+       {
+           replacement.PlaySound(Sound'STALKER_Sounds.Hit.Steam01',SLOT_None, 1.5,,, 0.5);
+           Destroy();
+       }
+   }
 }
 
 state Activated
