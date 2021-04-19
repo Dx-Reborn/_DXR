@@ -211,7 +211,6 @@ function ResumeDataLinks()
 
 function bool Invoke()
 {
-//  local DeusExRootWindow root;
     local DeusExPlayerController player;
 
     if (termwindow != None)
@@ -220,8 +219,6 @@ function bool Invoke()
     player = DeusExPlayerController(level.GetLocalPlayerController());
     if (player != None)
     {
-//      player.ClientOpenMenu(terminalType);
-
             termwindow = NetworkTerminal(player.OpenMenuEx("DeusEx."$string(terminalType)));//  (root.InvokeUIScreen(terminalType, True));
             if (termwindow != None)
             {
@@ -229,8 +226,7 @@ function bool Invoke()
                 termWindow.ShowFirstScreen();
             }
     }
-
-    return True;
+    return true;
 }
 
 function Frob(Actor Frobber, Inventory frobWith)
@@ -316,8 +312,8 @@ function Texture GetNodeTexture()
 
 function PreBeginPlay()
 {
-  super.PreBeginPlay();
-  funcA();
+   super.PreBeginPlay();
+   funcA();
 }
 
 
