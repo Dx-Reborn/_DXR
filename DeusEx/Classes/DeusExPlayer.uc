@@ -272,41 +272,41 @@ function DeleteInventory(inventory item)
 
 function bool AddInventory(inventory item)
 {
-    local bool retval;
-    local DeusExHUD root;
+   local bool retval;
+   local DeusExHUD root;
 
-    if (item == none) //CyberP: Patches up a really terrible bug. Origin: Unknown
+   if (item == none) //CyberP: Patches up a really terrible bug. Origin: Unknown
        return(false);
 
-    retval = super.AddInventory(item);
+   retval = super.AddInventory(item);
 
-    // Force the object be added to the object belt
-    // unless it's ammo
-    //
-    // Don't add Ammo and don't add Images!
-    if ((item != None) && !item.IsA('Ammunition') && (!item.IsA('DataVaultImage')) && (!item.IsA('Credits')))
-    {
-        root = DeusExHUD(Level.GetLocalPlayerController().myHUD);
+   // Force the object be added to the object belt
+   // unless it's ammo
+   //
+   // Don't add Ammo and don't add Images!
+   if ((item != None) && !item.IsA('Ammunition') && (!item.IsA('DataVaultImage')) && (!item.IsA('Credits')))
+   {
+       root = DeusExHUD(Level.GetLocalPlayerController().myHUD);
 
-        if ((item.IsA('RuntimePickup')) && (RuntimePickup(item).bInObjectBelt))
-        {
-            if (root != None)
-                root.AddObjectToBelt(item, RuntimePickup(item).beltPos, True);
-        }
-
-        if ((item.IsA('RuntimeWeapon')) && (RuntimeWeapon(item).bInObjectBelt))
-        {
-            if (root != None)
-                root.AddObjectToBelt(item, RuntimeWeapon(item).beltPos, True);
-        }
-
-        if (retval)
-        {
+       if ((item.IsA('RuntimePickup')) && (RuntimePickup(item).bInObjectBelt))
+       {
            if (root != None)
-           {
-               root.AddInventory(item);
-           }
-        }
+               root.AddObjectToBelt(item, RuntimePickup(item).beltPos, True);
+       }
+
+       if ((item.IsA('RuntimeWeapon')) && (RuntimeWeapon(item).bInObjectBelt))
+       {
+           if (root != None)
+               root.AddObjectToBelt(item, RuntimeWeapon(item).beltPos, True);
+       }
+
+       if (retval)
+       {
+          if (root != None)
+          {
+              root.AddInventory(item);
+          }
+       }
     }
 
     return (retval);
