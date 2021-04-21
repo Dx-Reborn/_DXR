@@ -99,7 +99,7 @@ function PlayLandingSound()
 
 function material GetMeshTexture(optional int texnum)
 {
-  return class'ObjectManager'.static.GetActorMeshTexture(self, texnum);
+   return class'ObjectManager'.static.GetActorMeshTexture(self, texnum);
 }
 
 function bool HandlePickupQuery(inventory Item)
@@ -307,7 +307,8 @@ auto state Pickup
         newRot = Rotation;
         newRot.pitch = 0;
         SetRotation(newRot);
-        PlayLandingSound();  // DEUS_EX STM - added
+        if (Level.TimeSeconds > 2) //DXR: Не воспроизводить звук падения сразу после загрузки.
+            PlayLandingSound();  // DEUS_EX STM - added
     }
 
     // Make sure no pawn already touching (while touch was disabled in sleep).

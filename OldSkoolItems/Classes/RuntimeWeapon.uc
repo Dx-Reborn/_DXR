@@ -135,11 +135,17 @@ function StopFireSound();
 
 event TravelPreAccept()
 {
-    if (Pawn(Owner).FindInventoryType(class) != None)
-       log("TravelPreAccept() -- "$self$" already exists in owner's inventory!");
-    else
-       GiveTo(Pawn(Owner));
-    return;
+   local inventory Item;
+
+   item = Pawn(Owner).FindInventoryType(class);
+   if (item != None)
+   {
+      log("TravelPreAccept() -- "$self$" already exists in owner's inventory!");
+//       beltPos = item.GetBeltPos();
+   }
+   else
+      GiveTo(Pawn(Owner));
+      return;
 }
 
 event TravelPostAccept()
@@ -569,7 +575,8 @@ auto state() Pickup
         newRot = Rotation;
         newRot.pitch = 0;
         SetRotation(newRot);
-        PlayLandingSound();  // DEUS_EX STM - added
+        if (Level.TimeSeconds > 2) //DXR: Не воспроизводить звук падения сразу после загрузки.
+            PlayLandingSound();  // DEUS_EX STM - added
     }
 
     // Make sure no pawn already touching (while touch was disabled in sleep).
