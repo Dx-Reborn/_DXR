@@ -3,6 +3,9 @@
 //=============================================================================
 class AutoTurretGun extends HackableDevices;
 
+
+var EM_AutoTurret_MuzzleFlash mFlash;
+
 event Destroyed()
 {
     local AutoTurret turret;
@@ -44,6 +47,11 @@ event PostBeginPlay()
 {
     local AutoTurret turret;
 
+    if (mFlash == None)
+        mFlash = Spawn(class'EM_AutoTurret_MuzzleFlash',,'', Location);
+
+    AttachToBone(mFlash, 'Bone002');
+
     Super.PostBeginPlay();
     turret = AutoTurret(Owner);
 }
@@ -58,11 +66,11 @@ defaultproperties
      HitPoints=50
      minDamageThreshold=50
      bInvincible=False
-     FragType=Class'DeusEx.MetalFragment'
+     FragType=class'DeusEx.MetalFragment'
      ItemName="Autonomous Defense Turret"
      Physics=PHYS_Rotating
-     mesh=mesh'DeusExDeco.AutoTurretGun'
-//     PrePivot=(Z=-8.770000)
+     //mesh=mesh'DeusExDeco.AutoTurretGun'
+     mesh=SkeletalMesh'DXR_AnimDeco.AutoTurretGun_HD'
      SoundRadius=24
      bUseCylinderCollision=true
      CollisionRadius=22.500000
@@ -77,8 +85,8 @@ defaultproperties
      Buoyancy=10.000000
      RotationRate=(Pitch=16384,Yaw=16384)
      Rotation=(Roll=32768)
-     Skins[0]=Texture'DeusExDeco.Skins.AutoTurretGunTex1'
+/*     Skins[0]=Texture'DeusExDeco.Skins.AutoTurretGunTex1'
      Skins[1]=Texture'DeusExDeco.Skins.PinkMaskTex'
-     Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'
+     Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'*/
      bShouldBeAlwaysUpdated=true
 }

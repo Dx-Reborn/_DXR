@@ -5,7 +5,7 @@ class AutoTurret extends DeusExDecoration;
 
 var AutoTurretGun gun;
 
-var() localized String titleString;     // So we can name specific turrets in multiplayer
+var() localized String titleString;     // So we can name specific turrets in multiplayer //DXR: Multiplayer is not supported!
 var() bool bTrackPawnsOnly;
 var() bool bTrackPlayersOnly;
 var() bool bActive;
@@ -183,7 +183,7 @@ event Tick(float deltaTime)
         // if we're aiming close enough to our target
         if (curTarget != None)
         {
-            gun.Skins[1] = Texture'RedLightTex';
+            //gun.Skins[1] = Texture'RedLightTex';
             if ((near < 4096) && (((Abs(gun.Rotation.Pitch - destRot.Pitch)) % 65536) < 8192))
             {
                 if (fireTimer > fireRate)
@@ -198,10 +198,10 @@ event Tick(float deltaTime)
             if (gun.IsAnimating())
                 gun.PlayAnim('Still', 10.0, 0.001);
 
-            if (bConfused)
-                gun.Skins[1] = Texture'YellowLightTex';
-            else
-                gun.Skins[1] = Texture'GreenLightTex';
+            //if (bConfused)
+                //gun.Skins[1] = Texture'YellowLightTex';
+            //else
+                //gun.Skins[1] = Texture'GreenLightTex';
         }
 
         fireTimer += deltaTime;
@@ -211,7 +211,7 @@ event Tick(float deltaTime)
     {
         if (gun.IsAnimating())
             gun.PlayAnim('Still', 10.0, 0.001);
-        gun.Skins[1] = texture'PinkMaskTex';
+        //gun.Skins[1] = texture'PinkMaskTex';
     }
 
     // make noise if we're still moving
@@ -310,7 +310,7 @@ function PreBeginPlay()
 event Timer()
 {
     gun.LightType = LT_None;
-    gun.Skins[2] = None;
+    //gun.Skins[2] = None;
 }
 
 auto state Active
@@ -380,7 +380,7 @@ function Fire()
 
         // muzzle flash
         gun.LightType = LT_Steady;
-        gun.Skins[2] = Texture'FlatFXTex34';
+        //gun.Skins[2] = Texture'FlatFXTex34';
 //      SetTimer(0.1, False);
 
         // randomly draw a tracer
@@ -468,7 +468,6 @@ function SpawnEffects(Vector HitLocation, Vector HitNormal, Actor Other)
     local SmokeTrail puff;
     local int i;
     local BulletHole hole;
-//  local Rotator rot;
 
     if (FRand() < 0.5)
     {
