@@ -10,6 +10,12 @@ event Destroyed()
 {
     local AutoTurret turret;
 
+    if (mFlash != None)
+    {
+        DetachFromBone(mFlash);
+        mFlash.Kill();
+    }
+
     turret = AutoTurret(Owner);
     if (turret != None)
     {
@@ -49,6 +55,7 @@ event PostBeginPlay()
 
     if (mFlash == None)
         mFlash = Spawn(class'EM_AutoTurret_MuzzleFlash',,'', Location);
+        mFlash.bHidden = true;
 
     AttachToBone(mFlash, 'Bone002');
 

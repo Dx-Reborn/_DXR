@@ -53,6 +53,12 @@ function AlarmHeard(Name event, DeusExPawn.EAIEventState state, optional DeusExP
     }
 }
 
+function ToggleFlash(bool bPause)
+{
+   if (gun.mFlash != None)
+       gun.mFlash.bHidden = !bPause;
+}
+
 event SetInitialState()
 {
     SetTimer(0.1, true);
@@ -189,6 +195,7 @@ event Tick(float deltaTime)
                 if (fireTimer > fireRate)
                 {
                     Fire();
+                    ToggleFlash(true);
                     fireTimer = 0;
                 }
             }
@@ -196,7 +203,11 @@ event Tick(float deltaTime)
         else
         {
             if (gun.IsAnimating())
-                gun.PlayAnim('Still', 10.0, 0.001);
+            {
+                gun.StopAnimating();
+                ToggleFlash(false);
+            }
+                //gun.PlayAnim('Still', 10.0, 0.001);
 
             //if (bConfused)
                 //gun.Skins[1] = Texture'YellowLightTex';
@@ -210,7 +221,11 @@ event Tick(float deltaTime)
     else
     {
         if (gun.IsAnimating())
-            gun.PlayAnim('Still', 10.0, 0.001);
+        {
+            gun.StopAnimating();
+            ToggleFlash(false);
+        }
+            //gun.PlayAnim('Still', 10.0, 0.001);
         //gun.Skins[1] = texture'PinkMaskTex';
     }
 
@@ -379,9 +394,9 @@ function Fire()
 //      EventManager.AISendEvent('LoudNoise', EAITYPE_Audio);
 
         // muzzle flash
-        gun.LightType = LT_Steady;
+//        gun.LightType = LT_Steady;
         //gun.Skins[2] = Texture'FlatFXTex34';
-//      SetTimer(0.1, False);
+        SetTimer(0.1, False);
 
         // randomly draw a tracer
         if (FRand() < 0.5)
