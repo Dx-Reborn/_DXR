@@ -1,7 +1,8 @@
 //=============================================================================
 // AutoTurretGun.
 //=============================================================================
-class AutoTurretGun extends HackableDevices;
+class AutoTurretGun extends HackableDevices
+                               NotPlaceable; // Don't place it to the map, use AutoTurret instead!
 
 
 var EM_AutoTurret_MuzzleFlash mFlash;
