@@ -3,9 +3,6 @@
 */
 class AnimalController extends DXRAiController;
 
-var int AnimNotifyCount;
-
-
 function GotoDisabledState(class<DamageType> damageType, ScriptedPawn.EHitLocation hitPos)
 {
     if (!pawn.bCollideActors && !pawn.bBlockActors && !pawn.bBlockPlayers)
@@ -89,7 +86,7 @@ Begin:
 GoToFood:
     WaitForLanding();
     if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
-        Animal(pawn).FollowOrders();
+        FollowOrders();
 
     if (!Animal(pawn).GetFeedSpot(Animal(pawn).Food, Animal(pawn).destLoc))
         FollowOrders();
@@ -117,7 +114,7 @@ PauseEating:
 
 StartEating:
     if (!Animal(pawn).IsValidFood(Animal(pawn).Food))
-        Animal(pawn).FollowOrders();
+        FollowOrders();
     if (!Animal(pawn).IsInRange(Animal(pawn).Food))
         Goto('GoToFood');
     Animal(pawn).PlayStartEating();
@@ -130,12 +127,11 @@ Eat:
         Goto('StopEating');
     Animal(pawn).PlayEatingSound();
     Animal(pawn).PlayEating();
-
-//    AnimNotifyCount = GetAnimNotifyCount();
-//    log(Pawn@"AnimNotifyCount ="@AnimNotifyCount);
-
-    if (AnimNotifyCount > 0) // NOTE: Same as bAnimNotify = true
+    if (Animal(Pawn).GetAnimNotifyCount('Eat') > 0) // GetAnimNotifyCount(anim) > 0 is same as bAnimNotify=true in UE1
+    {
+//        log(pawn@"GetAnimNotifyCount > 0!, so FinishAnim()");
         FinishAnim();
+    }
     else
     {
         FinishAnim();
