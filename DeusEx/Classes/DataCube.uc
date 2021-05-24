@@ -47,15 +47,20 @@ function frob(Actor frobber, inventory FrobWith)
 
 defaultproperties
 {
-     bAddToVault=True
-     bInvincible=True
-     bCanBeBase=True
-     ItemName="DataCube"
-     Mesh=Mesh'DeusExItems.DataCube'
-     CollisionRadius=7.000000
-     CollisionHeight=1.270000
-     Mass=2.000000
-     Buoyancy=3.000000
-     AudioLogSentMessage="Sound message has been downloaded."
-     AudioLogMessageFailed="Sound message is broken!"
+    bAddToVault=True
+    bInvincible=True
+    bCanBeBase=True
+    ItemName="DataCube"
+//    Mesh=Mesh'DeusExItems.DataCube'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DeusExStaticMeshes0.Datacube_HD'
+    CollisionRadius=7.00
+    CollisionHeight=2.00 //1.270000
+    Mass=2.000000
+    Buoyancy=3.000000
+    AudioLogSentMessage="Sound message has been downloaded."
+    AudioLogMessageFailed="Sound message is broken!"
 }
+
+
+
