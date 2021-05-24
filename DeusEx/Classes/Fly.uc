@@ -63,6 +63,7 @@ function PlaySwimming();
 
 defaultproperties
 {
+     bFleeBigPawns=true // DXR: Added, so these creatures will fly away from pawns.
      bAmbientCreature=true // Do not display on Radar
      bTransient=true
      BindName="Fly"
@@ -79,7 +80,6 @@ defaultproperties
      AccelRate=500.000000
      JumpZ=0.000000
      MaxiStepHeight=1.000000
-     //  MinHitWall=0.000000
      BaseEyeHeight=1.000000
      Health=1
      UnderWaterTime=20.000000
@@ -92,7 +92,7 @@ defaultproperties
      CollisionRadius=2.000000
      CollisionHeight=1.000000
      bBlockActors=False
-     bBlockPlayers=False
+//     bBlockPlayers=False
      bBounce=True
      Mass=0.100000
      Buoyancy=0.100000
