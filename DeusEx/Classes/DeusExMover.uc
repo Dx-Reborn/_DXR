@@ -340,9 +340,8 @@ function BlowItUp(Pawn instigatedBy)
     }
 
     // alert NPCs that I'm breaking
-    class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
 
-    MakeNoise(2.0);
     if (frag != None)
     {
         if (NumFragments <= 5)
@@ -574,7 +573,7 @@ event Timer()
 function StopPicking()
 {
     // alert NPCs that I'm not messing with stuff anymore
-    class'EventManager'.static.AIEndEvent(self,'MegaFutz', EAITYPE_Visual);
+    AIEndEvent('MegaFutz', EAITYPE_Visual);
     bPicking = False;
     if (curPick != None)
     {
@@ -681,7 +680,7 @@ function Frob(Actor Frobber, Inventory frobWith)
                 if (bLocked)
                 {
                     // alert NPCs that I'm messing with stuff
-                    class'EventManager'.static.AIStartEvent(self, 'MegaFutz', EAITYPE_Visual);
+                    AIStartEvent('MegaFutz', EAITYPE_Visual);
 
                     pickValue = Player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking');
                     pickPlayer = Player;
