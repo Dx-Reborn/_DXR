@@ -30,18 +30,24 @@ auto state Pickup
 
 defaultproperties
 {
-     numCredits=100
-     msgCreditsAdded="%d credits added"
-     ItemName="Credit Chit"
+    numCredits=100
+    msgCreditsAdded="%d credits added"
+    ItemName="Credit Chit"
 
-     Mesh=Mesh'DeusExItems.Credits'
-     PickupViewMesh=Mesh'DeusExItems.Credits'
-     FirstPersonViewMesh=Mesh'DeusExItems.Credits'
+//     Mesh=Mesh'DeusExItems.Credits'
+//     PickupViewMesh=Mesh'DeusExItems.Credits'
+//     FirstPersonViewMesh=Mesh'DeusExItems.Credits'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.Credits_HD'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.Credits_HD'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Credits_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
 
-     LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
+    LandSound=Sound'DeusExSounds.Generic.PlasticHit1'
 
-     CollisionRadius=7.000000
-     CollisionHeight=0.550000
-     Mass=2.000000
-     Buoyancy=3.000000
+    CollisionRadius=7.000000
+    CollisionHeight=0.550000
+    Mass=2.000000
+    Buoyancy=3.000000
 }
