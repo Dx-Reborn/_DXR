@@ -108,9 +108,9 @@ function DeusExPawn FrightenedByPawn()
         {
             if (candidate.bBlockActors)
             {
-                if (bBlockActors && !candidate.controller.bIsPlayer)
+                if (bBlockActors && !candidate.IsA('PlayerPawn'))//.controller.bIsPlayer)
                     bCheck = true;
-                else if (bBlockPlayers && candidate.controller.bIsPlayer)
+                else if (bBlockPlayers && candidate.IsA('PlayerPawn'))//controller.bIsPlayer)
                     bCheck = true;
             }
         }
@@ -363,28 +363,41 @@ function bool GetFeedSpot(Actor foodActor, out vector feedSpot)
 
 function bool IsValidFood(Actor foodActor)
 {
+    local bool retVal;
+
     if (foodActor == None)
-        return false;
+        retVal = false;
     else if (foodActor.bDeleteMe)
-        return false;
+        retVal = false;
     else if (foodActor.PhysicsVolume.bWaterVolume)
-        return false;
+        retVal = false;
     else if ((foodActor.Physics == PHYS_Swimming) || (foodActor.Physics == PHYS_Falling))
-        return false;
+        retVal = false;
     else if (!ClassIsChildOf(foodActor.Class, FoodClass))
-        return false;
+        retVal = false;
     else
-        return true;
+        retVal = true;
+
+//    log(foodActor @"IsValidFood()?"@retVal);
+    return retVal;
 }
 
 function bool InterestedInFood()
 {
-    if (((Controller.GetStateName() == 'Wandering') || (Controller.GetStateName() == 'Standing') || (Controller.GetStateName() == 'Patrolling')) && (LastRendered() < 10.0))
-        return true;
-    else if (bFoodOverridesAttack && ((Controller.GetStateName() == 'Attacking') || (Controller.GetStateName() == 'Seeking')) && (aggressiveTimer <= 0))
-        return true;
-    else
+    local bool bRetVal;
+
+    if (controller == None)
         return false;
+
+    if (((Controller.GetStateName() == 'Wandering') || (Controller.GetStateName() == 'Standing') || (Controller.GetStateName() == 'Patrolling')) && 
+         (Level.TimeSeconds - LastRenderTime < 10.00))
+        bRetVal = true;
+    else if (bFoodOverridesAttack && ((Controller.GetStateName() == 'Attacking') || (Controller.GetStateName() == 'Seeking')) && (aggressiveTimer <= 0))
+        bRetVal = true;
+    else
+        bRetVal = false;
+
+     return bRetVal;
 }
 
 function SpewBlood(vector Position)
