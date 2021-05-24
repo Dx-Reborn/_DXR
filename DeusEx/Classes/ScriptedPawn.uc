@@ -11,6 +11,8 @@ const BEAM_CHECK_RADIUS = 1200;
 const BEST_ENEMY_CHECK_RADIUS = 2000;
 const SKIP_ENEMY_DISTANCE = 2500;
 const MAX_CARCASS_DIST = 1200;
+const AI_STASIS_DIST = 1200;
+const AI_STASIS_TIME = 5.00;
 const GIB_HEALTH = -100;
 const FIND_TAGGED_ACTOR_DIST = 1000000;
 
@@ -109,25 +111,19 @@ var float   SaveRate;           // value for how fast we were playing the frame,
 function RobotFiringEffects();
 function PawnFiringEffects();
 
-/*function float DistanceFromPlayer()
-{
-    return Distance_FromPlayer;
-} */
-
-
 function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
 {
-//    local string T;
     Super.DisplayDebug(Canvas, YL, YPos);
 
     Canvas.DrawText(
     "ÿ EnemyLastSeen = "$EnemyLastSeen $ 
-    "LastPoints [1]" @ lastPoints[0] @
-    "LastPoints [1]" @ lastPoints[1] $
+    " LastPoints [0] =" @ lastPoints[0] @
+    " LastPoints [1] =" @ lastPoints[1] @
     "€ÿÿ bDoLowPriority = "$ bDoLowPriority $
     "ÿ€@ bCheckOther = "$ bCheckOther $
-    "€ÿÿ bCheckPlayer = "$ bCheckPlayer
-    );
+    "€ÿÿ bCheckPlayer = "$ bCheckPlayer $
+    " DistanceFromPlayer = "$ DistanceFromPlayer $
+    " LastRendered = "$Level.TimeSeconds - LastRenderTime);
 //                    " CycleIndex = "$CycleIndex$
 //                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
 //                    " bbCheckEnemy = " $bbCheckEnemy $
@@ -155,6 +151,13 @@ event AnimEnd(int channel)
 //   ClearStayingDebugLines();
 }
 
+event LedgeDetected(vector HitNormal)
+{
+//    log(self@"LedgeDetected()!, so Controller.NotifyHitWall(" $ HitNormal $ base $")");
+//    Controller.NotifyBump(base);
+//    Controller.NotifyHitWall(HitNormal, base);
+}
+
 event PreSaveGame()
 {
     // Make anything that was playing an anim in the 0 channel restore properly.
@@ -174,8 +177,6 @@ event PreSaveGame()
 
 event PostLoadSavedGame()
 {
-//    log(self@"PostLoadSavedGame() called !");
-
     // Force the animations to restart
     if(SaveAnim != '')
     {
@@ -184,13 +185,14 @@ event PostLoadSavedGame()
         if (bDancing)
            PlayDancing();
         else
-        PlayAnim(SaveAnim, SaveRate, , 0);
+           PlayAnim(SaveAnim, SaveRate, , 0);
     }
 
     if (shadow == none)
         CreateShadow();
 
     ConBindEvents();
+    UpdateReactionCallbacks();
 }
 
 event ObstacleTimerIsOver()
@@ -325,8 +327,8 @@ function PreBeginPlay()
     // Set our alliance
     SetAlliance(Alliance);
 
-  // Set up callbacks
-  // UpdateReactionCallbacks();
+    // Set up callbacks
+    UpdateReactionCallbacks();
 }
 
 // ----------------------------------------------------------------------
@@ -459,9 +461,9 @@ function SetDistress(bool bDistress)
 {
     bDistressed = bDistress;
     if (bDistress && bEmitDistress)
-        class'EventManager'.static.AIStartEvent(self, 'Distress', EAITYPE_Visual);
+        AIStartEvent('Distress', EAITYPE_Visual);
     else
-        class'EventManager'.static.AIEndEvent(self,'Distress', EAITYPE_Visual);
+        AIEndEvent('Distress', EAITYPE_Visual);
 }
 
 // ----------------------------------------------------------------------
@@ -1232,7 +1234,7 @@ function/* bool*/ CheckBeamPresence(float deltaSeconds)
     local Beam         beamActor;
     local bool         bReactToBeam;
 
-    if (bReactPresence && bLookingForEnemy && (BeamCheckTimer <= 0) && (LastRendered() < 5.0))
+    if (bReactPresence && bLookingForEnemy && (BeamCheckTimer <= 0) && (Level.TimeSeconds - LastRenderTime < 5.0))
     {
         BeamCheckTimer = 1.0;
         player = DeusExPlayer(GetPlayerPawn());
@@ -2726,10 +2728,10 @@ function PlayDyingSound()
 {
     SetDistressTimer();
     PlaySound(Die, SLOT_Pain,,,, RandomPitch());
-    class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+    AISendEvent('LoudNoise', EAITYPE_Audio);
 
     if (bEmitDistress)
-        class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio);
+        AISendEvent('Distress', EAITYPE_Audio);
 }
 
 // ----------------------------------------------------------------------
@@ -3056,7 +3058,7 @@ function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
         PlaySound(GetBulletHitSound(), SLOT_Misc,volume * 1.2,,256.00,);
 
     if ((hitSound != None) && bEmitDistress)
-        class'EventManager'.static.AISendEvent(self,'Distress', EAITYPE_Audio, volume);
+        AISendEvent('Distress', EAITYPE_Audio, volume);
 }
 
 
@@ -3279,7 +3281,7 @@ function PlayFootStep()
     // play the sound and send an AI event
     PlaySound(stepSound, SLOT_Interact, volume, , range/6, pitch);
 
-    class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
+    AISendEvent('LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
 
     // Shake the camera when heavy things tread
     if (Mass > 400)
@@ -3287,7 +3289,7 @@ function PlayFootStep()
         dxPlayer = DeusExPlayer(GetPlayerPawn());
         if (dxPlayer != None)
         {
-            playerDist = DistanceFromPlayer();
+            playerDist = DistanceFromPlayer;
             shakeRadius = FClamp((Mass-400)/600, 0, 1.0) * (range*0.5);
             shakeMagnitude = FClamp((Mass-400)/1600, 0, 1.0);
             shakeMagnitude = FClamp(1.0-(playerDist/shakeRadius), 0, 1.0) * shakeMagnitude;
@@ -4049,8 +4051,116 @@ function SetReactions(bool bEnemy, bool bLoudNoise, bool bAlarm, bool bDistress,
     bLookingForInjury         = bInjury;
     bLookingForIndirectInjury = bIndirectInjury;
 
-//  UpdateReactionCallbacks();
+    UpdateReactionCallbacks();
 }
+
+// 1
+function float LoudNoiseScore(actor receiver, actor sender, float score)
+{
+    local Pawn pawnSender;
+
+    if (sender == None) // DXR: Added to prevent spamlog
+        return 0.0;
+
+    // Cull events received from friends
+    pawnSender = Pawn(sender);
+    if (pawnSender == None)
+        pawnSender = sender.Instigator;
+    if (pawnSender == None)
+        score = 0;
+    else if (!IsValidEnemy(DeusExPawn(pawnSender)))
+        score = 0;
+
+    return score;
+}
+
+// 2
+function float DistressScore(actor receiver, actor sender, float score)
+{
+    local ScriptedPawn scriptedSender;
+    local DeusExPawn   pawnSender;
+
+    // Cull events received from enemies
+    sender         = InstigatorToPawn(sender);  // hack
+    pawnSender     = DeusExPawn(sender);
+    scriptedSender = ScriptedPawn(sender);
+    if (pawnSender == None)
+        score = 0;
+    else if ((GetPawnAllianceType(pawnSender) != ALLIANCE_Friendly) && !bFearDistress)
+        score = 0;
+    else if ((scriptedSender != None) && !scriptedSender.bDistressed)
+        score = 0;
+
+    return score;
+}
+
+// 3
+function float WeaponDrawnScore(actor receiver, actor sender, float score)
+{
+    local Pawn pawnSender;
+
+    // Cull events received from enemies
+    pawnSender = Pawn(sender);
+    if (pawnSender == None)
+        pawnSender = Pawn(sender.Owner);
+    if (pawnSender == None)
+        pawnSender = sender.Instigator;
+    if (pawnSender == None)
+        score = 0;
+    else if ((DeusExPawn(PawnSender) != None) && (IsValidEnemy(DeusExPawn(pawnSender))))
+        score = 0;
+
+    return score;
+}
+
+
+
+function UpdateReactionCallbacks()
+{
+    if (bReactFutz && bLookingForFutz)
+        AISetEventCallback('Futz', 'HandleFutz', , true, true, false, true);
+    else
+        AIClearEventCallback('Futz');
+
+    if ((bHateHacking || bFearHacking) && bLookingForHacking)
+        AISetEventCallback('MegaFutz', 'HandleHacking', , true, true, true, true);
+    else
+        AIClearEventCallback('MegaFutz');
+
+    if ((bHateWeapon || bFearWeapon) && bLookingForWeapon)
+        AISetEventCallback('WeaponDrawn', 'HandleWeapon', 'WeaponDrawnScore', true, true, false, true); // 3
+    else
+        AIClearEventCallback('WeaponDrawn');
+
+    if ((bReactShot || bFearShot || bHateShot) && bLookingForShot)
+        AISetEventCallback('WeaponFire', 'HandleShot', , true, true, false, true);
+    else
+        AIClearEventCallback('WeaponFire');
+
+    if (bReactLoudNoise && bLookingForLoudNoise)
+    {
+        AISetEventCallback('LoudNoise', 'HandleLoudNoise', 'LoudNoiseScore'); // 1
+        Controller.AISetEventCallback('LoudNoise', 'HandleLoudNoise', 'LoudNoiseScore');
+    }
+    else
+        AIClearEventCallback('LoudNoise');
+
+    if ((bReactAlarm || bFearAlarm) && bLookingForAlarm)
+        AISetEventCallback('Alarm', 'HandleAlarm');
+    else
+        AIClearEventCallback('Alarm');
+
+    if ((bHateDistress || bReactDistress || bFearDistress) && bLookingForDistress)
+        AISetEventCallback('Distress', 'HandleDistress', 'DistressScore', true, true, false, true); // 2
+    else
+        AIClearEventCallback('Distress');
+
+    if ((bFearProjectiles || bReactProjectiles) && bLookingForProjectiles)
+        AISetEventCallback('Projectile', 'HandleProjectiles', , false, true, false, true);
+    else
+        AIClearEventCallback('Projectile');
+}
+
 
 
 // ----------------------------------------------------------------------
@@ -4088,16 +4198,16 @@ function bool ShouldBeStartled(Pawn startler)
 
 function bool ShouldPlayTurn(vector lookdir)
 {
-  local Rotator rot;
+   local Rotator rot;
 
-  rot = Rotator(lookdir);
-  rot.Yaw = (rot.Yaw - Rotation.Yaw) & 65535;
-  if (rot.Yaw > 32767)
-    rot.Yaw = 65536 - rot.Yaw;  // negate
-  if (rot.Yaw > 4096)
-    return true;
-  else
-    return false;
+   rot = Rotator(lookdir);
+   rot.Yaw = (rot.Yaw - Rotation.Yaw) & 65535;
+   if (rot.Yaw > 32767)
+       rot.Yaw = 65536 - rot.Yaw;  // negate
+   if (rot.Yaw > 4096)
+       return true;
+   else
+       return false;
 }
 
 
@@ -4730,8 +4840,8 @@ function bool CheckEnemyPresence(float deltaSeconds,bool bCheckPlayer,bool bChec
 
 //    log(self@"CheckEnemyPresence(bCheckPlayer? "$bCheckPlayer @ "bCheckOther? "$bCheckOther);
 
-//    if (DistanceFromPlayer() >= 1200 /*SKIP_ENEMY_DISTANCE*/)
-//        return false;
+//    if (DistanceFromPlayer >= SKIP_ENEMY_DISTANCE)
+  //      return false;
 
     bValid  = false;
     bCanSee = false;
@@ -5503,6 +5613,19 @@ function Tick(float deltaTime)
 
     player = DeusExPlayer(GetPlayerPawn());
 
+    // DXR: Send AI into stasis if far enough and not been rendered recently.
+    if ((Level.TimeSeconds - LastRenderTime > AI_STASIS_TIME) && (DistanceFromPlayer > AI_STASIS_DIST) && (bTickVisibleOnly))
+    {
+        Acceleration = vect(0,0,0); // Stop that! (C) MiB
+        controller.bStasis = true;
+        bStasis = controller.bStasis;
+    }
+    else
+    {
+        controller.bStasis = false;
+        bStasis = controller.bStasis;
+    }
+
     Draw_DebugLine();
 
     animTimer[0] += deltaTime;
@@ -5520,11 +5643,11 @@ function Tick(float deltaTime)
 
     if (bTickVisibleOnly)
     {
-        if (DistanceFromPlayer() > 1200)
+        if (DistanceFromPlayer > 1200)
             bDoLowPriority = false;
-        if (DistanceFromPlayer() > 2500)
+        if (DistanceFromPlayer > 2500)
             bCheckPlayer = false;
-        if ((DistanceFromPlayer() > 600) && (LastRendered()  >= 5.0))
+        if ((DistanceFromPlayer > 600) && (Level.TimeSeconds - LastRenderTime  >= 5.0))
             bCheckOther = false;
     }
 
@@ -5573,7 +5696,7 @@ function Tick(float deltaTime)
         else
         {
             CheckBeamPresence(deltaTime);
-            if (bDoLowPriority || LastRendered() < 5.0)
+            if (bDoLowPriority || Level.TimeSeconds - LastRenderTime < 5.0)
                 CheckCarcassPresence(deltaTime);  // hacky -- may change state!
         }
     }     // ------------
@@ -6542,15 +6665,7 @@ state Dying
         EnableCheckDestLoc(false);
         StandUp();
 
-        // don't do that stupid timer thing in Pawn.uc
-/*        AIClearEventCallback('Futz');
-        AIClearEventCallback('MegaFutz');
-        AIClearEventCallback('Player');
-        AIClearEventCallback('WeaponDrawn');
-        AIClearEventCallback('LoudNoise');
-        AIClearEventCallback('WeaponFire');
-        AIClearEventCallback('Carcass');
-        AIClearEventCallback('Distress');*/
+        ClearAIEventCallBacks();
 
         bInterruptState = false;
         BlockReactions(true);
@@ -6574,6 +6689,19 @@ Begin:
     Acceleration = vect(0,0,0);
     SpawnCarcass();
     Destroy();
+}
+
+
+function ClearAIEventCallBacks()
+{
+   AIClearEventCallback('Futz');
+   AIClearEventCallback('MegaFutz');
+   AIClearEventCallback('Player');
+   AIClearEventCallback('WeaponDrawn');
+   AIClearEventCallback('LoudNoise');
+   AIClearEventCallback('WeaponFire');
+   AIClearEventCallback('Carcass');
+   AIClearEventCallback('Distress');
 }
 
 function JumpOffPawn()
@@ -6632,8 +6760,12 @@ function bool SpecialCalcView(out Actor ViewActor, out vector CameraLocation, ou
 function pawn GetPlayerPawn()
 {
   local pawn FoundPawn;
+  local Hud Hud;
 
-  FoundPawn = level.GetLocalPlayerController().myHUD.PawnOwner;
+  hud = level.GetLocalPlayerController().myHUD;
+  if (Hud != None)
+      FoundPawn = level.GetLocalPlayerController().myHUD.PawnOwner;
+
   if (FoundPawn != None && FoundPawn.IsA('DeusExPlayer'))
       return FoundPawn;
 
@@ -6782,12 +6914,10 @@ function HandleLoudNoise(Name event, EAIEventState state, XAIParams params)
 
 function HandleProjectiles(Name event, EAIEventState state, XAIParams params)
 {
-    // React, Fear
-//    local DeusExProjectile dxProjectile;
-
-    if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
-        if (params.bestActor != None)
-            ReactToProjectiles(params.bestActor);
+   // React, Fear
+   if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
+       if (params.bestActor != None)
+           ReactToProjectiles(params.bestActor);
 }
 
 function HandleAlarm(Name event, EAIEventState state, XAIParams params)
@@ -6872,10 +7002,10 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
     local bool         bDistressorValid;
     local float        distressVal;
     local name         stateName;
-    local bool         bIsAttacking;//bAttacking;
+//    local bool         bIsAttacking;//bAttacking;
     local bool         bFleeing;
 
-    bIsAttacking = false;
+    bAttacking = false;
     seeTime    = 0;
 
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
@@ -6927,13 +7057,13 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                     {
                         SetDistressTimer();
                         HandleEnemy();
-                        bIsAttacking = true;
+                        bAttacking = true;
                     }
                 }
                 // BOOGER! Make NPCs react by seeking if distressor isn't an enemy?
             }
 
-            if (!bIsAttacking && bFearDistress)
+            if (!bAttacking && bFearDistress)
             {
                 distressVal = 0;
                 bFleeing    = false;
@@ -7089,12 +7219,14 @@ defaultproperties
 {
      RootBone="DXR_Root"
      HeadBone="3"
-
+     bCanTurnHead=false
      AIHorizontalFov=160.000000
      AspectRatio=2.300000
+     bForceStasis=true
      BindName="ScriptedPawn"
      FamiliarName="DEFAULT FAMILIAR NAME - REPORT THIS AS A BUG"
      UnfamiliarName="DEFAULT UNFAMILIAR NAME - REPORT THIS AS A BUG"
+
      Restlessness=0.500000
      Wanderlust=0.500000
      Cowardice=0.500000
@@ -7201,15 +7333,17 @@ defaultproperties
      bFastTurnWhenAttacking=false
      bDirectHitWall=false
 
-     TransientSoundVolume=+0.95
+     TransientSoundVolume=+0.6 // 0.95
      TransientSoundRadius=+50.00
 
 //     bIgnoreLedges=true
 //     bDoNotStopAtLedges=true
-     bCanWalkOffLedges=true
+     //bCanWalkOffLedges=true
+     bCanWalkOffLedges=false
      bAvoidLedges=false      // don't get too close to ledges
-     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+     //bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+     bStopAtLedges=true     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
 
-     PitchDownLimit=0
-     PitchUpLimit=0
+     PitchDownLimit=4096
+     PitchUpLimit=4096
 }
