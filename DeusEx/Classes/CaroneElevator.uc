@@ -252,9 +252,8 @@ function BlowItUp(Pawn instigatedBy)
     }
 
     // alert NPCs that I'm breaking
-    class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, FragmentSpread * 16);
 
-    MakeNoise(2.0);
     if (frag != None)
     {
         if (NumFragments <= 5)
