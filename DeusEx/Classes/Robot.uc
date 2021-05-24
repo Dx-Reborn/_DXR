@@ -4,7 +4,7 @@
 class Robot extends ScriptedPawn
     abstract;
 
-const ROBOT_SOUNDS_RADIUS = 256; // DXR: was 2048.
+const ROBOT_SOUNDS_RADIUS = 512; // DXR: was 2048.
 
 var(Sounds) sound SearchingSound;
 var(Sounds) sound SpeechTargetAcquired;
@@ -153,7 +153,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         Controller.Enemy = instigatedBy;
         Died(instigatedBy.controller, damageType, HitLocation);
     }
-    MakeNoise(1.0);
+    //MakeNoise(1.0);
 
     RobotController(Controller).ReactToInjury(instigatedBy, damageType, HITLOC_None);
 }
@@ -280,7 +280,7 @@ function Explode(vector HitLocation)
     else
         PlaySound(sound'LargeExplosion2', SLOT_None,,, explosionRadius*32);
 
-    class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
 
     // draw a pretty explosion
     light = Spawn(class'ExplosionLight',,, HitLocation);
@@ -348,19 +348,19 @@ function material GetMeshTexture(optional int texnum)
 
 function TweenToRunningAndFiring(float tweentime)
 {
-//  bIsWalking = FALSE;
+    bIsWalking = false;
     TweenAnimPivot('Run', tweentime);
 }
 
 function PlayRunningAndFiring()
 {
-//  bIsWalking = FALSE;
+    bIsWalking = false;
     LoopAnimPivot('Run');
 }
 
 function TweenToShoot(float tweentime)
 {
-    TweenAnimPivot('Still', tweentime);
+//    TweenAnimPivot('Still', tweentime);
 }
 
 function PlayShoot()
@@ -390,25 +390,25 @@ function PlayFalling()
 
 function TweenToWalking(float tweentime)
 {
-    bIsWalking = True;
+    bIsWalking = true;
     TweenAnimPivot('Walk', tweentime);
 }
 
 function PlayWalking()
 {
-    bIsWalking = True;
+    bIsWalking = true;
     LoopAnimPivot('Walk');
 }
 
 function TweenToRunning(float tweentime)
 {
-    bIsWalking = False;
+    bIsWalking = false;
     PlayAnimPivot('Run',, tweentime);
 }
 
 function PlayRunning()
 {
-    bIsWalking = False;
+    bIsWalking = false;
     LoopAnimPivot('Run');
 }
 
@@ -419,10 +419,10 @@ function TweenToWaiting(float tweentime)
 
 function PlayWaiting()
 {
-  if (Acceleration == vect(0, 0, 0))
-  {
-    if (fRand() < 0.3)
-      PlayAnimPivot('Idle');
+    if (Acceleration == vect(0, 0, 0))
+    {
+        if (fRand() < 0.3)
+        PlayAnimPivot('Idle');
     }
 }
 
@@ -458,22 +458,22 @@ function PlayCrawling()
 
 function PlayFiring(optional float Rate, optional name FiringMode)
 {
-    LoopAnimPivot('Still',,0.1);
+//    LoopAnimPivot('Still',,0.1);
 }
 
 function PlayReloadBegin()
 {
-    PlayAnimPivot('Still',, 0.1);
+//    PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayReload()
 {
-    PlayAnimPivot('Still');
+//    PlayAnimPivot('Still');
 }
 
 function PlayReloadEnd()
 {
-    PlayAnimPivot('Still',, 0.1);
+//    PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayCowerBegin();
@@ -573,12 +573,12 @@ defaultproperties
      bCanSwim=False
      bIsHuman=False
      JumpZ=0.000000
-     MaxiStepHeight=4.000000 // DXR: Макси Степ ! Хотя 4 это уже мини :D
+     MaxiStepHeight=8.00//4.000000 // DXR: Макси Степ ! Хотя 4 это уже мини :D
      Health=50
      HitSound1=Sound'DeusExSounds.Generic.Spark1'
      HitSound2=Sound'DeusExSounds.Generic.Spark1'
      die=Sound'DeusExSounds.Generic.Spark1'
      Texture=Texture'Engine.S_Pawn'
      ControllerClass=class'RobotController'
-     bCanCrouch=true
+     bCanCrouch=false//true
 }
