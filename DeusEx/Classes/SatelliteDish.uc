@@ -57,20 +57,21 @@ event BeginPlay()
 
 defaultproperties
 {
-     bRandomRotation=True
-     bStatic=False
-     Physics=PHYS_Rotating
-//     mesh=mesh'DeusExDeco.SatelliteDish'
-            DrawScale=2.0
-            DrawType=DT_StaticMesh
-         StaticMesh=StaticMesh'DeusExStaticMeshes.Containers.SatelliteDish_a'
-         Prepivot=(Y=-20.000000,Z=58.700001)
-     SoundRadius=16
-     SoundVolume=192
-     CollisionRadius=84.000000
-     CollisionHeight=102.199997
-     bRotateToDesired=True
-     Mass=5000.000000
-     Buoyancy=5.000000
-     RotationRate=(Yaw=1024)
+    bRandomRotation=True
+    bStatic=False
+    Physics=PHYS_Rotating
+//    mesh=mesh'DeusExDeco.SatelliteDish'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DeusExStaticMeshes0.SatelliteDish_HD'
+
+    SoundRadius=16
+    SoundVolume=192
+    CollisionRadius=84.000000
+    CollisionHeight=102.199997
+    bRotateToDesired=True
+    Mass=5000.000000
+    Buoyancy=5.000000
+    RotationRate=(Yaw=1024)
 }
+
+
