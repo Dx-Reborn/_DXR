@@ -6,6 +6,7 @@ class Lamp extends Furniture
 
 var() bool bOn;
 
+
 function Frob(Actor Frobber, Inventory frobWith)
 {
     Super.Frob(Frobber, frobWith);
@@ -26,6 +27,16 @@ function Frob(Actor Frobber, Inventory frobWith)
         bUnlit = False;
     }
     ToggleUnlit();
+
+    // DXR: From Revision mod
+    // Alert AI.
+    if (class'DeusExGlobals'.static.GetGlobals().bMoreAINotifications)
+    {
+        Instigator = Pawn(Frobber);
+        AISendEvent('LoudNoise', EAITYPE_Audio,, 384);
+        AISendEvent('LoudNoise', EAITYPE_Visual);
+    }
+    // End of changes
 }
 
 event PostSetInitialState()
