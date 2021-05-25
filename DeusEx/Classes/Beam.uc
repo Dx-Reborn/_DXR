@@ -12,7 +12,9 @@ event BeginPlay()
 
 event Timer()
 {
-    Level.GetLocalPlayerController().pawn.AISendEvent('LoudNoise', EAITYPE_Audio,, LightRadius * 2);
+    // DXR: Only if player really wants that!
+    if (class'DeusExGlobals'.static.GetGlobals().bMoreAINotifications)
+        Level.GetLocalPlayerController().pawn.AISendEvent('LoudNoise', EAITYPE_Audio,, LightRadius * 2);
 }
 
 defaultproperties

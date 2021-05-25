@@ -30,6 +30,7 @@ function Frob(Actor Frobber, Inventory frobWith)
 
     // DXR: From Revision mod
     // Alert AI.
+    // DXR: Only if player really wants that!
     if (class'DeusExGlobals'.static.GetGlobals().bMoreAINotifications)
     {
         Instigator = Pawn(Frobber);
