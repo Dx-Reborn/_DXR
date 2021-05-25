@@ -127,9 +127,15 @@ defaultproperties
     ItemName="Medkit"
     beltDescription="MEDKIT"
 
-    Mesh=Mesh'DeusExItems.MedKit'
-    PickupViewMesh=Mesh'DeusExItems.MedKit'
-    FirstPersonViewMesh=Mesh'DeusExItems.MedKit'
+//    Mesh=Mesh'DeusExItems.MedKit'
+//    PickupViewMesh=Mesh'DeusExItems.MedKit'
+//    FirstPersonViewMesh=Mesh'DeusExItems.MedKit'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.Medkit_HD'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.Medkit_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Medkit_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
 
     LandSound=Sound'DeusExSounds.Generic.PlasticHit2'
 
@@ -142,3 +148,6 @@ defaultproperties
     Mass=10.000000
     Buoyancy=8.000000
 }
+
+
+

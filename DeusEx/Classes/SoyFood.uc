@@ -40,9 +40,16 @@ defaultproperties
     largeIconWidth=42
     largeIconHeight=46
 
-    Mesh=Mesh'DeusExItems.SoyFood'
-    PickupViewMesh=Mesh'DeusExItems.SoyFood'
-    FirstPersonViewMesh=Mesh'DeusExItems.SoyFood'
+//    Mesh=Mesh'DeusExItems.SoyFood'
+//    PickupViewMesh=Mesh'DeusExItems.SoyFood'
+//    FirstPersonViewMesh=Mesh'DeusExItems.SoyFood'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DXR_Pickups.SoyFood_HD'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.SoyFood_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.SoyFood_HD'
+    bUseFirstPersonStaticMesh=true
+    bUsePickupViewStaticMesh=true
+
 
     CollisionRadius=8.000000
     CollisionHeight=0.980000
