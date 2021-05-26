@@ -214,5 +214,5 @@ defaultproperties
     CountLabel="Uses:"
     bHidden=true
     SoundVolume=250
-    bFullVolume=true
+    bFullVolume=false
 }

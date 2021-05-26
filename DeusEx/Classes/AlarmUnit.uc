@@ -24,12 +24,12 @@ function UpdateAIEvents()
     if (bActive)
     {
         // Make noise and light
-        class'EventManager'.static.AIStartEvent(self,'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+        AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
     }
     else
     {
         // Stop making noise and light
-        class'EventManager'.static.AIEndEvent(self,'Alarm', EAITYPE_Audio);
+        AIEndEvent('Alarm', EAITYPE_Audio);
     }
 }
 
@@ -239,7 +239,7 @@ defaultproperties
    LightRadius=1
    Mass=10.000000
    Buoyancy=5.000000
-   bFullVolume=true
+   bFullVolume=false
    bDynamicLight=true
 }
 

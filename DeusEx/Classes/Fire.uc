@@ -101,5 +101,5 @@ defaultproperties
 
      bMovable=True
      bStatic=false
-     bFullVolume=true
+     bFullVolume=false
 }

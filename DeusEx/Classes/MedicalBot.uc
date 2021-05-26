@@ -113,7 +113,7 @@ defaultproperties
      AirSpeed=144.000000
      AccelRate=500.000000
      UnderWaterTime=20.000000
-     bFullVolume=true // WHAT?
+     bFullVolume=false
      AmbientSound=Sound'DeusExSounds.Robot.MedicalBotMove'
      Mesh=mesh'DeusExCharacters.MedicalBot'
      SoundRadius=16

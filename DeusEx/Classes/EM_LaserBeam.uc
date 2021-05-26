@@ -164,7 +164,7 @@ defaultproperties
 
     bDirectional=true
     DrawScale=0.1
-    bFullVolume=true
+    bFullVolume=false
     SoundRadius=16
     AmbientSound=Sound'Ambient.Ambient.Laser'
 }

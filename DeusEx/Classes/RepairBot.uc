@@ -101,5 +101,5 @@ defaultproperties
      //CollisionHeight=47.470001
      Mass=150.000000
      Buoyancy=97.000000
-     bFullVolume=true
+     bFullVolume=false
 }

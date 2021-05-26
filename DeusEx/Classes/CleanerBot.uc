@@ -143,7 +143,7 @@ defaultproperties
      AccelRate=500.000000
      Health=20
      UnderWaterTime=20.000000
-     bFullVolume=true // Иначе не издает звука "шипения"
+     bFullVolume=false // Иначе не издает звука "шипения"
      AmbientSound=Sound'DeusExSounds.Robot.CleanerBotMove'
      Mesh=mesh'DeusExCharacters.CleanerBot'
      SoundRadius=16
