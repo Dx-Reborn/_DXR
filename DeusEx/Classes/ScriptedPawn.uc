@@ -358,8 +358,23 @@ event PostBeginPlay()
 
 function PostSetInitialState()
 {
-   // Bind any conversation events to this ScriptedPawn
-   ConBindEvents();
+    local int i;
+
+    // Bind any conversation events to this ScriptedPawn
+    ConBindEvents();
+
+
+    for(i=0; i<conlist.length; i++)
+    {
+        if (CAPS(conlist[i].OwnerName) != CAPS(BindName))
+        conlist.remove(i,1);
+    }
+
+/*    for(i=0; i<conlist.length; i++)
+    {
+        if (CAPS(conlist[i].OwnerName) != CAPS(BarkBindName))
+        conlist.remove(i,1);
+    }*/
 }
 
 event Destroyed()

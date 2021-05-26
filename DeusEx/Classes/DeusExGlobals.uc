@@ -45,6 +45,8 @@ var rotator decoRotation; // вращение переносимой декорации
 var DeusExPlayer player;
 var DeusExLevelInfo DxLevelInfo; // for faster access from GetLevelInfo(). Set in GameInfoExt::InitGame()
 
+var config bool bMoreAINotifications;
+
 struct SInventoryItem
 {
   var() int positionX;
@@ -444,7 +446,7 @@ function ResetGoals()
 }
 
 
-function string GetRandomLabel(ConEventRandom ev)
+/*function string GetRandomLabel(ConEventRandom ev)
 {
     local int labelIndex;
 
@@ -466,16 +468,16 @@ function string GetRandomLabel(ConEventRandom ev)
     }
     else
         return "";
-}
+}*/
 
 // GetLabel() and GetLabelCount() was used only in The Nameless mod.
-function String GetLabel(int labelIndex, ConEventRandom event)
+/*function String GetLabel(int labelIndex, ConEventRandom event)
 {
     if (labelIndex >= 0 && labelIndex < event.labels.Length)
         return event.labels[labelIndex];
     else
         return "";
-}
+} */
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/

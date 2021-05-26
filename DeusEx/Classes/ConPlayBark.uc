@@ -100,12 +100,11 @@ function ConEvent ProcessEventJump(ConEventJump aevent)
 function ConEvent ProcessEventRandomLabel(ConEventRandom aevent)
 {
     local String nextLabel;
-    local DeusExGlobals gl;
-
-    gl = class'DeusExGlobals'.static.GetGlobals();
 
     // Pick a random label
-    nextLabel = gl.GetRandomLabel(aevent);
+    nextLabel = aevent.GetRandomLabel();
+
+    log("Picked label: "$nextLabel,'Scripted');
 
     return con.GetEventFromLabel(nextLabel);
 }
