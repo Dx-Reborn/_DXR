@@ -341,15 +341,19 @@ function bool isPlayingIdleAnim()
 
 function PutBackInHand()
 {
-    log(self@"  PutBackInHand() ?");
+    log(self@"  PutBackInHand() ? Owner is"@owner);
+    log("myWeapon && Weapon ="@ PlayerPawn(Owner).myWeapon @ PlayerPawn(Owner).Weapon);
+    log("inHand ="@DeusExPlayer(Owner).InHand);
 
-    if (self == PlayerPawn(Owner).myWeapon)
+    if ((PlayerPawn(Owner).myWeapon == self) || (PlayerPawn(Owner).Weapon == self))
     {
+    log("Conditions for PutBackInHand() ?");
         bPostTravel = true;
         PlayerPawn(Owner).PutInHand(self);
 //        bPostTravel = false;
     }
-    else GotoState('Idle2');
+    else 
+        GotoState('Idle2');
 }
 
 //
@@ -360,8 +364,6 @@ event TravelPostAccept()
     local int i;
 
     Super.TravelPostAccept();
-
-//    beltPos--;
 
     // make sure the AmmoName matches the currently loaded AmmoType
     if (AmmoType != None)
@@ -483,7 +485,7 @@ function BringUp(optional weapon PrevWeapon)
 {
     // alert NPCs that I'm whipping it out
     if (!bNativeAttack && bEmitWeaponDrawn)
-        class'EventManager'.static.AIStartEvent(self,'WeaponDrawn', EAITYPE_Visual);
+        AIStartEvent('WeaponDrawn', EAITYPE_Visual);
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
@@ -494,7 +496,7 @@ function BringUp(optional weapon PrevWeapon)
 function bool PutDown()
 {
     // alert NPCs that I'm putting away my gun
-    class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
+    AIEndEvent('WeaponDrawn', EAITYPE_Visual);
 
     // reset the standing still accuracy bonus
     standingTimer = 0;
@@ -762,7 +764,6 @@ function bool CanLoadAmmoType(Ammunition ammo)
     if (ammo != None)
     {
         // First check "AmmoName"
-
         if (AmmoName == ammo.class)
         {
             bCanLoad = True;
@@ -965,14 +966,13 @@ function Actor AcquireTarget()
 
     foreach TraceActors(class'Actor', hit, HitLocation, HitNormal, EndTrace, StartTrace)
     {
-      if ((hit.bWorldGeometry) || (hit.IsA('DeusExMover')))
-      {
-          break;
-      //    return hit;
-      }
-
-         if (!hit.bHidden && (hit.IsA('Decoration') || hit.IsA('Pawn')))
-             return hit;
+        if ((hit.bWorldGeometry) || (hit.IsA('DeusExMover')))
+        {
+            break;
+        //    return hit;
+        }
+        if (!hit.bHidden && (hit.IsA('Decoration') || hit.IsA('Pawn')))
+            return hit;
     }
     return None;
 }
@@ -1081,7 +1081,7 @@ event Tick(float deltaTime)
             {
                 if (bNearWall)
                 {
-                   if (HasAnim('PlaceBegin'))  // DXR: Для метательных ножей
+                   if (HasAnim('PlaceEnd'))  // DXR: Для метательных ножей
                        PlayAnim('PlaceEnd',, 0.1);
                     bNearWall = False;
                 }
@@ -1441,7 +1441,7 @@ function Fire(float Value)
 
         bReadyToFire = False;
         GotoState('NormalFire');
-        bPointing=True;
+        bPointing = true;
         PlayFiring();
     }
     // if we are a single-use weapon, then our ReloadCount is 0 and we don't use ammo
@@ -1539,7 +1539,7 @@ function PlayFireSound()
     if (bHasSilencer)
         Owner.PlaySound(/*Sound'StealthPistolFire'*/GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(GetFireSound(), SLOT_None,,false, 2048, 1.0, false);
+        Owner.PlaySound(GetFireSound(), SLOT_Misc,,false, 2048, 1.0, false);
 //        Owner.PlaySound(/*FireSound*/GetFireSound(), SLOT_Misc,,, 2048, 1.0, );
 }
 
@@ -1716,7 +1716,7 @@ function PlayLandingSound()
         if (Velocity.Z <= -200)
         {
             PlaySound(GetLandedSound(), SLOT_Misc, TransientSoundVolume,, 768);
-            class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
+            AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
         }
     }
 }
@@ -1827,10 +1827,10 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
     if (!bHasSilencer && !bHandToHand)
     {
         GetAIVolume(volume, radius);
-        class'EventManager'.static.AISendEvent(Owner,'WeaponFire', EAITYPE_Audio, volume, radius);
-        class'EventManager'.static.AISendEvent(Owner,'LoudNoise', EAITYPE_Audio, volume, radius);
+        Owner.AISendEvent('WeaponFire', EAITYPE_Audio, volume, radius);
+        Owner.AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius);
         if (!Owner.IsA('PlayerPawn'))
-            class'EventManager'.static.AISendEvent(Owner,'Distress', EAITYPE_Audio, volume, radius);
+            Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
     }
 
     // should we shoot multiple projectiles in a spread?
@@ -1881,10 +1881,10 @@ function TraceFire(float Accuracy)
     if (!bHasSilencer && !bHandToHand)
     {
         GetAIVolume(volume, radius);
-        class'EventManager'.static.AISendEvent(Owner,'WeaponFire', EAITYPE_Audio, volume, radius);
-        class'EventManager'.static.AISendEvent(Owner,'LoudNoise', EAITYPE_Audio, volume, radius);
+        Owner.AISendEvent('WeaponFire', EAITYPE_Audio, volume, radius);
+        Owner.AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius);
         if (!Owner.IsA('PlayerPawn'))
-            class'EventManager'.static.AISendEvent(Owner,'Distress', EAITYPE_Audio, volume, radius);
+            Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
     }
 
     GetAxes(Pawn(owner).GetViewRotation(),X,Y,Z);
@@ -1942,7 +1942,8 @@ function TraceFire(float Accuracy)
 
         if (dist <= AccurateRange)      // we hit just fine
         {
-            ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+            if (Other != None) // Check!
+                ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
         }
         else if (dist <= MaxRange)
         {
@@ -1951,7 +1952,9 @@ function TraceFire(float Accuracy)
             alpha = (dist - AccurateRange) / (MaxRange - AccurateRange);
             degrade = 0.5 * Square(alpha);
             HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
-            ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+
+            if (Other != None) // Check!
+                ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
         }
 
     }
@@ -2003,7 +2006,7 @@ function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vect
             {
                 dxPlayer = DeusExPlayer(Owner);
                 if (dxPlayer != None)
-                    class'EventManager'.static.AISendEvent(dxPlayer,'Futz', EAITYPE_Visual);
+                    dxPlayer.AISendEvent('Futz', EAITYPE_Visual);
             }
         }
 
@@ -2177,7 +2180,7 @@ function bool HasMaxRecoilMod()
 
 state NormalFire
 {
-    function AnimEnd(int Channel)
+    event AnimEnd(int Channel)
     {
         if (bAutomatic)
         {
@@ -2305,7 +2308,7 @@ state Pickup
     function BeginState()
     {
         // alert NPCs that I'm putting away my gun
-        class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
+        AIEndEvent('WeaponDrawn', EAITYPE_Visual);
 
         Super.BeginState();
     }
@@ -2394,11 +2397,11 @@ state Idle
     function bool PutDown()
     {
         // alert NPCs that I'm putting away my gun
-        class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
+        AIEndEvent('WeaponDrawn', EAITYPE_Visual);
         return Super.PutDown();
     }
 
-    function AnimEnd(int channel)
+    event AnimEnd(int channel)
     {
         
     }
@@ -2421,7 +2424,7 @@ state Active
     function bool PutDown()
     {
         // alert NPCs that I'm putting away my gun
-        class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
+        AIEndEvent('WeaponDrawn', EAITYPE_Visual);
         return Super.PutDown();
     }
 
@@ -2451,7 +2454,7 @@ ignores Fire, AltFire;
     function bool PutDown()
     {
         // alert NPCs that I'm putting away my gun
-        class'EventManager'.static.AIEndEvent(self,'WeaponDrawn', EAITYPE_Visual);
+        AIEndEvent('WeaponDrawn', EAITYPE_Visual);
         return Super.PutDown();
     }
 
