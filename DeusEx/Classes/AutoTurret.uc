@@ -14,6 +14,9 @@ var() float fireRate;
 var() float gunAccuracy;
 var() int gunDamage;
 var() int ammoAmount;
+var() sound FireSound; // DXR: New variable for customization
+var() Name FireAnim;
+var() float FireAnimRate;
 var Actor curTarget;
 var Actor prevTarget;         // target we had last tick.
 var Pawn safeTarget;          // in multiplayer, this actor is strictly off-limits
@@ -34,9 +37,7 @@ var bool bSwitching;
 var float SwitchTime, beepTime;
 var Pawn savedTarget;
 
-//------------------------------------------------
-
-function AlarmHeard(Name event, DeusExPawn.EAIEventState state, optional DeusExPawn.XAIParams params)
+function AlarmHeard(Name event, EAIEventState state, XAIParams params)
 {
     if (state == EAISTATE_Begin)
     {
@@ -52,6 +53,7 @@ function AlarmHeard(Name event, DeusExPawn.EAIEventState state, optional DeusExP
             bActive = bPreAlarmActiveState;
     }
 }
+
 
 function ToggleFlash(bool bPause)
 {
@@ -204,15 +206,14 @@ event Tick(float deltaTime)
         {
             if (gun.IsAnimating())
             {
-                gun.StopAnimating();
                 ToggleFlash(false);
+                gun.PlayAnim('Still', 10.0, 0.001);
             }
-                //gun.PlayAnim('Still', 10.0, 0.001);
 
-            //if (bConfused)
-                //gun.Skins[1] = Texture'YellowLightTex';
-            //else
-                //gun.Skins[1] = Texture'GreenLightTex';
+            if (bConfused)
+                gun.Skins[1] = /*Shader(DynamicLoadObject("DXR_AnimDeco.Glass.ATG_Red", class'Shader', false));*/ Texture'YellowLightTex';
+            else
+                gun.Skins[1] = /*Shader(DynamicLoadObject("DXR_AnimDeco.Glass.ATG_Green", class'Shader', false));*/ Texture'GreenLightTex';
         }
 
         fireTimer += deltaTime;
@@ -222,11 +223,10 @@ event Tick(float deltaTime)
     {
         if (gun.IsAnimating())
         {
-            gun.StopAnimating();
+            gun.StopAnimating(); //PlayAnim('Still', 10.0, 0.001);
             ToggleFlash(false);
         }
-            //gun.PlayAnim('Still', 10.0, 0.001);
-        //gun.Skins[1] = texture'PinkMaskTex';
+        gun.Skins[1] = texture'PinkMaskTex';
     }
 
     // make noise if we're still moving
@@ -317,9 +317,14 @@ function PreBeginPlay()
     }
 
     // set up the alarm listeners
-//  EventManager.AISetEventCallback('Alarm', 'AlarmHeard');
+    AISetEventCallback('Alarm', 'AlarmHeard');
 }
 
+event PostLoadSavedGame()
+{
+    Super.PostLoadSavedGame();
+    AISetEventCallback('Alarm', 'AlarmHeard');
+}
 
 // turn off the muzzle flash
 event Timer()
@@ -369,7 +374,7 @@ function Fire()
     gl = class'DeusExGlobals'.static.GetGlobals();
 
     if (!gun.IsAnimating())
-        gun.LoopAnim('Fire');
+        gun.LoopAnim(FireAnim, FireAnimRate); // gun.LoopAnim('Fire');
 
     // CNN - give turrets infinite ammo // DXR: Now its toggleable.
     if (ammoAmount > 0)
@@ -387,11 +392,11 @@ function Fire()
         // spawn some effects
         shell = Spawn(class'ShellCasing',,, gun.Location);
         if (shell != None)
-            shell.Velocity = Vector(gun.Rotation - rot(0,16384,0)) * 100 + VRand() * 30;
+            shell.Velocity = vector(gun.Rotation - rot(0,16384,0)) * 100 + VRand() * 30;
 
-        MakeNoise(1.0);
-        PlaySound(sound'PistolFire', SLOT_None);
-//      EventManager.AISendEvent('LoudNoise', EAITYPE_Audio);
+        //PlaySound(/*sound'PistolFire'*/FireSound, SLOT_None);
+        gun.PlaySound(FireSound, SLOT_None, 0.9,true, , ,false);
+        AISendEvent('LoudNoise', EAITYPE_Audio);
 
         // muzzle flash
 //        gun.LightType = LT_Steady;
@@ -545,31 +550,39 @@ event FellOutOfWorld(eKillZType KillType);
 
 defaultproperties
 {
-     titleString="AutoTurret"
-     bTrackPlayersOnly=True
-     bActive=True
-     MaxRange=512
-     fireRate=0.250000
-     gunAccuracy=0.500000
-     gunDamage=5
-     AmmoAmount=1000
-     confusionDuration=10.000000
-     pitchLimit=11000.000000
-     bVisionImportant=True
-     HitPoints=50
-     minDamageThreshold=50
-     bHighlight=False
-     ItemName="Turret Base"
-     bPushable=False
-     Physics=PHYS_None
-     AmbientSound=Sound'DeusExSounds.Generic.AutoTurretHum'
-     mesh=mesh'DeusExDeco.AutoTurretBase'
-     SoundRadius=48
-     SoundVolume=192
-     bUseCylinderCollision=true
-     CollisionRadius=14.000000
-     CollisionHeight=20.200001
-     Mass=50.000000
-     Buoyancy=10.000000
-     bShouldBeAlwaysUpdated=true
+    FireSound=sound'PistolFire'
+    FireAnim="Fire"
+//    FireAnimRate=2.0
+    FireAnimRate=2.2
+    titleString="AutoTurret"
+    bTrackPlayersOnly=True
+    bActive=True
+    MaxRange=512
+    fireRate=0.250000
+    gunAccuracy=0.500000
+    gunDamage=5
+    AmmoAmount=1000
+    confusionDuration=10.000000
+    pitchLimit=11000.000000
+    bVisionImportant=True
+    HitPoints=50
+    minDamageThreshold=50
+    bHighlight=False
+    ItemName="Turret Base"
+    bPushable=False
+    Physics=PHYS_None
+    AmbientSound=Sound'DeusExSounds.Generic.AutoTurretHum'
+//     mesh=mesh'DeusExDeco.AutoTurretBase'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DeusExStaticMeshes0.AutoTurretBase_HD'
+    SoundRadius=48
+    SoundVolume=192
+    bUseCylinderCollision=true
+    CollisionRadius=14.000000
+    CollisionHeight=20.200001
+    Mass=50.000000
+    Buoyancy=10.000000
+    bShouldBeAlwaysUpdated=true
 }
+
+

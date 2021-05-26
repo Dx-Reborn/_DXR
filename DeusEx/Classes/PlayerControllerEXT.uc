@@ -703,7 +703,8 @@ ignores SeePlayer, HearNoise, Bump;
             // still within a reasonable radius.
             Human(pawn).CheckActorDistances();
           }
-        Super.PlayerTick(DeltaTime);
+        //Super.PlayerTick(DeltaTime);
+        Global.PlayerTick(DeltaTime);
         }
 
     function bool NotifyPhysicsVolumeChange(PhysicsVolume NewVolume)
@@ -954,14 +955,14 @@ ignores SeePlayer, HearNoise, Bump;
                     Human(pawn).SetLocation(checkpoint);
                 }
 
-                Super.ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
+                //Super.ProcessMove(DeltaTime, NewAccel, DoubleClickMove, DeltaRot);
 
                 if (Pawn == None)
                     return;
 
                OldAccel = Human(pawn).Acceleration;
 
-              if (Human(pawn).Acceleration != NewAccel )
+              if (Human(pawn).Acceleration != NewAccel)
                   Human(pawn).Acceleration = NewAccel;
 
               if (bPressedJump)
@@ -1359,7 +1360,7 @@ state PlayerMousing
 
 state Conversation
 {
-ignores SeePlayer, HearNoise, Bump;
+ignores SeePlayer, HearNoise, NotifyBump;
 
     event PlayerTick(float deltaTime)
     {
@@ -1450,8 +1451,8 @@ Begin:
 
     if (!Human(pawn).conPlay.StartConversation(Human(pawn)))
     {
-        Human(pawn).AbortConversation(True);
-          GoToState('PlayerWalking'); // Fallback if failed?
+        Human(pawn).AbortConversation(true);
+          //GoToState('PlayerWalking'); // Fallback if failed?
     }
     else
     {
