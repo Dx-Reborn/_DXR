@@ -183,8 +183,8 @@ function PlayFireSound()
     if (bHasSilencer)
         Owner.PlaySound(GetSilencedSound(), SLOT_Misc,,, 2048);
     else
-        Owner.PlaySound(GetFireSound(), SLOT_None,,false, 2048, 1.0, true);
-}                                                //bNoOverride
+        Owner.PlaySound(GetFireSound(), SLOT_Misc,1.1,false, , 1.0, true);
+}                                                     //bNoOverride
 // DXR: Я о5 всё забыла!
 // function PlaySound(sound Sound,optional ESoundSlot Slot,optional float Volume,optional bool bNoOverride,optional float Radius,optional float Pitch,optional bool Attenuate);
 
