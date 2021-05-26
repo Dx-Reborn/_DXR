@@ -1,5 +1,6 @@
 class DrinksAndFood extends DeusExPickup
-                                abstract;
+                                abstract
+                            Hidedropdown;
 
 var int HealAmount;
 

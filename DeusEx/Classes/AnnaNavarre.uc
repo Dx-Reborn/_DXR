@@ -39,7 +39,7 @@ function Explode()
     explosionRadius = 288;
 
     // alert NPCs that I'm exploding
-    class'eventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , explosionRadius*16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius*16);
     PlaySound(Sound'LargeExplosion1', SLOT_None,,, explosionRadius*16);
 
     // draw a pretty explosion

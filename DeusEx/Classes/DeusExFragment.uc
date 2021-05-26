@@ -81,7 +81,7 @@ event HitWall(vector HitNormal, actor HitWall)
     PlaySound(sound, SLOT_None, volume,, radius, 0.85+FRand()*0.3);
 
     if (sound != None)
-        class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, volume, radius * 0.5);     // lower AI sound radius for gameplay balancing
+        AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius * 0.5);     // lower AI sound radius for gameplay balancing
 
     lastHitLoc = Location;
 }
@@ -205,7 +205,12 @@ function CalcVelocity(vector Momentum, optional float ExplosionSize)
 defaultproperties
 {
    LifeSpan=10.000000
-   bUnlit=True
+   bUnlit=false
+   bUseDynamicLights=true // DXR: Чтобы более-менее освещались от AugLight
+   bFullVolume=false
+   bHardAttach=false
+   bIgnoreOutOfWorld=true
+//   bUnlit=True
 }
 
 

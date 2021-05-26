@@ -68,7 +68,7 @@ ContinueFromDoor:
 
 defaultproperties
 {
-    MinHitWall=0.000000
+//    MinHitWall=0.000000
     RotationRate=(Pitch=16384,Yaw=100000)
 }
 

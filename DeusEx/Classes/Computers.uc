@@ -97,7 +97,7 @@ function BeginAlarm()
     SoundRadius = 64;
     SoundPitch = 64;
     lastAlarmTime = Level.TimeSeconds;
-    class'EventManager'.static.AIStartEvent(self, 'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+    AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 
     // make sure we can't go into stasis while we're alarming
     bStasis = False;
@@ -110,7 +110,7 @@ function EndAlarm()
     SoundRadius = Default.SoundRadius;
     SoundPitch = Default.SoundPitch;
     lastAlarmTime = 0;
-    class'EventManager'.static.AIEndEvent(self, 'Alarm', EAITYPE_Audio);
+    AIEndEvent('Alarm', EAITYPE_Audio);
 
     // reset our stasis info
     bStasis = default.bStasis;

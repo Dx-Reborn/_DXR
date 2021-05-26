@@ -509,7 +509,7 @@ function PlayTakeHitSound(int Damage, class<damageType> damageType, int Mult)
             else
                 PlaySound(sound'MalePainLarge', SLOT_Pain, FMax(Mult * TransientSoundVolume, Mult * 2.0),,, RandomPitch());
         }
-        class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, FMax(Mult * TransientSoundVolume, Mult * 2.0));
+        AISendEvent('LoudNoise', EAITYPE_Audio, FMax(Mult * TransientSoundVolume, Mult * 2.0));
     }
 }
 

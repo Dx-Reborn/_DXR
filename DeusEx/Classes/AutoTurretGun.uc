@@ -1,11 +1,13 @@
 //=============================================================================
 // AutoTurretGun.
 //=============================================================================
-class AutoTurretGun extends HackableDevices
-                               NotPlaceable; // Don't place it to the map, use AutoTurret instead!
+class AutoTurretGun extends HackableDevices;
+//                               NotPlaceable; // Don't place it to the map, use AutoTurret instead!
 
 
 var EM_AutoTurret_MuzzleFlash mFlash;
+
+function ResetScaleGlow();
 
 event Destroyed()
 {
@@ -96,5 +98,8 @@ defaultproperties
 /*     Skins[0]=Texture'DeusExDeco.Skins.AutoTurretGunTex1'
      Skins[1]=Texture'DeusExDeco.Skins.PinkMaskTex'
      Skins[2]=Texture'DeusExDeco.Skins.PinkMaskTex'*/
+     Skins[0]=Shader'DXR_AnimDeco.Glass.AutoTurretGun_HD_SH'
+     Skins[1]=texture'PinkMaskTex';
+
      bShouldBeAlwaysUpdated=true
 }

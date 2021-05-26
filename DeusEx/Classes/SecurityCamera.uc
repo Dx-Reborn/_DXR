@@ -102,7 +102,7 @@ function TriggerEventX(bool bTrigger)
         SoundRadius = 64;
         LightHue = 0;
         Skins[LightSkinNum] = RedLight;
-        class'EventManager'.static.AIStartEvent(self, 'Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
+        AIStartEvent('Alarm', EAITYPE_Audio, SoundVolume/255.0, 25*(SoundRadius+1));
 
         // make sure we can't go into stasis while we're alarming
         bStasis = False;
@@ -114,7 +114,7 @@ function TriggerEventX(bool bTrigger)
         SoundVolume = 192;
         LightHue = 80;
         Skins[LightSkinNum] = GreenLight;
-        class'EventManager'.static.AIEndEvent(self, 'Alarm', EAITYPE_Audio);
+        AIEndEvent('Alarm', EAITYPE_Audio);
 
         // reset our stasis info
         bStasis = default.bStasis;

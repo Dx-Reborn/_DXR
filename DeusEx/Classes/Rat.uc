@@ -76,7 +76,7 @@ defaultproperties
      BaseEyeHeight=1.000000
      Health=5
      UnderWaterTime=20.000000
-     bCrawler=true
+//     bCrawler=true
      HitSound1=Sound'DeusExSounds.Animal.RatSqueak1'
      HitSound2=Sound'DeusExSounds.Animal.RatSqueak3'
      die=Sound'DeusExSounds.Animal.RatDie'

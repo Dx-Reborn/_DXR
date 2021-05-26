@@ -93,7 +93,7 @@ function GivePlayerImage()
     if (image != None)
     {
       image.GiveTo(aReader);//Frob(aReader, none);
-      aReader.ClientMessage(Sprintf(AddedToDatavaultLabel, image.GetDescription()));
+      aReader.ClientMessage(Sprintf(AddedToDatavaultLabel, image.Description));
     }
 }
 

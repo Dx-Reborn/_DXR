@@ -91,7 +91,7 @@ state Active
         b1 = Spawn(class'Beam', Player, '', Player.Location);
         if (b1 != None)
         {
-            class'EventManager'.static.AIStartEvent(self,'Beam', EAITYPE_Visual);
+            AIStartEvent('Beam', EAITYPE_Visual);
             b1.LightHue = 32;
             b1.LightRadius = 4;
             b1.LightSaturation = 140;

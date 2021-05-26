@@ -192,10 +192,7 @@ function RegisterConFiles(string Path)
   }
 }
 
-function PostSetInitialState()
-{
-   log("PostSetInitialState()?");
-}
+//function PostSetInitialState()
 
 
 function PreBeginPlay()
@@ -661,6 +658,22 @@ exec function listConvos()
         log("Conversation: " $ conlist[i]);
         i++;
     }*/
+}
+
+
+exec function CleanupConvos()
+{
+    local ScriptedPawn dxp;
+    local int i;
+
+    foreach dynamicactors(class'ScriptedPawn', dxp)
+    {
+       for(i=0; i<dxp.conlist.length; i++)
+       {
+           if (CAPS(dxp.conlist[i].OwnerName) != CAPS(dxp.BindName))
+               dxp.conlist.remove(i,1);
+       }
+    }
 }
 
 defaultproperties

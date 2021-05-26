@@ -3,18 +3,25 @@
 */
 class BirdController extends AnimalController;
 
+event PostLoadSavedGame()
+{
+    Super.PostLoadSavedGame();
+    AISetEventCallback('LoudNoise', 'HeardNoise');
+}
+
+
 state Wandering
 {
     function BeginState()
     {
         Super.BeginState();
-//      AISetEventCallback('LoudNoise', 'HeardNoise');
+        AISetEventCallback('LoudNoise', 'HeardNoise');
     }
 
     function EndState()
     {
         Super.EndState();
-//      AIClearEventCallback('LoudNoise');
+        AIClearEventCallback('LoudNoise');
     }
 
 //    function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
@@ -48,7 +55,7 @@ state Wandering
             bird(pawn).destLoc = bird(pawn).Location;
     }
 
-    function HeardNoise(Name eventName, DeusExPawn.EAIEventState state, DeusExPawn.XAIParams params)
+    function HeardNoise(Name eventName, EAIEventState state, XAIParams params)
     {
         bird(pawn).FleeFromPawn(Pawn(params.bestActor));
     }
@@ -129,10 +136,10 @@ state Flying
 //          AnimRate = initialRate*0.1;
     }
 
-/*  function HeardNoise(Name eventName, EAIEventState state, XAIParams params)
+    function HeardNoise(Name eventName, EAIEventState state, XAIParams params)
     {
-        MakeFrightened();
-    }*/
+        bird(pawn).MakeFrightened();
+    }
 
     function bool ReadyToLand()
     {
@@ -294,7 +301,7 @@ state Flying
         Enable('NotifyHitWall');
         bird(pawn).stuck       = 0;
         bird(pawn).hitTimer    = 0;
-//      AISetEventCallback('LoudNoise', 'HeardNoise');
+        AISetEventCallback('LoudNoise', 'HeardNoise');
         if (pawn.IsA('Pigeon'))
             pawn.PlaySound(Sound'PigeonFly', SLOT_Misc);
         else if (pawn.IsA('Seagull'))
@@ -304,10 +311,13 @@ state Flying
 
     function EndState()
     {
-        pawn.SetCollision(true, true, true);
-        pawn.SetPhysics(PHYS_Falling);
-        Enable('NotifyHitWall');
-        //AIClearEventCallback('LoudNoise');
+        if (pawn != None)
+        {
+           pawn.SetCollision(true, true, true);
+           pawn.SetPhysics(PHYS_Falling);
+           Enable('NotifyHitWall');
+        }
+        AIClearEventCallback('LoudNoise');
     }
 
 Begin:
@@ -366,5 +376,5 @@ begin:
 
 defaultproperties
 {
-     RotationRate=(Pitch=6000)
+   RotationRate=(Pitch=6000)
 }

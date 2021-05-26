@@ -128,13 +128,13 @@ function bool HasKey(Name KeyToLookFor)
         }
     }
 
-    for(x=0; x<GetPlayer().NanoKeys.Length; x++)
+/*    for(x=0; x<GetPlayer().NanoKeys.Length; x++)
     {
         if(GetPlayer().NanoKeys[x].KeyID == KeyToLookFor)
         {
             bHasKey=true;
         }
-    }
+    }*/
     return bHasKey;
 }
 

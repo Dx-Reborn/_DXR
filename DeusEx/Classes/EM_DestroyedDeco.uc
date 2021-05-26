@@ -12,7 +12,7 @@ function SetSound(sound NewSound)
 defaultproperties
 {
      Begin Object Class=MeshEmitter Name=MeshEmitter0
-        StaticMesh=StaticMesh'DeusExStaticMeshes0.WBasket_HD'
+        StaticMesh=StaticMesh'BallisticHardware2.Glass.GlassFragC'
         UseParticleColor=True
         UseCollision=True
         UseColorScale=True
@@ -29,8 +29,9 @@ defaultproperties
         StartLocationOffset=(Z=40.000000)
         SpinCCWorCW=(Y=0.000000)
         SpinsPerSecondRange=(X=(Max=0.500000),Y=(Min=0.300000,Max=1.000000))
-        StartSizeRange=(X=(Min=0.500000,Max=0.500000))
-        Sounds(0)=(Sound=Sound'DeusExSounds.Weapons.CrowbarHitSoft',Radius=(Min=512.000000,Max=512.000000),Pitch=(Min=1.000000,Max=1.200000),Volume=(Min=2.000000,Max=2.000000),Probability=(Min=1.000000,Max=1.000000))
+        //StartSizeRange=(X=(Min=0.500000,Max=0.500000))
+        StartSizeRange=(X=(Min=0.0,Max=0.0))
+        Sounds(0)=(Sound=Sound'DeusExSounds.Weapons.CrowbarHitSoft',Radius=(Min=512.000000,Max=512.000000),Pitch=(Min=1.000000,Max=1.100000),Volume=(Min=2.000000,Max=2.000000),Probability=(Min=1.000000,Max=1.000000))
         SpawningSound=PTSC_LinearLocal
         SpawningSoundProbability=(Min=1.000000,Max=1.000000)
         InitialParticlesPerSecond=5000.000000

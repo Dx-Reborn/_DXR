@@ -25,7 +25,7 @@ event HitWall(vector HitNormal, actor HitWall)
     else if (speed > 30)
     {
         PlaySound(sound'BasketballBounce', SLOT_None);
-        class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio);
+        AISendEvent('LoudNoise', EAITYPE_Audio);
     }
 }
 

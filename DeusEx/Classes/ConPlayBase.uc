@@ -1082,12 +1082,8 @@ function EEventAction SetupEventAnimation(ConEventAnimation event, out String ne
 
 function EEventAction SetupEventRandomLabel(ConEventRandom event, out String nextLabel)
 {
-  local DeusExGlobals gl;
-
-  gl = class'DeusExGlobals'.static.GetGlobals();
-
     // Pick a random label
-    nextLabel = gl.GetRandomLabel(event); //event.GetRandomLabel();
+    nextLabel = event.GetRandomLabel();
     return EA_JumpToLabel;
 }
 

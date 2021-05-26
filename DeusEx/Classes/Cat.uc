@@ -3,12 +3,12 @@
 //=============================================================================
 class Cat extends Animal;
 
-var float time;
+var float mytime;
 
 function bool ShouldBeStartled(Pawn startler)
 {
     local float speed;
-//  local float time;
+//  local float mytime;
     local float dist;
     local float dist2;
     local bool  bPh33r;
@@ -20,10 +20,10 @@ function bool ShouldBeStartled(Pawn startler)
         if (speed >= 20)
         {
             dist = VSize(Location - startler.Location);
-            time = dist/speed;
-            if (time <= 3.0)
+            mytime = dist/speed;
+            if (mytime <= 3.0)
             {
-                dist2 = VSize(Location - (startler.Location+startler.Velocity*time));
+                dist2 = VSize(Location - (startler.Location + startler.Velocity * mytime));
                 if (dist2 < speed*1.5)
                     bPh33r = true;
             }
@@ -37,12 +37,12 @@ event Tick(float deltaTime)
 {
     Super.Tick(deltaTime);
 
-    time += deltaTime;
+    mytime += deltaTime;
 
     // check for random noises
-    if (time > 1.0)
+    if (mytime > 1.0)
     {
-        time = 0;
+        mytime = 0;
         if (FRand() < 0.05)
             PlaySound(sound'CatPurr', SLOT_None,,, 128);
     }
@@ -70,7 +70,7 @@ defaultproperties
      BaseEyeHeight=6.000000
      Health=30
      UnderWaterTime=20.000000
-     bCrawler=true
+//     bCrawler=true
      HitSound1=Sound'DeusExSounds.Animal.CatHiss'
      HitSound2=Sound'DeusExSounds.Animal.CatHiss'
      die=Sound'DeusExSounds.Animal.CatDie'
@@ -79,7 +79,6 @@ defaultproperties
      CollisionHeight=6.8
      //CollisionHeight=11.300000
      bBlockActors=False
-//     bBlockActors=True
      Mass=10.000000
      Buoyancy=97.000000
      RotationRate=(Yaw=100000)

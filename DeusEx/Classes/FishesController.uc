@@ -170,7 +170,9 @@ state Wandering
     function EndState()
     {
         Super.EndState();
-        Fishes(pawn).bBounce = False;
+
+        if (Fishes(Pawn) != None)
+            Fishes(pawn).bBounce = False;
     }
 
 Begin:
@@ -209,6 +211,6 @@ ContinueFromDoor:
 
 defaultproperties
 {
-     MinHitWall=0.000000
+//     MinHitWall=0.000000
      RotationRate=(Pitch=6000,Yaw=25000)
 }

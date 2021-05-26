@@ -1,0 +1,2 @@
+class TestTube extends LabThings;
+

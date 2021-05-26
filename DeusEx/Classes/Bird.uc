@@ -67,7 +67,7 @@ function PlayFlying()
 event BeginPlay()
 {
     Super.BeginPlay();
-//  AIClearEventCallback('WeaponFire');
+    AIClearEventCallback('WeaponFire');
 }
 
 function MakeFrightened()
@@ -109,6 +109,8 @@ defaultproperties
      orders=Flying
 
      MinFlySpeed=30.00
-
      bAmbientCreature=true // do not display on Radar
+
+     CrouchHeight=2.75
+     CrouchRadius=2.75
 }

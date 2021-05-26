@@ -80,7 +80,7 @@ function bool Use()
             // alert NPCs that I'm messing with stuff
             if (Player.FrobTarget != None)
                 if (Player.FrobTarget.bOwned)
-                    class'EventManager'.static.AISendEvent(Player.FrobTarget,'MegaFutz', EAITYPE_Visual);
+                    Player.FrobTarget.AISendEvent('MegaFutz', EAITYPE_Visual);
 
             bDoIt = True;
         }

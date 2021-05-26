@@ -22,7 +22,8 @@ defaultproperties
 {
    bBlockSight=true
    HitPoints=10
-   FragType=Class'DeusEx.WoodFragment'
+   //FragType=Class'DeusEx.WoodFragment'
+   FragType=class'DeusEx.CrateBreakableFragment'
    ItemName="Medical Supply Crate"
    contents=Class'DeusEx.MedKit'
 //     skins[0]=Texture'DeusExDeco.Skins.CrateBreakableMedTex1'

@@ -425,7 +425,7 @@ exec function SaveCurrentMap()
    local Augmentation aug;
    local Skill skl;
    local beam lt;
-   local Inventory anItem;
+//   local Inventory anItem;
    local LightProjector lp;
    local int CheckFileHandle;
 
@@ -433,10 +433,14 @@ exec function SaveCurrentMap()
    gl = class'DeusExGlobals'.static.GetGlobals();
 
     /* Исключает информацию из сохранения */
-   class'ObjectManager'.static.SetObjectFlags(pawn, RF_Transient); // исключить игрока
+/*   class'ObjectManager'.static.SetObjectFlags(pawn, RF_Transient); // исключить игрока
    class'ObjectManager'.static.SetObjectFlags(PlayerReplicationInfo, RF_Transient); // исключить PlayerReplicationInfo
    class'ObjectManager'.static.SetObjectFlags(self, RF_Transient); // исключить контроллер
-
+   */
+/*   GetLevelInfo().DestroyEventManagerActor(pawn);
+   GetLevelInfo().DestroyEventManagerActor(PlayerReplicationInfo);
+   GetLevelInfo().DestroyEventManagerActor(self);
+*/
    if (human(pawn).carriedDecoration != none)
    class'ObjectManager'.static.SetObjectFlags(Human(pawn).carriedDecoration, RF_Transient); // исключить переносимый предмет, поскольку Destroy() на него не действует ((
 
@@ -453,14 +457,14 @@ exec function SaveCurrentMap()
 //    log("setting RF_Transient for "$anItem);
    }*/
 
-   foreach AllActors(class'Inventory', anItem)
+/*   foreach AllActors(class'Inventory', anItem)
    {
        if (anItem.owner == pawn)
        {
 //      log("Transient inventory:"@anItem @ anItem.GetBeltPos());
            class'ObjectManager'.static.SetObjectFlags(anItem, RF_Transient);
        }
-   }
+   }*/
 
    foreach AllActors(class'Augmentation', aug)
    {
@@ -487,7 +491,6 @@ exec function SaveCurrentMap()
    }
 
 
-//   consolecommand("SAVEGAME 100");
    // Получаем путь для сохранений
    sd = ConsoleCommand("get System savepath");
    curr = sd$"\\Current";

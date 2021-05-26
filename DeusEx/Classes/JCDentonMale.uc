@@ -140,7 +140,7 @@ exec function listInv()
 
   foreach AllActors(class'Inventory', i)
   {
-    log("All Inventory actors, owner, invPosX && invPosY: "$i@i.Owner@i.GetInvPosX()@i.GetInvPosY());
+    log("All Inventory actors, owner, invPosX && invPosY: "$i@i.Owner@i.InvPosX@i.InvPosY);
   }
 }
 

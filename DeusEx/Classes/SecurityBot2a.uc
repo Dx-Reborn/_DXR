@@ -81,11 +81,10 @@ defaultproperties
      CollisionHeight=53.78
 
      //CrouchRadius=62.000000
-     CrouchRadius=22.000000
-     CrouchHeight=43.78
+     CrouchHeight=22.00
+     CrouchRadius=22.00
      //CrouchHeight=53.78
-//     bCrouchToPassObstacles=true
-     bCanCrouch=false
+     bCrouchToPassObstacles=true
 
      //CollisionHeight=58.279999
      Mass=800.000000

@@ -215,7 +215,7 @@ function PlayLandingSound()
         if (Velocity.Z <= -200)
         {
             PlaySound(LandSound, SLOT_None, TransientSoundVolume,, 768);
-            class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
+            AISendEvent('LoudNoise', EAITYPE_Audio, TransientSoundVolume, 768);
         }
     }
 }

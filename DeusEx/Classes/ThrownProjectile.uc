@@ -67,7 +67,7 @@ event Tick(float deltaTime)
 
             // DC - new ugly way of doing it - old way was "if (proxCheckTime > 0.25)"
             // new way: weight the check frequency based on distance from player
-            proxRelevance = DistanceFromPlayer()/2000.0;  // at 500 units it behaves as it did before
+            proxRelevance = DistanceFromPlayer/2000.0;  // at 500 units it behaves as it did before
             if (proxRelevance<0.25)
                 proxRelevance=0.25;               // low bound 1/4
             else if (proxRelevance>10.0)
@@ -347,7 +347,7 @@ auto state Flying
         PlaySound(/*ImpactSound*/GetExplosionSound(), SLOT_None, 2.0,, blastRadius*16);
 
         if (AISoundLevel > 0.0)
-            class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, AISoundLevel*blastRadius*16);
+            AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, AISoundLevel*blastRadius*16);
 
         GotoState('Exploding');
     }
@@ -370,7 +370,7 @@ auto state Flying
             // I know this is a little cheesy, but certain grenade types should
             // not alert AIs unless they are really really close - CNN
             if (AISoundLevel > 0.0)
-                class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, volume, AISoundLevel*256);
+                AISendEvent('LoudNoise', EAITYPE_Audio, volume, AISoundLevel*256);
             class'ActorManager'.static.SetPhysicsEx(self, PHYS_None, HitWall);
             if (Physics == PHYS_None)
             {

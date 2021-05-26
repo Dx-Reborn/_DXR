@@ -18,15 +18,16 @@ class RandomSounds extends Keypoint;
 // Note that the bools are really ints because you can't have arrays of bools
 //
 
-var() Sound sounds[8];
-var() float frequency[8];
-var() byte bAmbient[8];
-var() float minDuration[8];
-var() float maxDuration[8];
-var() byte Volume[8];
-var() byte Pitch[8];
-var() byte bFade[8];
-var() byte bFakeDoppler[8];
+const MAX_SOUNDS = 8;
+var() Sound sounds[MAX_SOUNDS];
+var() float frequency[MAX_SOUNDS];
+var() byte bAmbient[MAX_SOUNDS];
+var() float minDuration[MAX_SOUNDS];
+var() float maxDuration[MAX_SOUNDS];
+var() byte Volume[MAX_SOUNDS];
+var() byte Pitch[MAX_SOUNDS];
+var() byte bFade[MAX_SOUNDS];
+var() byte bFakeDoppler[MAX_SOUNDS];
 var byte num;
 var byte cur;
 var float mytimer;
@@ -122,7 +123,7 @@ event BeginPlay()
     cur = 0;
     bPlaying = False;
     AmbientSound = None;
-    for (i=0; i<8; i++)
+    for (i=0; i<MAX_SOUNDS; i++)
     {
         if (sounds[i] == None)
             break;
@@ -174,5 +175,5 @@ defaultproperties
      Pitch(7)=64
      bStatic=False
      SoundVolume=128
-     bFullVolume=true
+     bFullVolume=false
 }

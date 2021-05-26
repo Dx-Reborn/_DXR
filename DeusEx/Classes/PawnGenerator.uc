@@ -59,6 +59,8 @@ var   float          CoastPeriod;      // Amount of time to coast without adding
 var   float          CoastTimer;       // Timer for adding random velocities
 var   float          StatusTimer;      // Should we do a StatusUpdate this frame
 
+var DestLocMarker DestLocMarker;
+
 
 // ----------------------------------------------------------------------
 // PostBeginPlay()
@@ -109,6 +111,7 @@ event PostBeginPlay()
     // Set up timer
     TryTimer = 0.25+FRand()*0.75;
 
+          DestLocMarker = Spawn(class'DestLocMarker',none,'',Location, rotation);
 }
 
 
@@ -408,7 +411,7 @@ function InvalidatePawn(int slot)
 function bool IsActorUnnecessary(Actor testActor)
 {
     // Is this actor in a place we don't care about?
-    return (testActor.DistanceFromPlayer() >= ActiveArea);
+    return (testActor.DistanceFromPlayer >= ActiveArea);
 }
 
 
@@ -429,7 +432,6 @@ function bool PlayerCanSeeActor(Actor testActor, bool bCreating)
     }
     else
     {
-//        if (testActor.LastRenderTime <= 5.0)
        if (Level.TimeSeconds - testActor.LastRenderTime <= 5.0)
            bCanSee = true;
     }
@@ -681,6 +683,9 @@ function GeneratePawn(optional bool bBurst)
             {
                 // Got a location, but can the player see it?
                 Scout.SetLocation(destination);
+
+                DestLocMarker.SetLocation(destination);
+
                 Scout.bHidden = false;
                 Scout.bDetectable = true;
                 bCanSee = PlayerCanSeeActor(Scout, true);
@@ -767,9 +772,8 @@ defaultproperties
      CoastPeriod=8.000000
      bHidden=True
 //     bHidden=false
-     bDirectional=True
+     bDirectional=true
      DrawType=DT_Sprite
-//     Texture=Texture'DeusExUI.Icons.DamageIconGas'  //Texture'Engine.S_Inventory'
      Texture=Texture'Engine.S_Inventory'
      CollisionRadius=10.000000
      CollisionHeight=6.000000

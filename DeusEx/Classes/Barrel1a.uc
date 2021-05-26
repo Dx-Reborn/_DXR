@@ -74,7 +74,7 @@ event Landed(vector HitNormal)
             PlaySound(hitSound, SLOT_None);
 
         // alert NPCs that I've landed
-        class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+        AISendEvent('LoudNoise', EAITYPE_Audio);
     }
 
     bWasCarried = false;

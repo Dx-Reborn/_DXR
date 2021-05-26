@@ -5,14 +5,13 @@ class AcousticSensor extends HackableDevices;
 
 function HackAction(Actor Hacker, bool bHacked)
 {
-//  local Actor A;
     Super.HackAction(Hacker, bHacked);
 
     if (bHacked)
-        class'EventManager'.static.AIClearEventCallback('WeaponFire');
+        AIClearEventCallback('WeaponFire');
 }
 
-function NoiseHeard(Name eventName, DeusExPawn.EAIEventState state, DeusExPawn.XAIParams params)
+function NoiseHeard(Name eventName, EAIEventState state, XAIParams params)
 {
     local Actor A;
 
@@ -25,7 +24,13 @@ event PostBeginPlay()
 {
     Super.PostBeginPlay();
 
-    class'EventManager'.static.AISetEventCallback('WeaponFire', 'NoiseHeard');
+    AISetEventCallback('WeaponFire', 'NoiseHeard');
+}
+
+event PostLoadSavedGame()
+{
+    Super.PostLoadSavedGame();
+    AISetEventCallback('WeaponFire', 'NoiseHeard');
 }
 
 function Pawn GetPlayerPawn()

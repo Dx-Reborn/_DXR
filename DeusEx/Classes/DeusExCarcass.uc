@@ -239,7 +239,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
                         PlaySound(sound'MaleDeath', SLOT_Pain,,,, 1.1 - 0.2*FRand());
                 }
                 
-                class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+                AISendEvent('LoudNoise', EAITYPE_Audio);
                 setDeathFlags(InstigatedBy);
             }
         }
@@ -388,7 +388,7 @@ event Tick(float deltaSeconds)
     {
         bInit = true;
         if (bEmitCarcass)
-            class'EventManager'.static.AIStartEvent(self,'Carcass', EAITYPE_Visual);
+            AIStartEvent('Carcass', EAITYPE_Visual);
     }
 
     //Lork: Unconscious people can drown too
@@ -805,7 +805,7 @@ auto state Dead
             }
 
             // alert NPCs that I'm food
-            class'EventManager'.static.AIStartEvent(self,'Food', EAITYPE_Visual);
+            AIStartEvent('Food', EAITYPE_Visual);
         }
 
         // by default, the collision radius is small so there won't be as
@@ -817,7 +817,7 @@ auto state Dead
 
         // alert NPCs that I'm really disgusting
         if (bEmitCarcass)
-            class'EventManager'.static.AIStartEvent(self, 'Carcass', EAITYPE_Visual);
+            AIStartEvent('Carcass', EAITYPE_Visual);
     }
 
 Begin:

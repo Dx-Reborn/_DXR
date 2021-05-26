@@ -27,8 +27,18 @@ event bool NotifyBump(actor Other)
                 Other.TakeDamage(damage, pawn, Other.Location+vect(1,1,-1), 100 * pawn.Velocity, class'DM_Shot');
                 Other.TakeDamage(damage, pawn, Other.Location+vect(-1,-1,-1), 100 * pawn.Velocity, class'DM_Shot');
                 dxPlayer = DeusExPlayer(Other);
-//              if (dxPlayer != None)
-//                  dxPlayer.ShakeView(0.15 + 0.002*damage*2, damage*30*2, 0.3*damage*2);
+                if (dxPlayer != None)
+                    dxPlayer.Controller.ShakeView(vect(0,0,0),vect(0,0,0),2 * damage,vect(-20,-20,-20), vect(-1000, -1000, 1000), 2 * damage);
+
+                    log(pawn@"Shake player ?");
+                    //(0.15 + 0.002*damage*2, damage*30*2, 0.3*damage*2);
+
+/*    ShakeOffsetMag=(X=-20.0,Y=0.00,Z=0.00) // 4
+    ShakeOffsetRate=(X=-1000.0,Y=0.0,Z=0.0) // 5
+    ShakeOffsetTime=2
+    ShakeRotMag=(X=0.0,Y=0.0,Z=0.0) // 1
+    ShakeRotRate=(X=0.0,Y=0.0,Z=0.0) // 2
+    ShakeRotTime=2*/ // 3
             }
         }
     }

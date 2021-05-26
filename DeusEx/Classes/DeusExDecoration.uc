@@ -230,7 +230,7 @@ event BeginPlay()
         pushSound = sound'PushPlastic';
     else if (fragType == class'PlasticFragment')
         pushSound = sound'PushPlastic';
-    else if (fragType == class'WoodFragment')
+    else if ((fragType == class'WoodFragment') || (fragtype == class'CrateBreakableFragment')) // DXR: Added new fragmesn class
         pushSound = sound'PushWood';
     else if (fragType == class'Rockchip')
         pushSound = sound'PushPlastic';
@@ -262,7 +262,7 @@ event Landed(vector HitNormal)
     // play a sound effect if it's falling fast enough
     if (Velocity.Z <= -200)
     {
-        if (fragType == class'WoodFragment')
+        if ((fragType == class'WoodFragment') || (fragType == class'CrateBreakableFragment'))  // DXR: Added new fragmesn class
         {
             if (Mass <= 20)
                 hitSound = sound'WoodHit1';
@@ -302,7 +302,7 @@ event Landed(vector HitNormal)
             PlaySound(hitSound, SLOT_None);
 
         // alert NPCs that I've landed
-        class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio);
+        AISendEvent('LoudNoise', EAITYPE_Audio);
     }
 
     bWasCarried = false;
@@ -557,7 +557,7 @@ event Bump(actor Other)
                 {
                     //pushSoundId = PlaySoundEx(PushSound, SLOT_Misc, , true, 128,,true);
                     AmbientSound = PushSound;
-                    class'EventManager'.static.AIStartEvent(self,'LoudNoise', EAITYPE_Audio, , 128);
+                    AIStartEvent('LoudNoise', EAITYPE_Audio, , 128);
                     bPushSoundPlaying = True;
                 }
 
@@ -602,7 +602,7 @@ event Timer()
     if (bPushSoundPlaying)
     {
 //        class'DxUtil'.static.StopSound(self, PushSoundId);
-        class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
+        AIEndEvent('LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
         AmbientSound = None; //default.AmbientSound;
 
@@ -706,7 +706,7 @@ function Explode(vector HitLocation)
     bStasis = False;
 
     // alert NPCs that I'm exploding
-    class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , explosionRadius * 16);
+    AISendEvent('LoudNoise', EAITYPE_Audio, , explosionRadius * 16);
         
     if (explosionRadius <= 128)
         PlaySound(Sound'SmallExplosion1', SLOT_None,,, explosionRadius*16);
@@ -863,16 +863,21 @@ auto state Active
             Event = '';
             avg = (CollisionRadius + CollisionHeight) / 2;
             Instigator = EventInstigator;
-            if (Instigator != None)
-                MakeNoise(1.0);
+//            if (Instigator != None)
+//                MakeNoise(1.0);
 
-            if (fragType == class'WoodFragment')
+            if ((fragType == class'WoodFragment') || (fragType == class'CrateBreakableFragment'))  // DXR: Added new fragmesn class
             {
                 if (avg > 20)
-                    PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 2048); // 512
+                    //PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 2048); // 512
+                    if (EM_DestroyedDeco(EffectWhenDestroyedPtr) != None)
+                        EM_DestroyedDeco(EffectWhenDestroyedPtr).SetSound(sound'WoodBreakLarge');
                 else
-                    PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 2048);  // 512
-                class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, , 512);
+                    if (EM_DestroyedDeco(EffectWhenDestroyedPtr) != None)
+                        EM_DestroyedDeco(EffectWhenDestroyedPtr).SetSound(sound'WoodBreakSmall');
+                    //PlaySound(sound'WoodBreakSmall', SLOT_Misc,,, 2048);  // 512
+                if (EventInstigator != None)
+                    EventInstigator.AISendEvent('LoudNoise', EAITYPE_Audio, ,512);
             }
             if (bExplosive)
             {
@@ -951,8 +956,8 @@ state Burning
             avg = (CollisionRadius + CollisionHeight) / 2;
             Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
             Instigator = EventInstigator;
-            if (Instigator != None)
-                MakeNoise(1.0);
+//            if (Instigator != None)
+//                MakeNoise(1.0);
 
             // if we have been blown up, then destroy our contents
             if (bExplosive)
@@ -971,7 +976,7 @@ state Burning
         if (bPushSoundPlaying)
         {
             class'DxUtil'.static.StopSound(self, PushSoundId);
-            class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
+            AIEndEvent('LoudNoise', EAITYPE_Audio);
             AmbientSound = None; // DXR: Теперь это тоже нужно
             bPushSoundPlaying = False;
         }
@@ -1072,7 +1077,7 @@ event Destroyed()
     if (bPushSoundPlaying)
     {
         class'DxUtil'.static.StopSound(self, PushSoundId);
-        class'EventManager'.static.AIEndEvent(self,'LoudNoise', EAITYPE_Audio);
+        AIEndEvent('LoudNoise', EAITYPE_Audio);
         bPushSoundPlaying = False;
         AmbientSound = None; // DXR: Just in case
     }

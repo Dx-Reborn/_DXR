@@ -51,7 +51,7 @@ event PostBeginPlay()
 {
     Super.PostBeginPlay();
     if (bEmitDanger)
-        class'EventManager'.static.AIStartEvent(self,'Projectile', EAITYPE_Visual);
+        AIStartEvent('Projectile', EAITYPE_Visual);
 }
 
 //
@@ -345,9 +345,9 @@ auto state Flying
         PlaySound(/*ImpactSound*/GetExplosionSound(), SLOT_None, 2.0,, rad);
         if (/*ImpactSound*/GetExplosionSound() != None)
         {
-            class'EventManager'.static.AISendEvent(self,'LoudNoise', EAITYPE_Audio, 2.0, blastRadius*24);
+            AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, blastRadius*24);
             if (bExplodes)
-                class'EventManager'.static.AISendEvent(self,'WeaponFire', EAITYPE_Audio, 2.0, blastRadius*5);
+                AISendEvent('WeaponFire', EAITYPE_Audio, 2.0, blastRadius*5);
         }
 
         if (bDestroy)

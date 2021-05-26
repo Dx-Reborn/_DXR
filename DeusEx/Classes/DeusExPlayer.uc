@@ -209,7 +209,7 @@ var color colAmmoLowText, colAmmoText, colHeaderText;
 var Color crossColor; // цвет перекрестия
 /*-------------------------------------------------*/
 
-function UnPossessed();
+function UnPossessed(); // Remove for now...
 
 /* В оригинале используется при начале новой игры. Предполагаю
    что просто очищает каталог Current. Готовая функция уже есть,
@@ -647,16 +647,16 @@ function bool IsEmptyItemSlot(Inventory anItem, int col, int row)
 
     // First make sure the item can fit horizontally
     // and vertically
-    if ((col + anItem.GetinvSlotsX() > maxInvCols) || (row + anItem.GetinvSlotsY() > maxInvRows))
+    if ((col + anItem.invSlotsX > maxInvCols) || (row + anItem.invSlotsY > maxInvRows))
             return False;
 
     // Now check this and the needed surrounding slots
     // to see if all the slots are empty
 
     bEmpty = true;
-    for(slotsRow=0; slotsRow < anItem.GetinvSlotsY(); slotsRow++)
+    for(slotsRow=0; slotsRow < anItem.invSlotsY; slotsRow++)
     {
-        for (slotsCol=0; slotsCol < anItem.GetinvSlotsX(); slotsCol++)
+        for (slotsCol=0; slotsCol < anItem.invSlotsX; slotsCol++)
         {
             if (invSlots[((slotsRow + row) * maxInvCols) + (slotsCol + col)] == 1)
             {
@@ -720,12 +720,12 @@ function SetInvSlots(Inventory anItem, int newValue)
         return;
 
     // Make sure this item is located in a valid position
-    if (( anItem.GetinvPosX() != -1 ) && (anItem.GetinvPosY() != -1))
+    if (( anItem.InvPosX != -1 ) && (anItem.InvPosY != -1))
     {
         // fill inventory slots
-        for( slotsRow=0; slotsRow < anItem.GetinvSlotsY(); slotsRow++ )
-            for ( slotsCol=0; slotsCol < anItem.GetinvSlotsX(); slotsCol++ )
-                invSlots[((slotsRow + anItem.GetinvPosY()) * maxInvCols) + (slotsCol + anItem.GetinvPosX())] = newValue;
+        for( slotsRow=0; slotsRow < anItem.invSlotsY; slotsRow++ )
+            for ( slotsCol=0; slotsCol < anItem.invSlotsX; slotsCol++ )
+                invSlots[((slotsRow + anItem.InvPosY) * maxInvCols) + (slotsCol + anItem.InvPosX)] = newValue;
     }
 }
 
@@ -736,13 +736,13 @@ function PlaceItemInSlot(Inventory anItem, int col, int row)
 {
     // Save in the original Inventory item also
     log("PlaceItemInSlot. AnItem is="$anItem@"InvPosX="$col@"InvPosY="$row);
-    anItem.SetInvPosX(col);
-    anItem.SetinvPosY(row);
+    anItem.InvPosX = col;
+    anItem.InvPosY = row;
 
     SetInvSlots(anItem, 1);
 
 //    gl = class'DeusExGlobals'.static.GetGlobals();
-//    gl.SaveInventoryItem(anItem, anItem.GetInvPosX(), anItem.GetInvPosY(), anItem.GetBeltPos());
+//    gl.SaveInventoryItem(anItem, anItem.InvPosX, anItem.InvPosY, anItem.BeltPos);
 }
 
 // ----------------------------------------------------------------------
@@ -755,8 +755,8 @@ function RemoveItemFromSlot(Inventory anItem)
     if (anItem != None)
     {
         SetInvSlots(anItem, 0);
-        anItem.SetinvPosX(-1);
-        anItem.SetinvPosY(-1);
+        anItem.invPosX = -1;
+        anItem.invPosY = -1;
     }
 }
 
@@ -808,7 +808,7 @@ function bool FindInventorySlot(Inventory anItem, optional Bool bSearchOnly)
     // Loop through all slots, looking for a fit
     for (row=0; row<maxInvRows; row++)
     {   
-        if (row + anItem.GetinvSlotsY() > maxInvRows)
+        if (row + anItem.invSlotsY > maxInvRows)
             break;
 
         // Make sure the item can fit vertically
@@ -977,7 +977,7 @@ exec function ParseLeftClick()
 
     if ((inHand != None) && !bInHandTransition)
     {
-        if (inHand.Activatable())
+        if (inHand.bActivatable)
             inHand.Activate();
 
         else if (FrobTarget != None)
@@ -1224,7 +1224,7 @@ function DoFrob(Actor Frobber, Inventory frobWith)
 
     // alert NPCs that I'm messing with stuff
     if (FrobTarget.bOwned)
-        class'EventManager'.static.AISendEvent(self,'Futz', EAITYPE_Visual);
+        AISendEvent('Futz', EAITYPE_Visual);
 
     // play an animation
     PlayPickupAnim(FrobTarget.Location);
@@ -1429,9 +1429,23 @@ event TravelPostAccept()
     local bool bScriptRunning;
     local augmentation aug;
     local DeusExHUD hud;
+    local DeusExPlayer dxpl;
 
     if (bTPA_OnlyOnce)
     return;
+
+    foreach DynamicActors(class'DeusExPlayer', dxpl)
+    {
+        log("Found DeusExPlayer:"@dxpl@"bDeleteMe?"@dxpl.bDeleteMe);
+        log(dxpl@"PlayerReplicationInfo = "@PlayerController(dxpl.controller).PlayerReplicationInfo);
+        if (PlayerController(dxpl.controller).Player == None)
+        {
+            log("No Player, so removing "$dxpl);
+            PlayerController(dxpl.controller).PlayerReplicationInfo.Destroy();
+            dxpl.controller.Destroy();
+            dxpl.Destroy();
+        }
+    }
 
     log(self@"TravelPostAccept()?");
 
@@ -1564,7 +1578,7 @@ function Landed(vector HitNormal)
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)
     {
-        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
+        //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
         if (Velocity.Z < -700) // && (ReducedDamageType != 'All'))
             if (Role == ROLE_Authority)
             {
@@ -1591,8 +1605,8 @@ function Landed(vector HitNormal)
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), class'fell');
             }
     }
-    else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
-        MakeNoise(0.1 * Level.Game.GameDifficulty);
+//    else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
+//        MakeNoise(0.1 * Level.Game.GameDifficulty);
     bJustLanded = true;
 }
 
@@ -2280,7 +2294,7 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
         if (EventInstigator != None)
             DeusExPlayerController(controller).damageAttitudeTo(EventInstigator, damage);
         PlayHit(Damage, EventInstigator, hitLocation, damageType, momentum);
-        class'EventManager'.static.AISendEvent(self, 'Distress', EAITYPE_Visual);
+        AISendEvent('Distress', EAITYPE_Visual);
     }
     else
     {
@@ -2297,7 +2311,6 @@ function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector
 //      Died(None, class'DamTypeMutant', Location);
         return;
     }
-    MakeNoise(1.0); 
 
     if ((DamageType == class'DM_Flamed') && !bOnFire)
         CatchFire();
@@ -3011,12 +3024,12 @@ function PutCarriedDecorationInHand()
       for (curInv = Inventory; curInv != None; curInv = curInv.Inventory)
       {
          // Make sure this item is located in a valid position
-         if (( curInv.GetinvPosX() != -1 ) && (curInv.GetinvPosY() != -1 ))
+         if (( curInv.InvPosX != -1 ) && (curInv.InvPosY != -1 ))
          {
             // fill inventory slots
-            for( slotsRow=0; slotsRow < curInv.GetinvSlotsY(); slotsRow++ )
-               for (slotsCol=0; slotsCol < curInv.GetinvSlotsX(); slotsCol++)
-                  LocalInvSlots[((slotsRow + curInv.GetinvPosY()) * maxInvCols) + (slotscol + curInv.GetinvPosX())] = 1;
+            for( slotsRow=0; slotsRow < curInv.invSlotsY; slotsRow++ )
+               for (slotsCol=0; slotsCol < curInv.invSlotsX; slotsCol++)
+                  LocalInvSlots[((slotsRow + curInv.InvPosY) * maxInvCols) + (slotscol + curInv.InvPosX)] = 1;
          }
       }
     }
@@ -3065,9 +3078,9 @@ exec function NextBeltItem()
         if (root != None)
         {
             if (inHandPending != None)
-                slot = inHandPending.GetbeltPos();
+                slot = inHandPending.BeltPos;
             else if (inHand != None)
-                slot = inHand.GetbeltPos();
+                slot = inHand.BeltPos;
 
             startSlot = slot;
             do
@@ -3097,9 +3110,9 @@ exec function PrevBeltItem()
         if (root != None)
         {
             if (inHandPending != None)
-                slot = inHandPending.GetbeltPos();
+                slot = inHandPending.BeltPos;
             else if (inHand != None)
-                slot = inHand.GetbeltPos();
+                slot = inHand.BeltPos;
 
             startSlot = slot;
             do
@@ -3186,9 +3199,6 @@ function UpdateInHand()
         bSwitch = False;
         if (inHand != None)
         {
-//            if (inHand.IsA('Binoculars')) 
-//                Binoculars(inHand).Activate();
-
             // turn it off if it is on
             if (inHand.IsActive())
                 inHand.Activate();
@@ -3348,9 +3358,9 @@ function float CalculatePlayerVisibility(ScriptedPawn P)
 function UpdateCarcassEvent()
 {
     if ((inHand != None) && (inHand.IsA('POVCorpse')))
-        class'EventManager'.static.AIStartEvent(self,'Carcass', EAITYPE_Visual);
+        AIStartEvent('Carcass', EAITYPE_Visual);
     else
-        class'EventManager'.static.AIEndEvent(self,'Carcass', EAITYPE_Visual);
+        AIEndEvent('Carcass', EAITYPE_Visual);
 }
 
 // ----------------------------------------------------------------------
@@ -3569,8 +3579,8 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
                 // Keep track of this so we can undo it 
                 // if necessary
                 bRemovedFromSlots = True;
-                itemPosX = item.GetinvPosX();
-                itemPosY = item.GetinvPosY();
+                itemPosX = item.InvPosX;
+                itemPosY = item.InvPosY;
 
                 // Remove it from the inventory slot grid
                 RemoveItemFromSlot(item);
@@ -3584,8 +3594,8 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
             // Keep track of this so we can undo it 
             // if necessary
             bRemovedFromSlots = True;
-            itemPosX = item.GetinvPosX();
-            itemPosY = item.GetinvPosY();
+            itemPosX = item.InvPosX;
+            itemPosY = item.InvPosY;
 
             // Remove it from the inventory slot grid
             RemoveItemFromSlot(item);
@@ -4066,7 +4076,7 @@ function FootStepping(int Side)
 
     // play the sound and send an AI event
     PlaySound(stepSound, SLOT_Interact, volume, , range, pitch);
-    class'EventManager'.static.AISendEvent(self, 'LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
+    AISendEvent('LoudNoise', EAITYPE_Audio, volume*volumeMultiplier, range*volumeMultiplier);
 }
 
 // Контроль лестниц (вертикальных, LadderVolume) >>
@@ -4738,6 +4748,9 @@ function AbortConversation(optional bool bNoPlayedFlag)
 // ----------------------------------------------------------------------
 function bool CanStartConversation()
 {
+    if (Controller == None) // DXR: Fixed the spamlog if player is dead
+        return false;
+
     if (((conPlay != None) && (conPlay.CanInterrupt() == False)) || ((conPlay != None) && (conPlay.con.bFirstPerson != True)) ||
          ((bForceDuck == True ) && ((HealthLegLeft > 0) ||
          (IsInState('Dying')) || (HealthLegRight > 0))) ||
@@ -4994,7 +5007,8 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
 
             // Фильтр диалога
 //        if (CAPS(con.OwnerName) != CAPS(invokeActor.GetBindName())) //
-//      if (con.OwnerName != invokeActor.GetBindName()) //
+//            return None;
+ //      if (con.OwnerName != invokeActor.GetBindName()) //
 //        bAbortConversation = true;                      //
 
         if (!bAbortConversation)
@@ -5114,10 +5128,10 @@ function ConDialogue GetActiveConversation(Actor invokeActor, EInvokeMethod invo
     if (bAbortConversation)
         return None;
     else
-      {
+    {
 //    log("return conDialogue "$con);
         return con;
-        }
+    }
 }
 
 // Starts an AI Bark conversation, which really isn't a conversation
@@ -5299,7 +5313,7 @@ function String GetDisplayName(Actor actor, optional bool bUseFamiliar)
     local String displayName;
 
     // Sanity check
-    if (actor == None) //  || (player == None)) // || (rootWindow == None))
+    if ((actor == None) || (Controller/*.player*/ == None)) // || (rootWindow == None))
         return "";
 
     // If we've spoken to this person already, use the 

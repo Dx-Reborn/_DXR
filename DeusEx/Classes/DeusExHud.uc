@@ -510,7 +510,7 @@ function bool AddObjectToBelt(Inventory newItem, int pos, bool bOverride)
 
     retval = true;
 
-    if ((newItem != None) && (newItem.GetIcon() != None))
+    if ((newItem != None) && (newItem.Icon != None))
     {
         // If this is the NanoKeyRing, force it into slot 0
         if (newItem.IsA('NanoKeyRing'))
@@ -612,7 +612,7 @@ exec function PopulateBelt()
     for (anItem=myPlayer.Inventory; anItem!=None; anItem=anItem.Inventory)
     {
         if (anItem.bInObjectBelt)
-            AddObjectToBelt(anItem, anItem.GetbeltPos(), true);
+            AddObjectToBelt(anItem, anItem.BeltPos, true);
 /*        if (anItem.IsA('RuntimePickup'))
           if (RuntimePickup(anItem).bInObjectBelt)
             AddObjectToBelt(anItem, RuntimePickup(anItem).beltPos, True);
@@ -748,7 +748,7 @@ function RenderToolBelt(Canvas C)
 //                  c.Font=Font'DXFonts.EUX_7';
                 c.DrawTextJustified(DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).beltDescription,1,holdX+1,holdY+43,holdX+43,holdY+53);
 
-                if (DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).CanHaveMultipleCopies())
+                if (DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).bCanHaveMultipleCopies)
                     dxc.DrawTextJustified(strUses $ DeusExPickup(PlayerPawn(PawnOwner).Objects[beltIt]).NumCopies, 1, holdX, holdY+35, holdX+42, holdY+41);
 
                 C.SetPos(w-13,h);
@@ -787,12 +787,12 @@ function RenderToolBelt(Canvas C)
         c.SetPos(holdX + 51, holdY);
         C.Style = ERenderStyle.STY_Normal;
         c.DrawColor = ToolBeltText;
-        c.DrawTextJustified(PlayerPawn(PawnOwner).Objects[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+150,holdY+53);
+        c.DrawTextJustified(PlayerPawn(PawnOwner).Objects[0].beltDescription,1,holdX+1,holdY+43,holdX+150,holdY+53);
 //        c.DrawTextJustified(p.belt[0].GetbeltDescription(),1,holdX+1,holdY+43,holdX+43,holdY+53);
 
         c.SetPos(holdX + 51, holdY);
         c.SetDrawColor(255,255,255);
-        c.DrawIcon(PlayerPawn(PawnOwner).Objects[0].GetIcon(), 1);
+        c.DrawIcon(PlayerPawn(PawnOwner).Objects[0].Icon, 1);
         c.DrawColor = ToolBeltText;
         dxc.DrawTextJustified("0", 2, holdX, holdY+2, holdX+94, holdY+13);
     }

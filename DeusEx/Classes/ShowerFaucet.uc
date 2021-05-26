@@ -1,7 +1,7 @@
 //=============================================================================
 // ShowerFaucet.
 //=============================================================================
-class ShowerFaucet extends DeusExDecoration;
+class Showerfaucet extends DeusExDecoration;
 
 #exec OBJ LOAD FILE=Ambient
 #exec OBJ LOAD FILE=MoverSFX
@@ -112,17 +112,20 @@ event PostBeginPlay()
 
 defaultproperties
 {
-     sprayOffsets(0)=(X=2.000000,Z=2.000000)
-     sprayOffsets(1)=(Y=-2.000000)
-     sprayOffsets(2)=(X=-2.000000,Z=-2.000000)
-     sprayOffsets(3)=(Y=2.000000)
-     bInvincible=True
-     ItemName="Shower Faucet"
-     bPushable=False
-     Physics=PHYS_None
-     mesh=mesh'DeusExDeco.ShowerFaucet'
-     CollisionRadius=6.800000
-     CollisionHeight=6.410000
-     Mass=20.000000
-     Buoyancy=10.000000
+    sprayOffsets(0)=(X=2.000000,Z=2.000000)
+    sprayOffsets(1)=(Y=-2.000000)
+    sprayOffsets(2)=(X=-2.000000,Z=-2.000000)
+    sprayOffsets(3)=(Y=2.000000)
+    bInvincible=True
+    ItemName="Shower Faucet"
+    bPushable=False
+    Physics=PHYS_None
+    mesh=mesh'DeusExDeco.ShowerFaucet'
+//    mesh=SkeletalMesh'DXR_AnimDeco.ShowerfaucetHD'
+    CollisionRadius=6.800000
+    CollisionHeight=6.410000
+    Mass=20.000000
+    Buoyancy=10.000000
 }
+
+

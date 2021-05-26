@@ -29,17 +29,17 @@ var(DynamicMusic) string OutroMusic; // When leaving a level
 
 event PreBeginPlay()
 {
-   InitEventManager(); // DXR: Create the DeusExEventManager object.
-   log("Created EventManager: "$EventManager);
+//   InitEventManager(); // DXR: Create the DeusExEventManager object.
+//   log("Created EventManager: "$EventManager);
    ReadConvosLanguage();
    Super.PreBeginPlay();
 }
 
 function ReadConvosLanguage()
 {
-  DetectedLanguage = class'GameManager'.static.GetGameLanguage();
-  log(DetectedLanguage, 'DetectedLanguage');
-  SetupConvosLanguage();
+   DetectedLanguage = class'GameManager'.static.GetGameLanguage();
+   log(DetectedLanguage, 'DetectedLanguage');
+   SetupConvosLanguage();
 }
 
 /*

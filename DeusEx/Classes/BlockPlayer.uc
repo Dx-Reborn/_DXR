@@ -1,6 +1,8 @@
-class BlockPlayer extends Keypoint;
+class BlockPlayer extends Keypoint
+                      NotPlaceable;
 
 defaultproperties
 {
-     bBlockPlayers=True
+   bBlockPlayers=True
+   bObsolete=true
 }
