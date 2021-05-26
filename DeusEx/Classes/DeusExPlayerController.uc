@@ -52,12 +52,6 @@ event PlayerCalcView(out actor ViewActor, out vector CameraLocation, out rotator
       if (Human(pawn).conPlay.cameraInfo.CalculateCameraPosition(ViewActor, CameraLocation, CameraRotation) == false)
           Super.PlayerCalcView(ViewActor, CameraLocation, CameraRotation);
    }
-
-/*      if (DeusExHUD(myHUD) != None)
-      {
-          DeusExHUD(myHUD).debug_CamLoc = CameraLocation;
-          DeusExHUD(myHUD).debug_CamRot = CameraRotation;
-      }*/
 }
 
 //------------------------------------------------
@@ -400,15 +394,16 @@ event object OpenMenuEx(string Menu, optional bool bDisconnect,optional string M
   return wtf;   
 }
 
-/*singular event UnPressButtons()
+// DXR: Какой ужас!
+singular event UnPressButtons()
 {
-    bFire = 0;
+/*    bFire = 0;
     bAltFire = 0;
-    //bDuck = 0;
+    bDuck = 0;
     bRun = 0;
     bVoiceTalk = 0;
-//    ResetInput();
-} */
+    ResetInput();  */
+}
 
 
 defaultproperties
