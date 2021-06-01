@@ -376,8 +376,8 @@ function RenderDebugInfo(Canvas c)
 //                           ", AICanSeeActor = " $ ScriptedPawn(target).AICanSeeActor $ 
 //                           ", Enemy = "$ScriptedPawn(target).Controller.Enemy);
 
-//            c.DrawText("ÿ ActorAvoiding = "$ScriptedPawn(target).ActorAvoiding @ "AvoidWallTimer = "$ ScriptedPawn(target).AvoidWallTimer @ 
-//                       "AvoidBumpTimer = "$ ScriptedPawn(target).AvoidBumpTimer @ "ObstacleTimer = "$ScriptedPawn(target).ObstacleTimer);
+            c.DrawText("ÿ ActorAvoiding = "$ScriptedPawn(target).ActorAvoiding @ "AvoidWallTimer = "$ ScriptedPawn(target).AvoidWallTimer @ 
+                       "AvoidBumpTimer = "$ ScriptedPawn(target).AvoidBumpTimer @ "ObstacleTimer = "$ScriptedPawn(target).ObstacleTimer);
           }
 
        }
