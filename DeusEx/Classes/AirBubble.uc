@@ -6,28 +6,29 @@ class AirBubble extends Effects;
 var() float RiseRate;
 var vector OrigVel;
 
-event Tick(float deltaTime)
+auto state Flying
 {
-   local WaterVolume wat;
+    event Tick(float deltaTime)
+    {
+        Velocity.X = OrigVel.X + 8 - FRand() * 17;
+        Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
+        Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
 
-   Velocity.X = OrigVel.X + 8 - FRand() * 17;
-   Velocity.Y = OrigVel.Y + 8 - FRand() * 17;
-   Velocity.Z = RiseRate * (FRand() * 0.2 + 0.9);
-
-   foreach RadiusActors(class'WaterVolume', wat, 40000) // DXR: Что это такое?
-        if (!wat.Encompasses(self))
+        if (PhysicsVolume.Encompasses(self) == false)
         {
             bHidden = true;
             Destroy();
         }
+    }
+    event BeginState()
+    {
+        Super.BeginState();
+
+        OrigVel = Velocity;
+        SetDrawScale(DrawScale + FRand() * 0.1);
+    }
 }
 
-event BeginPlay()
-{
-    OrigVel = Velocity;
-    SetDrawScale(FRand() * 0.1);
-    LifeSpan = 1 + 2 * FRand();
-}
 
 
 
