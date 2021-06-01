@@ -23,9 +23,8 @@ var() bool bCrouchToPassObstacles; // »спользовать в Controller > NotifyHitWall,
 var bool bCheckEnemy;
 var float ConvoCheckTime;
 
-// ----------------------------------------------------------------------
-// Structures
 
+// Structures
 struct WanderCandidates
 {
     var WanderPoint point;
@@ -78,7 +77,7 @@ var     HomeBase    HomeActor;      // home base
 var     Vector      HomeLoc;        // location of home base
 var     Vector      HomeRot;        // rotation of home base
 var     bool        bUseHome;       // true if home base should be used
-var(ScriptedPawn) bool bHasHeels;           // Special case for footstepping
+var     bool        bHasHeels;           // Special case for footstepping
 
 var     AlarmUnit   AlarmActor;
 
@@ -97,8 +96,6 @@ var      bool     bSeatHackUsed;
 
 var globalconfig bool bPawnShadows;
 var globalconfig bool bBlobShadow;
-
-//var DeusExPlayer myDxPlayer;
 
 var DeusExGameInfo flagBase;
 var DeusExLevelInfo dxLevel;
@@ -123,7 +120,8 @@ function DisplayDebug(Canvas Canvas, out float YL, out float YPos)
     "€А@ bCheckOther = "$ bCheckOther $
     "А€€ bCheckPlayer = "$ bCheckPlayer $
     " DistanceFromPlayer = "$ DistanceFromPlayer $
-    " LastRendered = "$Level.TimeSeconds - LastRenderTime);
+    " LastRendered "$Level.TimeSeconds - LastRenderTime $
+    " TurnDirection = "$GetEnum(enum'ETurning', TurnDirection));
 //                    " CycleIndex = "$CycleIndex$
 //                    " PotentialEnemyTimer = "$PotentialEnemyTimer $ 
 //                    " bbCheckEnemy = " $bbCheckEnemy $
@@ -195,10 +193,16 @@ event PostLoadSavedGame()
     UpdateReactionCallbacks();
 }
 
-event ObstacleTimerIsOver()
+//event ObstacleTimerIsOver();
+
+
+event AvoidWallTimerIsOver()
 {
-  if ((Controller != None) && (controller.MoveTarget != None))
-       Controller.Focus = controller.MoveTarget;
+    log(self@"AvoidWallTimerIsOver()");
+    if (DXRAIController(Controller) != None)
+    {
+        DXRAIController(Controller).AvoidWallTimerIsOver();
+    }
 }
 
 // «аглушка, дл€ того чтобы собиралось.
@@ -322,6 +326,8 @@ function PreBeginPlay()
   //
   // This must be fixed after ECTS.
 
+//    PreSetMovement();
+
     Super.PreBeginPlay();
 
     // Set our alliance
@@ -362,6 +368,8 @@ function PostSetInitialState()
 
     // Bind any conversation events to this ScriptedPawn
     ConBindEvents();
+
+    LastRenderTime = -10;
 
 
     for(i=0; i<conlist.length; i++)
@@ -686,7 +694,6 @@ function PutInWorld(bool bEnter)
 //       log("Not in world, controller state = "$Controller.GetStateName());
     bHidden             = true;
     bDetectable         = false;
-//            bCanCommunicate     = false;  
     WorldPosition       = Location;
     bWorldCollideActors = bCollideActors;
     bWorldBlockActors   = bBlockActors;
@@ -697,15 +704,12 @@ function PutInWorld(bool bEnter)
 
     KillShadow();
     SetLocation(Location+vect(0,0,20000));  // move it out of the way
-//    Disable('Tick');  // DXR: New line
   }
   else if (!bInWorld && bEnter)
   {
-//    Enable('Tick'); // DXR: New line
     bInWorld    = true;
     bHidden     = Default.bHidden;
     bDetectable = Default.bDetectable;
-//            bCanCommunicate = Default.bCanCommunicate;
     SetLocation(WorldPosition);
     SetCollision(bWorldCollideActors, bWorldBlockActors, bWorldBlockPlayers);
     bCollideWorld = Default.bCollideWorld;
@@ -3759,23 +3763,22 @@ function PlayCowerEnd()
 // ----------------------------------------------------------------------
 function PlayWaiting()
 {
- if (Controller.IsInState('Paralyzed') || Controller.IsInState('Attacking') || Controller.IsInState('Fleeing') || bSitting || bDancing || bStunned)
-    return;
+   if (Controller.IsInState('Paralyzed') || Controller.IsInState('Attacking') || Controller.IsInState('Fleeing') || bSitting || bDancing || bStunned)
+       return;
 
- if (Acceleration == vect(0, 0, 0))
- {
+    if (Acceleration == vect(0, 0, 0))
+    {
 //  ClientMessage("PlayWaiting()");
-  if (PhysicsVolume.bWaterVolume)
-    LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
-
-  else 
-  {
-    if (HasTwoHandedWeapon())
-      LoopAnimPivot('BreatheLight2H', , 0.3);
-    else
-      LoopAnimPivot('BreatheLight', , 0.3);
-  }
- }
+      if (PhysicsVolume.bWaterVolume)
+          LoopAnimPivot('Tread', , 0.3, , GetSwimPivot());
+        else 
+        {
+        if (HasTwoHandedWeapon())
+            LoopAnimPivot('BreatheLight2H', , 0.3);
+        else
+            LoopAnimPivot('BreatheLight', , 0.3);
+        }
+    }
 }
 
 
@@ -4075,7 +4078,7 @@ function float LoudNoiseScore(actor receiver, actor sender, float score)
     local Pawn pawnSender;
 
     if (sender == None) // DXR: Added to prevent spamlog
-        return 0.0;
+        return 1.0;
 
     // Cull events received from friends
     pawnSender = Pawn(sender);
@@ -4093,7 +4096,7 @@ function float LoudNoiseScore(actor receiver, actor sender, float score)
 function float DistressScore(actor receiver, actor sender, float score)
 {
     local ScriptedPawn scriptedSender;
-    local DeusExPawn   pawnSender;
+    local Pawn   pawnSender;
 
     // Cull events received from enemies
     sender         = InstigatorToPawn(sender);  // hack
@@ -5666,11 +5669,11 @@ function Tick(float deltaTime)
             bCheckOther = false;
     }
 
-    if ((DXRAIController(Controller) != none) && (DXRAIController(Controller).bUseAlterDest == true))
+    if ((Controller != none) && (Controller.bEnableAlterDestination))
     {
         if ((Acceleration == vect(0,0,0)) || (Physics != PHYS_Walking) || (TurnDirection == TURNING_None))
         {
-            DXRAIController(Controller).bUseAlterDest = false;
+            DXRAIController(Controller).bEnableAlterDestination = false;
             if (TurnDirection != TURNING_None)
                 controller.MoveTimer -= 4.0;
 
@@ -5754,8 +5757,10 @@ function SpurtBlood()
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, class <damageType> damageType)
 {
    // ќтправить в контроллер, контроллер обратно передаст TakeDamageBase.
-   controller.NotifyTakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
-//    TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
+    if (Controller != None)
+        controller.NotifyTakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+    else
+        TakeDamageBase(Damage, instigatedBy, hitlocation, momentum, damageType, true);
 }
 
 // ----------------------------------------------------------------------
@@ -5842,7 +5847,15 @@ function PhysicsVolumeChange(PhysicsVolume newZone)
     }
 }
 
-
+function JumpOutOfWater(vector jumpDir)
+{
+    Falling();
+    Velocity = jumpDir * WaterSpeed;
+    Acceleration = jumpDir * AccelRate;
+    velocity.Z = 380; //set here so physics uses this for remainder of tick
+    PlayFalling();
+    bUpAndOut = true;
+}
 
 
 // ----------------------------------------------------------------------
@@ -5850,6 +5863,8 @@ function PhysicsVolumeChange(PhysicsVolume newZone)
 // ----------------------------------------------------------------------
 singular function BaseChange()
 {
+    local float minJumpZ;
+
     Super.BaseChange();
 
     if (bSitting && !IsSeatValid(SeatActor))
@@ -5858,8 +5873,24 @@ singular function BaseChange()
         if (Controller.GetStateName() == 'Sitting')
             Controller.GotoState('Sitting', 'Begin');
     }
-    if (Controller != none)
-  Controller.BaseChange();
+
+    if ((Controller != None) && (Controller.GetStateName() == 'FallingState'))
+    {
+        if (Physics == PHYS_Walking)
+        {
+            minJumpZ = FMax(JumpZ, 150.0);
+            bJustLanded = true;
+            if (Health > 0)
+            {
+                if ((Velocity.Z < -0.8 * minJumpZ) || bUpAndOut)
+                    Controller.GotoState('FallingState', 'Landed');
+                else if (Velocity.Z < -0.8 * JumpZ)
+                    Controller.GotoState('FallingState', 'FastLanded');
+                else
+                    Controller.GotoState('FallingState', 'Done');
+            }
+        }
+    }
 } 
 
 
@@ -5878,8 +5909,6 @@ function bool CheckWaterJump(out vector WallNormal)
     local actor HitActor;
     local vector HitLocation, HitNormal, checkpoint, start, checkNorm, Extent;
 
-//  if (CarriedDecoration != None)
-//      return false;
     checkpoint = vector(Rotation);
     checkpoint.Z = 0.0;
     checkNorm = Normal(checkpoint);
@@ -5887,7 +5916,7 @@ function bool CheckWaterJump(out vector WallNormal)
     Extent = CollisionRadius * vect(1,1,0);
     Extent.Z = CollisionHeight;
     HitActor = Trace(HitLocation, HitNormal, checkpoint, Location, false, Extent);
-    if ( (HitActor != None) && (Pawn(HitActor) == None) )
+    if ((HitActor != None) && (Pawn(HitActor) == None))
     {
         WallNormal = -1 * HitNormal;
         start = Location;
@@ -5909,19 +5938,17 @@ function bool CheckWaterJump(out vector WallNormal)
 // ----------------------------------------------------------------------
 function SetMovementPhysics()
 {
+    // re-implement SetMovementPhysics() in subclass for flying and swimming creatures
     if (Physics == PHYS_Falling)
         return;
-    if ( PhysicsVolume.bWaterVolume )
+
+    if (PhysicsVolume.bWaterVolume && bCanSwim)
         SetPhysics(PHYS_Swimming);
+    else if (default.Physics == PHYS_None)
+        SetPhysics(PHYS_Walking);
     else
-        SetPhysics(PHYS_Walking); 
+        SetPhysics(default.Physics);
 }
-
-
-// ----------------------------------------------------------------------
-// PreSetMovement()
-// ----------------------------------------------------------------------
-
 
 
 // ----------------------------------------------------------------------
@@ -6611,6 +6638,44 @@ state idle
 {
 }
 
+
+auto state StartUp
+{
+    event BeginState()
+    {
+        bInterruptState = true;
+        bCanConverse = false;
+
+        SetMovementPhysics(); 
+        if (Physics == PHYS_Walking)
+            SetPhysics(PHYS_Falling);
+
+        bStasis = false;
+        SetDistress(false);
+        BlockReactions();
+        ResetDestLoc();
+    }
+
+/*    event EndState()
+    {
+        bCanConverse = true;
+        bStasis = true;
+        ResetReactions();
+    }
+
+    event Tick(float deltaSeconds)
+    {
+        Global.Tick(deltaSeconds);
+        if (level.TimeSeconds - LastRenderTime <= 1.0)
+        {
+            PlayWaiting();
+            InitializePawn();
+            FollowOrders();
+        }
+    }*/
+}
+
+
 // ----------------------------------------------------------------------
 // state Dying
 //
@@ -7017,10 +7082,10 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
     local bool         bDistressorValid;
     local float        distressVal;
     local name         stateName;
-//    local bool         bIsAttacking;//bAttacking;
+    local bool         bIsAttacking;//bAttacking;
     local bool         bFleeing;
 
-    bAttacking = false;
+    bIsAttacking = false;
     seeTime    = 0;
 
     if (state == EAISTATE_Begin || state == EAISTATE_Pulse)
@@ -7072,13 +7137,13 @@ function HandleDistress(Name event, EAIEventState state, XAIParams params)
                     {
                         SetDistressTimer();
                         HandleEnemy();
-                        bAttacking = true;
+                        bIsAttacking = true;
                     }
                 }
                 // BOOGER! Make NPCs react by seeking if distressor isn't an enemy?
             }
 
-            if (!bAttacking && bFearDistress)
+            if (!bIsAttacking && bFearDistress)
             {
                 distressVal = 0;
                 bFleeing    = false;
@@ -7353,12 +7418,12 @@ defaultproperties
 
 //     bIgnoreLedges=true
 //     bDoNotStopAtLedges=true
-     //bCanWalkOffLedges=true
-     bCanWalkOffLedges=false
+     bCanWalkOffLedges=true
+//     bCanWalkOffLedges=false
      bAvoidLedges=false      // don't get too close to ledges
-     //bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
-     bStopAtLedges=true     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+     bStopAtLedges=false     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
+     //bStopAtLedges=true     // if bAvoidLedges and bStopAtLedges, Pawn doesn't try to walk along the edge at all
 
-     PitchDownLimit=4096
-     PitchUpLimit=4096
+     PitchDownLimit=12000
+     PitchUpLimit=12000
 }

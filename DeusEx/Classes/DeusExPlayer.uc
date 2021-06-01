@@ -1578,7 +1578,6 @@ function Landed(vector HitNormal)
     PlayLanded(Velocity.Z);
     if (Velocity.Z < -1.4 * JumpZ)
     {
-        //MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
         if (Velocity.Z < -700) // && (ReducedDamageType != 'All'))
             if (Role == ROLE_Authority)
             {
@@ -1605,8 +1604,6 @@ function Landed(vector HitNormal)
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), class'fell');
             }
     }
-//    else if ((Level.Game != None) && (Level.Game.GameDifficulty > 1) && (Velocity.Z > 0.5 * JumpZ))
-//        MakeNoise(0.1 * Level.Game.GameDifficulty);
     bJustLanded = true;
 }
 

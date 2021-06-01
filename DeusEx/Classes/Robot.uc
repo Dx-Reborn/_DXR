@@ -153,8 +153,6 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         Controller.Enemy = instigatedBy;
         Died(instigatedBy.controller, damageType, HitLocation);
     }
-    //MakeNoise(1.0);
-
     RobotController(Controller).ReactToInjury(instigatedBy, damageType, HITLOC_None);
 }
 
