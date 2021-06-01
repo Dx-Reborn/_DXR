@@ -127,7 +127,7 @@ event Tick(float deltaTime)
                                 break;
                             }
                         }
-                        else if (pawn.IsA('ScriptedPawn') && (ScriptedPawn(pawn).GetPawnAllianceType(DeusExPawn(GetPlayerPawn())) != ALLIANCE_Hostile))
+                        else if (pawn.IsA('ScriptedPawn') && (ScriptedPawn(pawn).GetPawnAllianceType(GetPlayerPawn()) != ALLIANCE_Hostile))
                         {
                             curTarget = pawn;
                             break;
@@ -154,7 +154,7 @@ event Tick(float deltaTime)
                 // Attack enemies
                 foreach gun.VisibleActors(class'ScriptedPawn', sp, maxRange, gun.Location)
                 {
-                    if (sp.bDetectable && !sp.bIgnore && (sp.GetPawnAllianceType(DeusExPawn(GetPlayerPawn())) == ALLIANCE_Hostile))
+                    if (sp.bDetectable && !sp.bIgnore && (sp.GetPawnAllianceType(GetPlayerPawn()) == ALLIANCE_Hostile))
                     {
                         curTarget = sp;
                         break;
