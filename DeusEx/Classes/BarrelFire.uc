@@ -7,7 +7,6 @@ enum EBarrelFireType
 {
     BFT_Always, // Spawn extra flame emitter
     BFT_Random, // Same as first, but randomly
-    BFT_Off, // No flame emitter, just regular BarrelFire
     BFT_NoFlame // No flame at all
 };
 
@@ -17,7 +16,7 @@ var float lastDamageTime;
 
 function DamageOther(Actor Other)
 {
-    if ((Other != None) && !Other.IsA('ScriptedPawn'))
+    if ((Other != None) && !Other.IsA('ScriptedPawn') && (flame != None))
     {
         // only take damage every second
         if (Level.TimeSeconds - lastDamageTime >= 1.0)
@@ -30,46 +29,55 @@ function DamageOther(Actor Other)
 
 function SpawnFlame()
 {
-   if (TypeOfFire == BFT_Always)
-       flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
-   else if ((TypeOfFire == BFT_Random) && (FRand() > 0.5))
-       flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
-   else if (TypeOfFire == BFT_Off)
-        return; // Do nothing
-   else if (TypeOfFire == BFT_NoFlame)
-   {
-       bUnlit = false;
-       LightRadius = 0;
-       LightType = LT_None;
-      // Skins[2] = texture'PinkMaskTex';
-       Mass = 60.00;
-       return;
-   }
-   if (flame != None)
-   {
-       flame.SetBase(self);
-   }
+    switch (TypeOfFire)
+    {
+        case BFT_Always:
+           flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+           flame.SetBase(self);
+        break;
+
+        case BFT_Random:
+           if (FRand() > 0.5)
+           {
+               flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+               flame.SetBase(self);
+           }
+           else
+                TurnOff();
+        break;
+
+        case BFT_NoFlame:
+                TurnOff();
+        break;
+
+    }
 }
 
-event BeginPlay()
+function TurnOff()
 {
-   Super.BeginPlay();
-   SpawnFlame();
+    bUnlit = false;
+    LightRadius = 0;
+    LightType = LT_None;
+ // Skins[2] = texture'PinkMaskTex';
+    Mass = 60.00;
+}
+
+
+event PostSetInitialState()
+{
+    Super.PostSetInitialState();
+    SpawnFlame();
 }
 
 singular function SupportActor(Actor Other)
 {
-   if (TypeOfFire != BFT_NoFlame)
-       DamageOther(Other);
-
-    Super.SupportActor(Other);
+     DamageOther(Other);
+     Super.SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
-   if (TypeOfFire != BFT_NoFlame)
-       DamageOther(Other);
-
+    DamageOther(Other);
     Super.Bump(Other);
 }
 
@@ -95,7 +103,7 @@ defaultproperties
    LightBrightness=128
    LightHue=32
    LightSaturation=64
-   LightRadius=3
+   LightRadius=1 //3
    Mass=260.000000
    Buoyancy=270.000000
 //   skins[0]=Texture'DeusExDeco.Skins.BarrelFireTex1'
