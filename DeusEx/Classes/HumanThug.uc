@@ -55,7 +55,7 @@ event PostBeginPlay()
 function bool WillTakeStompDamage(actor stomper)
 {
     // This blows chunks!
-    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(DeusExPawn(stomper)) != ALLIANCE_Hostile))
+    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
         return false;
     else
         return true;

@@ -45,6 +45,10 @@ function CreateFlashLight()
 
       if (DCL == None)
           DCL = Spawn(class'DynamicCoronaLight',,,Location,GetViewRotation());
+
+          DCL.MinCoronaSize = 10;
+          DCL.MaxCoronaSize = 10;
+
    }
 }
 
@@ -66,7 +70,7 @@ function fTurnOff()
        fl.MaxTraceDistance = 0;
 }
 
-/*event Tick(float dt)
+event Tick(float dt)
 {
     local Vector loc;
     local Rotator lrt;
@@ -89,7 +93,7 @@ function fTurnOff()
     }
 
     Super.Tick(dt);
-} */
+}
 
 function bool PlayTurnHead(ELookDirection newLookDir, float rate, float tweentime)
 {
@@ -137,17 +141,18 @@ event PostBeginPlay()
         HitSound2 = Sound'FemalePainLarge';
         Die = Sound'FemaleDeath';
     }
-  CreateFlashLight();
+    CreateFlashLight();
 }
 
 function bool WillTakeStompDamage(actor stomper)
 {
     // This blows chunks!
-    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(DeusExPawn(stomper)) != ALLIANCE_Hostile))
+    if (stomper.IsA('PlayerPawn') && (GetPawnAllianceType(Pawn(stomper)) != ALLIANCE_Hostile))
         return false;
     else
         return true;
 }
+
 
 defaultproperties
 {
