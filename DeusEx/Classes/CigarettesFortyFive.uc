@@ -58,9 +58,9 @@ defaultproperties
     largeIconHeight=43
 
     DrawType=DT_StaticMesh
-    StaticMesh=StaticMesh'DXR_Pickups.Stogie_HD_Pickup'
-    PickupViewStaticMesh=StaticMesh'DXR_Pickups.Stogie_HD_Pickup'
-    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Stogie_HD'
+    StaticMesh=StaticMesh'DXR_Pickups.Super45_HD_Pickup'
+    PickupViewStaticMesh=StaticMesh'DXR_Pickups.Super45_HD_Pickup'
+    FirstPersonViewStaticMesh=StaticMesh'DXR_Pickups.Super45_HD'
     bUseFirstPersonStaticMesh=true
     bUsePickupViewStaticMesh=true
 }

@@ -15,7 +15,7 @@ enum EProductName
     SC_Super45,
     SC_Stogie
 };
-var() EProductName ProductName;
+var EProductName ProductName;
 
 
 function Frob(actor Frobber, Inventory frobWith)
