@@ -25,6 +25,11 @@ defaultproperties
     bBlockPlayers=False
     bProjTarget=False
     Mass=0.000000
+    bCanFly=true
+    bCanSwim=true
+    bCanCrouch=false
+    AccelRate=0.0
+    buoyancy=40
 
     controllerclass=class'AIController'
 }

@@ -305,31 +305,35 @@ function PlayEatingSound();
 
 function float GetMaxDistance(Actor foodActor)
 {
-  local float maxDist;
+    local float maxDist;
 
-  if (foodActor != None)
-  {
-      maxDist = foodActor.CollisionRadius + CollisionRadius;
-      return maxDist;
-  }
-
-  return 0.0;
+    if (foodActor != None)
+    {
+        maxDist = foodActor.CollisionRadius + CollisionRadius;
+        return maxDist;
+    }
+    return 0.0;
 }
 
 // DXR: converted to UDebugger-friendly version.
 function bool IsInRange(Actor foodActor)
 {
-  local float range, col_sum;
-  local bool bIsInRange;
+    local float range, col_sum;
+    local bool bIsInRange;
 
-  if (foodActor == None)
-  return false;
+    if (foodActor == None)
+        return false;
 
-      range = VSize(foodActor.Location-Location);
-      col_sum = GetMaxDistance(foodActor) + 20;
-      bIsInRange = (range <= col_sum);
+    // Don't eat thru level geometry
+    if (!FastTrace(Location, foodActor.Location))
+        return false;
 
-      return bIsInRange;
+
+    range = VSize(foodActor.Location-Location);
+    col_sum = GetMaxDistance(foodActor) + 20;
+    bIsInRange = (range <= col_sum);
+
+    return bIsInRange;
       //return (VSize(foodActor.Location-Location) <= GetMaxDistance(foodActor)+20);
 
   return false;
