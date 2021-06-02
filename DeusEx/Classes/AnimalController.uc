@@ -127,9 +127,9 @@ Eat:
         Goto('StopEating');
     Animal(pawn).PlayEatingSound();
     Animal(pawn).PlayEating();
-    if (Animal(Pawn).GetAnimNotifyCount('Eat') > 0) // GetAnimNotifyCount(anim) > 0 is same as bAnimNotify=true in UE1
+    if (Animal(Pawn).GetbAnimNotifyValue(0) > 0)
     {
-//        log(pawn@"GetAnimNotifyCount > 0!, so FinishAnim()");
+//        log(pawn@"GetbAnimNotifyValue = true, so FinishAnim()");
         FinishAnim();
     }
     else
