@@ -77,7 +77,6 @@ function InitStateMachine()
     {
         log("**** InitStateMachine() - player not set - mission state machine NOT initialized!");
     }
-//  RandomizePathNodesCost();
 }
 
 
@@ -180,6 +179,8 @@ event Timer()
             bFirstFrame = true;
         }
     }
+
+//    RandomizePathNodesCost();
 }
 
 // ----------------------------------------------------------------------
@@ -240,28 +241,28 @@ function RandomizePathNodesCost()
 
     for (N=Level.NavigationPointList; N!=None; N=N.NextNavigationPoint)
          if (N.IsA('PathNode'))
-             N.ExtraCost += Rand(5000);
+             N.ExtraCost = Rand(15000);
 }
 
 function DeusExGameInfo getFlagBase()
 {
-  return DeusExGameInfo(Level.Game);
+    return DeusExGameInfo(Level.Game);
 }
 
 function DeusExPlayer getPlayerPawn()
 {
-  return DeusExPlayer(level.GetLocalPlayerController().pawn);
+    return DeusExPlayer(level.GetLocalPlayerController().pawn);
 }
 
 function DeusExPlayerController getPlayer()
 {
-  return DeusExPlayerController(level.GetLocalPlayerController());
+    return DeusExPlayerController(level.GetLocalPlayerController());
 }
 
 
 
 defaultproperties
 {
-     checkTime=1.000000
-     localURL="NOTHING"
+    checkTime=1.000000
+    localURL="NOTHING"
 }
