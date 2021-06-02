@@ -1,22 +1,47 @@
 //=============================================================================
 // BlackHelicopter.
 //=============================================================================
-class BlackHelicopter extends Vehicles;
+class BlackHelicopter extends Helicopters;
+
+var vector origLoc;
+const BLADES_KILL_VALUE = 10000;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Super.BeginState();
-		LoopAnim('Fly');
-	}
+    event BeginState()
+    {
+        Super.BeginState();
+        LoopAnim('Fly');
+        origLoc = Location;
+        origRot = Rotation;
+    }
+}
+
+event Tick(float deltaTime)
+{
+    local float        ang;
+    local rotator      rot;
+
+    super.Tick(deltaTime);
+
+    if (!IsInState('Interpolating')) //CyberP/Totalitarian: subtle hover effect
+    {
+        ang = 2 * Pi * Level.TimeSeconds / 4.0;
+        rot = origRot;
+
+        rot.Pitch += Sin(ang) * 48;
+        rot.Roll += Cos(ang) * 48;
+        rot.Yaw += Sin(ang) * 32;
+
+        SetRotation(rot);
+    }
 }
 
 singular function SupportActor(Actor standingActor)
 {
-	// kill whatever lands on the blades
-	if (standingActor != None)
-		standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), class'DM_Exploded');
+    // kill whatever lands on the blades
+    if (standingActor != None)
+        standingActor.TakeDamage(BLADES_KILL_VALUE, None, standingActor.Location, vect(0,0,0), class'DM_Exploded');
 }
 
 

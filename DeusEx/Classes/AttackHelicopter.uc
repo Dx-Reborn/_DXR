@@ -2,30 +2,30 @@
 // AttackHelicopter.
 //=============================================================================
 
-class AttackHelicopter extends Vehicles;
+class AttackHelicopter extends Helicopters;
 
 auto state Flying
 {
-	function BeginState()
-	{
-		Super.BeginState();
-		LoopAnim('Fly');
-	}
+    function BeginState()
+    {
+        Super.BeginState();
+        LoopAnim('Fly');
+    }
 }
 
 singular function SupportActor(Actor standingActor)
 {
-	// kill whatever lands on the blades
-	if (standingActor != None)
-		standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), class'DM_Exploded');
+    // kill whatever lands on the blades
+    if (standingActor != None)
+        standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), class'DM_Exploded');
 }
 
 
 defaultproperties
 {
-			Skins(0)=Texture'DeusExDeco.Skins.AttackHelicopterTex1'
-			Skins(1)=Shader'DeusExStaticMeshes.Skins.HelicopterBladesSH'
-			Skins(2)=TexEnvMap'DeusExStaticMeshes.Glass.EM1'
+     Skins(0)=Texture'DeusExDeco.Skins.AttackHelicopterTex1'
+     Skins(1)=Shader'DeusExStaticMeshes.Skins.HelicopterBladesSH'
+     Skins(2)=TexEnvMap'DeusExStaticMeshes.Glass.EM1'
      ItemName="Attack Helicopter"
      AmbientSound=Sound'Ambient.Ambient.Helicopter'
      mesh=mesh'DeusExDeco.AttackHelicopter'
