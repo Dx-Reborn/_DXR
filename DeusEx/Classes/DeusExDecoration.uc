@@ -863,10 +863,8 @@ auto state Active
             Event = '';
             avg = (CollisionRadius + CollisionHeight) / 2;
             Instigator = EventInstigator;
-//            if (Instigator != None)
-//                MakeNoise(1.0);
 
-            if ((fragType == class'WoodFragment') || (fragType == class'CrateBreakableFragment'))  // DXR: Added new fragmesn class
+            if ((fragType == class'WoodFragment') || (fragType == class'CrateBreakableFragment'))  // DXR: Added new fragment class
             {
                 if (avg > 20)
                     //PlaySound(sound'WoodBreakLarge', SLOT_Misc,,, 2048); // 512
@@ -956,8 +954,6 @@ state Burning
             avg = (CollisionRadius + CollisionHeight) / 2;
             Frag(fragType, Momentum / 10, avg/20.0, avg/5 + 1);
             Instigator = EventInstigator;
-//            if (Instigator != None)
-//                MakeNoise(1.0);
 
             // if we have been blown up, then destroy our contents
             if (bExplosive)
