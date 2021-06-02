@@ -8,6 +8,7 @@ var() bool bHasFlashLight;
 var() editconst LightProjectorNPC fl;
 var() editconst DynamicCoronaLight DCL;
 var() Name LampBone; // Косточка для "фонарика"
+var() float FlashlightThreshold;
 
 event AnimEnd(int Channel)
 {
@@ -15,7 +16,7 @@ event AnimEnd(int Channel)
 
     if (Controller != None)
     {
-        if (AIVisibility(self) < 0.05) // && (cState == 'Seeking'))
+        if (AIVisibility(self) < FlashlightThreshold) // && (cState == 'Seeking'))
             fTurnOn();
             else
             fTurnOff();
@@ -46,8 +47,8 @@ function CreateFlashLight()
       if (DCL == None)
           DCL = Spawn(class'DynamicCoronaLight',,,Location,GetViewRotation());
 
-          DCL.MinCoronaSize = 10;
-          DCL.MaxCoronaSize = 10;
+          DCL.MinCoronaSize = 5;
+          DCL.MaxCoronaSize = 5;
 
    }
 }
@@ -58,7 +59,7 @@ function fTurnOn()
        DCL.bCorona = true;
 
    if (fl != None)
-       fl.MaxTraceDistance = 1200;
+       fl.MaxTraceDistance = fl.default.MaxTraceDistance;
 }
 
 function fTurnOff()
@@ -156,6 +157,7 @@ function bool WillTakeStompDamage(actor stomper)
 
 defaultproperties
 {
+     FlashlightThreshold=0.01
      VisibilityThreshold=0.010000
      BindName="HumanMilitary"
      BaseAccuracy=0.200000
