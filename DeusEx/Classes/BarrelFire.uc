@@ -33,6 +33,8 @@ function SpawnFlame()
     {
         case BFT_Always:
            flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+           flame.AmbientSound = default.AmbientSound;
+           flame.SoundVolume = default.SoundVolume;
            flame.SetBase(self);
         break;
 
@@ -40,6 +42,8 @@ function SpawnFlame()
            if (FRand() > 0.5)
            {
                flame = Spawn(class'EM_TorchFire', Self,,, rot(16384,0,0));
+               flame.AmbientSound = default.AmbientSound;
+               flame.SoundVolume = default.SoundVolume;
                flame.SetBase(self);
            }
            else
@@ -57,22 +61,28 @@ function TurnOff()
 {
     bUnlit = false;
     LightRadius = 0;
+    LightBrightness = 0;
     LightType = LT_None;
  // Skins[2] = texture'PinkMaskTex';
     Mass = 60.00;
+    AmbientSound = None;
 }
 
 
 event PostSetInitialState()
 {
+    LightHue = default.LightHue;
+    LightSaturation = default.LightRadius;
+    LightRadius = default.LightRadius;
+
     Super.PostSetInitialState();
     SpawnFlame();
 }
 
 singular function SupportActor(Actor Other)
 {
-     DamageOther(Other);
-     Super.SupportActor(Other);
+    DamageOther(Other);
+    Super.SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
@@ -99,11 +109,14 @@ defaultproperties
    CollisionHeight=29.000000
    LightEffect=LE_None
    LightType=LT_SubtlePulse
-   LightPeriod=2
+//   LightPeriod=2
    LightBrightness=128
-   LightHue=32
-   LightSaturation=64
-   LightRadius=1 //3
+//   LightHue=32
+//   LightSaturation=64
+//   LightRadius=1 //3
+   LightHue=15
+   LightSaturation=42
+   LightRadius=5.000000
    Mass=260.000000
    Buoyancy=270.000000
 //   skins[0]=Texture'DeusExDeco.Skins.BarrelFireTex1'
@@ -115,6 +128,3 @@ defaultproperties
    TypeOfFire=BFT_Random
    SurfaceType=EST_Metal
 }
-
-
-
