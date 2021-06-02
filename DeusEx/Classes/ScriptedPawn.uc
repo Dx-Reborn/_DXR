@@ -6482,7 +6482,7 @@ function InitializePawn()
         InitializeAlliances();
         InitializeHomeBase();
 
-//        BlockReactions();
+        BlockReactions(); //
 
         if (Alliance != '')
             ChangeAlly(Alliance, 1.0, true);
