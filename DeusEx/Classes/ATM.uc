@@ -19,7 +19,7 @@ var() float lockoutDelay;           // delay until locked out ATM can be used
 var float lockoutTime;              // time when ATM was locked out
 var float lastHackTime;             // last time the ATM was hacked
 var localized String msgLockedOut;
-var bool bSuckedDryByHack;
+var editconst bool bSuckedDryByHack;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
@@ -169,17 +169,24 @@ function string GetPIN(int userIndex)
 
 defaultproperties
 {
-     lockoutDelay=60.000000
-     lastHackTime=-9999.000000
-     msgLockedOut="Terminal is locked out for %d more seconds"
-     ItemName="Public Banking Terminal"
-     Physics=PHYS_None
-     AmbientSound=Sound'DeusExSounds.Generic.ElectronicsHum'
-     mesh=mesh'DeusExDeco.ATM'
-     SoundRadius=8
-     SoundVolume=255
-     CollisionHeight=40.000000
-     bCollideWorld=False
-     Mass=400.000000
-     Buoyancy=200.000000
+    lockoutDelay=60.000000
+    lastHackTime=-9999.000000
+    msgLockedOut="Terminal is locked out for %d more seconds"
+    ItemName="Public Banking Terminal"
+    Physics=PHYS_None
+    AmbientSound=Sound'DeusExSounds.Generic.ElectronicsHum'
+//     mesh=mesh'DeusExDeco.ATM'
+    DrawType=DT_StaticMesh
+    StaticMesh=StaticMesh'DeusExStaticMeshes0.ATM_HD'
+    bUseCylinderCollision=False
+    SoundRadius=8
+    SoundVolume=255
+    CollisionHeight=40.000000
+    bCollideWorld=False
+    Mass=400.000000
+    Buoyancy=200.000000
 }
+
+
+
+
