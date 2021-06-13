@@ -69,7 +69,7 @@ state Fleeing
 defaultproperties
 {
     bCanOpenDoors=false
-    AcquisitionYawRate=2000
+    AcquisitionYawRate=50000
 }
 
 
