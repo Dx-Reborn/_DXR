@@ -20,10 +20,8 @@ function PlayFiring()
 {
     if (bAutomatic)
     {
-        if (Owner.IsA('PlayerPawn'))
            LoopAnim(ShootAnim,5.0, 0.01);
-        else
-           LoopAnim(ShootAnim,1.0, 0.1);
+    //       LoopAnim(ShootAnim,1.0, 0.1);
     }
     else
     {
@@ -34,7 +32,10 @@ function PlayFiring()
         Owner.PlaySound(GetSilencedSound(), SLOT_Misc,,, 2048);
     else
 //        Owner.PlaySound(GetFireSound(), SLOT_None,,, 2048, 1.0,);
-        Owner.PlaySound(GetFireSound(), SLOT_Misc,,, 2048, 1.0,);
+        if (Owner.IsA('PlayerPawn'))
+            owner.PlaySound(GetFireSound(), SLOT_Misc,1.1,false, 2048, 1.0,);
+            else
+            /*Owner.*/PlaySound(GetFireSound(), SLOT_Misc,1.1,false, 2048, 1.0,);
 }
 
 event AnimEnd(int channel)
@@ -102,16 +103,16 @@ function AssaultGunFireStart()
 function AssaultGunFireEnd()
 {
     Skins[2] = texture'PinkMaskTex';
-    class'SoundManager'.static.StopSound(owner,GetFireSound());
+//    class'SoundManager'.static.StopSound(owner,GetFireSound());
 }
 
 event WeaponTick(float dt)
 {
-  if (GetAnimSequence() != 'Shoot')
-  {
-      class'SoundManager'.static.StopSound(owner,GetFireSound());
-      AssaultGunFireEnd();
-  }
+    if ((GetAnimSequence() != 'Shoot') && Owner.IsA('PlayerPawn'))
+    {
+        //class'SoundManager'.static.StopSound(owner,GetFireSound());
+        AssaultGunFireEnd();
+    }
 }
 
 function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
