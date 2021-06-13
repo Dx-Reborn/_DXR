@@ -125,6 +125,6 @@ defaultproperties
    DrawType=DT_StaticMesh
    StaticMesh=StaticMesh'DeusExStaticMeshes0.BarrelFire_HD'
    bDynamicLight=true
-   TypeOfFire=BFT_Random
+   TypeOfFire=BFT_Always
    SurfaceType=EST_Metal
 }
