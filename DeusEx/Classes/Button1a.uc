@@ -243,8 +243,8 @@ defaultproperties
      Physics=PHYS_None
      RemoteRole=ROLE_SimulatedProxy
      Mesh=LodMesh'DeusExDeco.Button1'
-     CollisionRadius=2.000000
-     CollisionHeight=2.000000
+     CollisionRadius=3.00 // DXR: 3.00, so it will work on StaticMeshes //2.000000
+     CollisionHeight=3.00//2.000000
      bCollideWorld=False
      bBlockActors=False
      Mass=5.000000
