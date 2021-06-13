@@ -23,7 +23,7 @@ defaultproperties
      Health=80
      UnderWaterTime=20.000000
      Mesh=mesh'DeusExCharacters.SpiderBot2'
-     CollisionRadius=33.580002
+     CollisionRadius=26.00//33.580002
      CollisionHeight=10.740000
      //CollisionHeight=15.240000
      Mass=200.000000
