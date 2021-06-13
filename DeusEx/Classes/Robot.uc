@@ -358,7 +358,8 @@ function PlayRunningAndFiring()
 
 function TweenToShoot(float tweentime)
 {
-//    TweenAnimPivot('Still', tweentime);
+    if (!self.IsA('SecurityBot2a'))
+        TweenAnimPivot('Still', tweentime);
 }
 
 function PlayShoot()
@@ -456,22 +457,26 @@ function PlayCrawling()
 
 function PlayFiring(optional float Rate, optional name FiringMode)
 {
-//    LoopAnimPivot('Still',,0.1);
+    if (!self.IsA('SecurityBot2a'))
+        LoopAnimPivot('Still',,0.1);
 }
 
 function PlayReloadBegin()
 {
-//    PlayAnimPivot('Still',, 0.1);
+    if (!self.IsA('SecurityBot2a'))
+        PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayReload()
 {
-//    PlayAnimPivot('Still');
+    if (!self.IsA('SecurityBot2a'))
+        PlayAnimPivot('Still');
 }
 
 function PlayReloadEnd()
 {
-//    PlayAnimPivot('Still',, 0.1);
+    if (!self.IsA('SecurityBot2a'))
+        PlayAnimPivot('Still',, 0.1);
 }
 
 function PlayCowerBegin();
@@ -571,7 +576,7 @@ defaultproperties
      bCanSwim=False
      bIsHuman=False
      JumpZ=0.000000
-     MaxiStepHeight=8.00//4.000000 // DXR: Макси Степ ! Хотя 4 это уже мини :D
+     MaxiStepHeight=8.00//4.000000
      Health=50
      HitSound1=Sound'DeusExSounds.Generic.Spark1'
      HitSound2=Sound'DeusExSounds.Generic.Spark1'
